@@ -15,6 +15,8 @@
 	<description>English proficiency testing system</description>
 	<properties>
 		<java.version>11</java.version>
+		<jacoco.minimum>0.8</jacoco.minimum>
+		<jacoco.version>0.7.7.201606060606</jacoco.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -40,7 +42,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.7.201606060606</version>
+				<version>${jacoco.version}</version>
 				<executions>
 					<execution>
 						<id>default-prepare-agent</id>
@@ -61,12 +63,12 @@
 										<limit>
 											<counter>LINE</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.80</minimum>
+											<minimum>${jacoco.minimum}</minimum>
 										</limit>
 										<limit>
 											<counter>BRANCH</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.80</minimum>
+											<minimum>${jacoco.minimum}</minimum>
 										</limit>
 									</limits>
 								</rule>
