@@ -28,6 +28,20 @@ class JwtTokenUtilTest {
 	}
 
 	@Test
+	void tryExtractUsernameInvalidToken() {
+		Assertions.assertTrue(jwtTokenUtil.tryExtractUsername("token").isEmpty());
+	}
+
+	@Test
+	void tryExtractUsernameValid() {
+		Mockito.when(userDetails.getUsername()).thenReturn(USERNAME);
+
+		String token = jwtTokenUtil.generateToken(userDetails);
+		Assertions.assertFalse(jwtTokenUtil.tryExtractUsername(token).isEmpty());
+		Assertions.assertEquals(USERNAME, jwtTokenUtil.tryExtractUsername(token).get());
+	}
+
+	@Test
 	void correctTokenParameters() {
 		Mockito.when(userDetails.getUsername()).thenReturn(USERNAME);
 

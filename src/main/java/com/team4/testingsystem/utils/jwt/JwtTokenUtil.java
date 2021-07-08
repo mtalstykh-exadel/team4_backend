@@ -12,11 +12,20 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Component
 public class JwtTokenUtil {
 	private final Key JWT_SECRET = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+	public Optional<String> tryExtractUsername(String token) {
+		try {
+			return Optional.of(extractUsername(token));
+		} catch (JwtException e) {
+			return Optional.empty();
+		}
+	}
 
 	public String extractUsername(String token) throws JwtException {
 		return extractClaim(token, Claims::getSubject);
