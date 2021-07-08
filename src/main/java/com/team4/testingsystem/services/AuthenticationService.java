@@ -12,14 +12,20 @@ import java.util.Optional;
 
 @Service
 public class AuthenticationService {
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+
+    private final CustomUserDetailsService userDetailsService;
+
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private CustomUserDetailsService userDetailsService;
-
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    public AuthenticationService(AuthenticationManager authenticationManager,
+                                 CustomUserDetailsService userDetailsService,
+                                 JwtTokenUtil jwtTokenUtil) {
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
 
     public Optional<String> createAuthenticationToken(String username, String password) {
         try {

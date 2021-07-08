@@ -15,8 +15,12 @@ import java.util.Optional;
 
 @RestController
 public class AuthenticationController {
+    private final AuthenticationService authenticationService;
+
     @Autowired
-    private AuthenticationService authenticationService;
+    public AuthenticationController(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
 
     @GetMapping("/")
     public String index() {
