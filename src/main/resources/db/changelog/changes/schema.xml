@@ -5,180 +5,182 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
-    <changeSet id="create_schema" author="SemyonKorostik">
-        <createTable tableName="user_role">
-            <column name="id" type="int" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="role_name" type="varchar(40)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+        <changeSet id="create_schema" author="SemyonKorostik">
+                <createTable tableName="user_role">
+                        <column name="id" type="int" autoIncrement="true">
+                                <constraints primaryKey="true"/>
+                        </column>
+                        <column name="role_name" type="varchar(40)">
+                                <constraints nullable="false"/>
+                        </column>
+                </createTable>
 
-        <createTable tableName="user">
-            <column name="id" type="int" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="user_name" type="varchar(100)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="user_login" type="varchar(150)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="user_password" type="clob">
-                <constraints nullable="false"/>
-            </column>
-            <column name="role_id" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="language" type="varchar(30)"/>
-        </createTable>
+                <createTable tableName="user">
+                        <column name="id" type="int" autoIncrement="true">
+                                <constraints primaryKey="true"/>
+                        </column>
+                        <column name="user_name" type="varchar(100)">
+                                <constraints nullable="false"/>
+                        </column>
+                        <column name="user_login" type="varchar(150)">
+                                <constraints nullable="false"/>
+                        </column>
+                        <column name="user_password" type="clob">
+                                <constraints nullable="false"/>
+                        </column>
+                        <column name="role_id" type="int">
+                                <constraints nullable="false"/>
+                        </column>
+                        <column name="language" type="varchar(30)"/>
+                </createTable>
 
-        <createTable tableName="test">
-            <column name="id" type="int" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="user_id" type="int"/>
-            <column name="created_at" type="datetime"/>
-            <column name="updated_at" type="datetime"/>
-            <column name="started_at" type="datetime"/>
-            <column name="finished_at" type="datetime"/>
-            <column name="status" type="varchar(256)"/>
-            <column name="evaluation" type="int" defaultValue="0"/>
-        </createTable>
+                <createTable tableName="test">
+                        <column name="id" type="int" autoIncrement="true">
+                                <constraints primaryKey="true"/>
+                        </column>
+                        <column name="user_id" type="int"/>
+                        <column name="created_at" type="datetime"/>
+                        <column name="updated_at" type="datetime"/>
+                        <column name="started_at" type="datetime"/>
+                        <column name="finished_at" type="datetime"/>
+                        <column name="status" type="varchar(256)"/>
+                        <column name="evaluation" type="int" defaultValue="0"/>
+                </createTable>
 
-        <createTable tableName="level">
-            <column name="id" type="int" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="level_name" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+                <createTable tableName="level">
+                        <column name="id" type="int" autoIncrement="true">
+                                <constraints primaryKey="true"/>
+                        </column>
+                        <column name="level_name" type="varchar(50)">
+                                <constraints nullable="false"/>
+                        </column>
+                </createTable>
 
-        <createTable tableName="module">
-            <column name="id" type="int" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="module_name" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+                <createTable tableName="module">
+                        <column name="id" type="int" autoIncrement="true">
+                                <constraints primaryKey="true"/>
+                        </column>
+                        <column name="module_name" type="varchar(50)">
+                                <constraints nullable="false"/>
+                        </column>
+                </createTable>
 
-        <createTable tableName="question">
-            <column name="id" type="int" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="question_body" type="clob"/>
-            <column name="points" type="int"/>
-            <column name="level_id" type="int">
-            </column>
-            <column name="module_id" type="int">
-            </column>
-            <column name="creator_user_id" type="int"/>
-            <column name="is_avaliable" type="boolean" defaultValue="true"/>
-        </createTable>
+                <createTable tableName="question">
+                        <column name="id" type="int" autoIncrement="true">
+                                <constraints primaryKey="true"/>
+                        </column>
+                        <column name="question_body" type="clob"/>
+                        <column name="points" type="int"/>
+                        <column name="level_id" type="int">
+                        </column>
+                        <column name="module_id" type="int">
+                        </column>
+                        <column name="creator_user_id" type="int"/>
+                        <column name="is_avaliable" type="boolean" defaultValue="true"/>
+                </createTable>
 
-        <createTable tableName="test_question">
-            <column name="test_id" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="question_id" type="int">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+                <createTable tableName="test_question">
+                        <column name="test_id" type="int">
+                                <constraints nullable="false"/>
+                        </column>
+                        <column name="question_id" type="int">
+                                <constraints nullable="false"/>
+                        </column>
+                </createTable>
 
-        <createTable tableName="answer">
-            <column name="id" type="int" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="answer_body" type="clob"/>
-            <column name="question_id" type="int"/>
-            <column name="is_correct" type="boolean" defaultValue="false"/>
-        </createTable>
+                <createTable tableName="answer">
+                        <column name="id" type="int" autoIncrement="true">
+                                <constraints primaryKey="true"/>
+                        </column>
+                        <column name="answer_body" type="clob"/>
+                        <column name="question_id" type="int"/>
+                        <column name="is_correct" type="boolean" defaultValue="false"/>
+                </createTable>
 
-        <createTable tableName="file_answer">
-            <column name="id" type="int" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="url" type="clob">
-                <constraints nullable="false"/>
-            </column>
-            <column name="question_id" type="int">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+                <createTable tableName="file_answer">
+                        <column name="id" type="int" autoIncrement="true">
+                                <constraints primaryKey="true"/>
+                        </column>
+                        <column name="url" type="clob">
+                                <constraints nullable="false"/>
+                        </column>
+                        <column name="question_id" type="int">
+                                <constraints nullable="false"/>
+                        </column>
+                </createTable>
 
-        <createTable tableName="content_file">
-            <column name="id" type="int" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="question_id" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="url" type="clob">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+                <createTable tableName="content_file">
+                        <column name="id" type="int" autoIncrement="true">
+                                <constraints primaryKey="true"/>
+                        </column>
+                        <column name="question_id" type="int">
+                                <constraints nullable="false"/>
+                        </column>
+                        <column name="url" type="clob">
+                                <constraints nullable="false"/>
+                        </column>
+                </createTable>
 
-        <createTable tableName="choosen_option">
-            <column name="test_id" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="question_id" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="choosen_answer_id" type="int"/>
-            <column name="file_answer_id" type="int"/>
-        </createTable>
+                <createTable tableName="choosen_option">
+                        <column name="test_id" type="int">
+                                <constraints nullable="false"/>
+                        </column>
+                        <column name="question_id" type="int">
+                                <constraints nullable="false"/>
+                        </column>
+                        <column name="choosen_answer_id" type="int"/>
+                        <column name="file_answer_id" type="int"/>
+                </createTable>
 
-        <addForeignKeyConstraint baseTableName="user" baseColumnNames="role_id" constraintName="user_user_role_fk"
-                                 referencedTableName="user_role" referencedColumnNames="id"/>
+                <addForeignKeyConstraint baseTableName="user" baseColumnNames="role_id"
+                                         constraintName="user_user_role_fk"
+                                         referencedTableName="user_role" referencedColumnNames="id"/>
 
-        <addForeignKeyConstraint baseTableName="test" baseColumnNames="user_id" constraintName="test_user_fk"
-                                 referencedTableName="user" referencedColumnNames="id"/>
-
-
-        <addForeignKeyConstraint baseTableName="question" baseColumnNames="level_id" constraintName="question_level_fk"
-                                 referencedTableName="level" referencedColumnNames="id"/>
-
-        <addForeignKeyConstraint baseTableName="question" baseColumnNames="module_id"
-                                 constraintName="question_module_fk"
-                                 referencedTableName="module" referencedColumnNames="id"/>
-
-        <addForeignKeyConstraint baseTableName="question" baseColumnNames="creator_user_id"
-                                 constraintName="question_user_fk"
-                                 referencedTableName="user" referencedColumnNames="id"/>
-
-        <addForeignKeyConstraint baseTableName="test_question" baseColumnNames="test_id"
-                                 constraintName="test_question_test_fk"
-                                 referencedTableName="test" referencedColumnNames="id"/>
-
-        <addForeignKeyConstraint baseTableName="test_question" baseColumnNames="question_id"
-                                 constraintName="test_question_question_fk"
-                                 referencedTableName="question" referencedColumnNames="id"/>
-
-        <addForeignKeyConstraint baseTableName="answer" baseColumnNames="question_id"
-                                 constraintName="answer_question_fk"
-                                 referencedTableName="question" referencedColumnNames="id"/>
-
-        <addForeignKeyConstraint baseTableName="content_file" baseColumnNames="question_id"
-                                 constraintName="content_file_question_fk"
-                                 referencedTableName="question" referencedColumnNames="id"/>
-
-        <addForeignKeyConstraint baseTableName="choosen_option" baseColumnNames="test_id"
-                                 constraintName="choosen_option_test_fk"
-                                 referencedTableName="test" referencedColumnNames="id"/>
-
-        <addForeignKeyConstraint baseTableName="choosen_option" baseColumnNames="question_id"
-                                 constraintName="choosen_option_question_fk"
-                                 referencedTableName="question" referencedColumnNames="id"/>
-
-        <addForeignKeyConstraint baseTableName="choosen_option" baseColumnNames="choosen_answer_id"
-                                 constraintName="choosen_option_answer_fk"
-                                 referencedTableName="answer" referencedColumnNames="id"/>
+                <addForeignKeyConstraint baseTableName="test" baseColumnNames="user_id" constraintName="test_user_fk"
+                                         referencedTableName="user" referencedColumnNames="id"/>
 
 
-    </changeSet>
+                <addForeignKeyConstraint baseTableName="question" baseColumnNames="level_id"
+                                         constraintName="question_level_fk"
+                                         referencedTableName="level" referencedColumnNames="id"/>
+
+                <addForeignKeyConstraint baseTableName="question" baseColumnNames="module_id"
+                                         constraintName="question_module_fk"
+                                         referencedTableName="module" referencedColumnNames="id"/>
+
+                <addForeignKeyConstraint baseTableName="question" baseColumnNames="creator_user_id"
+                                         constraintName="question_user_fk"
+                                         referencedTableName="user" referencedColumnNames="id"/>
+
+                <addForeignKeyConstraint baseTableName="test_question" baseColumnNames="test_id"
+                                         constraintName="test_question_test_fk"
+                                         referencedTableName="test" referencedColumnNames="id"/>
+
+                <addForeignKeyConstraint baseTableName="test_question" baseColumnNames="question_id"
+                                         constraintName="test_question_question_fk"
+                                         referencedTableName="question" referencedColumnNames="id"/>
+
+                <addForeignKeyConstraint baseTableName="answer" baseColumnNames="question_id"
+                                         constraintName="answer_question_fk"
+                                         referencedTableName="question" referencedColumnNames="id"/>
+
+                <addForeignKeyConstraint baseTableName="content_file" baseColumnNames="question_id"
+                                         constraintName="content_file_question_fk"
+                                         referencedTableName="question" referencedColumnNames="id"/>
+
+                <addForeignKeyConstraint baseTableName="choosen_option" baseColumnNames="test_id"
+                                         constraintName="choosen_option_test_fk"
+                                         referencedTableName="test" referencedColumnNames="id"/>
+
+                <addForeignKeyConstraint baseTableName="choosen_option" baseColumnNames="question_id"
+                                         constraintName="choosen_option_question_fk"
+                                         referencedTableName="question" referencedColumnNames="id"/>
+
+                <addForeignKeyConstraint baseTableName="choosen_option" baseColumnNames="choosen_answer_id"
+                                         constraintName="choosen_option_answer_fk"
+                                         referencedTableName="answer" referencedColumnNames="id"/>
+
+
+        </changeSet>
 
 </databaseChangeLog>
