@@ -39,11 +39,11 @@
                 <constraints primaryKey="true"/>
             </column>
             <column name="user_id" type="int"/>
-            <column name="created_at" type="datetime" />
+            <column name="created_at" type="datetime"/>
             <column name="updated_at" type="datetime"/>
             <column name="started_at" type="datetime"/>
             <column name="finished_at" type="datetime"/>
-            <column name="status" />
+            <column name="status" type="varchar(256)"/>
             <column name="evaluation" type="int" defaultValue="0"/>
         </createTable>
 
@@ -178,9 +178,6 @@
                                  constraintName="choosen_option_answer_fk"
                                  referencedTableName="answer" referencedColumnNames="id"/>
 
-        <addForeignKeyConstraint baseTableName="choosen_option" baseColumnNames="file_answer_id"
-                                 constraintName="choosen_option_file_answer_fk"
-                                 referencedTableName="file_answer" referencedColumnNames="id"/>
 
     </changeSet>
 
