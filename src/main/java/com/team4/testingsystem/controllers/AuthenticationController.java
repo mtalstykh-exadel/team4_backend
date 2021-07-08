@@ -22,11 +22,6 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
-    @GetMapping("/")
-    public String index() {
-        return "Index page";
-    }
-
     @GetMapping("/name")
     public String getName(Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
