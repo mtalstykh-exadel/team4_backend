@@ -6,6 +6,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
@@ -13,10 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@Component
 public class JwtTokenUtil {
 	private final Key JWT_SECRET = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-	private String extractUsername(String token) throws JwtException {
+	public String extractUsername(String token) throws JwtException {
 		return extractClaim(token, Claims::getSubject);
 	}
 
@@ -37,7 +39,7 @@ public class JwtTokenUtil {
 				.getBody();
 	}
 
-	private Boolean isTokenExpired(String token) {
+	public Boolean isTokenExpired(String token) throws JwtException {
 		return extractExpirationDate(token).before(new Date());
 	}
 
@@ -48,8 +50,8 @@ public class JwtTokenUtil {
 
 	private String createToken(String subject, Map<String, Object> claims) {
 		return Jwts.builder()
-				.setSubject(subject)
 				.setClaims(claims)
+				.setSubject(subject)
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
 				.signWith(JWT_SECRET)
