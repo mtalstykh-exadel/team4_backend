@@ -11,38 +11,38 @@ import java.util.Collection;
 @Entity
 @Table(name = "user_role")
 public class UserRoleEntity {
-	@Id
-	@GeneratedValue
-	@Column(name = "id")
-	private Integer id;
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Integer id;
 
-	@Column(name = "role_name")
-	private String roleName;
+    @Column(name = "role_name")
+    private String roleName;
 
-	@OneToMany(mappedBy = "role")
-	private Collection<UserEntity> users;
+    @OneToMany(mappedBy = "role")
+    private Collection<UserEntity> users;
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getRoleName() {
-		return roleName;
-	}
+    public String getRoleName() {
+        return roleName;
+    }
 
-	public void setRoleName(String roleName) {
-		this.roleName = roleName;
-	}
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
 
-	public Collection<UserEntity> getUsers() {
-		return users;
-	}
+    public Collection<UserEntity> getUsers() {
+        return users;
+    }
 
-	public void setUsers(Collection<UserEntity> users) {
-		this.users = users;
-	}
+    public void setUsers(Collection<UserEntity> users) {
+        this.users = users;
+    }
 }

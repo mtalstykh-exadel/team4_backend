@@ -18,48 +18,48 @@ import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest {
-	@Mock
-	private AuthenticationManager authenticationManager;
+    @Mock
+    private AuthenticationManager authenticationManager;
 
-	@Mock
-	private CustomUserDetailsService userDetailsService;
+    @Mock
+    private CustomUserDetailsService userDetailsService;
 
-	@Mock
-	private JwtTokenUtil jwtTokenUtil;
+    @Mock
+    private JwtTokenUtil jwtTokenUtil;
 
-	@InjectMocks
-	private AuthenticationService authenticationService;
+    @InjectMocks
+    private AuthenticationService authenticationService;
 
-	@Mock
-	private CustomUserDetails userDetails;
+    @Mock
+    private CustomUserDetails userDetails;
 
-	private static final String USERNAME = "username";
-	private static final String PASSWORD = "password";
-	private static final String JWT_TOKEN = "jwt_token";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String JWT_TOKEN = "jwt_token";
 
-	private UsernamePasswordAuthenticationToken token;
+    private UsernamePasswordAuthenticationToken token;
 
-	@BeforeEach
-	void init() {
-		token = new UsernamePasswordAuthenticationToken(USERNAME, PASSWORD);
-	}
+    @BeforeEach
+    void init() {
+        token = new UsernamePasswordAuthenticationToken(USERNAME, PASSWORD);
+    }
 
-	@Test
-	void incorrectCredentials() {
-		Mockito.when(authenticationManager.authenticate(token)).thenThrow(new BadCredentialsException(""));
+    @Test
+    void incorrectCredentials() {
+        Mockito.when(authenticationManager.authenticate(token)).thenThrow(new BadCredentialsException(""));
 
-		Assertions.assertTrue(authenticationService.createAuthenticationToken(USERNAME, PASSWORD).isEmpty());
-	}
+        Assertions.assertTrue(authenticationService.createAuthenticationToken(USERNAME, PASSWORD).isEmpty());
+    }
 
-	@Test
-	void correctToken() {
-		Mockito.when(authenticationManager.authenticate(token)).thenReturn(token);
-		Mockito.when(userDetailsService.loadUserByUsername(USERNAME)).thenReturn(userDetails);
-		Mockito.when(jwtTokenUtil.generateToken(userDetails)).thenReturn(JWT_TOKEN);
+    @Test
+    void correctToken() {
+        Mockito.when(authenticationManager.authenticate(token)).thenReturn(token);
+        Mockito.when(userDetailsService.loadUserByUsername(USERNAME)).thenReturn(userDetails);
+        Mockito.when(jwtTokenUtil.generateToken(userDetails)).thenReturn(JWT_TOKEN);
 
-		Optional<String> jwt_token = authenticationService.createAuthenticationToken(USERNAME, PASSWORD);
+        Optional<String> jwt_token = authenticationService.createAuthenticationToken(USERNAME, PASSWORD);
 
-		Assertions.assertFalse(jwt_token.isEmpty());
-		Assertions.assertEquals(JWT_TOKEN, jwt_token.get());
-	}
+        Assertions.assertFalse(jwt_token.isEmpty());
+        Assertions.assertEquals(JWT_TOKEN, jwt_token.get());
+    }
 }

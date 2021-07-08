@@ -15,22 +15,27 @@ import java.util.Optional;
 
 @RestController
 public class AuthenticationController {
-	@Autowired
-	private AuthenticationService authenticationService;
+    @Autowired
+    private AuthenticationService authenticationService;
 
-	@GetMapping("/name")
-	public String getName(Authentication authentication) {
-		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-		return userDetails.getUsername();
-	}
+    @GetMapping("/")
+    public String index() {
+        return "Index page";
+    }
 
-	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
-		Optional<String> jwt_token = authenticationService.createAuthenticationToken(username, password);
+    @GetMapping("/name")
+    public String getName(Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getUsername();
+    }
 
-		if (jwt_token.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}
-		return ResponseEntity.ok(jwt_token.get());
-	}
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
+        Optional<String> jwt_token = authenticationService.createAuthenticationToken(username, password);
+
+        if (jwt_token.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(jwt_token.get());
+    }
 }

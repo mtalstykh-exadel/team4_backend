@@ -22,47 +22,47 @@ import java.util.stream.Collectors;
 
 @ExtendWith(MockitoExtension.class)
 class CustomUserDetailsServiceTest {
-	@Mock
-	private UsersRepository usersRepository;
+    @Mock
+    private UsersRepository usersRepository;
 
-	@Mock
-	private UserRoleEntity userRoleEntity;
+    @Mock
+    private UserRoleEntity userRoleEntity;
 
-	@Mock
-	private UserEntity userEntity;
+    @Mock
+    private UserEntity userEntity;
 
-	@InjectMocks
-	private CustomUserDetailsService userDetailsService;
+    @InjectMocks
+    private CustomUserDetailsService userDetailsService;
 
-	private static final String USERNAME = "username";
-	private static final String PASSWORD = "password";
-	private static final String ROLE_NAME = "ROLE_TEST";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String ROLE_NAME = "ROLE_TEST";
 
-	@Test
-	void userDoesNotExist() {
-		Mockito.when(usersRepository.findByLogin(USERNAME)).thenReturn(Optional.empty());
+    @Test
+    void userDoesNotExist() {
+        Mockito.when(usersRepository.findByLogin(USERNAME)).thenReturn(Optional.empty());
 
-		Assertions.assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(USERNAME));
-	}
+        Assertions.assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(USERNAME));
+    }
 
-	@Test
-	void correctUserDetails() {
-		Mockito.when(userRoleEntity.getRoleName()).thenReturn(ROLE_NAME);
+    @Test
+    void correctUserDetails() {
+        Mockito.when(userRoleEntity.getRoleName()).thenReturn(ROLE_NAME);
 
-		Mockito.when(userEntity.getLogin()).thenReturn(USERNAME);
-		Mockito.when(userEntity.getPassword()).thenReturn(PASSWORD);
-		Mockito.when(userEntity.getRole()).thenReturn(userRoleEntity);
+        Mockito.when(userEntity.getLogin()).thenReturn(USERNAME);
+        Mockito.when(userEntity.getPassword()).thenReturn(PASSWORD);
+        Mockito.when(userEntity.getRole()).thenReturn(userRoleEntity);
 
-		Mockito.when(usersRepository.findByLogin(USERNAME)).thenReturn(Optional.of(userEntity));
+        Mockito.when(usersRepository.findByLogin(USERNAME)).thenReturn(Optional.of(userEntity));
 
-		CustomUserDetails userDetails = userDetailsService.loadUserByUsername(USERNAME);
+        CustomUserDetails userDetails = userDetailsService.loadUserByUsername(USERNAME);
 
-		Assertions.assertEquals(USERNAME, userDetails.getUsername());
-		Assertions.assertEquals(PASSWORD, userDetails.getPassword());
+        Assertions.assertEquals(USERNAME, userDetails.getUsername());
+        Assertions.assertEquals(PASSWORD, userDetails.getPassword());
 
-		List<String> authorities = userDetails.getAuthorities().stream()
-				.map(GrantedAuthority::getAuthority)
-				.collect(Collectors.toList());
-		Assertions.assertEquals(Collections.singletonList(ROLE_NAME), authorities);
-	}
+        List<String> authorities = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        Assertions.assertEquals(Collections.singletonList(ROLE_NAME), authorities);
+    }
 }

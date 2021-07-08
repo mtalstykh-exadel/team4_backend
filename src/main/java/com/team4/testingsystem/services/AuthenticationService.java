@@ -12,25 +12,25 @@ import java.util.Optional;
 
 @Service
 public class AuthenticationService {
-	@Autowired
-	private AuthenticationManager authenticationManager;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-	@Autowired
-	private CustomUserDetailsService userDetailsService;
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
 
-	@Autowired
-	private JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
-	public Optional<String> createAuthenticationToken(String username, String password) {
-		try {
-			authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(username, password)
-			);
-		} catch (BadCredentialsException e) {
-			return Optional.empty();
-		}
+    public Optional<String> createAuthenticationToken(String username, String password) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(username, password)
+            );
+        } catch (BadCredentialsException e) {
+            return Optional.empty();
+        }
 
-		final CustomUserDetails userDetails = userDetailsService.loadUserByUsername(username);
-		return Optional.of(jwtTokenUtil.generateToken(userDetails));
-	}
+        final CustomUserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        return Optional.of(jwtTokenUtil.generateToken(userDetails));
+    }
 }

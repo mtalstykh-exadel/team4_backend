@@ -19,42 +19,42 @@ import java.util.Optional;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-	@Autowired
-	private CustomUserDetailsService userDetailsService;
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
 
-	@Autowired
-	private JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
-		final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-		if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-			filterChain.doFilter(request, response);
-			return;
-		}
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-		String jwtToken = authorizationHeader.substring(7);
-		Optional<String> username = jwtTokenUtil.tryExtractUsername(jwtToken);
+        String jwtToken = authorizationHeader.substring(7);
+        Optional<String> username = jwtTokenUtil.tryExtractUsername(jwtToken);
 
-		if (SecurityContextHolder.getContext().getAuthentication() != null || username.isEmpty()) {
-			filterChain.doFilter(request, response);
-			return;
-		}
+        if (SecurityContextHolder.getContext().getAuthentication() != null || username.isEmpty()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-		CustomUserDetails userDetails = userDetailsService.loadUserByUsername(username.get());
-		if (!jwtTokenUtil.validateToken(jwtToken, userDetails)) {
-			filterChain.doFilter(request, response);
-			return;
-		}
+        CustomUserDetails userDetails = userDetailsService.loadUserByUsername(username.get());
+        if (!jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-		UsernamePasswordAuthenticationToken authenticationToken =
-				new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-		authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-		SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-		filterChain.doFilter(request, response);
-	}
+        filterChain.doFilter(request, response);
+    }
 }
