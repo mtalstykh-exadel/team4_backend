@@ -1,14 +1,18 @@
 package com.team4.testingsystem.entities;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 @Table(name = "user")
-public class User {
+public class  User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @OneToMany(mappedBy = "user")
+    private Collection<Test> tests;
 
     @Column(name = "user_name")
     private String name;
@@ -72,5 +76,13 @@ public class User {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public Collection<Test> getTests() {
+        return tests;
+    }
+
+    public void setTests(Collection<Test> tests) {
+        this.tests = tests;
     }
 }
