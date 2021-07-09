@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "user")
-public class UserEntity {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -21,7 +21,7 @@ public class UserEntity {
 
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private UserRoleEntity role;
+    private UserRole role;
 
     @Column(name = "language")
     private String language;
@@ -58,11 +58,11 @@ public class UserEntity {
         this.password = password;
     }
 
-    public UserRoleEntity getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(UserRoleEntity role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 

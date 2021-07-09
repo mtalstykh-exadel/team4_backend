@@ -1,7 +1,7 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.entities.UserEntity;
-import com.team4.testingsystem.entities.UserRoleEntity;
+import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.entities.UserRole;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
 import org.junit.jupiter.api.Test;
@@ -26,10 +26,10 @@ class CustomUserDetailsServiceTest {
     private UsersRepository usersRepository;
 
     @Mock
-    private UserRoleEntity userRoleEntity;
+    private UserRole userRole;
 
     @Mock
-    private UserEntity userEntity;
+    private User user;
 
     @InjectMocks
     private CustomUserDetailsService userDetailsService;
@@ -47,13 +47,13 @@ class CustomUserDetailsServiceTest {
 
     @Test
     void correctUserDetails() {
-        Mockito.when(userRoleEntity.getRoleName()).thenReturn(ROLE_NAME);
+        Mockito.when(userRole.getRoleName()).thenReturn(ROLE_NAME);
 
-        Mockito.when(userEntity.getLogin()).thenReturn(USERNAME);
-        Mockito.when(userEntity.getPassword()).thenReturn(PASSWORD);
-        Mockito.when(userEntity.getRole()).thenReturn(userRoleEntity);
+        Mockito.when(user.getLogin()).thenReturn(USERNAME);
+        Mockito.when(user.getPassword()).thenReturn(PASSWORD);
+        Mockito.when(user.getRole()).thenReturn(userRole);
 
-        Mockito.when(usersRepository.findByLogin(USERNAME)).thenReturn(Optional.of(userEntity));
+        Mockito.when(usersRepository.findByLogin(USERNAME)).thenReturn(Optional.of(user));
 
         CustomUserDetails userDetails = userDetailsService.loadUserByUsername(USERNAME);
 

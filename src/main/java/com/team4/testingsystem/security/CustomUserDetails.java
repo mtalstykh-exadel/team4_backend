@@ -1,6 +1,6 @@
 package com.team4.testingsystem.security;
 
-import com.team4.testingsystem.entities.UserEntity;
+import com.team4.testingsystem.entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,10 +13,10 @@ public class CustomUserDetails implements UserDetails {
     private final String password;
     private final Collection<SimpleGrantedAuthority> roles;
 
-    public CustomUserDetails(UserEntity userEntity) {
-        this.username = userEntity.getLogin();
-        this.password = userEntity.getPassword();
-        this.roles = Collections.singletonList(new SimpleGrantedAuthority(userEntity.getRole().getRoleName()));
+    public CustomUserDetails(User user) {
+        this.username = user.getLogin();
+        this.password = user.getPassword();
+        this.roles = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getRoleName()));
     }
 
     @Override

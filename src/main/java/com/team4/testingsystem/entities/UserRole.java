@@ -5,7 +5,7 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "user_role")
-public class UserRoleEntity {
+public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -15,7 +15,7 @@ public class UserRoleEntity {
     private String roleName;
 
     @OneToMany(mappedBy = "role")
-    private Collection<UserEntity> users;
+    private Collection<User> users;
 
     public Integer getId() {
         return id;
@@ -33,11 +33,11 @@ public class UserRoleEntity {
         this.roleName = roleName;
     }
 
-    public Collection<UserEntity> getUsers() {
+    public Collection<User> getUsers() {
         return users;
     }
 
-    public void setUsers(Collection<UserEntity> users) {
+    public void setUsers(Collection<User> users) {
         this.users = users;
     }
 }
