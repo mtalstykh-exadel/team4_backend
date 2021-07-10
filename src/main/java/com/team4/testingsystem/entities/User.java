@@ -12,7 +12,7 @@ public class  User {
     private Long id;
 
     @OneToMany(mappedBy = "user")
-    private Collection<Test> tests;
+    private Collection<TestEntity> testEntities;
 
     @Column(name = "user_name")
     private String name;
@@ -78,11 +78,11 @@ public class  User {
         this.language = language;
     }
 
-    public Collection<Test> getTests() {
-        return tests;
+    public Collection<TestEntity> getTests() {
+        return testEntities;
     }
 
-    public void setTests(Collection<Test> tests) {
-        this.tests = tests;
+    public void setTests(Collection<TestEntity> testEntities) {
+        this.testEntities = testEntities;
     }
 }

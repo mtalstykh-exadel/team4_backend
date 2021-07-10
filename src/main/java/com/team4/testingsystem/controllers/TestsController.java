@@ -1,14 +1,12 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.repositories.TestsRepository;
-import com.team4.testingsystem.repositories.UsersRepository;
+import com.team4.testingsystem.entities.TestEntity;
+
+import com.team4.testingsystem.services.TestsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Controller
@@ -16,65 +14,31 @@ import java.util.Optional;
 public class TestsController {
 
     @Autowired
-    private TestsRepository testsRepository;
+    private TestsService testsService;
 
-
-    @Autowired
-    private UsersRepository usersRepository;
-
-    @GetMapping(path="/all")
-    public @ResponseBody Iterable<Test> getAllTests() {
-        System.out.println(testsRepository.findAll());
-        return testsRepository.findAll();
-    }
-
-    @GetMapping(path="/get")
+    @GetMapping(path = "/all")
     public @ResponseBody
-    Optional<Test> getTestById(@RequestParam long id) {
-        try {
-            if (!testsRepository.existsById(id)) {
-                throw new NoSuchElementException("Test not found");
-            }
-            return testsRepository.findById(id);
-        }
-        catch (NoSuchElementException e) {
-            System.err.println(e);
-        }
-        return null;
-
+    Iterable<TestEntity> getAllTests() {
+        return testsService.getAllTests();
     }
 
-    @PostMapping(path="/add")
-    public @ResponseBody String addNewTest (@RequestParam long userId,
-                                            @RequestParam String createdAt,
-                                            @RequestParam String updatedAt,
-                                            @RequestParam String startedAt,
-                                            @RequestParam String finishedAt,
-                                            @RequestParam String status,
-                                            @RequestParam int evaluation) {
+    @GetMapping(path = "/get")
+    public @ResponseBody
+    Optional<TestEntity> getTestById(@RequestParam long id) {
+        return testsService.getTestById(id);
+    }
 
-        Test test = new Test();
+    @PostMapping(path = "/add")
+    public @ResponseBody
+    String addNewTest(@RequestParam long userId,
+                      @RequestParam String createdAt,
+                      @RequestParam String updatedAt,
+                      @RequestParam String startedAt,
+                      @RequestParam String finishedAt,
+                      @RequestParam String status,
+                      @RequestParam int evaluation) {
 
-        try {
-            if (!usersRepository.existsById(userId)) {
-                throw new NoSuchElementException("User not found");
-            }
-            test.setUser(usersRepository.findById(userId).get());
-            test.setCreatedAt(LocalDateTime.parse(createdAt));
-            test.setUpdatedAt(LocalDateTime.parse(updatedAt));
-            test.setStartedAt(LocalDateTime.parse(startedAt));
-            test.setFinishedAt(LocalDateTime.parse(finishedAt));
-            test.setStatus(status);
-            test.setEvaluation(evaluation);
-
-            testsRepository.save(test);
-
-            return "Success";
-        } catch (NoSuchElementException e) {
-            System.err.println(e.getMessage());
-            return "Fail";
-        }
-
+        return testsService.addNewTest(userId, createdAt, updatedAt, startedAt, finishedAt, status, evaluation);
     }
 
     @PostMapping(path="/update")
@@ -87,47 +51,11 @@ public class TestsController {
                                             @RequestParam String status,
                                             @RequestParam int evaluation) {
 
-        try {
-            if (!testsRepository.existsById(id)) {
-                throw new NoSuchElementException("Test not found");
-            }
-
-            if (!usersRepository.existsById(userId)) {
-                throw new NoSuchElementException("User not found");
-            }
-            Test test = testsRepository.findById(id).get();
-
-            test.setUser(usersRepository.findById(userId).get());
-            test.setCreatedAt(LocalDateTime.parse(createdAt));
-            test.setUpdatedAt(LocalDateTime.parse(updatedAt));
-            test.setStartedAt(LocalDateTime.parse(startedAt));
-            test.setFinishedAt(LocalDateTime.parse(finishedAt));
-            test.setStatus(status);
-            test.setEvaluation(evaluation);
-
-            testsRepository.save(test);
-
-            return "Success";
-        } catch (NoSuchElementException e) {
-            System.err.println(e.getMessage());
-            return "Fail";
-        }
+       return testsService.updateTest(id, userId, createdAt, updatedAt, startedAt, finishedAt, status, evaluation);
     }
 
     @DeleteMapping(path="/remove")
     public @ResponseBody String removeTestById(@RequestParam  long id) {
-        try {
-            if (!testsRepository.existsById(id)) {
-                throw new NoSuchElementException("Test not found");
-            }
-
-            testsRepository.deleteById(id);
-            return "Success";
-        }
-        catch (NoSuchElementException e) {
-            System.err.println(e.getMessage());
-        }
-        return "Fail";
+        return testsService.removeTestById(id);
     }
-
 }
