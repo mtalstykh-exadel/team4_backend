@@ -3,12 +3,13 @@ package com.team4.testingsystem.entities;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "level")
 public class Level {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "level_name")
-    private String levelName;
+    private String name;
 
     public Long getId() {
         return id;
@@ -18,11 +19,11 @@ public class Level {
         this.id = id;
     }
 
-    public String getLevelName() {
-        return levelName;
+    public String getName() {
+        return name;
     }
 
-    public void setLevelName(String levelName) {
-        this.levelName = levelName;
+    public void setName(String name) {
+        this.name = name;
     }
 }

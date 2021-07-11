@@ -3,12 +3,13 @@ package com.team4.testingsystem.entities;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "module")
 public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "module_name")
-    private String moduleName;
+    private String name;
 
     public Long getId() {
         return id;
@@ -18,11 +19,11 @@ public class Module {
         this.id = id;
     }
 
-    public String getModuleName() {
-        return moduleName;
+    public String getName() {
+        return name;
     }
 
-    public void setModuleName(String moduleName) {
-        this.moduleName = moduleName;
+    public void setName(String name) {
+        this.name = name;
     }
 }

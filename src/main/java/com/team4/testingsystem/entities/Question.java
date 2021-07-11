@@ -3,27 +3,27 @@ package com.team4.testingsystem.entities;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "question")
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "question_body")
     private String questionBody;
-    private int points;
-    @Column(name = "is_avaliable")
-    private int isAvailable;
+    @Column(name = "is_available")
+    private boolean isAvailable;
 
     @OneToOne
     @JoinColumn(name = "id", insertable = false, updatable = false)
-    private User creatorUserId;
+    private User creator;
 
     @ManyToOne
     @JoinColumn(name = "id", insertable = false, updatable = false)
-    private Level levelID;
+    private Level level;
 
     @ManyToOne
     @JoinColumn(name = "id", insertable = false, updatable = false)
-    private Module moduleID;
+    private Module module;
 
     public Long getId() {
         return id;
@@ -41,43 +41,35 @@ public class Question {
         this.questionBody = questionBody;
     }
 
-    public int getPoints() {
-        return points;
-    }
-
-    public void setPoints(int points) {
-        this.points = points;
-    }
-
-    public int getIsAvailable() {
+    public boolean isAvailable() {
         return isAvailable;
     }
 
-    public void setIsAvailable(int isAvaliable) {
-        this.isAvailable = isAvaliable;
+    public void setAvailable(boolean available) {
+        isAvailable = available;
     }
 
-    public User getCreatorUserId() {
-        return creatorUserId;
+    public User getCreator() {
+        return creator;
     }
 
-    public void setCreatorUserId(User creatorUserId) {
-        this.creatorUserId = creatorUserId;
+    public void setCreator(User creator) {
+        this.creator = creator;
     }
 
-    public Level getLevelID() {
-        return levelID;
+    public Level getLevel() {
+        return level;
     }
 
-    public void setLevelID(Level levelID) {
-        this.levelID = levelID;
+    public void setLevel(Level level) {
+        this.level = level;
     }
 
-    public Module getModuleID() {
-        return moduleID;
+    public Module getModule() {
+        return module;
     }
 
-    public void setModuleID(Module moduleID) {
-        this.moduleID = moduleID;
+    public void setModule(Module module) {
+        this.module = module;
     }
 }

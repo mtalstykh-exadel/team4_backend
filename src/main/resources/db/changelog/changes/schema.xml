@@ -70,13 +70,12 @@
                 <constraints primaryKey="true"/>
             </column>
             <column name="question_body" type="clob"/>
-            <column name="points" type="int"/>
             <column name="level_id" type="int">
             </column>
             <column name="module_id" type="int">
             </column>
             <column name="creator_user_id" type="int"/>
-            <column name="is_avaliable" type="boolean" defaultValue="true"/>
+            <column name="is_available" type="boolean" defaultValue="true"/>
         </createTable>
 
         <createTable tableName="test_question">
