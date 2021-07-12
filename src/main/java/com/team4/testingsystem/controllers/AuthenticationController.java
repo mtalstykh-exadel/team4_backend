@@ -1,5 +1,6 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.dto.AuthenticationRequest;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -28,9 +29,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<?> login(@RequestBody AuthenticationRequest credentials) {
         try {
-            String jwtToken = authenticationService.createAuthenticationToken(username, password);
+            String jwtToken = authenticationService.createAuthenticationToken(
+                    credentials.getLogin(),
+                    credentials.getPassword()
+            );
             return ResponseEntity.ok(jwtToken);
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
