@@ -8,8 +8,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
@@ -27,16 +25,12 @@ public class AuthenticationService {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    public Optional<String> createAuthenticationToken(String username, String password) {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password)
-            );
-        } catch (BadCredentialsException e) {
-            return Optional.empty();
-        }
+    public String createAuthenticationToken(String username, String password) throws BadCredentialsException {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+        );
 
         final CustomUserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        return Optional.of(jwtTokenUtil.generateToken(userDetails));
+        return jwtTokenUtil.generateToken(userDetails);
     }
 }

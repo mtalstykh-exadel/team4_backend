@@ -14,8 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import java.util.Optional;
-
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest {
     @Mock
@@ -48,7 +46,8 @@ class AuthenticationServiceTest {
     void incorrectCredentials() {
         Mockito.when(authenticationManager.authenticate(token)).thenThrow(new BadCredentialsException(""));
 
-        Assertions.assertTrue(authenticationService.createAuthenticationToken(USERNAME, PASSWORD).isEmpty());
+        Assertions.assertThrows(BadCredentialsException.class,
+                () -> authenticationService.createAuthenticationToken(USERNAME, PASSWORD));
     }
 
     @Test
@@ -57,9 +56,9 @@ class AuthenticationServiceTest {
         Mockito.when(userDetailsService.loadUserByUsername(USERNAME)).thenReturn(userDetails);
         Mockito.when(jwtTokenUtil.generateToken(userDetails)).thenReturn(JWT_TOKEN);
 
-        Optional<String> jwt_token = authenticationService.createAuthenticationToken(USERNAME, PASSWORD);
+        String jwtToken = authenticationService.createAuthenticationToken(USERNAME, PASSWORD);
 
-        Assertions.assertFalse(jwt_token.isEmpty());
-        Assertions.assertEquals(JWT_TOKEN, jwt_token.get());
+        Assertions.assertFalse(jwtToken.isEmpty());
+        Assertions.assertEquals(JWT_TOKEN, jwtToken);
     }
 }
