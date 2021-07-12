@@ -9,12 +9,14 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class CustomUserDetails implements UserDetails {
-    private final String username;
+    private final String name;
+    private final String login;
     private final String password;
     private final Collection<SimpleGrantedAuthority> roles;
 
     public CustomUserDetails(User user) {
-        this.username = user.getLogin();
+        this.name = user.getName();
+        this.login = user.getLogin();
         this.password = user.getPassword();
         this.roles = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getRoleName()));
     }
@@ -31,7 +33,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return login;
     }
 
     @Override
@@ -52,5 +54,9 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getName() {
+        return name;
     }
 }

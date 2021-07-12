@@ -25,7 +25,7 @@ public class AuthenticationController {
     @GetMapping("/name")
     public String getName(Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return userDetails.getUsername();
+        return userDetails.getName();
     }
 
     @PostMapping("/login")
