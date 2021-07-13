@@ -3,6 +3,7 @@ package com.team4.testingsystem.config;
 import com.team4.testingsystem.security.JwtRequestFilter;
 import com.team4.testingsystem.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,6 +22,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtRequestFilter jwtRequestFilter;
 
+    @Value("${csrf-enabled:true}")
+    private boolean csrfEnabled;
+
     @Autowired
     public WebSecurityConfiguration(CustomUserDetailsService userDetailsService, JwtRequestFilter jwtRequestFilter) {
         this.userDetailsService = userDetailsService;
@@ -34,9 +38,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
-                .authorizeRequests()
+        if (csrfEnabled) {
+            http = http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and();
+        } else {
+            http = http.csrf().disable();
+        }
+
+        http.authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/login").permitAll()
                 .anyRequest().authenticated()
