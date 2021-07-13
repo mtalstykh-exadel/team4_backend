@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ModuleRepository extends CrudRepository<Module, Integer> {
+public interface ModuleRepository extends CrudRepository<Module, Long> {
     Optional<Module> findById(Long id);
 }

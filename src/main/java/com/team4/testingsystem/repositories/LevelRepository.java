@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface LevelRepository extends CrudRepository<Level, Integer> {
+public interface LevelRepository extends CrudRepository<Level, Long> {
     Optional<Level> findById(Long id);
 }
