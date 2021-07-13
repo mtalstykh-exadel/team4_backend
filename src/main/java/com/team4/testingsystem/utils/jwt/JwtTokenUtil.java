@@ -6,7 +6,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -55,6 +54,8 @@ public class JwtTokenUtil {
 
     public String generateToken(CustomUserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("name", userDetails.getName());
+        claims.put("role", userDetails.getRoleName());
         return createToken(userDetails.getUsername(), userDetails.getId(), claims);
     }
 
