@@ -19,30 +19,30 @@ public class FileAnswerController {
 
     @GetMapping(path = "/get")
     @ResponseBody
-    public Optional<FileAnswer> getFileAnswer(@RequestParam long id) {
+    public Optional<FileAnswer> get(@RequestParam long id) {
         return fileAnswerService.getById(id);
     }
 
     @GetMapping(path = "/all")
-    public Iterable<FileAnswer> getAllFileAnswers() {
+    public Iterable<FileAnswer> getAll() {
         return fileAnswerService.getAll();
     }
 
     @PostMapping(path = "/create")
     @ResponseBody
-    public void createFileAnswer(@RequestParam String url, @RequestParam long question_id) {
+    public void create(@RequestParam String url, @RequestParam long question_id) {
         fileAnswerService.create(url, question_id);
     }
 
     @PostMapping(path = "/update")
     @ResponseBody
-    public void updateFileAnswer(@RequestParam long id, @RequestParam String url, @RequestParam long question_id) {
+    public void update(@RequestParam long id, @RequestParam String url, @RequestParam long question_id) {
         fileAnswerService.update(id, url, question_id);
     }
 
     @DeleteMapping(path = "/remove")
     @ResponseBody
-    public void removeFileAnswer(@RequestParam long id) {
+    public void remove(@RequestParam long id) {
         fileAnswerService.removeById(id);
     }
 }
