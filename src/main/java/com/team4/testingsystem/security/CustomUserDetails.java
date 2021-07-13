@@ -4,7 +4,6 @@ import com.team4.testingsystem.entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.Collections;
 
@@ -12,7 +11,6 @@ public class CustomUserDetails implements UserDetails {
     private final Long id;
     private final String name;
     private final String login;
-    private final Long id;
     private final String password;
     private final String roleName;
 
@@ -24,14 +22,8 @@ public class CustomUserDetails implements UserDetails {
         this.login = user.getLogin();
         this.password = user.getPassword();
         this.roleName = user.getRole().getRoleName();
-
         this.roles = Collections.singletonList(new SimpleGrantedAuthority(this.roleName));
     }
-
-    public Long getId() {
-        return id;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
