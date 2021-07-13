@@ -54,13 +54,16 @@ public class JwtTokenUtil {
 
     public String generateToken(CustomUserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(userDetails.getUsername(), claims);
+        claims.put("name", userDetails.getName());
+        claims.put("role", userDetails.getRoleName());
+        return createToken(userDetails.getUsername(), userDetails.getId(), claims);
     }
 
-    private String createToken(String subject, Map<String, Object> claims) {
+    private String createToken(String subject, Long id, Map<String, Object> claims) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
+                .setId(id.toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(JWT_SECRET)
