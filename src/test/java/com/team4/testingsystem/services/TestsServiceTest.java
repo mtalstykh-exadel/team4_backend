@@ -1,29 +1,27 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.entities.TestEntity;
+import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class TestsServiceTest {
 
-private final String DATE_FOR_TESTS = "2020-01-01T10:00:00";
-
     @Mock
     User user;
 
     @Mock
-    TestEntity testEntity;
+    Test test;
 
     @Mock
     UsersRepository usersRepository;
@@ -34,125 +32,101 @@ private final String DATE_FOR_TESTS = "2020-01-01T10:00:00";
     @InjectMocks
     TestsService testsService;
 
-    @Test
-    void successfulGetting() {
+    @org.junit.jupiter.api.Test
+    void getByIdSuccess() {
 
         Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
-        Assertions.assertNotNull(testsService.getTestById(1));
+        Mockito.when(testsRepository.findById(1L)).thenReturn(Optional.ofNullable(test));
+
+        Assertions.assertDoesNotThrow(()->testsService.getById(1L));
 
     }
 
-    @Test
-    void failedGetting() {
+    @org.junit.jupiter.api.Test
+    void getByIdFail() {
 
         //Test doesn't exist
         Mockito.when(testsRepository.existsById(42L)).thenReturn(false);
 
-        Assertions.assertNull(testsService.getTestById(42));
+        Assertions.assertThrows(NoSuchElementException.class, ()->testsService.getById(42L));
 
     }
 
-    @Test
-    void successfulAddingTest() {
-
-        Mockito.when(usersRepository.existsById(1L)).thenReturn(true);
-        Mockito.when(usersRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
-        Assertions.assertEquals(testsService.addNewTest(1,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS, 42),"Success");
-
-    }
-
-    @Test
-    void failedAddingTest() {
+    @org.junit.jupiter.api.Test
+    void createWhenAssignFail(){
 
         //User doesn't exist
-        Mockito.when(usersRepository.existsById(1L)).thenReturn(false);
-
-        Assertions.assertEquals(testsService.addNewTest(1,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS, 42),"Fail");
-
-    }
-
-    @Test
-    void successfulUpdatingTest() {
-
-        Mockito.when(usersRepository.existsById(1L)).thenReturn(true);
-
-        Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
-
-        Mockito.when(usersRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
-
-        Mockito.when(testsRepository.findById(1L)).thenReturn(Optional.ofNullable(testEntity));
-
-        Assertions.assertEquals(testsService.updateTest(1, 1,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS, 42),"Success");
-
-    }
-
-    @Test
-    void failedUpdatingTestUserFail() {
-
-
-        Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
-
-        //New user doesn't exist
         Mockito.when(usersRepository.existsById(42L)).thenReturn(false);
 
-        Assertions.assertEquals(testsService.updateTest(1,42,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS, 42),"Fail");
-
+        Assertions.assertThrows(NoSuchElementException.class, ()->testsService.create(42L));
     }
 
 
-    @Test
-    void failedUpdatingTestTestFail() {
-
-        //Test doesn't exist
-        Mockito.when(testsRepository.existsById(42L)).thenReturn(false);
-
-
-        Assertions.assertEquals(testsService.updateTest(42,1,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS,
-                DATE_FOR_TESTS, 42),"Fail");
-
-    }
-
-
-    @Test
-    void successfulRemoving() {
+    @org.junit.jupiter.api.Test
+    void startSuccess() {
 
         Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
-        Assertions.assertEquals(testsService.removeTestById(1), "Success");
+        Mockito.when(testsRepository.findById(1L)).thenReturn(Optional.ofNullable(test));
+        Mockito.when(test.builder()).thenReturn(Test.newBuilder());
+
+        Assertions.assertDoesNotThrow((()->testsService.start(1L)));
     }
 
-    @Test
-    void failedRemoving() {
+   @org.junit.jupiter.api.Test
+    void startFail() {
+        Assertions.assertThrows(NoSuchElementException.class,()->testsService.start(42L));
+    }
+
+    @org.junit.jupiter.api.Test
+    void finishSuccess() {
+
+        Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
+        Mockito.when(testsRepository.findById(1L)).thenReturn(Optional.ofNullable(test));
+        Mockito.when(test.builder()).thenReturn(Test.newBuilder());
+
+        Assertions.assertDoesNotThrow((()->testsService.finish(1L,1)));
+    }
+
+    @org.junit.jupiter.api.Test
+    void finishFail() {
+
+        Assertions.assertThrows(NoSuchElementException.class,()->testsService.finish(42L, 42));
+
+    }
+
+    @org.junit.jupiter.api.Test
+    void updateEvaluationSuccess() {
+
+        Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
+        Mockito.when(testsRepository.findById(1L)).thenReturn(Optional.ofNullable(test));
+        Mockito.when(test.builder()).thenReturn(Test.newBuilder());
+
+        Assertions.assertDoesNotThrow((()->testsService.updateEvaluation(1L,1)));
+    }
+
+    @org.junit.jupiter.api.Test
+    void updateEvaluationFail() {
+
+        Assertions.assertThrows(NoSuchElementException.class,()->testsService.updateEvaluation(42L, 42));
+
+    }
+
+    @org.junit.jupiter.api.Test
+    void removeSuccess() {
+
+        Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
+        Assertions.assertDoesNotThrow((()->testsService.removeById(1L)));
+
+    }
+
+    @org.junit.jupiter.api.Test
+    void removeFail() {
 
         //Test doesn't exist
         Mockito.when(testsRepository.existsById(42L)).thenReturn(false);
 
-        Assertions.assertEquals(testsService.removeTestById(42), "Fail");
+        Assertions.assertThrows(NoSuchElementException.class,()->testsService.removeById(42L));
+
     }
-
-
 
 }
