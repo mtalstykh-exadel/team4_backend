@@ -33,14 +33,14 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Transactional
     @Override
-    public void archiveQuestion(boolean isAvailable, Long id) {
-        questionRepository.archiveQuestion(isAvailable, id);
+    public void archiveQuestion(Long id) {
+        questionRepository.archiveQuestion(id);
     }
 
     @Transactional
     @Override
     public Question updateQuestion(Question question, Long id) {
-        questionRepository.archiveQuestion(false, id);
+        questionRepository.archiveQuestion(id);
         return questionRepository.save(question);
     }
 
