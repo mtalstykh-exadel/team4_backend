@@ -18,8 +18,11 @@ public class LevelServiceImpl implements LevelService {
 
     @Override
     public Level getLevelById(Long id) {
-        Level level = levelRepository.findById(id).orElse(null);
-        if (level == null) throw new NotFoundException();
-        return level;
+        return levelRepository.findById(id).orElseThrow(NotFoundException::new);
+    }
+
+    @Override
+    public Level getLevelByName(String name) {
+        return levelRepository.findByName(name).orElseThrow(NotFoundException::new);
     }
 }

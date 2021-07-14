@@ -18,8 +18,11 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public Module getModuleById(Long id) {
-        Module module = moduleRepository.findById(id).orElse(null);
-        if (module == null) throw new NotFoundException();
-        return module;
+        return moduleRepository.findById(id).orElseThrow(NotFoundException::new);
+    }
+
+    @Override
+    public Module getModuleByName(String name) {
+        return moduleRepository.findByName(name).orElseThrow(NotFoundException::new);
     }
 }
