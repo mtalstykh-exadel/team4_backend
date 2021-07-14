@@ -1,7 +1,8 @@
 package com.team4.testingsystem.entities;
 
-import javax.persistence.*;
 import java.util.Collection;
+
+import javax.persistence.OneToMany;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,13 +15,14 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user")
 public class  User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @OneToMany(mappedBy = "user")
-    private Collection<TestEntity> testEntities;
+    private Collection<Test> testEntities;
 
     @Column(name = "user_name")
     private String name;
@@ -86,11 +88,11 @@ public class  User {
         this.language = language;
     }
 
-    public Collection<TestEntity> getTests() {
+    public Collection<Test> getTests() {
         return testEntities;
     }
 
-    public void setTests(Collection<TestEntity> testEntities) {
+    public void setTests(Collection<Test> testEntities) {
         this.testEntities = testEntities;
     }
 }

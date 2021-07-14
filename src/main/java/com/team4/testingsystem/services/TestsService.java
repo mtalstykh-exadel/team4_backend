@@ -1,6 +1,6 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.entities.TestEntity;
+import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class TestsService {
@@ -17,111 +16,75 @@ public class TestsService {
 
     private UsersRepository usersRepository;
 
+
     @Autowired
     public TestsService(TestsRepository testsRepository, UsersRepository usersRepository) {
         this.testsRepository = testsRepository;
         this.usersRepository = usersRepository;
     }
 
-    public Iterable<TestEntity> getAllTests() {
+
+    public Iterable<Test> getAll() {
         return testsRepository.findAll();
     }
 
-    public Optional<TestEntity> getTestById(long id) {
-        try {
+    public Test getById(long id) {
             if (!testsRepository.existsById(id)) {
                 throw new NoSuchElementException("Test not found");
             }
-            return testsRepository.findById(id);
-        }
-        catch (NoSuchElementException e) {
-            System.err.println(e.getMessage());
-        }
-        return null;
-
+        return testsRepository.findById(id).get();
     }
 
-    public String addNewTest (long userId,
-                              String createdAt,
-                              String updatedAt,
-                              String startedAt,
-                              String finishedAt,
-                              String status,
-                              int evaluation) {
+    public long create(long userId) {
 
-        TestEntity testEntity = new TestEntity();
-        try {
-            if (!usersRepository.existsById(userId)) {
-                throw new NoSuchElementException("User not found");
-            }
-            testEntity.setUser(usersRepository.findById(userId).get());
-            testEntity.setCreatedAt(LocalDateTime.parse(createdAt));
-            testEntity.setUpdatedAt(LocalDateTime.parse(updatedAt));
-            testEntity.setStartedAt(LocalDateTime.parse(startedAt));
-            testEntity.setFinishedAt(LocalDateTime.parse(finishedAt));
-            testEntity.setStatus(status);
-            testEntity.setEvaluation(evaluation);
-
-            testsRepository.save(testEntity);
-            return "Success";
-
-        } catch (NoSuchElementException e) {
-            System.err.println(e.getMessage());
-            return "Fail";
+        if (!usersRepository.existsById(userId)){
+            throw  new NoSuchElementException("User not found");
         }
 
+        Test test = Test.newBuilder()
+                .setUser(usersRepository.findById(userId).get())
+                .setCreatedAt(LocalDateTime.now())
+                .setStatus("NOT_STARTED")
+                .build();
+        testsRepository.save(test);
+        long id = test.getId();
+        return id;
     }
 
+    public void start(long id){
+        Test test = getById(id);
+        test = test.builder()
+                    .setStartedAt(LocalDateTime.now())
+                    .setStatus("STARTED")
+                    .build();
+        testsRepository.save(test);
+    }
 
-    public String updateTest (long id,
-                               long userId,
-                               String createdAt,
-                               String updatedAt,
-                               String startedAt,
-                               String finishedAt,
-                               String status,
-                               int evaluation) {
+    public void finish (long id, int evaluation){
+        Test test = getById(id);
+        test = test.builder()
+                .setFinishedAt(LocalDateTime.now())
+                .setStatus("FINISHED")
+                .setEvaluation(evaluation)
+                .build();
+        testsRepository.save(test);
+    }
 
-        try {
+    public void updateEvaluation(long id, int newEvaluation) {
+
+        Test test = getById(id);
+        test = test.builder()
+                .setUpdatedAt(LocalDateTime.now())
+                .setEvaluation(newEvaluation)
+                .build();
+
+        testsRepository.save(test);
+    }
+
+    public void removeById(long id) {
             if (!testsRepository.existsById(id)) {
                 throw new NoSuchElementException("Test not found");
             }
-
-            if (!usersRepository.existsById(userId)) {
-                throw new NoSuchElementException("User not found");
-            }
-            TestEntity testEntity = testsRepository.findById(id).get();
-
-            testEntity.setUser(usersRepository.findById(userId).get());
-            testEntity.setCreatedAt(LocalDateTime.parse(createdAt));
-            testEntity.setUpdatedAt(LocalDateTime.parse(updatedAt));
-            testEntity.setStartedAt(LocalDateTime.parse(startedAt));
-            testEntity.setFinishedAt(LocalDateTime.parse(finishedAt));
-            testEntity.setStatus(status);
-            testEntity.setEvaluation(evaluation);
-
-            testsRepository.save(testEntity);
-
-            return "Success";
-        } catch (NoSuchElementException e) {
-            System.err.println(e.getMessage());
-            return "Fail";
-        }
-    }
-
-    public String removeTestById(long id) {
-        try {
-            if (!testsRepository.existsById(id)) {
-                throw new NoSuchElementException("Test not found");
-            }
-
             testsRepository.deleteById(id);
-            return "Success";
-        }
-        catch (NoSuchElementException e) {
-            System.err.println(e.getMessage());
-        }
-        return "Fail";
     }
-
 }

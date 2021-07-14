@@ -27,6 +27,10 @@ public class JwtTokenUtil {
         }
     }
 
+    public long extractUserId(String token) throws JwtException {
+        return Long.parseLong(extractClaim(token, Claims::getId));
+    }
+
     public String extractUsername(String token) throws JwtException {
         return extractClaim(token, Claims::getSubject);
     }
