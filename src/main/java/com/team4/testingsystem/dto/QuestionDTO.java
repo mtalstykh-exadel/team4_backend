@@ -2,7 +2,7 @@ package com.team4.testingsystem.dto;
 
 public class QuestionDTO {
     private String questionBody;
-    private boolean isAvailable;
+    private Boolean isAvailable;
     private String creator;
     private String level;
     private String module;
@@ -23,7 +23,7 @@ public class QuestionDTO {
         this.questionBody = questionBody;
     }
 
-    public boolean isAvailable() {
+    public Boolean isAvailable() {
         return isAvailable;
     }
 
