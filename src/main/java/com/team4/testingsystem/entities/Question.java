@@ -21,15 +21,15 @@ public class Question {
     private boolean isAvailable;
 
     @ManyToOne
-    @JoinColumn(name = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "creator_user_id", referencedColumnName = "id")
     private User creator;
 
     @ManyToOne
-    @JoinColumn(name = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "level_id", referencedColumnName = "id")
     private Level level;
 
     @ManyToOne
-    @JoinColumn(name = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "module_id", referencedColumnName = "id")
     private Module module;
 
     public Long getId() {
@@ -78,18 +78,6 @@ public class Question {
 
     public void setModule(Module module) {
         this.module = module;
-    }
-
-    @Override
-    public String toString() {
-        return "Question{" +
-               "id=" + id +
-               ", questionBody='" + questionBody + '\'' +
-               ", isAvailable=" + isAvailable +
-               ", creator=" + creator +
-               ", level=" + level +
-               ", module=" + module +
-               '}';
     }
 
     public static class Builder {
