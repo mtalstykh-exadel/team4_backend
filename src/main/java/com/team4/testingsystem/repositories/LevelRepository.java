@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface LevelRepository extends CrudRepository<Level, Long> {
     Optional<Level> findById(Long id);
+
+    Optional<Level> findByName(String name);
 }
