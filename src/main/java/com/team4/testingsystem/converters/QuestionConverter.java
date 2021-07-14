@@ -29,8 +29,8 @@ public class QuestionConverter {
                 .questionBody(questionDTO.getQuestionBody())
                 .isAvailable(questionDTO.isAvailable())
                 .creator(usersService.getUserById(JwtTokenUtil.extractUserDetails().getId()))
-                .level(levelService.getLevelById(questionDTO.getLevelId()))
-                .module(moduleService.getModuleById(questionDTO.getModuleId()))
+                .level(levelService.getLevelByName(questionDTO.getLevel()))
+                .module(moduleService.getModuleByName(questionDTO.getModule()))
                 .build();
     }
 
@@ -38,9 +38,9 @@ public class QuestionConverter {
         return new QuestionDTO.Builder()
                 .questionBody(question.getQuestionBody())
                 .isAvailable(question.isAvailable())
-                .creatorId(question.getCreator())
-                .levelId(question.getLevel())
-                .moduleId(question.getModule())
+                .creator(question.getCreator().getName())
+                .level(question.getLevel().getName())
+                .module(question.getModule().getName())
                 .build();
     }
 

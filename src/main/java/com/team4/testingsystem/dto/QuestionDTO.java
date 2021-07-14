@@ -1,23 +1,18 @@
 package com.team4.testingsystem.dto;
 
-import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.entities.Module;
-import com.team4.testingsystem.entities.User;
-
 public class QuestionDTO {
     private String questionBody;
     private boolean isAvailable;
-    private Long creatorId;
-    private Long levelId;
-    private Long moduleId;
+    private String creator;
+    private String level;
+    private String module;
 
-
-    public Long getCreatorId() {
-        return creatorId;
+    public String getCreator() {
+        return creator;
     }
 
-    public void setCreatorId(Long creatorId) {
-        this.creatorId = creatorId;
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
     public String getQuestionBody() {
@@ -36,20 +31,20 @@ public class QuestionDTO {
         isAvailable = available;
     }
 
-    public Long getLevelId() {
-        return levelId;
+    public String getLevel() {
+        return level;
     }
 
-    public void setLevelId(Long levelId) {
-        this.levelId = levelId;
+    public void setLevel(String level) {
+        this.level = level;
     }
 
-    public Long getModuleId() {
-        return moduleId;
+    public String getModule() {
+        return module;
     }
 
-    public void setModuleId(Long moduleId) {
-        this.moduleId = moduleId;
+    public void setModule(String module) {
+        this.module = module;
     }
 
     public static class Builder {
@@ -69,18 +64,18 @@ public class QuestionDTO {
             return this;
         }
 
-        public Builder creatorId(User user){
-            questionDTO.creatorId = user.getId();
-            return  this;
-        }
-
-        public Builder levelId(Level level) {
-            questionDTO.levelId = level.getId();
+        public Builder creator(String creator) {
+            questionDTO.creator = creator;
             return this;
         }
 
-        public Builder moduleId(Module module) {
-            questionDTO.moduleId = module.getId();
+        public Builder level(String level) {
+            questionDTO.level = level;
+            return this;
+        }
+
+        public Builder module(String module) {
+            questionDTO.module = module;
             return this;
         }
 
