@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 @Component
 public class JwtTokenUtil {
-    private final Key JWT_SECRET = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private static final Key JWT_SECRET = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public Optional<String> tryExtractUsername(String token) {
         try {
