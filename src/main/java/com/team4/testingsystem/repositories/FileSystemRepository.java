@@ -53,6 +53,6 @@ public class FileSystemRepository implements FilesRepository {
     }
 
     public Path generateFilePath(String fileName) {
-        return Path.of(FileUtils.getTempDirectory() + "/" + fileName);
+        return Path.of(FileUtils.getTempDirectory() + "/testing-system/" + fileName);
     }
 }
