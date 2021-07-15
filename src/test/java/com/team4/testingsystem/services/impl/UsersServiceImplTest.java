@@ -28,7 +28,7 @@ class UsersServiceImplTest {
         User user = EntityCreatorUtil.createUser();
         Mockito.when(usersRepository.findById(user.getId())).thenReturn(Optional.of(user));
         User result = usersService.getUserById(user.getId());
-        Assertions.assertEquals(result, user);
+        Assertions.assertEquals(user, result);
     }
 
     @Test

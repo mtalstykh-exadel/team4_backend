@@ -28,7 +28,7 @@ class QuestionServiceImplTest {
         Question question = EntityCreatorUtil.createQuestion();
         Mockito.when(questionRepository.findById(question.getId())).thenReturn(Optional.of(question));
         Question result = questionService.getQuestionById(question.getId());
-        Assertions.assertEquals(result, question);
+        Assertions.assertEquals(question, result);
     }
 
     @Test
@@ -42,6 +42,6 @@ class QuestionServiceImplTest {
         Question question = EntityCreatorUtil.createQuestion();
         Mockito.when(questionRepository.save(question)).thenReturn(question);
         Question result = questionService.createQuestion(question);
-        Assertions.assertEquals(result, question);
+        Assertions.assertEquals(question, result);
     }
 }

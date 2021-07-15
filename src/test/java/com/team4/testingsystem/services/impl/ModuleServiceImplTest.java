@@ -27,7 +27,7 @@ class ModuleServiceImplTest {
         Module module = EntityCreatorUtil.createModule();
         Mockito.when(moduleRepository.findById(module.getId())).thenReturn(Optional.of(module));
         Module result = moduleService.getModuleById(module.getId());
-        Assertions.assertEquals(result, module);
+        Assertions.assertEquals(module, result);
     }
 
     @Test
@@ -41,7 +41,7 @@ class ModuleServiceImplTest {
         Module module = EntityCreatorUtil.createModule();
         Mockito.when(moduleRepository.findByName(module.getName())).thenReturn(Optional.of(module));
         Module result = moduleService.getModuleByName(module.getName());
-        Assertions.assertEquals(result, module);
+        Assertions.assertEquals(module, result);
     }
 
 

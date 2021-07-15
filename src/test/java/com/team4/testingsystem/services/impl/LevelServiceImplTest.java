@@ -27,7 +27,7 @@ class LevelServiceImplTest {
         Level level = EntityCreatorUtil.createLevel();
         Mockito.when(levelRepository.findById(level.getId())).thenReturn(Optional.of(level));
         Level result = levelService.getLevelById(level.getId());
-        Assertions.assertEquals(result, level);
+        Assertions.assertEquals(level, result);
     }
 
     @Test
@@ -41,7 +41,7 @@ class LevelServiceImplTest {
         Level level = EntityCreatorUtil.createLevel();
         Mockito.when(levelRepository.findByName(level.getName())).thenReturn(Optional.of(level));
         Level result = levelService.getLevelByName(level.getName());
-        Assertions.assertEquals(result, level);
+        Assertions.assertEquals(level, result);
     }
 
 
