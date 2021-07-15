@@ -208,6 +208,9 @@
                             <mainClass>com.team4.testingsystem.TestingSystemApplication</mainClass>
                         </manifest>
                     </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
                 </configuration>
             </plugin>
 
