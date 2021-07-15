@@ -23,19 +23,15 @@ public class FileAnswerService {
         this.questionRepository = questionRepository;
     }
 
-    public void create(String url, long question_id) {
+    public void create(String url, long questionId) {
         FileAnswer fileAnswer = new FileAnswer();
         try {
             fileAnswer.setUrl(url);
-            fileAnswer.setQuestion(questionRepository.findById(question_id).get());
+            fileAnswer.setQuestion(questionRepository.findById(questionId).get());
             fileAnswerRepository.save(fileAnswer);
         } catch (NoSuchElementException e) {
             logger.log(Level.WARNING, e.getMessage());
         }
-    }
-
-    public Iterable<FileAnswer> getAll() {
-        return fileAnswerRepository.findAll();
     }
 
     public Optional<FileAnswer> getById(long id) {
@@ -47,11 +43,11 @@ public class FileAnswerService {
         }
     }
 
-    public void update(long id, String url, long question_id) {
+    public void update(long id, String url, long questionId) {
         try {
             FileAnswer fileAnswer = fileAnswerRepository.findById(id).get();
             fileAnswer.setUrl(url);
-            fileAnswer.setQuestion(questionRepository.findById(question_id).get());
+            fileAnswer.setQuestion(questionRepository.findById(questionId).get());
             fileAnswerRepository.save(fileAnswer);
         } catch (NoSuchElementException e) {
             logger.log(Level.WARNING, e.getMessage());

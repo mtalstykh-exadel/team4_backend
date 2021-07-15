@@ -1,10 +1,20 @@
 package com.team4.testingsystem.entities;
 
-import javax.persistence.*;
+
+import liquibase.pro.packaged.S;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "file_answer")
-public class FileAnswer{
+public class FileAnswer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,8 +27,7 @@ public class FileAnswer{
     @Column(name = "url")
     private String url;
 
-    public FileAnswer() {
-    }
+    public FileAnswer(){}
 
     public long getId() {
         return id;
