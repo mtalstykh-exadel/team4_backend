@@ -15,6 +15,6 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
     Question save(Question question);
 
     @Modifying
-    @Query(value = "update Question q set q.isAvailable = false where q.id = ?2")
+    @Query(value = "update Question q set q.isAvailable = false where q.id = ?1")
     void archiveQuestion(Long id);
 }
