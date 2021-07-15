@@ -29,13 +29,10 @@ public class TestsService {
     }
 
     public Test getById(long id) {
-            if (!testsRepository.existsById(id)) {
-                throw new NoSuchElementException("Test not found");
-            }
         return testsRepository.findById(id).get();
     }
 
-    public long create(long userId) {
+    public long createForUser(long userId) {
 
         if (!usersRepository.existsById(userId)){
             throw  new NoSuchElementException("User not found");
@@ -52,39 +49,33 @@ public class TestsService {
     }
 
     public void start(long id){
-        Test test = getById(id);
-        test = test.builder()
-                    .setStartedAt(LocalDateTime.now())
-                    .setStatus("STARTED")
-                    .build();
-        testsRepository.save(test);
+
+        if (!testsRepository.existsById(id)){
+            throw new NoSuchElementException("Test not found");
+        }
+
+        testsRepository.start(LocalDateTime.now(), id);
     }
 
     public void finish (long id, int evaluation){
-        Test test = getById(id);
-        test = test.builder()
-                .setFinishedAt(LocalDateTime.now())
-                .setStatus("FINISHED")
-                .setEvaluation(evaluation)
-                .build();
-        testsRepository.save(test);
+
+        if (!testsRepository.existsById(id)){
+            throw new NoSuchElementException("Test not found");
+        }
+
+        testsRepository.finish(LocalDateTime.now(), evaluation, id);
     }
 
     public void updateEvaluation(long id, int newEvaluation) {
 
-        Test test = getById(id);
-        test = test.builder()
-                .setUpdatedAt(LocalDateTime.now())
-                .setEvaluation(newEvaluation)
-                .build();
+        if (!testsRepository.existsById(id)){
+            throw new NoSuchElementException("Test not found");
+        }
 
-        testsRepository.save(test);
+        testsRepository.updateEvaluation(LocalDateTime.now(), newEvaluation, id);
     }
 
     public void removeById(long id) {
-            if (!testsRepository.existsById(id)) {
-                throw new NoSuchElementException("Test not found");
-            }
             testsRepository.deleteById(id);
     }
 }

@@ -2,9 +2,11 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.entities.Test;
 
+import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(path="/tests")
@@ -29,12 +27,11 @@ public class TestsController {
     private JwtTokenUtil jwtTokenUtil;
 
     private long getUserId() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        String token = request.getHeader("Authorization").split(" ")[1];
-        return jwtTokenUtil.extractUserId(token);
+
+ return ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
     }
 
-    @GetMapping(path = "/all")
+    @GetMapping(path = "/")
     public Iterable<Test> getAll() {
         return testsService.getAll();
     }
@@ -46,12 +43,12 @@ public class TestsController {
 
     @PostMapping(path = "/assign/{userId}")
     public long assign(@PathVariable("userId") long userId) {
-        return testsService.create(userId);
+        return testsService.createForUser(userId);
     }
 
     @PostMapping(path = "/start")
     public void startNotAssigned() {
-        testsService.start(testsService.create(getUserId()));
+        testsService.start(testsService.createForUser(getUserId()));
     }
 
     @PostMapping(path = "/start/{testId}")

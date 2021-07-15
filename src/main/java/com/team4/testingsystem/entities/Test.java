@@ -25,7 +25,7 @@ public class Test {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id", updatable = false)
+    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
     private User user;
 
     @Column(name = "created_at")
@@ -91,7 +91,7 @@ public class Test {
         return this.new Builder();
     }
 
-    public static Test.Builder newBuilder() {
+    public static Builder newBuilder() {
         return new Test().new Builder();
     }
 
@@ -100,37 +100,37 @@ public class Test {
         private Builder() {
         }
 
-        public Test.Builder setUser(User user) {
+        public Builder setUser(User user) {
             Test.this.user = user;
             return this;
         }
 
-        public Test.Builder setCreatedAt(LocalDateTime createdAt) {
+        public Builder setCreatedAt(LocalDateTime createdAt) {
             Test.this.createdAt = createdAt;
             return this;
         }
 
-        public Test.Builder setUpdatedAt(LocalDateTime updatedAt) {
+        public Builder setUpdatedAt(LocalDateTime updatedAt) {
             Test.this.updatedAt = updatedAt;
             return this;
         }
 
-        public Test.Builder setStartedAt(LocalDateTime startedAt) {
+        public Builder setStartedAt(LocalDateTime startedAt) {
             Test.this.startedAt = startedAt;
             return this;
         }
 
-        public Test.Builder setFinishedAt(LocalDateTime finishedAt) {
+        public Builder setFinishedAt(LocalDateTime finishedAt) {
             Test.this.finishedAt = finishedAt;
             return this;
         }
 
-        public Test.Builder setStatus(String status) {
+        public Builder setStatus(String status) {
             Test.this.status = status;
             return this;
         }
 
-        public Test.Builder setEvaluation(int evaluation) {
+        public Builder setEvaluation(int evaluation) {
             Test.this.evaluation = evaluation;
             return this;
         }
