@@ -111,7 +111,8 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <skip>true</skip>
+                            <classifier>spring-boot</classifier>
+                            <mainClass>com.team4.testingsystem.TestingSystemApplication</mainClass>
                         </configuration>
                     </execution>
                 </executions>
