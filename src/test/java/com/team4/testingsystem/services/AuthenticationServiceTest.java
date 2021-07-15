@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services;
 
+import com.team4.testingsystem.exceptions.IncorrectCredentialsException;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.junit.jupiter.api.Assertions;
@@ -46,7 +47,7 @@ class AuthenticationServiceTest {
     void incorrectCredentials() {
         Mockito.when(authenticationManager.authenticate(token)).thenThrow(new BadCredentialsException(""));
 
-        Assertions.assertThrows(BadCredentialsException.class,
+        Assertions.assertThrows(IncorrectCredentialsException.class,
                 () -> authenticationService.createAuthenticationToken(USERNAME, PASSWORD));
     }
 
