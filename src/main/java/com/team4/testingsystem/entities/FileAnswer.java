@@ -1,8 +1,5 @@
 package com.team4.testingsystem.entities;
 
-
-import liquibase.pro.packaged.S;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,7 +24,8 @@ public class FileAnswer {
     @Column(name = "url")
     private String url;
 
-    public FileAnswer(){}
+    public FileAnswer() {
+    }
 
     public long getId() {
         return id;
