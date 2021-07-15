@@ -12,12 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
-    private final LevelServiceImpl levelService;
 
     @Autowired
-    QuestionServiceImpl(QuestionRepository questionRepository, LevelServiceImpl levelService) {
+    QuestionServiceImpl(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
-        this.levelService = levelService;
     }
 
     @Override
