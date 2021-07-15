@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services;
 
+import com.team4.testingsystem.exceptions.IncorrectCredentialsException;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class AuthenticationService {
@@ -27,16 +26,16 @@ public class AuthenticationService {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    public Optional<String> createAuthenticationToken(String username, String password) {
+    public String createAuthenticationToken(String username, String password) throws IncorrectCredentialsException {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
         } catch (BadCredentialsException e) {
-            return Optional.empty();
+            throw new IncorrectCredentialsException();
         }
 
         final CustomUserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        return Optional.of(jwtTokenUtil.generateToken(userDetails));
+        return jwtTokenUtil.generateToken(userDetails);
     }
 }
