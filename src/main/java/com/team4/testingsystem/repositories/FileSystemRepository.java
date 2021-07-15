@@ -1,5 +1,6 @@
 package com.team4.testingsystem.repositories;
 
+import com.team4.testingsystem.exceptions.FileDeletingFailedException;
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.exceptions.FileSavingFailedException;
 import org.apache.commons.io.FileUtils;
@@ -12,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.UUID;
 
 @Profile("!release")
 @Repository
@@ -38,7 +38,21 @@ public class FileSystemRepository implements FilesRepository {
         return new FileSystemResource(filePath);
     }
 
-    private Path generateFilePath(String fileName) {
-        return Path.of(FileUtils.getTempDirectory() + "/" + UUID.randomUUID() + "-" + fileName);
+    @Override
+    public void delete(String fileName) {
+        Path filePath = generateFilePath(fileName);
+        if (Files.notExists(filePath)) {
+            return;
+        }
+
+        try {
+            Files.delete(filePath);
+        } catch (IOException e) {
+            throw new FileDeletingFailedException();
+        }
+    }
+
+    public Path generateFilePath(String fileName) {
+        return Path.of(FileUtils.getTempDirectory() + "/" + fileName);
     }
 }

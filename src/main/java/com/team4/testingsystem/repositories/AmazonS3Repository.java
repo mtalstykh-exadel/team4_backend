@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
+import com.team4.testingsystem.exceptions.FileDeletingFailedException;
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.exceptions.FileSavingFailedException;
 import org.apache.commons.io.FileUtils;
@@ -36,7 +37,7 @@ public class AmazonS3Repository implements FilesRepository {
     @Override
     public void save(String fileName, Resource file) throws FileSavingFailedException {
         try {
-            Path tempFilePath = Files.createTempFile(null, file.getFilename());
+            Path tempFilePath = createTempFile(fileName);
             File tempFile = new File(tempFilePath.toString());
 
             FileUtils.copyInputStreamToFile(file.getInputStream(), tempFile);
@@ -57,5 +58,18 @@ public class AmazonS3Repository implements FilesRepository {
         } catch (IOException | AmazonServiceException e) {
             throw new FileLoadingFailedException();
         }
+    }
+
+    @Override
+    public void delete(String fileName) throws FileDeletingFailedException {
+        try {
+            amazonS3.deleteObject(bucketName, fileName);
+        } catch (AmazonServiceException e) {
+            throw new FileDeletingFailedException();
+        }
+    }
+
+    public Path createTempFile(String fileName) throws IOException {
+        return Files.createTempFile(null, fileName);
     }
 }
