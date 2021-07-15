@@ -18,9 +18,6 @@ import java.util.Optional;
 class TestsServiceTest {
 
     @Mock
-    User user;
-
-    @Mock
     Test test;
 
     @Mock
@@ -34,19 +31,14 @@ class TestsServiceTest {
 
     @org.junit.jupiter.api.Test
     void getByIdSuccess() {
+        Mockito.when(testsRepository.findById(1L)).thenReturn(Optional.of(test));
 
-        Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
-        Mockito.when(testsRepository.findById(1L)).thenReturn(Optional.ofNullable(test));
-
-        Assertions.assertDoesNotThrow(()->testsService.getById(1L));
+        Assertions.assertEquals(test, testsService.getById(1L));
 
     }
 
     @org.junit.jupiter.api.Test
     void getByIdFail() {
-
-        //Test doesn't exist
-        Mockito.when(testsRepository.existsById(42L)).thenReturn(false);
 
         Assertions.assertThrows(NoSuchElementException.class, ()->testsService.getById(42L));
 
@@ -58,16 +50,13 @@ class TestsServiceTest {
         //User doesn't exist
         Mockito.when(usersRepository.existsById(42L)).thenReturn(false);
 
-        Assertions.assertThrows(NoSuchElementException.class, ()->testsService.create(42L));
+        Assertions.assertThrows(NoSuchElementException.class, ()->testsService.createForUser(42L));
     }
-
 
     @org.junit.jupiter.api.Test
     void startSuccess() {
 
         Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
-        Mockito.when(testsRepository.findById(1L)).thenReturn(Optional.ofNullable(test));
-        Mockito.when(test.builder()).thenReturn(Test.newBuilder());
 
         Assertions.assertDoesNotThrow((()->testsService.start(1L)));
     }
@@ -81,8 +70,6 @@ class TestsServiceTest {
     void finishSuccess() {
 
         Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
-        Mockito.when(testsRepository.findById(1L)).thenReturn(Optional.ofNullable(test));
-        Mockito.when(test.builder()).thenReturn(Test.newBuilder());
 
         Assertions.assertDoesNotThrow((()->testsService.finish(1L,1)));
     }
@@ -98,8 +85,6 @@ class TestsServiceTest {
     void updateEvaluationSuccess() {
 
         Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
-        Mockito.when(testsRepository.findById(1L)).thenReturn(Optional.ofNullable(test));
-        Mockito.when(test.builder()).thenReturn(Test.newBuilder());
 
         Assertions.assertDoesNotThrow((()->testsService.updateEvaluation(1L,1)));
     }
@@ -114,19 +99,9 @@ class TestsServiceTest {
     @org.junit.jupiter.api.Test
     void removeSuccess() {
 
-        Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
         Assertions.assertDoesNotThrow((()->testsService.removeById(1L)));
 
     }
 
-    @org.junit.jupiter.api.Test
-    void removeFail() {
-
-        //Test doesn't exist
-        Mockito.when(testsRepository.existsById(42L)).thenReturn(false);
-
-        Assertions.assertThrows(NoSuchElementException.class,()->testsService.removeById(42L));
-
-    }
 
 }
