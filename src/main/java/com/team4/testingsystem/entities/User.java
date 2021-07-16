@@ -92,7 +92,7 @@ public class  User {
         return tests;
     }
 
-    public void setTests(Collection<Test> testEntities) {
-        this.tests = testEntities;
+    public void setTests(Collection<Test> tests) {
+        this.tests = tests;
     }
 }
