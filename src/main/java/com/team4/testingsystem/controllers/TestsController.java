@@ -2,11 +2,9 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.entities.Test;
 
-import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,12 +21,9 @@ public class TestsController {
     @Autowired
     private TestsService testsService;
 
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-
     private long getUserId() {
 
- return ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+    return JwtTokenUtil.extractUserDetails().getId();
     }
 
     @GetMapping(path = "/")
@@ -47,8 +42,10 @@ public class TestsController {
     }
 
     @PostMapping(path = "/start")
-    public void startNotAssigned() {
-        testsService.start(testsService.createForUser(getUserId()));
+    public long startNotAssigned() {
+        long createdTestId = testsService.createForUser(getUserId());
+        testsService.start(createdTestId);
+        return createdTestId;
     }
 
     @PostMapping(path = "/start/{testId}")
@@ -61,7 +58,7 @@ public class TestsController {
         testsService.finish(testId, evaluation);
     }
 
-    @PutMapping(path="/update/{testId}")
+    @PutMapping(path="/{testId}")
     public void updateEvaluation(@PathVariable("testId") long testId, @RequestParam int evaluation) {
         testsService.updateEvaluation(testId, evaluation);
     }

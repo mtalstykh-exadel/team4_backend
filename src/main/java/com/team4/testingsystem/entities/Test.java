@@ -1,9 +1,12 @@
 package com.team4.testingsystem.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.team4.testingsystem.enums.Status;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,8 +43,10 @@ public class Test {
     @Column(name = "finished_at")
     private LocalDateTime  finishedAt;
 
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private Status status;
 
     @Column(name = "evaluation")
     private int evaluation;
@@ -77,7 +82,7 @@ public class Test {
     }
 
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
@@ -125,7 +130,7 @@ public class Test {
             return this;
         }
 
-        public Builder setStatus(String status) {
+        public Builder setStatus(Status status) {
             Test.this.status = status;
             return this;
         }

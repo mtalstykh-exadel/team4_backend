@@ -1,6 +1,7 @@
 package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,16 +35,14 @@ public class TestsService {
 
     public long createForUser(long userId) {
 
-        if (!usersRepository.existsById(userId)){
-            throw  new NoSuchElementException("User not found");
-        }
-
         Test test = Test.newBuilder()
                 .setUser(usersRepository.findById(userId).get())
                 .setCreatedAt(LocalDateTime.now())
-                .setStatus("NOT_STARTED")
+                .setStatus(Status.NOT_STARTED)
                 .build();
+
         testsRepository.save(test);
+
         long id = test.getId();
         return id;
     }
@@ -51,7 +50,7 @@ public class TestsService {
     public void start(long id){
 
         if (!testsRepository.existsById(id)){
-            throw new NoSuchElementException("Test not found");
+            throw new NoSuchElementException();
         }
 
         testsRepository.start(LocalDateTime.now(), id);
@@ -60,7 +59,7 @@ public class TestsService {
     public void finish (long id, int evaluation){
 
         if (!testsRepository.existsById(id)){
-            throw new NoSuchElementException("Test not found");
+            throw new NoSuchElementException();
         }
 
         testsRepository.finish(LocalDateTime.now(), evaluation, id);
@@ -69,7 +68,7 @@ public class TestsService {
     public void updateEvaluation(long id, int newEvaluation) {
 
         if (!testsRepository.existsById(id)){
-            throw new NoSuchElementException("Test not found");
+            throw new NoSuchElementException();
         }
 
         testsRepository.updateEvaluation(LocalDateTime.now(), newEvaluation, id);
