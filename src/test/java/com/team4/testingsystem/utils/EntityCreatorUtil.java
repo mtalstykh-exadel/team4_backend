@@ -1,9 +1,12 @@
 package com.team4.testingsystem.utils;
 
+import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.entities.UserRole;
+import com.team4.testingsystem.security.CustomUserDetails;
 
 public class EntityCreatorUtil {
 
@@ -18,13 +21,27 @@ public class EntityCreatorUtil {
                 .build();
     }
 
+    public static QuestionDTO createQuestionDto() {
+        return new QuestionDTO.Builder()
+                .questionBody("some text")
+                .module("new module")
+                .level("new level")
+                .creator("name")
+                .isAvailable(true)
+                .build();
+    }
+
     public static User createUser() {
         User user = new User();
+        UserRole userRole = new UserRole();
+        userRole.setId(1);
+        userRole.setRoleName("role");
         user.setId(1L);
         user.setName("name");
         user.setLanguage("en");
         user.setLogin("login");
         user.setPassword("password");
+        user.setRole(userRole);
         return user;
     }
 
@@ -41,7 +58,4 @@ public class EntityCreatorUtil {
         level.setName("new level");
         return level;
     }
-
-
-
 }
