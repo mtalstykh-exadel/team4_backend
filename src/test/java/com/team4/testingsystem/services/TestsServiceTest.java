@@ -2,6 +2,8 @@ package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.exceptions.TestNotFoundException;
+import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
 import org.junit.jupiter.api.Assertions;
@@ -72,7 +74,7 @@ class TestsServiceTest {
         //Test doesn't exist
         Mockito.when(testsRepository.findById(42L)).thenThrow(NoSuchElementException.class);
 
-        Assertions.assertThrows(NoSuchElementException.class, () -> testsService.getById(42L));
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.getById(42L));
 
     }
 
@@ -82,7 +84,7 @@ class TestsServiceTest {
         //User doesn't exist
         Mockito.when(usersRepository.findById(42L)).thenThrow(NoSuchElementException.class);
 
-        Assertions.assertThrows(NoSuchElementException.class, () -> testsService.createForUser(42L));
+        Assertions.assertThrows(UserNotFoundException.class, () -> testsService.createForUser(42L));
     }
 
     @org.junit.jupiter.api.Test
@@ -122,7 +124,7 @@ class TestsServiceTest {
         //Test doesn't exist
         Mockito.when(testsRepository.existsById(42L)).thenReturn(false);
 
-        Assertions.assertThrows(NoSuchElementException.class, () -> testsService.start(42L));
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.start(42L));
     }
 
     @org.junit.jupiter.api.Test
@@ -141,7 +143,7 @@ class TestsServiceTest {
         //Test doesn't exist
         Mockito.when(testsRepository.existsById(42L)).thenReturn(false);
 
-        Assertions.assertThrows(NoSuchElementException.class, () -> testsService.finish(42L, 42));
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.finish(42L, 42));
 
     }
 
@@ -161,7 +163,7 @@ class TestsServiceTest {
         //Test doesn't exist
         Mockito.when(testsRepository.existsById(42L)).thenReturn(false);
 
-        Assertions.assertThrows(NoSuchElementException.class, () -> testsService.updateEvaluation(42L, 42));
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.updateEvaluation(42L, 42));
 
     }
 
@@ -180,7 +182,7 @@ class TestsServiceTest {
         //Test doesn't exist
         doThrow(EmptyResultDataAccessException.class).when(testsRepository).deleteById(42L);
 
-        Assertions.assertThrows(EmptyResultDataAccessException.class, () -> testsService.removeById(42L));
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.removeById(42L));
 
     }
 
