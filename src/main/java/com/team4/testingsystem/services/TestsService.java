@@ -39,13 +39,12 @@ public class TestsService {
 
 
         User user = usersRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        Test test = new Test.Builder()
+        Test test = Test.builder()
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .status(Status.NOT_STARTED)
                 .build();
         testsRepository.save(test);
-
 
         return test.getId();
     }

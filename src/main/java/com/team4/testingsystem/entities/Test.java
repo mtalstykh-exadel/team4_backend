@@ -115,6 +115,10 @@ public class Test {
         this.evaluation = evaluation;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
 
         private Test test;

@@ -10,23 +10,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -93,16 +88,21 @@ class TestsServiceTest {
 
         Mockito.when(usersRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        try (MockedConstruction<Test.Builder> builderMockedConstruction = Mockito.mockConstruction(Test.Builder.class,
-                (mock, context) -> {
-                    Mockito.when(mock.user(any())).thenReturn(mock);
-                    Mockito.when(mock.createdAt(any())).thenReturn(mock);
-                    Mockito.when(mock.status(any())).thenReturn(mock);
-                    Mockito.when(mock.build()).thenReturn(test);
-                })) {
+
+        try (MockedStatic<Test> builderMockedStatic = Mockito.mockStatic(Test.class)) {
+
+            builderMockedStatic.when(Test::builder).thenReturn(builder);
+
+            Mockito.when(builder.user(any())).thenReturn(builder);
+            Mockito.when(builder.createdAt(any())).thenReturn(builder);
+            Mockito.when(builder.status(any())).thenReturn(builder);
+            Mockito.when(builder.build()).thenReturn(test);
+
             Mockito.when(test.getId()).thenReturn(1L);
+
             Assertions.assertEquals(1L, testsService.createForUser(1L));
         }
+
     }
 
     @org.junit.jupiter.api.Test
