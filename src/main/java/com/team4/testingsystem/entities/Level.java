@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.GenerationType;
+import java.util.Objects;
 
 @Entity
 @Table(name = "level")
@@ -31,5 +32,13 @@ public class Level {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Level level = (Level) o;
+        return Objects.equals(id, level.id) && Objects.equals(name, level.name);
     }
 }

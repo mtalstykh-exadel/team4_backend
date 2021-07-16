@@ -1,5 +1,7 @@
 package com.team4.testingsystem.dto;
 
+import java.util.Objects;
+
 public class QuestionDTO {
     private String questionBody;
     private Boolean isAvailable;
@@ -45,6 +47,14 @@ public class QuestionDTO {
 
     public void setModule(String module) {
         this.module = module;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        QuestionDTO that = (QuestionDTO) o;
+        return Objects.equals(questionBody, that.questionBody) && Objects.equals(isAvailable, that.isAvailable) && Objects.equals(creator, that.creator) && Objects.equals(level, that.level) && Objects.equals(module, that.module);
     }
 
     public static class Builder {

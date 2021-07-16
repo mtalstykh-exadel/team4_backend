@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.GenerationType;
 import javax.persistence.OneToMany;
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity
 @Table(name = "user_role")
@@ -47,4 +48,13 @@ public class UserRole {
     public void setUsers(Collection<User> users) {
         this.users = users;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserRole userRole = (UserRole) o;
+        return Objects.equals(id, userRole.id) && Objects.equals(roleName, userRole.roleName) && Objects.equals(users, userRole.users);
+    }
+
 }

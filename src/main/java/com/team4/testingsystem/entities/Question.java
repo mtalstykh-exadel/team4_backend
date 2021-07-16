@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.util.Objects;
 
 @Entity
 @Table(name = "question")
@@ -78,6 +79,14 @@ public class Question {
 
     public void setModule(Module module) {
         this.module = module;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question = (Question) o;
+        return isAvailable == question.isAvailable && Objects.equals(id, question.id) && Objects.equals(questionBody, question.questionBody) && Objects.equals(creator, question.creator) && Objects.equals(level, question.level) && Objects.equals(module, question.module);
     }
 
     public static class Builder {
