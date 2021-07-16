@@ -1,6 +1,7 @@
 package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
@@ -31,30 +32,22 @@ public class TestsService {
     }
 
     public Test getById(long id) {
-        try {
-            return testsRepository.findById(id).get();
-        } catch (Exception e) {
-            throw new TestNotFoundException();
-        }
+        return testsRepository.findById(id).orElseThrow(TestNotFoundException::new);
     }
 
     public long createForUser(long userId) {
 
-       try {
-           Test test = Test.newBuilder()
-                   .setUser(usersRepository.findById(userId).get())
-                   .setCreatedAt(LocalDateTime.now())
-                   .setStatus(Status.NOT_STARTED)
-                   .build();
 
-           testsRepository.save(test);
+        User user = usersRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Test test = new Test.Builder()
+                .user(user)
+                .createdAt(LocalDateTime.now())
+                .status(Status.NOT_STARTED)
+                .build();
+        testsRepository.save(test);
 
-           long id = test.getId();
-           return id;
-       }
-       catch (Exception e){
-           throw new UserNotFoundException();
-       }
+
+        return test.getId();
     }
 
     public void start(long id){
@@ -85,10 +78,11 @@ public class TestsService {
     }
 
     public void removeById(long id) {
-        try {
-            testsRepository.deleteById(id);
-        } catch (Exception e) {
+
+        if (!testsRepository.existsById(id)) {
             throw new TestNotFoundException();
         }
+
+        testsRepository.deleteById(id);
     }
 }

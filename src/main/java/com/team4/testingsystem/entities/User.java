@@ -22,7 +22,7 @@ public class  User {
     private Long id;
 
     @OneToMany(mappedBy = "user")
-    private Collection<Test> testEntities;
+    private Collection<Test> tests;
 
     @Column(name = "user_name")
     private String name;
@@ -89,10 +89,10 @@ public class  User {
     }
 
     public Collection<Test> getTests() {
-        return testEntities;
+        return tests;
     }
 
     public void setTests(Collection<Test> testEntities) {
-        this.testEntities = testEntities;
+        this.tests = testEntities;
     }
 }

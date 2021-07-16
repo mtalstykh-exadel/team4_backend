@@ -51,9 +51,6 @@ public class Test {
     @Column(name = "evaluation")
     private int evaluation;
 
-    private Test(){
-    }
-
     public Long getId() {
         return id;
     }
@@ -61,7 +58,6 @@ public class Test {
     public User getUser() {
         return user;
     }
-
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -91,57 +87,79 @@ public class Test {
         return evaluation;
     }
 
-
-    public Builder builder() {
-        return this.new Builder();
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public static Builder newBuilder() {
-        return new Test().new Builder();
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public class Builder {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
-        private Builder() {
+    public void setStartedAt(LocalDateTime startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public void setFinishedAt(LocalDateTime finishedAt) {
+        this.finishedAt = finishedAt;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setEvaluation(int evaluation) {
+        this.evaluation = evaluation;
+    }
+
+    public static class Builder {
+
+        private Test test;
+
+        public Builder() {
+            this.test = new Test();
         }
 
-        public Builder setUser(User user) {
-            Test.this.user = user;
+        public Builder user(User user) {
+            test.user = user;
             return this;
         }
 
-        public Builder setCreatedAt(LocalDateTime createdAt) {
-            Test.this.createdAt = createdAt;
+        public Builder createdAt(LocalDateTime createdAt) {
+            test.createdAt = createdAt;
             return this;
         }
 
-        public Builder setUpdatedAt(LocalDateTime updatedAt) {
-            Test.this.updatedAt = updatedAt;
+        public Builder updatedAt(LocalDateTime updatedAt) {
+            test.updatedAt = updatedAt;
             return this;
         }
 
-        public Builder setStartedAt(LocalDateTime startedAt) {
-            Test.this.startedAt = startedAt;
+        public Builder startedAt(LocalDateTime startedAt) {
+            test.startedAt = startedAt;
             return this;
         }
 
-        public Builder setFinishedAt(LocalDateTime finishedAt) {
-            Test.this.finishedAt = finishedAt;
+        public Builder finishedAt(LocalDateTime finishedAt) {
+            test.finishedAt = finishedAt;
             return this;
         }
 
-        public Builder setStatus(Status status) {
-            Test.this.status = status;
+        public Builder status(Status status) {
+            test.status = status;
             return this;
         }
 
-        public Builder setEvaluation(int evaluation) {
-            Test.this.evaluation = evaluation;
+        public Builder evaluation(int evaluation) {
+            test.evaluation = evaluation;
             return this;
         }
 
         public Test build() {
-            return Test.this;
+            return test;
         }
 
 

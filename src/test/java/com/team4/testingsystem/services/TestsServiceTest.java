@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -72,7 +73,7 @@ class TestsServiceTest {
     void getByIdFail() {
 
         //Test doesn't exist
-        Mockito.when(testsRepository.findById(42L)).thenThrow(NoSuchElementException.class);
+        Mockito.when(testsRepository.findById(42L)).thenThrow(TestNotFoundException.class);
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.getById(42L));
 
@@ -82,7 +83,7 @@ class TestsServiceTest {
     void createWhenAssignFail() {
 
         //User doesn't exist
-        Mockito.when(usersRepository.findById(42L)).thenThrow(NoSuchElementException.class);
+        Mockito.when(usersRepository.findById(42L)).thenThrow(UserNotFoundException.class);
 
         Assertions.assertThrows(UserNotFoundException.class, () -> testsService.createForUser(42L));
     }
@@ -90,22 +91,18 @@ class TestsServiceTest {
     @org.junit.jupiter.api.Test
     void createSuccess() {
 
-
         Mockito.when(usersRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        MockedStatic<Test> testMockedStatic = Mockito.mockStatic(Test.class);
-        testMockedStatic.when(Test::newBuilder).thenReturn(builder);
-
-        Mockito.when(builder.setUser(any())).thenReturn(builder);
-        Mockito.when(builder.setCreatedAt(any())).thenReturn(builder);
-        Mockito.when(builder.setStatus(any())).thenReturn(builder);
-        Mockito.when(builder.build()).thenReturn(test);
-
-        Mockito.when(test.getId()).thenReturn(1L);
-
-
-        Assertions.assertEquals(1L, testsService.createForUser(1L));
-
+        try (MockedConstruction<Test.Builder> builderMockedConstruction = Mockito.mockConstruction(Test.Builder.class,
+                (mock, context) -> {
+                    Mockito.when(mock.user(any())).thenReturn(mock);
+                    Mockito.when(mock.createdAt(any())).thenReturn(mock);
+                    Mockito.when(mock.status(any())).thenReturn(mock);
+                    Mockito.when(mock.build()).thenReturn(test);
+                })) {
+            Mockito.when(test.getId()).thenReturn(1L);
+            Assertions.assertEquals(1L, testsService.createForUser(1L));
+        }
     }
 
     @org.junit.jupiter.api.Test
@@ -115,7 +112,7 @@ class TestsServiceTest {
 
         testsService.start(1L);
 
-        verify(testsRepository, times(1)).start(any(LocalDateTime.class), anyLong());
+        verify(testsRepository).start(any(LocalDateTime.class), anyLong());
     }
 
     @org.junit.jupiter.api.Test
@@ -134,7 +131,7 @@ class TestsServiceTest {
 
         testsService.finish(1L, 1);
 
-        verify(testsRepository, times(1)).finish(any(LocalDateTime.class), anyInt(), anyLong());
+        verify(testsRepository).finish(any(LocalDateTime.class), anyInt(), anyLong());
     }
 
     @org.junit.jupiter.api.Test
@@ -154,7 +151,7 @@ class TestsServiceTest {
 
         testsService.updateEvaluation(1L, 1);
 
-        verify(testsRepository, times(1)).updateEvaluation(any(LocalDateTime.class), anyInt(), anyLong());
+        verify(testsRepository).updateEvaluation(any(LocalDateTime.class), anyInt(), anyLong());
     }
 
     @org.junit.jupiter.api.Test
@@ -170,9 +167,11 @@ class TestsServiceTest {
     @org.junit.jupiter.api.Test
     void removeSuccess() {
 
+        Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
+
         testsService.removeById(1L);
 
-        verify(testsRepository, times(1)).deleteById(1L);
+        verify(testsRepository).deleteById(1L);
 
     }
 
@@ -180,7 +179,7 @@ class TestsServiceTest {
     void removeFail() {
 
         //Test doesn't exist
-        doThrow(EmptyResultDataAccessException.class).when(testsRepository).deleteById(42L);
+        Mockito.when(testsRepository.existsById(42L)).thenReturn(false);
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.removeById(42L));
 
