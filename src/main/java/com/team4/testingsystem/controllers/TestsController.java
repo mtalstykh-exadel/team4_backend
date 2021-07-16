@@ -21,11 +21,6 @@ public class TestsController {
     @Autowired
     private TestsService testsService;
 
-    private long getUserId() {
-
-    return JwtTokenUtil.extractUserDetails().getId();
-    }
-
     @GetMapping(path = "/")
     public Iterable<Test> getAll() {
         return testsService.getAll();
@@ -43,7 +38,9 @@ public class TestsController {
 
     @PostMapping(path = "/start")
     public long startNotAssigned() {
-        long createdTestId = testsService.createForUser(getUserId());
+        
+        long userId = JwtTokenUtil.extractUserDetails().getId();
+        long createdTestId = testsService.createForUser(userId);
         testsService.start(createdTestId);
         return createdTestId;
     }
