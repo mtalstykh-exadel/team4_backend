@@ -51,29 +51,24 @@ public class TestsService {
 
     public void start(long id){
 
-        if (!testsRepository.existsById(id)){
+        if (testsRepository.start(LocalDateTime.now(), id) == 0){
             throw new TestNotFoundException();
         }
-
-        testsRepository.start(LocalDateTime.now(), id);
     }
 
     public void finish (long id, int evaluation){
 
-        if (!testsRepository.existsById(id)){
+        if (testsRepository.finish(LocalDateTime.now(), evaluation, id) == 0){
             throw new TestNotFoundException();
         }
-
-        testsRepository.finish(LocalDateTime.now(), evaluation, id);
     }
 
     public void updateEvaluation(long id, int newEvaluation) {
 
-        if (!testsRepository.existsById(id)){
+        if (testsRepository.updateEvaluation(LocalDateTime.now(), newEvaluation, id) == 0){
             throw new TestNotFoundException();
         }
 
-        testsRepository.updateEvaluation(LocalDateTime.now(), newEvaluation, id);
     }
 
     public void removeById(long id) {

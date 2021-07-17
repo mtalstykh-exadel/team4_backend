@@ -67,7 +67,6 @@ class TestsServiceTest {
     @org.junit.jupiter.api.Test
     void getByIdFail() {
 
-        //Test doesn't exist
         Mockito.when(testsRepository.findById(42L)).thenThrow(TestNotFoundException.class);
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.getById(42L));
@@ -77,7 +76,6 @@ class TestsServiceTest {
     @org.junit.jupiter.api.Test
     void createWhenAssignFail() {
 
-        //User doesn't exist
         Mockito.when(usersRepository.findById(42L)).thenThrow(UserNotFoundException.class);
 
         Assertions.assertThrows(UserNotFoundException.class, () -> testsService.createForUser(42L));
@@ -108,18 +106,19 @@ class TestsServiceTest {
     @org.junit.jupiter.api.Test
     void startSuccess() {
 
-        Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
+        Mockito.when(testsRepository.start(any(),anyLong())).thenReturn(1);
 
         testsService.start(1L);
 
         verify(testsRepository).start(any(LocalDateTime.class), anyLong());
+
+        Assertions.assertDoesNotThrow(()->testsService.start(1L));
     }
 
     @org.junit.jupiter.api.Test
     void startFail() {
 
-        //Test doesn't exist
-        Mockito.when(testsRepository.existsById(42L)).thenReturn(false);
+        Mockito.when(testsRepository.start(any(),anyLong())).thenReturn(0);
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.start(42L));
     }
@@ -127,18 +126,19 @@ class TestsServiceTest {
     @org.junit.jupiter.api.Test
     void finishSuccess() {
 
-        Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
+        Mockito.when(testsRepository.finish(any(),anyInt(), anyLong())).thenReturn(1);
 
         testsService.finish(1L, 1);
 
         verify(testsRepository).finish(any(LocalDateTime.class), anyInt(), anyLong());
+
+        Assertions.assertDoesNotThrow(()->testsService.finish(1L, 1));
     }
 
     @org.junit.jupiter.api.Test
     void finishFail() {
 
-        //Test doesn't exist
-        Mockito.when(testsRepository.existsById(42L)).thenReturn(false);
+        Mockito.when(testsRepository.finish(any(), anyInt(), anyLong())).thenReturn(0);
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.finish(42L, 42));
 
@@ -147,21 +147,22 @@ class TestsServiceTest {
     @org.junit.jupiter.api.Test
     void updateEvaluationSuccess() {
 
-        Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
+        Mockito.when(testsRepository.updateEvaluation(any(),anyInt(), anyLong())).thenReturn(1);
 
         testsService.updateEvaluation(1L, 1);
 
         verify(testsRepository).updateEvaluation(any(LocalDateTime.class), anyInt(), anyLong());
+
+        Assertions.assertDoesNotThrow(()->testsService.updateEvaluation(1L, 1));
     }
 
     @org.junit.jupiter.api.Test
     void updateEvaluationFail() {
 
-        //Test doesn't exist
-        Mockito.when(testsRepository.existsById(42L)).thenReturn(false);
+        Mockito.when(testsRepository.updateEvaluation(any(), anyInt(), anyLong())).thenReturn(0);
 
-        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.updateEvaluation(42L, 42));
-
+        Assertions.assertThrows(TestNotFoundException.class,
+                () -> testsService.updateEvaluation(42L, 42));
     }
 
     @org.junit.jupiter.api.Test
@@ -178,7 +179,6 @@ class TestsServiceTest {
     @org.junit.jupiter.api.Test
     void removeFail() {
 
-        //Test doesn't exist
         Mockito.when(testsRepository.existsById(42L)).thenReturn(false);
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.removeById(42L));
