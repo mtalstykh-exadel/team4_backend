@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Profile("release")
-@Repository
+@Service
 public class AmazonS3Repository implements FilesRepository {
     private final AmazonS3 amazonS3;
 
@@ -36,15 +36,22 @@ public class AmazonS3Repository implements FilesRepository {
 
     @Override
     public void save(String fileName, Resource file) throws FileSavingFailedException {
+        Path tempFilePath;
         try {
-            Path tempFilePath = createTempFile(fileName);
-            File tempFile = new File(tempFilePath.toString());
+            tempFilePath = createTempFile(fileName);
+        } catch (IOException e) {
+            throw new FileSavingFailedException();
+        }
 
+        File tempFile = new File(tempFilePath.toString());
+
+        try {
             FileUtils.copyInputStreamToFile(file.getInputStream(), tempFile);
             amazonS3.putObject(bucketName, fileName, tempFile);
-            tempFile.deleteOnExit();
         } catch (IOException | AmazonServiceException e) {
             throw new FileSavingFailedException();
+        } finally {
+            tempFile.deleteOnExit();
         }
     }
 

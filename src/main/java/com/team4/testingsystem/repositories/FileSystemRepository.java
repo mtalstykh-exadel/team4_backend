@@ -7,7 +7,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Profile("!release")
-@Repository
+@Service
 public class FileSystemRepository implements FilesRepository {
     @Override
     public void save(String fileName, Resource file) throws FileSavingFailedException {
