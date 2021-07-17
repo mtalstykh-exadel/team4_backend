@@ -17,7 +17,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "question_body")
-    private String questionBody;
+    private String body;
     @Column(name = "is_available")
     private boolean isAvailable;
 
@@ -41,12 +41,12 @@ public class Question {
         this.id = id;
     }
 
-    public String getQuestionBody() {
-        return questionBody;
+    public String getBody() {
+        return body;
     }
 
-    public void setQuestionBody(String questionBody) {
-        this.questionBody = questionBody;
+    public void setBody(String body) {
+        this.body = body;
     }
 
     public boolean isAvailable() {
@@ -86,7 +86,12 @@ public class Question {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Question question = (Question) o;
-        return isAvailable == question.isAvailable && Objects.equals(id, question.id) && Objects.equals(questionBody, question.questionBody) && Objects.equals(creator, question.creator) && Objects.equals(level, question.level) && Objects.equals(module, question.module);
+        return isAvailable == question.isAvailable
+               && Objects.equals(id, question.id)
+               && Objects.equals(body, question.body)
+               && Objects.equals(creator, question.creator)
+               && Objects.equals(level, question.level)
+               && Objects.equals(module, question.module);
     }
 
     public static class Builder {
@@ -101,8 +106,8 @@ public class Question {
             return this;
         }
 
-        public Builder questionBody(String questionBody) {
-            question.questionBody = questionBody;
+        public Builder body(String body) {
+            question.body = body;
             return this;
         }
 

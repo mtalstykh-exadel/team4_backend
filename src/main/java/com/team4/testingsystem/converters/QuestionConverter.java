@@ -21,7 +21,10 @@ public class QuestionConverter {
     private final UsersServiceImpl usersService;
 
     @Autowired
-    public QuestionConverter(LevelServiceImpl levelService, QuestionServiceImpl questionService, ModuleServiceImpl moduleService, UsersServiceImpl usersService) {
+    public QuestionConverter(LevelServiceImpl levelService,
+                             QuestionServiceImpl questionService,
+                             ModuleServiceImpl moduleService,
+                             UsersServiceImpl usersService) {
         this.levelService = levelService;
         this.questionService = questionService;
         this.moduleService = moduleService;
@@ -31,7 +34,7 @@ public class QuestionConverter {
     public Question convertToEntity(QuestionDTO questionDTO, Long id) {
         Question question = questionService.getQuestionById(id);
         return new Question.Builder()
-                .questionBody(getQuestionBody(question, questionDTO))
+                .body(getQuestionBody(question, questionDTO))
                 .isAvailable(getAvailability(question, questionDTO))
                 .creator(usersService.getUserById(JwtTokenUtil.extractUserDetails().getId()))
                 .level(getLevel(question, questionDTO))
@@ -41,7 +44,7 @@ public class QuestionConverter {
 
     public Question convertToEntity(QuestionDTO questionDTO) {
         return new Question.Builder()
-                .questionBody(questionDTO.getQuestionBody())
+                .body(questionDTO.getQuestionBody())
                 .isAvailable(questionDTO.isAvailable())
                 .creator(usersService.getUserById(JwtTokenUtil.extractUserDetails().getId()))
                 .level(levelService.getLevelByName(questionDTO.getLevel()))
@@ -51,7 +54,7 @@ public class QuestionConverter {
 
     public QuestionDTO convertToDTO(Question question) {
         return new QuestionDTO.Builder()
-                .questionBody(question.getQuestionBody())
+                .body(question.getBody())
                 .isAvailable(question.isAvailable())
                 .creator(question.getCreator().getName())
                 .level(question.getLevel().getName())
@@ -61,7 +64,7 @@ public class QuestionConverter {
 
     private String getQuestionBody(Question question, QuestionDTO questionDTO) {
         if (questionDTO.getQuestionBody() == null) {
-            return question.getQuestionBody();
+            return question.getBody();
         }
         return questionDTO.getQuestionBody();
     }

@@ -44,7 +44,8 @@ public class QuestionController {
 
     @PutMapping("/{id}")
     public QuestionDTO updateQuestion(@RequestBody QuestionDTO questionDTO, @PathVariable("id") Long id) {
-        Question resultQuestion = questionService.updateQuestion(questionConverter.convertToEntity(questionDTO, id), id);
+        Question resultQuestion = questionService
+                .updateQuestion(questionConverter.convertToEntity(questionDTO, id), id);
         return questionConverter.convertToDTO(resultQuestion);
     }
 }

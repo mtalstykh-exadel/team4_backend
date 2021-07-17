@@ -60,7 +60,7 @@ class QuestionControllerTest {
         QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
         questionDTO.setQuestionBody("new question body");
         Question question = EntityCreatorUtil.createQuestion();
-        question.setQuestionBody(questionDTO.getQuestionBody());
+        question.setBody(questionDTO.getQuestionBody());
         Mockito.when(questionConverter.convertToEntity(questionDTO, question.getId())).thenReturn(question);
         Mockito.when(questionService.updateQuestion(question, question.getId())).thenReturn(question);
         Mockito.when(questionConverter.convertToDTO(question)).thenReturn(questionDTO);

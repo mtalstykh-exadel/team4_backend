@@ -54,7 +54,11 @@ public class QuestionDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         QuestionDTO that = (QuestionDTO) o;
-        return Objects.equals(questionBody, that.questionBody) && Objects.equals(isAvailable, that.isAvailable) && Objects.equals(creator, that.creator) && Objects.equals(level, that.level) && Objects.equals(module, that.module);
+        return Objects.equals(questionBody, that.questionBody)
+               && Objects.equals(isAvailable, that.isAvailable)
+               && Objects.equals(creator, that.creator)
+               && Objects.equals(level, that.level)
+               && Objects.equals(module, that.module);
     }
 
     public static class Builder {
@@ -64,8 +68,8 @@ public class QuestionDTO {
             this.questionDTO = new QuestionDTO();
         }
 
-        public Builder questionBody(String questionBody) {
-            questionDTO.questionBody = questionBody;
+        public Builder body(String body) {
+            questionDTO.questionBody = body;
             return this;
         }
 

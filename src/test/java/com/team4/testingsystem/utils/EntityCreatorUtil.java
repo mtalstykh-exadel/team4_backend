@@ -6,14 +6,13 @@ import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.entities.UserRole;
-import com.team4.testingsystem.security.CustomUserDetails;
 
 public class EntityCreatorUtil {
 
     public static Question createQuestion() {
         return new Question.Builder()
                 .id(1L)
-                .questionBody("some text")
+                .body("some text")
                 .module(createModule())
                 .level(createLevel())
                 .creator(createUser())
@@ -23,7 +22,7 @@ public class EntityCreatorUtil {
 
     public static QuestionDTO createQuestionDto() {
         return new QuestionDTO.Builder()
-                .questionBody("some text")
+                .body("some text")
                 .module("new module")
                 .level("new level")
                 .creator("name")

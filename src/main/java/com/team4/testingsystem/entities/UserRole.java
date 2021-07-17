@@ -54,7 +54,9 @@ public class UserRole {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserRole userRole = (UserRole) o;
-        return Objects.equals(id, userRole.id) && Objects.equals(roleName, userRole.roleName) && Objects.equals(users, userRole.users);
+        return Objects.equals(id, userRole.id)
+               && Objects.equals(roleName, userRole.roleName)
+               && Objects.equals(users, userRole.users);
     }
 
 }
