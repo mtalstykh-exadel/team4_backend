@@ -182,4 +182,12 @@
 
     </changeSet>
 
+    <changeSet id="update_status_type" author="Anlord241">
+        <modifyDataType
+                columnName="status"
+                newDataType="enum('NOT_STARTED', 'STARTED', 'FINISHED')"
+                schemaName = "language_testing"
+                tableName="test"/>
+    </changeSet>
+
 </databaseChangeLog>

@@ -1,7 +1,12 @@
 package com.team4.testingsystem.entities;
 
+import java.util.Collection;
+
+import javax.persistence.OneToMany;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Column;
@@ -17,6 +22,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @OneToMany(mappedBy = "user")
+    private Collection<Test> tests;
 
     @Column(name = "user_name")
     private String name;
@@ -80,6 +88,14 @@ public class User {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public Collection<Test> getTests() {
+        return tests;
+    }
+
+    public void setTests(Collection<Test> tests) {
+        this.tests = tests;
     }
 
     @Override
