@@ -187,15 +187,20 @@
         <modifyDataType
                 columnName="status"
                 newDataType="enum('NOT_STARTED', 'STARTED', 'FINISHED')"
-                schemaName = "language_testing"
+                schemaName="language_testing"
                 tableName="test"/>
     </changeSet>
 
     <changeSet id="delete_column" author="Darina">
-        <dropColumn tableName="question" columnName="points"/>
+        <dropColumn tableName="question"
+                    columnName="points"/>
     </changeSet>
 
     <changeSet id="update_column_name" author="Darina">
-        <renameColumn tableName="question" oldColumnName="is_avaliable" newColumnName="is_available"/>
+        <renameColumn tableName="question"
+                      oldColumnName="is_avaliable"
+                      newColumnName="is_available"
+                      columnDataType="boolean"/>
     </changeSet>
+
 </databaseChangeLog>
