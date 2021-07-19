@@ -8,7 +8,6 @@ import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.entities.UserRole;
 
 public class EntityCreatorUtil {
-
     public static Question createQuestion() {
         return new Question.Builder()
                 .id(1L)
