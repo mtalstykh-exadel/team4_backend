@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping(path = "/file_answer")
 public class FileAnswerController {
@@ -25,12 +23,12 @@ public class FileAnswerController {
 
     @GetMapping(path = "/{id}")
     public FileAnswer get(@RequestParam long id) {
-        return fileAnswerService.getById(id).get();
+        return fileAnswerService.getById(id);
     }
 
-    @PostMapping(path = "/")
-    public void create(@RequestParam String url, @RequestParam long questionId) {
-        fileAnswerService.create(url, questionId);
+    @PostMapping(path = "/{id}")
+    public void create(@RequestParam long id, @RequestParam String url, @RequestParam long questionId) {
+        fileAnswerService.create(id, url, questionId);
     }
 
     @PutMapping(path = "/{id}")
