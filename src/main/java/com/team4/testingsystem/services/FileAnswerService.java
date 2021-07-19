@@ -1,13 +1,13 @@
 package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.FileAnswer;
+import com.team4.testingsystem.exceptions.NotFoundException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -23,23 +23,24 @@ public class FileAnswerService {
         this.questionRepository = questionRepository;
     }
 
-    public void create(String url, long questionId) {
+    public void create(long id, String url, long questionId) {
         FileAnswer fileAnswer = new FileAnswer();
         try {
+            fileAnswer.setId(id);
             fileAnswer.setUrl(url);
             fileAnswer.setQuestion(questionRepository.findById(questionId).get());
             fileAnswerRepository.save(fileAnswer);
-        } catch (NoSuchElementException e) {
+        } catch (NotFoundException | NoSuchElementException e) {
             logger.log(Level.WARNING, e.getMessage());
         }
     }
 
-    public Optional<FileAnswer> getById(long id) {
+    public FileAnswer getById(long id) {
         try {
-            return fileAnswerRepository.findById(id);
-        } catch (NoSuchElementException e) {
+            return fileAnswerRepository.findById(id).get();
+        } catch (NotFoundException | NoSuchElementException e) {
             logger.log(Level.WARNING, e.getMessage());
-            throw new NoSuchElementException();
+            throw new NotFoundException();
         }
     }
 
@@ -48,8 +49,7 @@ public class FileAnswerService {
             FileAnswer fileAnswer = fileAnswerRepository.findById(id).get();
             fileAnswer.setUrl(url);
             fileAnswer.setQuestion(questionRepository.findById(questionId).get());
-            fileAnswerRepository.save(fileAnswer);
-        } catch (NoSuchElementException e) {
+        } catch (NotFoundException | NoSuchElementException e) {
             logger.log(Level.WARNING, e.getMessage());
         }
     }
@@ -57,7 +57,7 @@ public class FileAnswerService {
     public void removeById(long id) {
         try {
             fileAnswerRepository.deleteById(id);
-        } catch (NoSuchElementException e) {
+        } catch (NotFoundException e) {
             logger.log(Level.WARNING, e.getMessage());
         }
     }
