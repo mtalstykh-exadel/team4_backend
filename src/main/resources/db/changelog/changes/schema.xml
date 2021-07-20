@@ -184,9 +184,10 @@
     </changeSet>
 
     <changeSet id="update_status_type" author="Anlord241">
+        <sql>CREATE TYPE status AS ENUM ('NOT_STARTED', 'STARTED', 'FINISHED')</sql>
         <modifyDataType
                 columnName="status"
-                newDataType="enum('NOT_STARTED', 'STARTED', 'FINISHED')"
+                newDataType="status"
                 schemaName="language_testing"
                 tableName="test"/>
     </changeSet>
