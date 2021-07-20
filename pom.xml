@@ -24,6 +24,7 @@
         <aws-sdk.version>1.11.728</aws-sdk.version>
         <commons-io.version>2.11.0</commons-io.version>
         <mockito.version>3.8.0</mockito.version>
+        <postreqsl.version>42.2.23</postreqsl.version>
     </properties>
     <dependencies>
         <dependency>
@@ -101,7 +102,7 @@
 
         <dependency>
             <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk</artifactId>
+            <artifactId>aws-java-sdk-s3</artifactId>
             <version>${aws-sdk.version}</version>
         </dependency>
 
@@ -116,6 +117,12 @@
             <artifactId>mockito-inline</artifactId>
             <version>${mockito.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
         </dependency>
 
     </dependencies>
