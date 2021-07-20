@@ -27,6 +27,34 @@ public class FileAnswer {
     public FileAnswer() {
     }
 
+    public static Builder newBuilder() {
+        return new FileAnswer().new Builder();
+    }
+
+    public class Builder {
+        private Builder() {
+        }
+
+        public Builder setId(long id) {
+            FileAnswer.this.id = id;
+            return this;
+        }
+
+        public Builder setQuestion(Question question) {
+            FileAnswer.this.question = question;
+            return this;
+        }
+
+        public Builder setUrl(String url) {
+            FileAnswer.this.url = url;
+            return this;
+        }
+
+        public FileAnswer build() {
+            return FileAnswer.this;
+        }
+    }
+
     public long getId() {
         return id;
     }

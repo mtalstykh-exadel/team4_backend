@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +28,7 @@ public class FileAnswerController {
     }
 
     @PostMapping(path = "/{id}")
-    public void create(@RequestParam long id, @RequestParam String url, @RequestParam long questionId) {
+    public void create(@RequestParam long id, @RequestBody String url, @RequestBody long questionId) {
         fileAnswerService.create(id, url, questionId);
     }
 

@@ -35,14 +35,14 @@ class FileAnswerControllerTest {
 
     @Test
     void getSuccess() {
-        Mockito.when(fileAnswerController.get(Mockito.anyLong())).thenReturn(fileAnswer);
-        Assertions.assertEquals(fileAnswer, fileAnswerController.get(Mockito.anyLong()));
+        Mockito.when(fileAnswerController.get(fileAnswer.getId())).thenReturn(fileAnswer);
+        Assertions.assertEquals(fileAnswer, fileAnswerController.get(fileAnswer.getId()));
     }
 
     @Test
     void getFail() {
-        Mockito.when(fileAnswerController.get(Mockito.anyLong())).thenThrow(new NotFoundException());
-        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerController.get(Mockito.anyLong()));
+        Mockito.when(fileAnswerController.get(5L)).thenThrow(new NotFoundException());
+        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerController.get(5L));
     }
 
     @Test

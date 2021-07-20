@@ -33,14 +33,14 @@ class FileAnswerServiceTest {
 
     @Test
     void getByIdSuccess() {
-        Mockito.when(fileAnswerRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(fileAnswer));
-        Assertions.assertEquals(fileAnswer, fileAnswerService.getById(Mockito.anyLong()));
+        Mockito.when(fileAnswerRepository.findById(fileAnswer.getId())).thenReturn(Optional.of(fileAnswer));
+        Assertions.assertEquals(fileAnswer, fileAnswerService.getById(fileAnswer.getId()));
     }
 
     @Test
     void getByIdFail() {
-        Mockito.when(fileAnswerRepository.findById(Mockito.anyLong())).thenThrow(new NotFoundException());
-        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.getById(fileAnswer.getId()));
+        Mockito.when(fileAnswerRepository.findById(5L)).thenThrow(new NotFoundException());
+        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.getById(5L));
 
     }
 
@@ -56,10 +56,10 @@ class FileAnswerServiceTest {
     @Test
     void update() {
         Mockito.when(fileAnswerRepository.findById(fileAnswer.getId())).thenReturn(Optional.of(fileAnswer));
-        fileAnswer.setUrl("");
-        Question question = new Question();
-        question.setId(4L);
-        fileAnswer.setQuestion(question);
+        Question newQuestion = Mockito.mock(Question.class);
+        newQuestion.setId(Mockito.anyLong());
+        fileAnswer.setUrl(Mockito.anyString());
+        fileAnswer.setQuestion(newQuestion);
         fileAnswerService.update(fileAnswer.getId(), fileAnswer.getUrl(), fileAnswer.getQuestion().getId());
         Assertions.assertEquals(fileAnswer, fileAnswerService.getById(fileAnswer.getId()));
     }
