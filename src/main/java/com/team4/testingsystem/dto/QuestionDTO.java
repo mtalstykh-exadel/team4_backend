@@ -51,8 +51,12 @@ public class QuestionDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         QuestionDTO that = (QuestionDTO) o;
         return Objects.equals(questionBody, that.questionBody)
                && Objects.equals(isAvailable, that.isAvailable)

@@ -81,7 +81,7 @@ public class JwtTokenUtil {
         }
     }
 
-    public static CustomUserDetails extractUserDetails (){
+    public static CustomUserDetails extractUserDetails() {
         return (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
