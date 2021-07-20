@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
-@RequestMapping(path="/tests")
+@RequestMapping(path = "/tests")
 public class TestsController {
 
     @Autowired
@@ -55,12 +55,12 @@ public class TestsController {
         testsService.finish(testId, evaluation);
     }
 
-    @PutMapping(path="/{testId}")
+    @PutMapping(path = "/{testId}")
     public void updateEvaluation(@PathVariable("testId") long testId, @RequestParam int evaluation) {
         testsService.updateEvaluation(testId, evaluation);
     }
 
-    @DeleteMapping(path="/{id}")
+    @DeleteMapping(path = "/{id}")
     public void removeById(@PathVariable("id") long id) {
         testsService.removeById(id);
     }

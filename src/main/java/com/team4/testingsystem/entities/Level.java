@@ -36,8 +36,12 @@ public class Level {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Level level = (Level) o;
         return Objects.equals(id, level.id) && Objects.equals(name, level.name);
     }

@@ -49,23 +49,23 @@ public class TestsService {
         return test.getId();
     }
 
-    public void start(long id){
+    public void start(long id) {
 
-        if (testsRepository.start(LocalDateTime.now(), id) == 0){
+        if (testsRepository.start(LocalDateTime.now(), id) == 0) {
             throw new TestNotFoundException();
         }
     }
 
-    public void finish (long id, int evaluation){
+    public void finish(long id, int evaluation) {
 
-        if (testsRepository.finish(LocalDateTime.now(), evaluation, id) == 0){
+        if (testsRepository.finish(LocalDateTime.now(), evaluation, id) == 0) {
             throw new TestNotFoundException();
         }
     }
 
     public void updateEvaluation(long id, int newEvaluation) {
 
-        if (testsRepository.updateEvaluation(LocalDateTime.now(), newEvaluation, id) == 0){
+        if (testsRepository.updateEvaluation(LocalDateTime.now(), newEvaluation, id) == 0) {
             throw new TestNotFoundException();
         }
 
