@@ -24,6 +24,7 @@ public class CustomUserDetails implements UserDetails {
         this.roleName = user.getRole().getRoleName();
         this.roles = Collections.singletonList(new SimpleGrantedAuthority(this.roleName));
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;

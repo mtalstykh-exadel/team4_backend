@@ -1,6 +1,5 @@
 package com.team4.testingsystem.entities;
 
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -52,8 +51,12 @@ public class UserRole {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         UserRole userRole = (UserRole) o;
         return Objects.equals(id, userRole.id)
                && Objects.equals(roleName, userRole.roleName)
