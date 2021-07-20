@@ -1,7 +1,6 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.entities.FileAnswer;
-import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.exceptions.NotFoundException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,7 +25,7 @@ class FileAnswerControllerTest {
     @Mock
     private FileAnswerService fileAnswerService;
 
-    @Spy
+    @Mock
     private FileAnswer fileAnswer;
 
     @InjectMocks
@@ -35,40 +33,33 @@ class FileAnswerControllerTest {
 
     @Test
     void getSuccess() {
-        Mockito.when(fileAnswerController.get(fileAnswer.getId())).thenReturn(fileAnswer);
+        Mockito.when(fileAnswerService.getById(fileAnswer.getId())).thenReturn(fileAnswer);
         Assertions.assertEquals(fileAnswer, fileAnswerController.get(fileAnswer.getId()));
     }
 
     @Test
     void getFail() {
-        Mockito.when(fileAnswerController.get(5L)).thenThrow(new NotFoundException());
-        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerController.get(5L));
+        Mockito.when(fileAnswerService.getById(fileAnswer.getId())).thenThrow(new NotFoundException());
+        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerController.get(fileAnswer.getId()));
     }
 
     @Test
     void create() {
-        fileAnswer.setQuestion(Mockito.mock(Question.class));
-        Mockito.when(fileAnswerRepository.existsById(fileAnswer.getId())).thenReturn(false);
-        fileAnswerController.create(fileAnswer.getId(), fileAnswer.getUrl(), fileAnswer.getQuestion().getId());
-        Mockito.when(fileAnswerRepository.existsById(fileAnswer.getId())).thenReturn(true);
-        Assertions.assertTrue(fileAnswerRepository.existsById(fileAnswer.getId()));
+        Assertions.assertDoesNotThrow(() ->
+                fileAnswerController.create(1L, "", 10L));
+        Mockito.verify(fileAnswerService).create(1L, "", 10L);
     }
 
     @Test
     void update() {
-        Mockito.when(fileAnswerController.get(fileAnswer.getId())).thenReturn(fileAnswer);
-        Question newQuestion = Mockito.mock(Question.class);
-        newQuestion.setId(Mockito.anyLong());
-        fileAnswer.setUrl(Mockito.anyString());
-        fileAnswer.setQuestion(newQuestion);
-        fileAnswerController.update(fileAnswer.getId(), fileAnswer.getUrl(), fileAnswer.getQuestion().getId());
-        Assertions.assertEquals(fileAnswer, fileAnswerController.get(fileAnswer.getId()));
+        Assertions.assertDoesNotThrow(() ->
+                fileAnswerController.update(1L, "", 10L));
+        Mockito.verify(fileAnswerService).update(1L, "", 10L);
     }
 
     @Test
     void remove() {
-        fileAnswerController.remove(fileAnswer.getId());
-        Mockito.when(fileAnswerController.get(fileAnswer.getId())).thenThrow(new NotFoundException());
-        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerController.get(fileAnswer.getId()));
+        Assertions.assertDoesNotThrow(() -> fileAnswerController.remove(1L));
+        Mockito.verify(fileAnswerService).removeById(1L);
     }
 }

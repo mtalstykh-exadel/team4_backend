@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -25,8 +24,11 @@ class FileAnswerServiceTest {
     @Mock
     private FileAnswerRepository fileAnswerRepository;
 
-    @Spy
+    @Mock
     private FileAnswer fileAnswer;
+
+    @Mock
+    private Question question;
 
     @InjectMocks
     private FileAnswerService fileAnswerService;
@@ -45,28 +47,47 @@ class FileAnswerServiceTest {
     }
 
     @Test
-    void create() {
-        fileAnswer.setQuestion(Mockito.mock(Question.class));
-        Mockito.when(fileAnswerRepository.existsById(fileAnswer.getId())).thenReturn(false);
-        fileAnswerService.create(fileAnswer.getId(), fileAnswer.getUrl(), fileAnswer.getQuestion().getId());
+    void createSuccess() {
+        Mockito.when(questionRepository.findById(10L)).thenReturn(Optional.of(question));
+        Assertions.assertDoesNotThrow(() -> fileAnswerService.create(1L, "", 10L));
+    }
+
+    @Test
+    void createFail() {
+        Mockito.when(questionRepository.findById(10L)).thenThrow(NotFoundException.class);
+        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.create(1L, "", 10L));
+    }
+
+    @Test
+    void updateSuccess() {
+        Mockito.when(fileAnswerRepository.findById(1L)).thenReturn(Optional.of(fileAnswer));
+        Mockito.when(questionRepository.findById(10L)).thenReturn(Optional.of(question));
+        Assertions.assertDoesNotThrow(() -> fileAnswerService.update(1L, "", 10L));
+    }
+
+    @Test
+    void updateNotFoundInFileAnswerRepository() {
+        Mockito.when(fileAnswerRepository.findById(1L)).thenThrow(NotFoundException.class);
+        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.update(1L, "", 10L));
+    }
+
+    @Test
+    void updateNotFoundInQuestionRepository() {
+        Mockito.when(fileAnswerRepository.findById(1L)).thenReturn(Optional.of(fileAnswer));
+        Mockito.when(questionRepository.findById(10L)).thenThrow(NotFoundException.class);
+        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.update(1L, "", 10L));
+    }
+
+    @Test
+    void removeSuccess() {
         Mockito.when(fileAnswerRepository.existsById(fileAnswer.getId())).thenReturn(true);
-        Assertions.assertTrue(fileAnswerRepository.existsById(fileAnswer.getId()));
+        Assertions.assertDoesNotThrow(() -> fileAnswerService.removeById(fileAnswer.getId()));
+        Mockito.verify(fileAnswerRepository).deleteById(fileAnswer.getId());
     }
 
     @Test
-    void update() {
-        Mockito.when(fileAnswerRepository.findById(fileAnswer.getId())).thenReturn(Optional.of(fileAnswer));
-        Question newQuestion = Mockito.mock(Question.class);
-        newQuestion.setId(Mockito.anyLong());
-        fileAnswer.setUrl(Mockito.anyString());
-        fileAnswer.setQuestion(newQuestion);
-        fileAnswerService.update(fileAnswer.getId(), fileAnswer.getUrl(), fileAnswer.getQuestion().getId());
-        Assertions.assertEquals(fileAnswer, fileAnswerService.getById(fileAnswer.getId()));
-    }
-
-    @Test
-    void remove() {
-        fileAnswerService.removeById(fileAnswer.getId());
-        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.getById(fileAnswer.getId()));
+    void removeFail() {
+        Mockito.when(fileAnswerRepository.existsById(fileAnswer.getId())).thenReturn(false);
+        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.removeById(fileAnswer.getId()));
     }
 }

@@ -19,10 +19,10 @@ public class FileAnswerService {
     }
 
     public void create(long id, String url, long questionId) {
-        FileAnswer fileAnswer = FileAnswer.newBuilder()
-                .setId(id)
-                .setUrl(url)
-                .setQuestion(questionRepository.findById(questionId)
+        FileAnswer fileAnswer = FileAnswer.builder()
+                .id(id)
+                .url(url)
+                .question(questionRepository.findById(questionId)
                         .orElseThrow(NotFoundException::new))
                 .build();
         fileAnswerRepository.save(fileAnswer);
@@ -34,19 +34,19 @@ public class FileAnswerService {
     }
 
     public void update(long id, String url, long questionId) {
-        FileAnswer fileAnswer = FileAnswer.newBuilder()
-                .setId(fileAnswerRepository.findById(id)
+        FileAnswer fileAnswer = FileAnswer.builder()
+                .id(fileAnswerRepository.findById(id)
                         .orElseThrow(NotFoundException::new)
                         .getId())
-                .setUrl(url)
-                .setQuestion(questionRepository.findById(questionId)
+                .url(url)
+                .question(questionRepository.findById(questionId)
                         .orElseThrow(NotFoundException::new))
                 .build();
         fileAnswerRepository.save(fileAnswer);
     }
 
     public void removeById(long id) {
-        if (!fileAnswerRepository.existsById(id)) {
+        if (fileAnswerRepository.removeById(id) == 0) {
             throw new NotFoundException();
         }
         fileAnswerRepository.deleteById(id);

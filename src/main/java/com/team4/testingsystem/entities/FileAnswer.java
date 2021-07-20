@@ -27,34 +27,6 @@ public class FileAnswer {
     public FileAnswer() {
     }
 
-    public static Builder newBuilder() {
-        return new FileAnswer().new Builder();
-    }
-
-    public class Builder {
-        private Builder() {
-        }
-
-        public Builder setId(long id) {
-            FileAnswer.this.id = id;
-            return this;
-        }
-
-        public Builder setQuestion(Question question) {
-            FileAnswer.this.question = question;
-            return this;
-        }
-
-        public Builder setUrl(String url) {
-            FileAnswer.this.url = url;
-            return this;
-        }
-
-        public FileAnswer build() {
-            return FileAnswer.this;
-        }
-    }
-
     public long getId() {
         return id;
     }
@@ -77,5 +49,36 @@ public class FileAnswer {
 
     public void setQuestion(Question question) {
         this.question = question;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private final FileAnswer fileAnswer;
+
+        public Builder() {
+            this.fileAnswer = new FileAnswer();
+        }
+
+        public Builder id(long id) {
+            fileAnswer.id = id;
+            return this;
+        }
+
+        public Builder question(Question question) {
+            fileAnswer.question = question;
+            return this;
+        }
+
+        public Builder url(String url) {
+            fileAnswer.url = url;
+            return this;
+        }
+
+        public FileAnswer build() {
+            return fileAnswer;
+        }
     }
 }
