@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path="/content_files")
+@RequestMapping(path = "/content_files")
 public class ContentFilesController {
 
     @Autowired
@@ -36,12 +36,12 @@ public class ContentFilesController {
         contentFilesService.add(cfr.getUrl(), cfr.getQuestionId());
     }
 
-    @PutMapping(path="/{fileId}")
+    @PutMapping(path = "/{fileId}")
     public void updateUrl(@PathVariable("fileId") long id, @RequestParam String url) {
         contentFilesService.updateURL(id, url);
     }
 
-    @DeleteMapping(path="/{id}")
+    @DeleteMapping(path = "/{id}")
     public void removeById(@PathVariable("id") long id) {
         contentFilesService.removeById(id);
     }

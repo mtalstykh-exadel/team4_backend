@@ -23,7 +23,6 @@ public class ContentFilesService {
     }
 
 
-
     public Iterable<ContentFile> getAll() {
         return contentFilesRepository.findAll();
     }
@@ -32,7 +31,7 @@ public class ContentFilesService {
         return contentFilesRepository.findById(id).orElseThrow(FileNotFoundException::new);
     }
 
-    public void add(String url, Long questionId){
+    public void add(String url, Long questionId) {
         ContentFile contentFile = new ContentFile();
 
         Question question = questionRepository.findById(questionId).orElseThrow(QuestionNotFoundException::new);
@@ -44,19 +43,19 @@ public class ContentFilesService {
         contentFilesRepository.save(contentFile);
     }
 
-    public void updateURL(Long id, String newUrl){
-        if (contentFilesRepository.changeUrl(newUrl, id) == 0){
+    public void updateURL(Long id, String newUrl) {
+        if (contentFilesRepository.changeUrl(newUrl, id) == 0) {
             throw new FileNotFoundException();
         }
     }
 
-    public void removeById(Long id){
+
+    public void removeById(Long id) {
         if (!contentFilesRepository.existsById(id)) {
             throw new FileNotFoundException();
         }
 
         contentFilesRepository.deleteById(id);
     }
-
 
 }
