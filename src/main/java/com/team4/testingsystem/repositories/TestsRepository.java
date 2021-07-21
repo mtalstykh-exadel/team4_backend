@@ -30,5 +30,5 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     @Transactional
     @Modifying
     @Query (value = "DELETE FROM Test t where t.id = ?1")
-    int removeById (Long id);
+    int removeById(Long id);
 }
