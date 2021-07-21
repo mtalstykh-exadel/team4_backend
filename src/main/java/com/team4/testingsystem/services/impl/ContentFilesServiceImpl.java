@@ -18,8 +18,8 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     private QuestionRepository questionRepository;
 
     @Autowired
-    public ContentFilesServiceImpl
-            (ContentFilesRepository contentFilesRepository, QuestionRepository questionRepository) {
+    public ContentFilesServiceImpl(ContentFilesRepository contentFilesRepository,
+                                   QuestionRepository questionRepository) {
         this.contentFilesRepository = contentFilesRepository;
         this.questionRepository = questionRepository;
     }
