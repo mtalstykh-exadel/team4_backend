@@ -1,7 +1,7 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.entities.FileAnswer;
-import com.team4.testingsystem.services.Impl.FileAnswerServiceImpl;
+import com.team4.testingsystem.services.impl.FileAnswerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
