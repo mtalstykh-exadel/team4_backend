@@ -212,6 +212,7 @@
                     <targetTests>
                         <param>com.team4.testingsystem.*</param>
                     </targetTests>
+                    <mutationThreshold>60</mutationThreshold>
                 </configuration>
             </plugin>
 
