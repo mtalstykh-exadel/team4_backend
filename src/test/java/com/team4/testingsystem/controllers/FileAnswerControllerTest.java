@@ -4,7 +4,7 @@ import com.team4.testingsystem.entities.FileAnswer;
 import com.team4.testingsystem.exceptions.NotFoundException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
-import com.team4.testingsystem.services.FileAnswerService;
+import com.team4.testingsystem.services.Impl.FileAnswerServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +23,7 @@ class FileAnswerControllerTest {
     private FileAnswerRepository fileAnswerRepository;
 
     @Mock
-    private FileAnswerService fileAnswerService;
+    private FileAnswerServiceImpl fileAnswerService;
 
     @Mock
     private FileAnswer fileAnswer;
