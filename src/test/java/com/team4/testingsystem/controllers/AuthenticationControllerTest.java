@@ -3,7 +3,7 @@ package com.team4.testingsystem.controllers;
 import com.team4.testingsystem.dto.AuthenticationRequest;
 import com.team4.testingsystem.exceptions.IncorrectCredentialsException;
 import com.team4.testingsystem.security.CustomUserDetails;
-import com.team4.testingsystem.services.AuthenticationService;
+import com.team4.testingsystem.services.impl.AuthenticationServiceImpl;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +18,7 @@ import org.springframework.security.core.Authentication;
 @ExtendWith(MockitoExtension.class)
 class AuthenticationControllerTest {
     @Mock
-    private AuthenticationService authenticationService;
+    private AuthenticationServiceImpl authenticationService;
 
     @InjectMocks
     private AuthenticationController authenticationController;

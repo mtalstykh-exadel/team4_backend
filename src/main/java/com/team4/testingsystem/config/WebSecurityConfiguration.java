@@ -1,7 +1,7 @@
 package com.team4.testingsystem.config;
 
 import com.team4.testingsystem.security.JwtRequestFilter;
-import com.team4.testingsystem.services.CustomUserDetailsService;
+import com.team4.testingsystem.services.impl.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

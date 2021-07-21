@@ -2,7 +2,7 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.entities.Test;
 
-import com.team4.testingsystem.services.TestsService;
+import com.team4.testingsystem.services.impl.TestsServiceImpl;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 public class TestsController {
 
     @Autowired
-    private TestsService testsService;
+    private TestsServiceImpl testsService;
 
     @GetMapping(path = "/")
     public Iterable<Test> getAll() {

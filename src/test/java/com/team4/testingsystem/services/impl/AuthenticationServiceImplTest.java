@@ -1,4 +1,4 @@
-package com.team4.testingsystem.services;
+package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.exceptions.IncorrectCredentialsException;
 import com.team4.testingsystem.security.CustomUserDetails;
@@ -16,7 +16,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 @ExtendWith(MockitoExtension.class)
-class AuthenticationServiceTest {
+class AuthenticationServiceImplTest {
     @Mock
     private AuthenticationManager authenticationManager;
 
@@ -27,7 +27,7 @@ class AuthenticationServiceTest {
     private JwtTokenUtil jwtTokenUtil;
 
     @InjectMocks
-    private AuthenticationService authenticationService;
+    private AuthenticationServiceImpl authenticationService;
 
     @Mock
     private CustomUserDetails userDetails;

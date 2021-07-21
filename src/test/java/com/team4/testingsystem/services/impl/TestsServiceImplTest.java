@@ -1,4 +1,4 @@
-package com.team4.testingsystem.services;
+package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class TestsServiceTest {
+class TestsServiceImplTest {
 
     @Mock
     Test test;
@@ -43,7 +43,7 @@ class TestsServiceTest {
     TestsRepository testsRepository;
 
     @InjectMocks
-    TestsService testsService;
+    TestsServiceImpl testsService;
 
 
     @org.junit.jupiter.api.Test
@@ -112,7 +112,7 @@ class TestsServiceTest {
 
         verify(testsRepository).start(any(LocalDateTime.class), anyLong());
 
-        Assertions.assertDoesNotThrow(()->testsService.start(1L));
+        Assertions.assertDoesNotThrow(()-> testsService.start(1L));
     }
 
     @org.junit.jupiter.api.Test
@@ -132,7 +132,7 @@ class TestsServiceTest {
 
         verify(testsRepository).finish(any(LocalDateTime.class), anyInt(), anyLong());
 
-        Assertions.assertDoesNotThrow(()->testsService.finish(1L, 1));
+        Assertions.assertDoesNotThrow(()-> testsService.finish(1L, 1));
     }
 
     @org.junit.jupiter.api.Test
@@ -153,7 +153,7 @@ class TestsServiceTest {
 
         verify(testsRepository).updateEvaluation(any(LocalDateTime.class), anyInt(), anyLong());
 
-        Assertions.assertDoesNotThrow(()->testsService.updateEvaluation(1L, 1));
+        Assertions.assertDoesNotThrow(()-> testsService.updateEvaluation(1L, 1));
     }
 
     @org.junit.jupiter.api.Test
