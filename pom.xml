@@ -24,6 +24,7 @@
         <aws-sdk.version>1.11.728</aws-sdk.version>
         <commons-io.version>2.11.0</commons-io.version>
         <mockito.version>3.8.0</mockito.version>
+        <pmd.version>3.14.0</pmd.version>
     </properties>
     <dependencies>
         <dependency>
@@ -168,6 +169,24 @@
                     <!-- Activate the use of TCP to transmit events to the plugin -->
                     <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${pmd.version}</version>
+                <configuration>
+                    <printFailingErrors>true</printFailingErrors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                            <goal>cpd-check</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
