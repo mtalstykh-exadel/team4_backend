@@ -18,7 +18,7 @@ public class FileAnswer {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "question_id", nullable = false, referencedColumnName = "id")
     private Question question;
 
     @Column(name = "url")

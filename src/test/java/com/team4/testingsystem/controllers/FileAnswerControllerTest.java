@@ -1,5 +1,6 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.dto.FileAnswerRequest;
 import com.team4.testingsystem.entities.FileAnswer;
 import com.team4.testingsystem.exceptions.NotFoundException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
@@ -45,16 +46,16 @@ class FileAnswerControllerTest {
 
     @Test
     void create() {
-        Assertions.assertDoesNotThrow(() ->
-                fileAnswerController.create(1L, "", 10L));
-        Mockito.verify(fileAnswerService).create(1L, "", 10L);
+        FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(1L).build();
+        Assertions.assertDoesNotThrow(() -> fileAnswerController.create(fileAnswerRequest));
+        Mockito.verify(fileAnswerService).create(fileAnswerRequest);
     }
 
     @Test
     void update() {
-        Assertions.assertDoesNotThrow(() ->
-                fileAnswerController.update(1L, "", 10L));
-        Mockito.verify(fileAnswerService).update(1L, "", 10L);
+        FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(1L).build();
+        Assertions.assertDoesNotThrow(() -> fileAnswerController.update(1L, fileAnswerRequest));
+        Mockito.verify(fileAnswerService).update(1L, fileAnswerRequest);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.dto.FileAnswerRequest;
 import com.team4.testingsystem.entities.FileAnswer;
 import com.team4.testingsystem.services.impl.FileAnswerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,14 @@ public class FileAnswerController {
         return fileAnswerService.getById(id);
     }
 
-    @PostMapping(path = "/{id}")
-    public void create(@PathVariable("id") long id, @RequestBody String url, @RequestBody long questionId) {
-        fileAnswerService.create(id, url, questionId);
+    @PostMapping(path = "/")
+    public void create(@RequestBody FileAnswerRequest fileAnswerRequest) {
+        fileAnswerService.create(fileAnswerRequest);
     }
 
     @PutMapping(path = "/{id}")
-    public void update(@PathVariable("id") long id, String url, long questionId) {
-        fileAnswerService.update(id, url, questionId);
+    public void update(@PathVariable("id") long id, @RequestBody FileAnswerRequest fileAnswerRequest) {
+        fileAnswerService.update(id, fileAnswerRequest);
     }
 
     @DeleteMapping(path = "/{id}")

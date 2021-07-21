@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.dto.FileAnswerRequest;
 import com.team4.testingsystem.entities.FileAnswer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.exceptions.NotFoundException;
@@ -48,36 +49,41 @@ class FileAnswerServiceImplTest {
 
     @Test
     void createSuccess() {
-        Mockito.when(questionRepository.findById(10L)).thenReturn(Optional.of(question));
-        Assertions.assertDoesNotThrow(() -> fileAnswerService.create(1L, "", 10L));
+        FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(1L).build();
+        Mockito.when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
+        Assertions.assertDoesNotThrow(() -> fileAnswerService.create(fileAnswerRequest));
     }
 
     @Test
     void createFail() {
-        Mockito.when(questionRepository.findById(10L)).thenThrow(NotFoundException.class);
-        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.create(1L, "", 10L));
+        FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(1L).build();
+        Mockito.when(questionRepository.findById(1L)).thenThrow(NotFoundException.class);
+        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.create(fileAnswerRequest));
     }
 
     @Test
     void updateSuccess() {
+        FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(10L).build();
         Mockito.when(fileAnswerRepository.findById(1L)).thenReturn(Optional.of(fileAnswer));
         Mockito.when(questionRepository.findById(10L)).thenReturn(Optional.of(question));
-        Assertions.assertDoesNotThrow(() -> fileAnswerService.update(1L, "", 10L));
+        Assertions.assertDoesNotThrow(() -> fileAnswerService.update(1L, fileAnswerRequest));
         Mockito.verify(fileAnswerRepository).save(Mockito.any());
     }
 
     @Test
     void updateNotFoundInFileAnswerRepository() {
+        FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(10L).build();
         Mockito.when(fileAnswerRepository.findById(1L)).thenThrow(NotFoundException.class);
-        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.update(1L, "", 10L));
+        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.update(1L, fileAnswerRequest));
         Mockito.verify(fileAnswerRepository, Mockito.times(0)).save(Mockito.any());
     }
 
     @Test
     void updateNotFoundInQuestionRepository() {
+        FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(10L).build();
         Mockito.when(fileAnswerRepository.findById(1L)).thenReturn(Optional.of(fileAnswer));
         Mockito.when(questionRepository.findById(10L)).thenThrow(NotFoundException.class);
-        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.update(1L, "", 10L));
+        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.update(1L, fileAnswerRequest));
         Mockito.verify(fileAnswerRepository, Mockito.times(0)).save(Mockito.any());
     }
 

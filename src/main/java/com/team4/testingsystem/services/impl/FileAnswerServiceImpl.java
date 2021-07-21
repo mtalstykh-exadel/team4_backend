@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.dto.FileAnswerRequest;
 import com.team4.testingsystem.entities.FileAnswer;
 import com.team4.testingsystem.exceptions.NotFoundException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
@@ -19,11 +20,10 @@ public class FileAnswerServiceImpl implements FileAnswerService {
         this.questionRepository = questionRepository;
     }
 
-    public void create(long id, String url, long questionId) {
+    public void create(FileAnswerRequest fileAnswerRequest) {
         FileAnswer fileAnswer = FileAnswer.builder()
-                .id(id)
-                .url(url)
-                .question(questionRepository.findById(questionId)
+                .url(fileAnswerRequest.getUrl())
+                .question(questionRepository.findById(fileAnswerRequest.getQuestionId())
                         .orElseThrow(NotFoundException::new))
                 .build();
         fileAnswerRepository.save(fileAnswer);
@@ -34,13 +34,13 @@ public class FileAnswerServiceImpl implements FileAnswerService {
                 .orElseThrow(NotFoundException::new);
     }
 
-    public void update(long id, String url, long questionId) {
+    public void update(long id, FileAnswerRequest fileAnswerRequest) {
         FileAnswer fileAnswer = FileAnswer.builder()
                 .id(fileAnswerRepository.findById(id)
                         .orElseThrow(NotFoundException::new)
                         .getId())
-                .url(url)
-                .question(questionRepository.findById(questionId)
+                .url(fileAnswerRequest.getUrl())
+                .question(questionRepository.findById(fileAnswerRequest.getQuestionId())
                         .orElseThrow(NotFoundException::new))
                 .build();
         fileAnswerRepository.save(fileAnswer);
