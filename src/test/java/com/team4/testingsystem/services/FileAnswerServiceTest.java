@@ -63,12 +63,14 @@ class FileAnswerServiceTest {
         Mockito.when(fileAnswerRepository.findById(1L)).thenReturn(Optional.of(fileAnswer));
         Mockito.when(questionRepository.findById(10L)).thenReturn(Optional.of(question));
         Assertions.assertDoesNotThrow(() -> fileAnswerService.update(1L, "", 10L));
+        Mockito.verify(fileAnswerRepository).save(Mockito.any());
     }
 
     @Test
     void updateNotFoundInFileAnswerRepository() {
         Mockito.when(fileAnswerRepository.findById(1L)).thenThrow(NotFoundException.class);
         Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.update(1L, "", 10L));
+        Mockito.verify(fileAnswerRepository, Mockito.times(0)).save(Mockito.any());
     }
 
     @Test
@@ -76,6 +78,7 @@ class FileAnswerServiceTest {
         Mockito.when(fileAnswerRepository.findById(1L)).thenReturn(Optional.of(fileAnswer));
         Mockito.when(questionRepository.findById(10L)).thenThrow(NotFoundException.class);
         Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.update(1L, "", 10L));
+        Mockito.verify(fileAnswerRepository, Mockito.times(0)).save(Mockito.any());
     }
 
     @Test

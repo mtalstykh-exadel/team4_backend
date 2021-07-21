@@ -46,7 +46,7 @@ public class FileAnswerService {
     }
 
     public void removeById(long id) {
-        if (fileAnswerRepository.removeById(id) == 0) {
+        if (!fileAnswerRepository.existsById(id)) {
             throw new NotFoundException();
         }
         fileAnswerRepository.deleteById(id);
