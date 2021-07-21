@@ -51,11 +51,9 @@ public class ContentFilesService {
 
 
     public void removeById(Long id) {
-        if (!contentFilesRepository.existsById(id)) {
+        if (contentFilesRepository.removeById(id) == 0) {
             throw new FileNotFoundException();
         }
-
-        contentFilesRepository.deleteById(id);
     }
 
 }

@@ -14,4 +14,9 @@ public interface ContentFilesRepository extends CrudRepository<ContentFile, Long
     @Modifying
     @Query(value = "UPDATE ContentFile cf SET cf.url = ?1 WHERE cf.id = ?2")
     int changeUrl(String url, Long id);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE from ContentFile cf WHERE cf.id = ?1")
+    int removeById(Long id);
 }

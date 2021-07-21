@@ -3,7 +3,6 @@ package com.team4.testingsystem.controllers;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
-import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
@@ -59,9 +58,9 @@ class ContentFilesControllerTest {
 
     @Test
     void addSuccess() {
-        contentFilesController.add(EntityCreatorUtil.createContentFileRequest(1L, "https://zaycev.net/"));
+        contentFilesController.add(EntityCreatorUtil.createContentFileRequest(1L, "https://best_listening_audios.com/"));
 
-        verify(contentFilesService).add("https://zaycev.net/", 1L);
+        verify(contentFilesService).add("https://best_listening_audios.com/", 1L);
     }
 
     @Test
@@ -78,9 +77,9 @@ class ContentFilesControllerTest {
     @Test
     void updateUrlSuccess() {
 
-        contentFilesController.updateUrl(1L, "https://zaycev.net/");
+        contentFilesController.updateUrl(1L, "https://best_listening_audios.com/");
 
-        verify(contentFilesService).updateURL(1L, "https://zaycev.net/");
+        verify(contentFilesService).updateURL(1L, "https://best_listening_audios.com/");
     }
 
     @Test

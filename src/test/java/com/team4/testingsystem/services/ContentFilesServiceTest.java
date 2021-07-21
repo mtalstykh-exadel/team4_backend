@@ -83,11 +83,11 @@ class ContentFilesServiceTest {
     void updateUrlSuccess(){
         Mockito.when(contentFilesRepository.changeUrl("https://zaycev.net/", 1L)).thenReturn(1);
 
-        contentFilesService.updateURL(1L, "https://zaycev.net/");
+        contentFilesService.updateURL(1L, "https://best_listening_audios.com/");
 
-        verify(contentFilesRepository).changeUrl("https://zaycev.net/", 1L);
+        verify(contentFilesRepository).changeUrl("https://best_listening_audios.com/", 1L);
 
-        Assertions.assertDoesNotThrow(()->contentFilesService.updateURL(1L, "https://zaycev.net/"));
+        Assertions.assertDoesNotThrow(()->contentFilesService.updateURL(1L, "https://best_listening_audios.com/"));
     }
 
     @Test
@@ -101,18 +101,20 @@ class ContentFilesServiceTest {
     @Test
     void removeSuccess() {
 
-        Mockito.when(contentFilesRepository.existsById(1L)).thenReturn(true);
+        Mockito.when(contentFilesRepository.removeById(1L)).thenReturn(1);
 
         contentFilesService.removeById(1L);
 
-        verify(contentFilesRepository).deleteById(1L);
+        verify(contentFilesRepository).removeById(1L);
+
+        Assertions.assertDoesNotThrow(()->contentFilesService.removeById(1L));
 
     }
 
     @Test
     void removeFail() {
 
-        Mockito.when(contentFilesRepository.existsById(42L)).thenReturn(false);
+        Mockito.when(contentFilesRepository.removeById(42L)).thenReturn(0);
 
         Assertions.assertThrows(FileNotFoundException.class, () -> contentFilesService.removeById(42L));
 
