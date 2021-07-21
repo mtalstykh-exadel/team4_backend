@@ -184,7 +184,6 @@
                             <goal>check</goal>
                             <goal>cpd-check</goal>
                         </goals>
-                        <phase>package</phase>
                     </execution>
                 </executions>
             </plugin>
