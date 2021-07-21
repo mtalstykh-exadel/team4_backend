@@ -9,8 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.util.Objects;
@@ -113,5 +111,10 @@ public class User {
                && Objects.equals(password, user.password)
                && Objects.equals(role, user.role)
                && Objects.equals(language, user.language);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, tests, name, login, password, role, language);
     }
 }

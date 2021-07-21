@@ -65,6 +65,11 @@ public class QuestionDTO {
                && Objects.equals(module, that.module);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(questionBody, isAvailable, creator, level, module);
+    }
+
     public static class Builder {
         private QuestionDTO questionDTO;
 
