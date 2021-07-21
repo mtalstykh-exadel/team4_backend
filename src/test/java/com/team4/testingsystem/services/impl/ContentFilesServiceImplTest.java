@@ -1,4 +1,4 @@
-package com.team4.testingsystem.services;
+package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
@@ -6,6 +6,7 @@ import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
+import com.team4.testingsystem.services.impl.ContentFilesServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class ContentFilesServiceTest {
+class ContentFilesServiceImplTest {
 
     @Mock
     ContentFile contentFile;
@@ -37,7 +38,7 @@ class ContentFilesServiceTest {
     ContentFilesRepository contentFilesRepository;
 
     @InjectMocks
-    ContentFilesService contentFilesService;
+    ContentFilesServiceImpl contentFilesService;
 
     @Test
     void getAllSuccess() {
@@ -66,7 +67,7 @@ class ContentFilesServiceTest {
     void addSuccess(){
         Mockito.when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
 
-        contentFilesService.add("https://zaycev.net/",1L);
+        contentFilesService.add("https://best_listening_audios.com/",1L);
 
         verify(contentFilesRepository).save(any());
     }
@@ -81,7 +82,7 @@ class ContentFilesServiceTest {
 
     @Test
     void updateUrlSuccess(){
-        Mockito.when(contentFilesRepository.changeUrl("https://zaycev.net/", 1L)).thenReturn(1);
+        Mockito.when(contentFilesRepository.changeUrl("https://best_listening_audios.com/", 1L)).thenReturn(1);
 
         contentFilesService.updateURL(1L, "https://best_listening_audios.com/");
 
