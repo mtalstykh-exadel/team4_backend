@@ -15,8 +15,6 @@
     <description>English proficiency testing system</description>
     <properties>
         <java.version>11</java.version>
-        <jacoco.minimum>0.1</jacoco.minimum>
-        <jacoco.version>0.8.7</jacoco.version>
         <liquibase.version>4.4.0</liquibase.version>
         <checkstyle.version>3.1.1</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
@@ -25,7 +23,10 @@
         <commons-io.version>2.11.0</commons-io.version>
         <mockito.version>3.8.0</mockito.version>
         <pmd.version>3.14.0</pmd.version>
+        <pitest.version>1.6.7</pitest.version>
+        <pitest.junit.version>0.14</pitest.junit.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -124,6 +125,18 @@
             <artifactId>postgresql</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest</artifactId>
+            <version>${pitest.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-junit5-plugin</artifactId>
+            <version>${pitest.junit.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -189,44 +202,17 @@
             </plugin>
 
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco.version}</version>
-                <executions>
-                    <execution>
-                        <id>default-prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <rule>
-                                    <element>BUNDLE</element>
-                                    <limits>
-                                        <limit>
-                                            <counter>COMPLEXITY</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>${jacoco.minimum}</minimum>
-                                        </limit>
-                                    </limits>
-                                </rule>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>${pitest.version}</version>
+                <configuration>
+                    <targetClasses>
+                        <param>com.team4.testingsystem.*</param>
+                    </targetClasses>
+                    <targetTests>
+                        <param>com.team4.testingsystem.*</param>
+                    </targetTests>
+                </configuration>
             </plugin>
 
             <plugin>
