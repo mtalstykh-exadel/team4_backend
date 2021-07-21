@@ -2,7 +2,6 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.exceptions.LevelNotFoundException;
-import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.LevelRepository;
 import com.team4.testingsystem.services.LevelService;
 import org.springframework.beans.factory.annotation.Autowired;
