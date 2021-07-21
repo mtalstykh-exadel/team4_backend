@@ -36,13 +36,11 @@ public class ContentFilesServiceImpl implements ContentFilesService {
 
     @Override
     public void add(String url, Long questionId) {
-        ContentFile contentFile = new ContentFile();
+
 
         Question question = questionRepository.findById(questionId).orElseThrow(QuestionNotFoundException::new);
 
-        contentFile.setUrl(url);
-
-        contentFile.setQuestion(question);
+        ContentFile contentFile = new ContentFile(question, url);
 
         contentFilesRepository.save(contentFile);
     }

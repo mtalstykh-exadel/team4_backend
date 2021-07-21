@@ -2,6 +2,7 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.dto.ContentFileRequest;
 import com.team4.testingsystem.entities.ContentFile;
+import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.impl.ContentFilesServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,8 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/content_files")
 public class ContentFilesController {
 
+    private ContentFilesService contentFilesService;
+
     @Autowired
-    private ContentFilesServiceImpl contentFilesService;
+    public ContentFilesController(ContentFilesService contentFilesService) {
+        this.contentFilesService = contentFilesService;
+    }
 
     @GetMapping(path = "/")
     public Iterable<ContentFile> getAll() {

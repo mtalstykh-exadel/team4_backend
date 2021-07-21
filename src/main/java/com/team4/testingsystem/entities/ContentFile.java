@@ -28,6 +28,11 @@ public class ContentFile {
     @Column(name = "url")
     private String url;
 
+    public ContentFile(Question question, String url) {
+        this.question = question;
+        this.url = url;
+    }
+
     public Long getId() {
         return id;
     }
