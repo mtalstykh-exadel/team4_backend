@@ -1,7 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.exceptions.NotFoundException;
+import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Question getQuestionById(Long id) {
-        return questionRepository.findById(id).orElseThrow(NotFoundException::new);
+        return questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
     }
 
     @Override

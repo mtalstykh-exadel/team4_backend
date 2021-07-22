@@ -1,7 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Module;
-import com.team4.testingsystem.exceptions.NotFoundException;
+import com.team4.testingsystem.exceptions.ModuleNotFoundException;
 import com.team4.testingsystem.repositories.ModuleRepository;
 import com.team4.testingsystem.services.ModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +18,11 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public Module getModuleById(Long id) {
-        return moduleRepository.findById(id).orElseThrow(NotFoundException::new);
+        return moduleRepository.findById(id).orElseThrow(ModuleNotFoundException::new);
     }
 
     @Override
     public Module getModuleByName(String name) {
-        return moduleRepository.findByName(name).orElseThrow(NotFoundException::new);
+        return moduleRepository.findByName(name).orElseThrow(ModuleNotFoundException::new);
     }
 }

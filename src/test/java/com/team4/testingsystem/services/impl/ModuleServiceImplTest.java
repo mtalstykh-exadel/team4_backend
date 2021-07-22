@@ -1,7 +1,8 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Module;
-import com.team4.testingsystem.exceptions.NotFoundException;
+import com.team4.testingsystem.exceptions.ModuleNotFoundException;
+import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.ModuleRepository;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
@@ -32,8 +33,8 @@ class ModuleServiceImplTest {
 
     @Test
     void moduleByIdNotFoundException() {
-        Mockito.when(moduleRepository.findById(1L)).thenThrow(new NotFoundException());
-        Assertions.assertThrows(NotFoundException.class, () -> moduleService.getModuleById(1L));
+        Mockito.when(moduleRepository.findById(1L)).thenThrow(new ModuleNotFoundException());
+        Assertions.assertThrows(ModuleNotFoundException.class, () -> moduleService.getModuleById(1L));
     }
 
     @Test
@@ -47,7 +48,7 @@ class ModuleServiceImplTest {
 
     @Test
     void moduleByNameNotFoundException() {
-        Mockito.when(moduleRepository.findByName("name")).thenThrow(new NotFoundException());
-        Assertions.assertThrows(NotFoundException.class, () -> moduleService.getModuleByName("name"));
+        Mockito.when(moduleRepository.findByName("name")).thenThrow(new ModuleNotFoundException());
+        Assertions.assertThrows(ModuleNotFoundException.class, () -> moduleService.getModuleByName("name"));
     }
 }

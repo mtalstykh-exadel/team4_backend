@@ -1,7 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.exceptions.NotFoundException;
+import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
@@ -33,8 +33,8 @@ class QuestionServiceImplTest {
 
     @Test
     void questionByIdNotFoundException() {
-        Mockito.when(questionRepository.findById(1L)).thenThrow(new NotFoundException());
-        Assertions.assertThrows(NotFoundException.class, () -> questionService.getQuestionById(1L));
+        Mockito.when(questionRepository.findById(1L)).thenThrow(new QuestionNotFoundException());
+        Assertions.assertThrows(QuestionNotFoundException.class, () -> questionService.getQuestionById(1L));
     }
 
     @Test
