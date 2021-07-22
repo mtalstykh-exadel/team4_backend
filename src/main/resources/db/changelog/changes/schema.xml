@@ -270,7 +270,7 @@
         <insert tableName="user">
             <column name="id" valueSequenceNext="user_id_seq"/>
             <column name="role_id" valueSequenceCurrent="user_role_id_seq"/>
-            <column name="user_login" value="rus_user"/>
+            <column name="user_login" value="rus_user@northsixty.com"/>
             <column name="user_name" value="Russian User"/>
             <column name="user_password" value="$2a$08$GMxUHVbQLa8OAz3OPDWSueJCMhWlcpPnUMusgBXMkHMoJQ.SP.FYq"/>
             <column name="language" value="rus"/>
@@ -278,7 +278,7 @@
         <insert tableName="user">
             <column name="id" valueSequenceNext="user_id_seq"/>
             <column name="role_id" valueSequenceCurrent="user_role_id_seq"/>
-            <column name="user_login" value="eng_user"/>
+            <column name="user_login" value="eng_user@northsixty.com"/>
             <column name="user_name" value="English User"/>
             <column name="user_password" value="$2a$08$a0aliBqS39BxT4yrca6hHOh2ci6e5k3A/98myrElGBM8jwwkf.l0q"/>
             <column name="language" value="eng"/>
@@ -291,7 +291,7 @@
         <insert tableName="user">
             <column name="id" valueSequenceNext="user_id_seq"/>
             <column name="role_id" valueSequenceCurrent="user_role_id_seq"/>
-            <column name="user_login" value="rus_hr"/>
+            <column name="user_login" value="rus_hr@northsixty.com"/>
             <column name="user_name" value="Russian HR"/>
             <column name="user_password" value="$2a$08$gEE.rXie709tNz5VrcpkTOjCHk3A8ZcAjI7M5Y04ytoCq3fx/t2ze"/>
             <column name="language" value="rus"/>
@@ -299,7 +299,7 @@
         <insert tableName="user">
             <column name="id" valueSequenceNext="user_id_seq"/>
             <column name="role_id" valueSequenceCurrent="user_role_id_seq"/>
-            <column name="user_login" value="eng_hr"/>
+            <column name="user_login" value="eng_hr@northsixty.com"/>
             <column name="user_name" value="English HR"/>
             <column name="user_password" value="$2a$08$X5.33q5PiFEcfO2uheVd4ucBCTplC7JIylm2nMkmrjJYrE5fQeRDW"/>
             <column name="language" value="eng"/>
@@ -312,7 +312,7 @@
         <insert tableName="user">
             <column name="id" valueSequenceNext="user_id_seq"/>
             <column name="role_id" valueSequenceCurrent="user_role_id_seq"/>
-            <column name="user_login" value="rus_coach"/>
+            <column name="user_login" value="rus_coach@northsixty.com"/>
             <column name="user_name" value="Russian Coach"/>
             <column name="user_password" value="$2a$08$9Ct.DBw2OvPu9R9EOTzJnuIa3XfIhnDN6ZamvgYjuJhbi4gQTRpY2"/>
             <column name="language" value="rus"/>
@@ -320,7 +320,7 @@
         <insert tableName="user">
             <column name="id" valueSequenceNext="user_id_seq"/>
             <column name="role_id" valueSequenceCurrent="user_role_id_seq"/>
-            <column name="user_login" value="eng_coach"/>
+            <column name="user_login" value="eng_coach@northsixty.com"/>
             <column name="user_name" value="English Coach"/>
             <column name="user_password" value="$2a$08$PHQ4VV9rcvsMlSlmnQjVWu11.qvUJC0WIRE/coSisCAc6rO316.wq"/>
             <column name="language" value="eng"/>
@@ -333,7 +333,7 @@
         <insert tableName="user">
             <column name="id" valueSequenceNext="user_id_seq"/>
             <column name="role_id" valueSequenceCurrent="user_role_id_seq"/>
-            <column name="user_login" value="rus_admin"/>
+            <column name="user_login" value="rus_admin@northsixty.com"/>
             <column name="user_name" value="Russian Admin"/>
             <column name="user_password" value="$2a$08$sp14HY.XnK2w.qRE7fqMA.ja2aSL5sFGMSPSPdk/nHK.2Lj4GgK.q"/>
             <column name="language" value="rus"/>
@@ -341,7 +341,7 @@
         <insert tableName="user">
             <column name="id" valueSequenceNext="user_id_seq"/>
             <column name="role_id" valueSequenceCurrent="user_role_id_seq"/>
-            <column name="user_login" value="eng_admin"/>
+            <column name="user_login" value="eng_admin@northsixty.com"/>
             <column name="user_name" value="English Admin"/>
             <column name="user_password" value="$2a$08$PZwaUFgnbTJ9yihBjkDd0e5pWCZfbWohfB/823LjCRE.sUnP2KuJm"/>
             <column name="language" value="eng"/>
