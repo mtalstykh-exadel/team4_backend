@@ -16,7 +16,6 @@ jobs:
       - name: Pending status
         uses: ouzi-dev/commit-status-updater@v1.1.2
         with:
-          token: "${ secrets.token }"
           status: "pending"
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -38,5 +37,4 @@ jobs:
         uses: ouzi-dev/commit-status-updater@v1.1.2
         with:
           addHoldComment: "true"
-          token: "${ secrets.token }"
           status: "${{ job.status }}"
