@@ -21,7 +21,7 @@ class AuthenticationServiceImplTest {
     private AuthenticationManager authenticationManager;
 
     @Mock
-    private CustomUserDetailsService userDetailsService;
+    private CustomUserDetailsServiceImpl userDetailsService;
 
     @Mock
     private JwtTokenUtil jwtTokenUtil;

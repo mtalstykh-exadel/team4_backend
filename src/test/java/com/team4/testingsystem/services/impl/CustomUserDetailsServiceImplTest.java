@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ExtendWith(MockitoExtension.class)
-class CustomUserDetailsServiceTest {
+class CustomUserDetailsServiceImplTest {
     @Mock
     private UsersRepository usersRepository;
 
@@ -32,7 +32,7 @@ class CustomUserDetailsServiceTest {
     private User user;
 
     @InjectMocks
-    private CustomUserDetailsService userDetailsService;
+    private CustomUserDetailsServiceImpl userDetailsService;
 
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";

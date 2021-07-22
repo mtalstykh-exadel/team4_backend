@@ -18,8 +18,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 @RequestMapping(path = "/tests")
 public class TestsController {
 
-    @Autowired
+
     private TestsServiceImpl testsService;
+
+    @Autowired
+    public TestsController(TestsServiceImpl testsService) {
+        this.testsService = testsService;
+    }
 
     @GetMapping(path = "/")
     public Iterable<Test> getAll() {
