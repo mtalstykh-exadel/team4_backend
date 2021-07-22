@@ -81,14 +81,12 @@ public class TestsServiceImpl implements TestsService {
 
     }
 
-
     @Override
     public void removeById(long id) {
 
-        if (!testsRepository.existsById(id)) {
+        if (testsRepository.removeById(id) == 0) {
             throw new TestNotFoundException();
         }
 
-        testsRepository.deleteById(id);
     }
 }
