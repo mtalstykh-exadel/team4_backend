@@ -73,10 +73,9 @@ public class TestsService {
 
     public void removeById(long id) {
 
-        if (!testsRepository.existsById(id)) {
+        if (testsRepository.removeById(id) == 0) {
             throw new TestNotFoundException();
         }
 
-        testsRepository.deleteById(id);
     }
 }

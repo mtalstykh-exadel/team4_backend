@@ -1,7 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.User;
-import com.team4.testingsystem.exceptions.NotFoundException;
+import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,6 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public User getUserById(Long id) {
-        return usersRepository.findById(id).orElseThrow(NotFoundException::new);
+        return usersRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 }

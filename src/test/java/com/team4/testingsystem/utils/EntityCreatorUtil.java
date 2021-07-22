@@ -1,5 +1,6 @@
 package com.team4.testingsystem.utils;
 
+import com.team4.testingsystem.dto.ContentFileRequest;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Module;
@@ -56,4 +57,12 @@ public class EntityCreatorUtil {
         level.setName("new level");
         return level;
     }
+
+    public static ContentFileRequest createContentFileRequest(Long questionId, String url){
+        ContentFileRequest cfr = new ContentFileRequest();
+        cfr.setQuestionId(questionId);
+        cfr.setUrl(url);
+        return cfr;
+    }
+
 }

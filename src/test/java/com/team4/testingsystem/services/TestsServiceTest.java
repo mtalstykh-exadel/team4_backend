@@ -168,18 +168,20 @@ class TestsServiceTest {
     @org.junit.jupiter.api.Test
     void removeSuccess() {
 
-        Mockito.when(testsRepository.existsById(1L)).thenReturn(true);
+        Mockito.when(testsRepository.removeById(1L)).thenReturn(1);
 
         testsService.removeById(1L);
 
-        verify(testsRepository).deleteById(1L);
+        verify(testsRepository).removeById(1L);
+
+        Assertions.assertDoesNotThrow(()->testsService.removeById(1L));
 
     }
 
     @org.junit.jupiter.api.Test
     void removeFail() {
 
-        Mockito.when(testsRepository.existsById(42L)).thenReturn(false);
+        Mockito.when(testsRepository.removeById(42L)).thenReturn(0);
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.removeById(42L));
 
