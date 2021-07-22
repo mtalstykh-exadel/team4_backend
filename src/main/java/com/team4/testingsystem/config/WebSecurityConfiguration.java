@@ -26,11 +26,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private boolean csrfEnabled;
 
     @Autowired
-    public WebSecurityConfiguration(CustomUserDetailsServiceImpl userDetailsService, JwtRequestFilter jwtRequestFilter) {
+    public WebSecurityConfiguration(CustomUserDetailsServiceImpl userDetailsService,
+                                    JwtRequestFilter jwtRequestFilter) {
         this.userDetailsService = userDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;
     }
-
+    
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
