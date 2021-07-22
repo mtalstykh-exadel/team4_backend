@@ -1,13 +1,17 @@
 package com.team4.testingsystem.entities;
 
+import java.util.Collection;
+
+import javax.persistence.OneToMany;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import java.util.Objects;
 
 @Entity
 @Table(name = "user")
@@ -16,6 +20,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @OneToMany(mappedBy = "user")
+    private Collection<Test> tests;
 
     @Column(name = "user_name")
     private String name;
@@ -79,5 +86,35 @@ public class User {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public Collection<Test> getTests() {
+        return tests;
+    }
+
+    public void setTests(Collection<Test> tests) {
+        this.tests = tests;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        User user = (User) o;
+        return Objects.equals(id, user.id)
+               && Objects.equals(name, user.name)
+               && Objects.equals(login, user.login)
+               && Objects.equals(password, user.password)
+               && Objects.equals(role, user.role)
+               && Objects.equals(language, user.language);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, tests, name, login, password, role, language);
     }
 }

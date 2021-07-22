@@ -6,6 +6,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -26,6 +27,7 @@ public class JwtTokenUtil {
             return Optional.empty();
         }
     }
+
 
     public String extractUsername(String token) throws JwtException {
         return extractClaim(token, Claims::getSubject);
@@ -77,5 +79,9 @@ public class JwtTokenUtil {
         } catch (JwtException e) {
             return false;
         }
+    }
+
+    public static CustomUserDetails extractUserDetails() {
+        return (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

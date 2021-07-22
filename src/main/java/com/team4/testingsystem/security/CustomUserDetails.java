@@ -4,7 +4,6 @@ import com.team4.testingsystem.entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.Collections;
 
@@ -23,7 +22,6 @@ public class CustomUserDetails implements UserDetails {
         this.login = user.getLogin();
         this.password = user.getPassword();
         this.roleName = user.getRole().getRoleName();
-
         this.roles = Collections.singletonList(new SimpleGrantedAuthority(this.roleName));
     }
 

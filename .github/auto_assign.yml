@@ -1,0 +1,13 @@
+   addAssignees: author
+
+   addReviewers : true
+  
+   reviewers:
+     - maxim12321
+     - Darina007
+     - Anlord241
+     - SemyonKorostik
+     - DzmitryNovik
+     - AntonMaksimenkau
+
+   numberOfReviewers: 0

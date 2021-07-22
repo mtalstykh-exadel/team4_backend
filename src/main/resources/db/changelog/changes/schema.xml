@@ -183,4 +183,26 @@
 
     </changeSet>
 
+    <changeSet id="update_status_type" author="Anlord241">
+        <validCheckSum>8:429e8ab296a5ea20f0e1bb7bf7a5f389</validCheckSum>
+        <sql>CREATE TYPE status AS ENUM ('NOT_STARTED', 'STARTED', 'FINISHED')</sql>
+        <modifyDataType
+                columnName="status"
+                newDataType="status"
+                schemaName="language_testing"
+                tableName="test"/>
+    </changeSet>
+
+    <changeSet id="delete_column" author="Darina">
+        <dropColumn tableName="question"
+                    columnName="points"/>
+    </changeSet>
+
+    <changeSet id="update_column_name" author="Darina">
+        <renameColumn tableName="question"
+                      oldColumnName="is_avaliable"
+                      newColumnName="is_available"
+                      columnDataType="boolean"/>
+    </changeSet>
+
 </databaseChangeLog>
