@@ -46,4 +46,8 @@ public class Module {
         return Objects.equals(id, module.id) && Objects.equals(name, module.name);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 }

@@ -45,4 +45,9 @@ public class Level {
         Level level = (Level) o;
         return Objects.equals(id, level.id) && Objects.equals(name, level.name);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 }

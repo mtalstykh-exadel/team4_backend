@@ -98,6 +98,11 @@ public class Question {
                && Objects.equals(module, question.module);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, body, isAvailable, creator, level, module);
+    }
+
     public static class Builder {
         private Question question;
 
