@@ -4,7 +4,7 @@ import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.security.CustomUserDetails;
-import com.team4.testingsystem.services.impl.TestsServiceImpl;
+import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ class TestsControllerTest {
 
 
     @Mock
-    TestsServiceImpl testsService;
+    TestsService testsService;
 
     @Mock
     CustomUserDetails customUserDetails;

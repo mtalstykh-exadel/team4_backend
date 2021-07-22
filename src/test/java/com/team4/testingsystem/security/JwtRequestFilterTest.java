@@ -1,6 +1,6 @@
 package com.team4.testingsystem.security;
 
-import com.team4.testingsystem.services.impl.CustomUserDetailsServiceImpl;
+import com.team4.testingsystem.services.CustomUserDetailsService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.junit.jupiter.api.Assertions;
@@ -41,7 +41,7 @@ class JwtRequestFilterTest {
     private SecurityContext securityContext;
 
     @Mock
-    private CustomUserDetailsServiceImpl userDetailsService;
+    private CustomUserDetailsService userDetailsService;
 
     @Mock
     private JwtTokenUtil jwtTokenUtil;

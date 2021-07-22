@@ -2,6 +2,7 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.exceptions.IncorrectCredentialsException;
 import com.team4.testingsystem.security.CustomUserDetails;
+import com.team4.testingsystem.services.CustomUserDetailsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +22,7 @@ class AuthenticationServiceImplTest {
     private AuthenticationManager authenticationManager;
 
     @Mock
-    private CustomUserDetailsServiceImpl userDetailsService;
+    private CustomUserDetailsService userDetailsService;
 
     @Mock
     private JwtTokenUtil jwtTokenUtil;

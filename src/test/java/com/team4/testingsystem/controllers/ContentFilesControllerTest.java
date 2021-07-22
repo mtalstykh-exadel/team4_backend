@@ -3,7 +3,7 @@ package com.team4.testingsystem.controllers;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
-import com.team4.testingsystem.services.impl.ContentFilesServiceImpl;
+import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,13 +22,11 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class ContentFilesControllerTest {
 
-
     @Mock
     ContentFile contentFile;
 
-
     @Mock
-    ContentFilesServiceImpl contentFilesService;
+    ContentFilesService contentFilesService;
 
     @InjectMocks
     ContentFilesController contentFilesController;
