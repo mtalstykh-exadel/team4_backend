@@ -205,4 +205,28 @@
                       columnDataType="boolean"/>
     </changeSet>
 
+    <changeSet id="add_users" author="maxim12321">
+        <insert tableName="user_role">
+            <column name="id" valueSequenceNext="user_role_id_seq"/>
+            <column name="role_name" value="ROLE_USER"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="id" valueSequenceNext="user_role_id_seq"/>
+            <column name="role_name" value="ROLE_HR"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="id" valueSequenceNext="user_role_id_seq"/>
+            <column name="role_name" value="ROLE_COACH"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="id" valueSequenceNext="user_role_id_seq"/>
+            <column name="role_name" value="ROLE_ADMIN"/>
+        </insert>
+        <rollback>
+            <delete tableName="user_role">
+                <where>role_name in ("ROLE_USER", "ROLE_HR", "ROLE_COACH", "ROLE_ADMIN")</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
