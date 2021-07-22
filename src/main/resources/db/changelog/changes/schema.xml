@@ -205,4 +205,61 @@
                       columnDataType="boolean"/>
     </changeSet>
 
+    <changeSet id="add_table_coach_grades" author="Darina">
+        <createTable tableName="coach_grade">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="grade" type="int" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="question_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="test_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="coach_grade"
+                                 baseColumnNames="question_id"
+                                 constraintName="question_id_fk"
+                                 referencedTableName="question"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="coach_grade"
+                                 baseColumnNames="test_id"
+                                 constraintName="test_id_fk"
+                                 referencedTableName="test"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+
+    <changeSet id="add_field_coach_to_test" author="Darina">
+        <addColumn tableName="test">
+            <column name="coach_id" type="int"/>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="test"
+                                 baseColumnNames="coach_id"
+                                 constraintName="coach_id_fk"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="add_fk_for_file_answer" author="Darina">
+        <addForeignKeyConstraint baseTableName="file_answer"
+                                 baseColumnNames="question_id"
+                                 constraintName="file_answer_question_id_fk"
+                                 referencedTableName="question"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="add_fk_for_choosen_option" author="Darina">
+        <addForeignKeyConstraint baseTableName="choosen_option"
+                                 baseColumnNames="file_answer_id"
+                                 constraintName="choosen_option_file_answer_fk"
+                                 referencedTableName="file_answer"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
 </databaseChangeLog>
