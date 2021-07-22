@@ -26,4 +26,9 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     @Modifying
     @Query(value = "UPDATE Test t SET t.updatedAt = ?1, t.evaluation = ?2 where t.id = ?3")
     int updateEvaluation(LocalDateTime updateDate, int evaluation,  Long id);
+
+    @Transactional
+    @Modifying
+    @Query (value = "DELETE FROM Test t where t.id = ?1")
+    int removeById(Long id);
 }

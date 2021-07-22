@@ -1,7 +1,8 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.User;
-import com.team4.testingsystem.exceptions.NotFoundException;
+import com.team4.testingsystem.exceptions.QuestionNotFoundException;
+import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
@@ -33,7 +34,7 @@ class UsersServiceImplTest {
 
     @Test
     void userByIdNotFoundException() {
-        Mockito.when(usersRepository.findById(1L)).thenThrow(new NotFoundException());
-        Assertions.assertThrows(NotFoundException.class, () -> usersService.getUserById(1L));
+        Mockito.when(usersRepository.findById(1L)).thenThrow(new UserNotFoundException());
+        Assertions.assertThrows(UserNotFoundException.class, () -> usersService.getUserById(1L));
     }
 }

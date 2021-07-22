@@ -1,7 +1,8 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.exceptions.NotFoundException;
+import com.team4.testingsystem.exceptions.LevelNotFoundException;
+import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.LevelRepository;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class LevelServiceImplTest {
+
     @Mock
     private LevelRepository levelRepository;
 
@@ -32,8 +34,8 @@ class LevelServiceImplTest {
 
     @Test
     void levelByIdNotFoundException() {
-        Mockito.when(levelRepository.findById(1L)).thenThrow(new NotFoundException());
-        Assertions.assertThrows(NotFoundException.class, () -> levelService.getLevelById(1L));
+        Mockito.when(levelRepository.findById(1L)).thenThrow(new LevelNotFoundException());
+        Assertions.assertThrows(LevelNotFoundException.class, () -> levelService.getLevelById(1L));
     }
 
     @Test
@@ -47,8 +49,8 @@ class LevelServiceImplTest {
 
     @Test
     void levelByNameNotFoundException() {
-        Mockito.when(levelRepository.findByName("name")).thenThrow(new NotFoundException());
-        Assertions.assertThrows(NotFoundException.class, () -> levelService.getLevelByName("name"));
+        Mockito.when(levelRepository.findByName("name")).thenThrow(new LevelNotFoundException());
+        Assertions.assertThrows(LevelNotFoundException.class, () -> levelService.getLevelByName("name"));
     }
 
 }
