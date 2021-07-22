@@ -25,6 +25,8 @@
         <commons-io.version>2.11.0</commons-io.version>
         <mockito.version>3.8.0</mockito.version>
         <pmd.version>3.14.0</pmd.version>
+        <spotbugs-plugin.version>4.2.0</spotbugs-plugin.version>
+        <spotbugs.version>4.3.0</spotbugs.version>
     </properties>
     <dependencies>
         <dependency>
@@ -183,6 +185,29 @@
                         <goals>
                             <goal>check</goal>
                             <goal>cpd-check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs-plugin.version}</version>
+                <configuration>
+                    <excludeFilterFile>spotbugs-config.xml</excludeFilterFile>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs</artifactId>
+                        <version>${spotbugs.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
