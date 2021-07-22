@@ -1,7 +1,6 @@
 package com.team4.testingsystem.security;
 
 import com.team4.testingsystem.services.CustomUserDetailsService;
-import com.team4.testingsystem.services.impl.CustomUserDetailsServiceImpl;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
