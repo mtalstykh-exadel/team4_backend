@@ -238,7 +238,16 @@
                         <param>com.team4.testingsystem.*</param>
                     </targetTests>
                     <mutationThreshold>60</mutationThreshold>
+                    <coverageThreshold>70</coverageThreshold>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>mutationCoverage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
