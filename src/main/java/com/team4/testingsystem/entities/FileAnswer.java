@@ -1,5 +1,7 @@
 package com.team4.testingsystem.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +19,7 @@ public class FileAnswer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false, referencedColumnName = "id")
     private Question question;
