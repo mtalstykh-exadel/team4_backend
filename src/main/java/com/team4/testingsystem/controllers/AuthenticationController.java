@@ -3,7 +3,6 @@ package com.team4.testingsystem.controllers;
 import com.team4.testingsystem.dto.AuthenticationRequest;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.AuthenticationService;
-import com.team4.testingsystem.services.impl.AuthenticationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +16,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @Autowired
-    public AuthenticationController(AuthenticationServiceImpl authenticationService) {
+    public AuthenticationController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
 

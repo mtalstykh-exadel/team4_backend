@@ -1,7 +1,7 @@
 package com.team4.testingsystem.config;
 
 import com.team4.testingsystem.security.JwtRequestFilter;
-import com.team4.testingsystem.services.impl.CustomUserDetailsServiceImpl;
+import com.team4.testingsystem.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +18,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-    private final CustomUserDetailsServiceImpl userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
     private final JwtRequestFilter jwtRequestFilter;
 
@@ -26,7 +26,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private boolean csrfEnabled;
 
     @Autowired
-    public WebSecurityConfiguration(CustomUserDetailsServiceImpl userDetailsService,
+    public WebSecurityConfiguration(CustomUserDetailsService userDetailsService,
                                     JwtRequestFilter jwtRequestFilter) {
         this.userDetailsService = userDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;

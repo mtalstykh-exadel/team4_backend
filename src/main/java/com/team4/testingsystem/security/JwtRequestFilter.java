@@ -1,5 +1,6 @@
 package com.team4.testingsystem.security;
 
+import com.team4.testingsystem.services.CustomUserDetailsService;
 import com.team4.testingsystem.services.impl.CustomUserDetailsServiceImpl;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,12 @@ import java.util.Optional;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-    private final CustomUserDetailsServiceImpl userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
     private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    public JwtRequestFilter(CustomUserDetailsServiceImpl userDetailsService, JwtTokenUtil jwtTokenUtil) {
+    public JwtRequestFilter(CustomUserDetailsService userDetailsService, JwtTokenUtil jwtTokenUtil) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
     }
@@ -47,7 +48,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-        CustomUserDetails userDetails = userDetailsService.loadUserByUsername(username.get());
+        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username.get());
         if (!jwtTokenUtil.validateToken(jwtToken, userDetails)) {
             filterChain.doFilter(request, response);
             return;
