@@ -15,7 +15,7 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "untitled-testing-system"
           heroku_email: "mkogan58@gmail.com"
-          justlogin: true
+          dontautocreate: true
 
           healthcheck: "https://untitled-testing-system.herokuapp.com/health"
           checkstring: "ok"
