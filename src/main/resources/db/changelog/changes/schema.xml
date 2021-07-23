@@ -5,10 +5,6 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
-    <changeSet id="add_schema" author="maxim12321">
-        <sql>CREATE SCHEMA IF NOT EXISTS language_testing</sql>
-    </changeSet>
-
     <changeSet id="create_schema" author="SemyonKorostik">
         <createTable tableName="user_role">
             <column name="id" type="int" autoIncrement="true">
