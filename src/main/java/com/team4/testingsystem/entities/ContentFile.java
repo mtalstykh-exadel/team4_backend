@@ -28,6 +28,10 @@ public class ContentFile {
     @Column(name = "url")
     private String url;
 
+    public ContentFile() {
+
+    }
+
     public ContentFile(Question question, String url) {
         this.question = question;
         this.url = url;

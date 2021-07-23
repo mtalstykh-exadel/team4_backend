@@ -17,9 +17,9 @@
         <java.version>11</java.version>
         <preliquibase.version>1.1.1</preliquibase.version>
         <liquibase.version>4.4.0</liquibase.version>
-        <checkstyle.version>3.1.1</checkstyle.version>
+        <checkstyle.version>3.1.2</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
-        <puppycrawl.version>8.27</puppycrawl.version>
+        <puppycrawl.version>8.29</puppycrawl.version>
         <aws-sdk.version>1.11.728</aws-sdk.version>
         <commons-io.version>2.11.0</commons-io.version>
         <mockito.version>3.8.0</mockito.version>
