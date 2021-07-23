@@ -3,9 +3,11 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.dto.FileAnswerRequest;
 import com.team4.testingsystem.entities.FileAnswer;
 import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.exceptions.NotFoundException;
+import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
+import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
+import com.team4.testingsystem.services.FileAnswerService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +34,7 @@ class FileAnswerServiceImplTest {
     private Question question;
 
     @InjectMocks
-    private FileAnswerServiceImpl fileAnswerService;
+    private FileAnswerService fileAnswerService;
 
     @Test
     void getByIdSuccess() {
@@ -42,8 +44,8 @@ class FileAnswerServiceImplTest {
 
     @Test
     void getByIdFail() {
-        Mockito.when(fileAnswerRepository.findById(5L)).thenThrow(new NotFoundException());
-        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.getById(5L));
+        Mockito.when(fileAnswerRepository.findById(5L)).thenThrow(new FileAnswerNotFoundException());
+        Assertions.assertThrows(FileAnswerNotFoundException.class, () -> fileAnswerService.getById(5L));
 
     }
 
@@ -57,8 +59,8 @@ class FileAnswerServiceImplTest {
     @Test
     void createFail() {
         FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(1L).build();
-        Mockito.when(questionRepository.findById(1L)).thenThrow(NotFoundException.class);
-        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.create(fileAnswerRequest));
+        Mockito.when(questionRepository.findById(1L)).thenThrow(QuestionNotFoundException.class);
+        Assertions.assertThrows(FileAnswerNotFoundException.class, () -> fileAnswerService.create(fileAnswerRequest));
     }
 
     @Test
@@ -73,8 +75,8 @@ class FileAnswerServiceImplTest {
     @Test
     void updateNotFoundInFileAnswerRepository() {
         FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(10L).build();
-        Mockito.when(fileAnswerRepository.findById(1L)).thenThrow(NotFoundException.class);
-        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.update(1L, fileAnswerRequest));
+        Mockito.when(fileAnswerRepository.findById(1L)).thenThrow(FileAnswerNotFoundException.class);
+        Assertions.assertThrows(FileAnswerNotFoundException.class, () -> fileAnswerService.update(1L, fileAnswerRequest));
         Mockito.verify(fileAnswerRepository, Mockito.times(0)).save(Mockito.any());
     }
 
@@ -82,8 +84,8 @@ class FileAnswerServiceImplTest {
     void updateNotFoundInQuestionRepository() {
         FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(10L).build();
         Mockito.when(fileAnswerRepository.findById(1L)).thenReturn(Optional.of(fileAnswer));
-        Mockito.when(questionRepository.findById(10L)).thenThrow(NotFoundException.class);
-        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.update(1L, fileAnswerRequest));
+        Mockito.when(questionRepository.findById(10L)).thenThrow(QuestionNotFoundException.class);
+        Assertions.assertThrows(FileAnswerNotFoundException.class, () -> fileAnswerService.update(1L, fileAnswerRequest));
         Mockito.verify(fileAnswerRepository, Mockito.times(0)).save(Mockito.any());
     }
 
@@ -97,6 +99,6 @@ class FileAnswerServiceImplTest {
     @Test
     void removeFail() {
         Mockito.when(fileAnswerRepository.existsById(fileAnswer.getId())).thenReturn(false);
-        Assertions.assertThrows(NotFoundException.class, () -> fileAnswerService.removeById(fileAnswer.getId()));
+        Assertions.assertThrows(FileAnswerNotFoundException.class, () -> fileAnswerService.removeById(fileAnswer.getId()));
     }
 }

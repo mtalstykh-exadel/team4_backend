@@ -2,6 +2,7 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.dto.FileAnswerRequest;
 import com.team4.testingsystem.entities.FileAnswer;
+import com.team4.testingsystem.services.FileAnswerService;
 import com.team4.testingsystem.services.impl.FileAnswerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/file_answer")
 public class FileAnswerController {
-    private final FileAnswerServiceImpl fileAnswerService;
+    private final FileAnswerService fileAnswerService;
 
     @Autowired
-    public FileAnswerController(FileAnswerServiceImpl fileAnswerService) {
+    public FileAnswerController(FileAnswerService fileAnswerService) {
         this.fileAnswerService = fileAnswerService;
     }
 
