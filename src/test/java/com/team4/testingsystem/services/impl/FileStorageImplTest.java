@@ -1,4 +1,4 @@
-package com.team4.testingsystem.services;
+package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.exceptions.FileDeletingFailedException;
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
@@ -21,12 +21,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @ExtendWith(MockitoExtension.class)
-class FileStorageTest {
+class FileStorageImplTest {
     @Mock
     private FilesRepository filesRepository;
 
     @InjectMocks
-    private FileStorage fileStorage;
+    private FileStorageImpl fileStorage;
 
     private static final String SOURCE_FILE_NAME = "source_file.txt";
 
