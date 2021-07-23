@@ -2,7 +2,7 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.dto.FileAnswerRequest;
 import com.team4.testingsystem.entities.FileAnswer;
-import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
+import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.exceptions.NotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
@@ -33,13 +33,13 @@ public class FileAnswerServiceImpl implements FileAnswerService {
 
     public FileAnswer getById(long id) {
         return fileAnswerRepository.findById(id)
-                .orElseThrow(FileAnswerNotFoundException::new);
+                .orElseThrow(FileNotFoundException::new);
     }
 
     public void update(long id, FileAnswerRequest fileAnswerRequest) {
         FileAnswer fileAnswer = FileAnswer.builder()
                 .id(fileAnswerRepository.findById(id)
-                        .orElseThrow(FileAnswerNotFoundException::new)
+                        .orElseThrow(FileNotFoundException::new)
                         .getId())
                 .url(fileAnswerRequest.getUrl())
                 .question(questionRepository.findById(fileAnswerRequest.getQuestionId())
@@ -50,7 +50,7 @@ public class FileAnswerServiceImpl implements FileAnswerService {
 
     public void removeById(long id) {
         if (!fileAnswerRepository.existsById(id)) {
-            throw new NotFoundException();
+            throw new FileNotFoundException();
         }
         fileAnswerRepository.deleteById(id);
     }

@@ -2,7 +2,7 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.dto.FileAnswerRequest;
 import com.team4.testingsystem.entities.FileAnswer;
-import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
+import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.FileAnswerService;
@@ -40,8 +40,8 @@ class FileAnswerControllerTest {
 
     @Test
     void getFail() {
-        Mockito.when(fileAnswerService.getById(fileAnswer.getId())).thenThrow(new FileAnswerNotFoundException());
-        Assertions.assertThrows(FileAnswerNotFoundException.class, () -> fileAnswerController.get(fileAnswer.getId()));
+        Mockito.when(fileAnswerService.getById(fileAnswer.getId())).thenThrow(new FileNotFoundException());
+        Assertions.assertThrows(FileNotFoundException.class, () -> fileAnswerController.get(fileAnswer.getId()));
     }
 
     @Test

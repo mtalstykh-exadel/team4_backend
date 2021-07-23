@@ -3,11 +3,10 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.dto.FileAnswerRequest;
 import com.team4.testingsystem.entities.FileAnswer;
 import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
+import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
-import com.team4.testingsystem.services.FileAnswerService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +33,7 @@ class FileAnswerServiceImplTest {
     private Question question;
 
     @InjectMocks
-    private FileAnswerService fileAnswerService;
+    private FileAnswerServiceImpl fileAnswerService;
 
     @Test
     void getByIdSuccess() {
@@ -44,8 +43,8 @@ class FileAnswerServiceImplTest {
 
     @Test
     void getByIdFail() {
-        Mockito.when(fileAnswerRepository.findById(5L)).thenThrow(new FileAnswerNotFoundException());
-        Assertions.assertThrows(FileAnswerNotFoundException.class, () -> fileAnswerService.getById(5L));
+        Mockito.when(fileAnswerRepository.findById(5L)).thenThrow(new FileNotFoundException());
+        Assertions.assertThrows(FileNotFoundException.class, () -> fileAnswerService.getById(5L));
 
     }
 
@@ -60,7 +59,7 @@ class FileAnswerServiceImplTest {
     void createFail() {
         FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(1L).build();
         Mockito.when(questionRepository.findById(1L)).thenThrow(QuestionNotFoundException.class);
-        Assertions.assertThrows(FileAnswerNotFoundException.class, () -> fileAnswerService.create(fileAnswerRequest));
+        Assertions.assertThrows(QuestionNotFoundException.class, () -> fileAnswerService.create(fileAnswerRequest));
     }
 
     @Test
@@ -75,8 +74,8 @@ class FileAnswerServiceImplTest {
     @Test
     void updateNotFoundInFileAnswerRepository() {
         FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(10L).build();
-        Mockito.when(fileAnswerRepository.findById(1L)).thenThrow(FileAnswerNotFoundException.class);
-        Assertions.assertThrows(FileAnswerNotFoundException.class, () -> fileAnswerService.update(1L, fileAnswerRequest));
+        Mockito.when(fileAnswerRepository.findById(1L)).thenThrow(FileNotFoundException.class);
+        Assertions.assertThrows(FileNotFoundException.class, () -> fileAnswerService.update(1L, fileAnswerRequest));
         Mockito.verify(fileAnswerRepository, Mockito.times(0)).save(Mockito.any());
     }
 
@@ -85,7 +84,7 @@ class FileAnswerServiceImplTest {
         FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(10L).build();
         Mockito.when(fileAnswerRepository.findById(1L)).thenReturn(Optional.of(fileAnswer));
         Mockito.when(questionRepository.findById(10L)).thenThrow(QuestionNotFoundException.class);
-        Assertions.assertThrows(FileAnswerNotFoundException.class, () -> fileAnswerService.update(1L, fileAnswerRequest));
+        Assertions.assertThrows(QuestionNotFoundException.class, () -> fileAnswerService.update(1L, fileAnswerRequest));
         Mockito.verify(fileAnswerRepository, Mockito.times(0)).save(Mockito.any());
     }
 
@@ -99,6 +98,6 @@ class FileAnswerServiceImplTest {
     @Test
     void removeFail() {
         Mockito.when(fileAnswerRepository.existsById(fileAnswer.getId())).thenReturn(false);
-        Assertions.assertThrows(FileAnswerNotFoundException.class, () -> fileAnswerService.removeById(fileAnswer.getId()));
+        Assertions.assertThrows(FileNotFoundException.class, () -> fileAnswerService.removeById(fileAnswer.getId()));
     }
 }
