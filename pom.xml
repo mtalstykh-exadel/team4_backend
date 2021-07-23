@@ -15,6 +15,7 @@
     <description>English proficiency testing system</description>
     <properties>
         <java.version>11</java.version>
+        <preliquibase.version>1.1.1</preliquibase.version>
         <liquibase.version>4.4.0</liquibase.version>
         <checkstyle.version>3.1.1</checkstyle.version>
         <jjwt.version>0.11.2</jjwt.version>
@@ -79,6 +80,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.lbruun.springboot</groupId>
+            <artifactId>preliquibase-spring-boot-starter</artifactId>
+            <version>${preliquibase.version}</version>
         </dependency>
 
         <dependency>
