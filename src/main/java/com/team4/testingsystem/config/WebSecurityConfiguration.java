@@ -47,6 +47,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/",
+                        "/health",
                         "/swagger-ui.html",
                         "/webjars/springfox-swagger-ui/**",
                         "/swagger-resources/**",

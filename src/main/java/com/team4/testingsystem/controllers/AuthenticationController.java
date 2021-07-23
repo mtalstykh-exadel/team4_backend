@@ -20,6 +20,11 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
+    @GetMapping("/health")
+    public String healthCheck() {
+        return "ok";
+    }
+
     @GetMapping("/name")
     public String getName(Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
