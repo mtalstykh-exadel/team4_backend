@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 @RestController
 @RequestMapping(path = "/tests")
 public class TestsController {
-
-
+    
     private TestsService testsService;
 
     @Autowired

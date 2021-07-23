@@ -47,7 +47,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-        CustomUserDetails userDetails = userDetailsService.loadUserByUsername(username.get());
+        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username.get());
         if (!jwtTokenUtil.validateToken(jwtToken, userDetails)) {
             filterChain.doFilter(request, response);
             return;

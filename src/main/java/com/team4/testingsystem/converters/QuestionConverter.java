@@ -4,10 +4,10 @@ import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.services.impl.LevelServiceImpl;
-import com.team4.testingsystem.services.impl.ModuleServiceImpl;
-import com.team4.testingsystem.services.impl.QuestionServiceImpl;
-import com.team4.testingsystem.services.impl.UsersServiceImpl;
+import com.team4.testingsystem.services.LevelService;
+import com.team4.testingsystem.services.ModuleService;
+import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,16 +15,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class QuestionConverter {
 
-    private final LevelServiceImpl levelService;
-    private final QuestionServiceImpl questionService;
-    private final ModuleServiceImpl moduleService;
-    private final UsersServiceImpl usersService;
+    private final LevelService levelService;
+    private final QuestionService questionService;
+    private final ModuleService moduleService;
+    private final UsersService usersService;
 
     @Autowired
-    public QuestionConverter(LevelServiceImpl levelService,
-                             QuestionServiceImpl questionService,
-                             ModuleServiceImpl moduleService,
-                             UsersServiceImpl usersService) {
+    public QuestionConverter(LevelService levelService,
+                             QuestionService questionService,
+                             ModuleService moduleService,
+                             UsersService usersService) {
         this.levelService = levelService;
         this.questionService = questionService;
         this.moduleService = moduleService;

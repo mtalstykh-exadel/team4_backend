@@ -4,10 +4,10 @@ import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.security.CustomUserDetails;
-import com.team4.testingsystem.services.impl.LevelServiceImpl;
-import com.team4.testingsystem.services.impl.ModuleServiceImpl;
-import com.team4.testingsystem.services.impl.QuestionServiceImpl;
-import com.team4.testingsystem.services.impl.UsersServiceImpl;
+import com.team4.testingsystem.services.LevelService;
+import com.team4.testingsystem.services.ModuleService;
+import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.junit.jupiter.api.Assertions;
@@ -23,16 +23,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class QuestionConverterTest {
     @Mock
-    private LevelServiceImpl levelService;
+    private LevelService levelService;
 
     @Mock
-    private QuestionServiceImpl questionService;
+    private QuestionService questionService;
 
     @Mock
-    private ModuleServiceImpl moduleService;
+    private ModuleService moduleService;
 
     @Mock
-    private UsersServiceImpl usersService;
+    private UsersService usersService;
 
     @InjectMocks
     private QuestionConverter questionConverter;
