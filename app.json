@@ -1,0 +1,12 @@
+{
+  "addons": [
+    {
+      "plan": "heroku-postgresql:hobby-dev"
+    }
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/java"
+    }
+  ]
+}

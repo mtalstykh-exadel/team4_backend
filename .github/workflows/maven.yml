@@ -35,6 +35,10 @@ jobs:
       - name: Get PR number
         run: |
           echo "pr_number=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')" >> $GITHUB_ENV
+      - name: Sleep while Heroku is restarting
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '150s'
       - name: Health check
         uses: nick-invision/retry@v2
         with:
