@@ -33,11 +33,12 @@ jobs:
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
       - name: Get PR number
-        run: PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+        run: |
+          echo "pr_number=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')" >> $GITHUB_ENV
       - name: Health check
         uses: jtalk/url-health-check-action@v1.5
         with:
-          url: "https://team4-backend-pr-$PR_NUMBER.herokuapp.com/health"
+          url: "https://team4-backend-pr-${{ env.pr_number }}.herokuapp.com/health"
           max-attempts: 10
           retry-delay: 30s
           retry-all: yes
