@@ -4,6 +4,7 @@ import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +41,7 @@ public class TestsController {
 
 
     @ApiOperation(value = "(To be updated) Is used to assign a test for the user (HR's ability)")
+    @ApiResponse(code = 200, message = "Created test's id")
     @PostMapping(path = "/assign/{userId}")
     public long assign(@PathVariable("userId") long userId) {
         return testsService.createForUser(userId);
@@ -47,6 +49,7 @@ public class TestsController {
 
     @ApiOperation(value =
             "(To be updated) Is used when the user wants to learn one's level by oneself (without any HRs)")
+    @ApiResponse(code = 200, message = "Started test's id")
     @PostMapping(path = "/start")
     public long startNotAssigned() {
 
