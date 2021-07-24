@@ -1,14 +1,14 @@
 package com.team4.testingsystem.entities;
 
+import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Column;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.util.Objects;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "question")
@@ -91,11 +91,11 @@ public class Question {
         }
         Question question = (Question) o;
         return isAvailable == question.isAvailable
-               && Objects.equals(id, question.id)
-               && Objects.equals(body, question.body)
-               && Objects.equals(creator, question.creator)
-               && Objects.equals(level, question.level)
-               && Objects.equals(module, question.module);
+                && Objects.equals(id, question.id)
+                && Objects.equals(body, question.body)
+                && Objects.equals(creator, question.creator)
+                && Objects.equals(level, question.level)
+                && Objects.equals(module, question.module);
     }
 
     @Override
