@@ -26,11 +26,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private boolean csrfEnabled;
 
     @Autowired
-    public WebSecurityConfiguration(CustomUserDetailsService userDetailsService, JwtRequestFilter jwtRequestFilter) {
+    public WebSecurityConfiguration(CustomUserDetailsService userDetailsService,
+                                    JwtRequestFilter jwtRequestFilter) {
         this.userDetailsService = userDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;
     }
-
+    
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
@@ -45,8 +46,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         }
 
         http.authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/",
+                        "/health",
+                        "/swagger-ui.html",
+                        "/webjars/springfox-swagger-ui/**",
+                        "/swagger-resources/**",
+                        "/v2/api-docs",
+                        "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

@@ -1,24 +1,22 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.entities.Test;
-
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/tests")
 public class TestsController {
-
-
+    
     private TestsService testsService;
 
     @Autowired
@@ -43,7 +41,7 @@ public class TestsController {
 
     @PostMapping(path = "/start")
     public long startNotAssigned() {
-        
+
         long userId = JwtTokenUtil.extractUserDetails().getId();
         long createdTestId = testsService.createForUser(userId);
         testsService.start(createdTestId);
