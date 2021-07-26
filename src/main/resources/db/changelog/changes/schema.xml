@@ -360,4 +360,40 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="add_modules" author="Darina">
+        <insert tableName="module">
+            <column name="module_name">Grammar</column>
+        </insert>
+        <insert tableName="module">
+            <column name="module_name">Listening</column>
+        </insert>
+        <insert tableName="module">
+            <column name="module_name">Essay</column>
+        </insert>
+        <insert tableName="module">
+            <column name="module_name">Speaking</column>
+        </insert>
+    </changeSet>
+
+    <changeSet id="add_level" author="Darina">
+        <insert tableName="level">
+            <column name="level_name">Beginner</column>
+        </insert>
+        <insert tableName="level">
+            <column name="level_name">Elementary</column>
+        </insert>
+        <insert tableName="level">
+            <column name="level_name">Intermediate</column>
+        </insert>
+        <insert tableName="level">
+            <column name="level_name">Upper-Intermediate</column>
+        </insert>
+        <insert tableName="level">
+            <column name="level_name">Advanced</column>
+        </insert>
+        <insert tableName="level">
+            <column name="level_name">Proficiency</column>
+        </insert>
+
+    </changeSet>
 </databaseChangeLog>
