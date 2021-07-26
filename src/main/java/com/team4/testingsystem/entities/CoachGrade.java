@@ -32,7 +32,7 @@ public class CoachGrade {
     public CoachGrade() {
     }
 
-    public CoachGrade(Integer grade, Question question, Test test) {
+    public CoachGrade(Test test, Question question, Integer grade) {
         this.grade = grade;
         this.question = question;
         this.test = test;

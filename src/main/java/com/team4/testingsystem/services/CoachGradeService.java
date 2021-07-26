@@ -5,11 +5,11 @@ import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 
 public interface CoachGradeService {
-    CoachGrade getGradeById(Long id);
+    CoachGrade getGrade(Long testId, Long questionId);
 
-    CoachGrade getGradeByQuestion(Question question);
+    Iterable<CoachGrade> getGradesByTest(Long testId);
 
-    void createGrade(Question question, Test test, Integer grade);
+    void createGrade(Test test, Question question, Integer grade);
 
-    void updateGrade(Long id, Integer grade);
+    void updateGrade(Long testId, Long questionId, Integer grade);
 }
