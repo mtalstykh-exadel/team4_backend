@@ -36,7 +36,7 @@ public class SwaggerConfiguration {
 
     private SecurityContext securityContext() {
         return SecurityContext.builder().securityReferences(defaultAuth())
-                .operationSelector((o -> o.requestMappingPattern().matches("/(?!login)(?!health).*"))).build();
+                .operationSelector(o -> o.requestMappingPattern().matches("/(?!login)(?!health).*")).build();
     }
 
     private List<SecurityReference> defaultAuth() {
