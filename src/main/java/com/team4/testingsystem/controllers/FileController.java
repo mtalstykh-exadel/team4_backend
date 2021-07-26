@@ -26,7 +26,7 @@ public class FileController {
     }
 
     @PostMapping(path = "/upload")
-    public void upload(@RequestParam("file") MultipartFile file) {
-        fileStorage.upload(file.getResource());
+    public String upload(@RequestParam MultipartFile file) {
+        return fileStorage.upload(file.getResource());
     }
 }
