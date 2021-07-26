@@ -1,5 +1,6 @@
 package com.team4.testingsystem.entities;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.util.Objects;
 
 @Entity
 @Table(name = "coach_grade")
@@ -32,9 +32,10 @@ public class CoachGrade {
     public CoachGrade() {
     }
 
-    public CoachGrade(Integer grade, Question question) {
+    public CoachGrade(Integer grade, Question question, Test test) {
         this.grade = grade;
         this.question = question;
+        this.test = test;
     }
 
     public Long getId() {
