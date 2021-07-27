@@ -1,6 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.dto.CoachGradeRequest;
+import com.team4.testingsystem.dto.CoachGradeDTO;
 import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
@@ -11,6 +11,8 @@ import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.TestsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
 
 @Service
 public class CoachGradeServiceImpl implements CoachGradeService {
@@ -37,23 +39,23 @@ public class CoachGradeServiceImpl implements CoachGradeService {
     }
 
     @Override
-    public Iterable<CoachGrade> getGradesByTest(Long testId) {
+    public Collection<CoachGrade> getGradesByTest(Long testId) {
         return gradeRepository.findAllByTest(testsService.getById(testId));
     }
 
     @Override
-    public void createGrade(CoachGradeRequest gradeRequest) {
-        Test test = testsService.getById(gradeRequest.getTestId());
-        Question question = questionService.getQuestionById(gradeRequest.getQuestionId());
-        gradeRepository.save(new CoachGrade(test, question, gradeRequest.getGrade()));
+    public void createGrade(CoachGradeDTO gradeDTO) {
+        Test test = testsService.getById(gradeDTO.getTestId());
+        Question question = questionService.getQuestionById(gradeDTO.getQuestionId());
+        gradeRepository.save(new CoachGrade(test, question, gradeDTO.getGrade()));
     }
 
     @Override
-    public void updateGrade(CoachGradeRequest gradeRequest) {
+    public void updateGrade(CoachGradeDTO gradeDTO) {
         int updatedRowsCount = gradeRepository.updateGrade(
-                gradeRequest.getTestId(),
-                gradeRequest.getQuestionId(),
-                gradeRequest.getGrade()
+                gradeDTO.getTestId(),
+                gradeDTO.getQuestionId(),
+                gradeDTO.getGrade()
         );
 
         if (updatedRowsCount == 0) {

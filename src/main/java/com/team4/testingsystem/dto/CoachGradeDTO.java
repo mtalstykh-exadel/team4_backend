@@ -1,12 +1,23 @@
 package com.team4.testingsystem.dto;
 
+import com.team4.testingsystem.entities.CoachGrade;
+
 import java.io.Serializable;
 import java.util.Objects;
 
-public class CoachGradeRequest implements Serializable {
+public class CoachGradeDTO implements Serializable {
     private Long testId;
     private Long questionId;
     private Integer grade;
+
+    public CoachGradeDTO() {
+    }
+
+    public CoachGradeDTO(CoachGrade coachGrade) {
+        this.testId = coachGrade.getTest().getId();
+        this.questionId = coachGrade.getQuestion().getId();
+        this.grade = coachGrade.getGrade();
+    }
 
     public Long getTestId() {
         return testId;
@@ -37,29 +48,29 @@ public class CoachGradeRequest implements Serializable {
     }
 
     public static class Builder {
-        private final CoachGradeRequest gradeRequest;
+        private final CoachGradeDTO gradeDTO;
 
         public Builder() {
-            gradeRequest = new CoachGradeRequest();
+            gradeDTO = new CoachGradeDTO();
         }
 
         public Builder testId(Long testId) {
-            gradeRequest.setTestId(testId);
+            gradeDTO.setTestId(testId);
             return this;
         }
 
         public Builder questionId(Long questionId) {
-            gradeRequest.setQuestionId(questionId);
+            gradeDTO.setQuestionId(questionId);
             return this;
         }
 
         public Builder grade(Integer grade) {
-            gradeRequest.setGrade(grade);
+            gradeDTO.setGrade(grade);
             return this;
         }
 
-        public CoachGradeRequest build() {
-            return gradeRequest;
+        public CoachGradeDTO build() {
+            return gradeDTO;
         }
     }
 
@@ -71,7 +82,7 @@ public class CoachGradeRequest implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        CoachGradeRequest that = (CoachGradeRequest) o;
+        CoachGradeDTO that = (CoachGradeDTO) o;
         return Objects.equals(testId, that.testId)
                 && Objects.equals(questionId, that.questionId)
                 && Objects.equals(grade, that.grade);

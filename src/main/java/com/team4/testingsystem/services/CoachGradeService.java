@@ -1,14 +1,16 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.dto.CoachGradeRequest;
+import com.team4.testingsystem.dto.CoachGradeDTO;
 import com.team4.testingsystem.entities.CoachGrade;
+
+import java.util.Collection;
 
 public interface CoachGradeService {
     CoachGrade getGrade(Long testId, Long questionId);
 
-    Iterable<CoachGrade> getGradesByTest(Long testId);
+    Collection<CoachGrade> getGradesByTest(Long testId);
 
-    void createGrade(CoachGradeRequest gradeRequest);
+    void createGrade(CoachGradeDTO gradeDTO);
 
-    void updateGrade(CoachGradeRequest gradeRequest);
+    void updateGrade(CoachGradeDTO gradeDTO);
 }

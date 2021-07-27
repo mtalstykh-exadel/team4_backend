@@ -1,6 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.dto.CoachGradeRequest;
+import com.team4.testingsystem.dto.CoachGradeDTO;
 import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.exceptions.GradeNotFoundException;
@@ -49,11 +49,11 @@ class CoachGradeServiceImplTest {
     private final Long testId = 1L;
     private final Long questionId = 1L;
     private final Integer grade = 10;
-    private CoachGradeRequest gradeRequest;
+    private CoachGradeDTO gradeRequest;
 
     @BeforeEach
     void init() {
-        gradeRequest = CoachGradeRequest.builder()
+        gradeRequest = CoachGradeDTO.builder()
                 .testId(testId)
                 .questionId(questionId)
                 .grade(grade)
