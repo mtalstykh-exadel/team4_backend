@@ -376,7 +376,6 @@
     </changeSet>
 
     <changeSet id="add_level" author="Darina">
-        <validCheckSum>8:0b8ffa56b61fb87ce6cf127b376a30f2</validCheckSum>
         <insert tableName="level">
             <column name="level_name">A1</column>
         </insert>
