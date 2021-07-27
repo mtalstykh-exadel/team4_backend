@@ -28,6 +28,8 @@
         <pitest.junit.version>0.14</pitest.junit.version>
         <spotbugs-plugin.version>4.2.0</spotbugs-plugin.version>
         <spotbugs.version>4.3.0</spotbugs.version>
+        <swagger.version>3.0.0</swagger.version>
+        <swagger-ui.version>2.9.2</swagger-ui.version>
     </properties>
 
     <dependencies>
@@ -149,13 +151,13 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>3.0.0</version>
+            <version>${swagger.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.9.2</version>
+            <version>${swagger-ui.version}</version>
         </dependency>
 
     </dependencies>
