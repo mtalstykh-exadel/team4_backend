@@ -26,14 +26,14 @@ public class TestsController {
         this.testsService = testsService;
     }
 
-    @ApiOperation(value = "Use it to get a single test from the database by its id")
+    @ApiOperation(value = "(Experimental) Use it to get all tests from the database")
     @GetMapping(path = "/")
     public Iterable<Test> getAll() {
         return testsService.getAll();
     }
 
 
-    @ApiOperation(value = "(Experimental) Use it to get all tests from the database")
+    @ApiOperation(value = "Use it to get a single test from the database by its id")
     @GetMapping(path = "/{id}")
     public Test getById(@PathVariable("id") long id) {
         return testsService.getById(id);
