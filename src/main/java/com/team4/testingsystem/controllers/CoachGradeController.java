@@ -36,12 +36,12 @@ public class CoachGradeController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/{testId}/{questionId}")
+    @PostMapping("/")
     public void createGrade(@RequestBody CoachGradeDTO coachGradeDto) {
         gradeService.createGrade(coachGradeDto);
     }
 
-    @PutMapping("/{testId}/{questionId}")
+    @PutMapping("/")
     public void updateGrade(@RequestBody CoachGradeDTO coachGradeDto) {
         gradeService.updateGrade(coachGradeDto);
     }
