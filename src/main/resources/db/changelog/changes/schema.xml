@@ -107,6 +107,9 @@
             <column name="question_id" type="int">
                 <constraints nullable="false"/>
             </column>
+            <column name="test_id" type="int">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <createTable tableName="content_file">
@@ -121,14 +124,14 @@
             </column>
         </createTable>
 
-        <createTable tableName="choosen_option">
+        <createTable tableName="chosen_option">
             <column name="test_id" type="int">
                 <constraints nullable="false"/>
             </column>
             <column name="question_id" type="int">
                 <constraints nullable="false"/>
             </column>
-            <column name="choosen_answer_id" type="int"/>
+            <column name="chosen_answer_id" type="int"/>
             <column name="file_answer_id" type="int"/>
         </createTable>
 
@@ -168,16 +171,16 @@
                                  constraintName="content_file_question_fk"
                                  referencedTableName="question" referencedColumnNames="id"/>
 
-        <addForeignKeyConstraint baseTableName="choosen_option" baseColumnNames="test_id"
-                                 constraintName="choosen_option_test_fk"
+        <addForeignKeyConstraint baseTableName="chosen_option" baseColumnNames="test_id"
+                                 constraintName="chosen_option_test_fk"
                                  referencedTableName="test" referencedColumnNames="id"/>
 
-        <addForeignKeyConstraint baseTableName="choosen_option" baseColumnNames="question_id"
-                                 constraintName="choosen_option_question_fk"
+        <addForeignKeyConstraint baseTableName="chosen_option" baseColumnNames="question_id"
+                                 constraintName="chosen_option_question_fk"
                                  referencedTableName="question" referencedColumnNames="id"/>
 
-        <addForeignKeyConstraint baseTableName="choosen_option" baseColumnNames="choosen_answer_id"
-                                 constraintName="choosen_option_answer_fk"
+        <addForeignKeyConstraint baseTableName="chosen_option" baseColumnNames="chosen_answer_id"
+                                 constraintName="chosen_option_answer_fk"
                                  referencedTableName="answer" referencedColumnNames="id"/>
 
 
@@ -254,10 +257,10 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
-    <changeSet id="add_fk_for_choosen_option" author="Darina">
-        <addForeignKeyConstraint baseTableName="choosen_option"
+    <changeSet id="add_fk_for_chosen_option" author="Darina">
+        <addForeignKeyConstraint baseTableName="chosen_option"
                                  baseColumnNames="file_answer_id"
-                                 constraintName="choosen_option_file_answer_fk"
+                                 constraintName="chosen_option_file_answer_fk"
                                  referencedTableName="file_answer"
                                  referencedColumnNames="id"/>
     </changeSet>
