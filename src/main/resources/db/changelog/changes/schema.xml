@@ -377,22 +377,22 @@
 
     <changeSet id="add_level" author="Darina">
         <insert tableName="level">
-            <column name="level_name">Beginner</column>
+            <column name="level_name">A1</column>
         </insert>
         <insert tableName="level">
-            <column name="level_name">Elementary</column>
+            <column name="level_name">A2</column>
         </insert>
         <insert tableName="level">
-            <column name="level_name">Intermediate</column>
+            <column name="level_name">B1</column>
         </insert>
         <insert tableName="level">
-            <column name="level_name">Upper-Intermediate</column>
+            <column name="level_name">B2</column>
         </insert>
         <insert tableName="level">
-            <column name="level_name">Advanced</column>
+            <column name="level_name">C1</column>
         </insert>
         <insert tableName="level">
-            <column name="level_name">Proficiency</column>
+            <column name="level_name">C2</column>
         </insert>
 
     </changeSet>
