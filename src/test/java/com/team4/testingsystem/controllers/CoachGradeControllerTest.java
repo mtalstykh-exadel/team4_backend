@@ -3,6 +3,7 @@ package com.team4.testingsystem.controllers;
 import com.team4.testingsystem.dto.CoachGradeDTO;
 import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.exceptions.CoachGradeAlreadyExistsException;
 import com.team4.testingsystem.exceptions.GradeNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
@@ -121,6 +122,14 @@ class CoachGradeControllerTest {
     void createGradeQuestionNotFound() {
         Mockito.doThrow(QuestionNotFoundException.class).when(gradeService).createGrade(gradeRequest);
         Assertions.assertThrows(QuestionNotFoundException.class, () -> gradeController.createGrade(gradeRequest));
+    }
+
+    @Test
+    void createGradeAlreadyExists() {
+        Mockito.doThrow(CoachGradeAlreadyExistsException.class).when(gradeService).createGrade(gradeRequest);
+
+        Assertions.assertThrows(CoachGradeAlreadyExistsException.class,
+                () -> gradeController.createGrade(gradeRequest));
     }
 
     @Test

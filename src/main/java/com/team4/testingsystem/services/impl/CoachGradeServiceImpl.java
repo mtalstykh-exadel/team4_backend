@@ -4,6 +4,7 @@ import com.team4.testingsystem.dto.CoachGradeDTO;
 import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.exceptions.CoachGradeAlreadyExistsException;
 import com.team4.testingsystem.exceptions.GradeNotFoundException;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.services.CoachGradeService;
@@ -47,6 +48,11 @@ public class CoachGradeServiceImpl implements CoachGradeService {
     public void createGrade(CoachGradeDTO gradeDTO) {
         Test test = testsService.getById(gradeDTO.getTestId());
         Question question = questionService.getQuestionById(gradeDTO.getQuestionId());
+
+        if (gradeRepository.findByTestAndQuestion(test, question).isPresent()) {
+            throw new CoachGradeAlreadyExistsException();
+        }
+
         gradeRepository.save(new CoachGrade(test, question, gradeDTO.getGrade()));
     }
 

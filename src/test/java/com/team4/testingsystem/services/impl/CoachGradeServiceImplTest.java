@@ -3,6 +3,7 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.dto.CoachGradeDTO;
 import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.exceptions.CoachGradeAlreadyExistsException;
 import com.team4.testingsystem.exceptions.GradeNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
@@ -125,9 +126,20 @@ class CoachGradeServiceImplTest {
     }
 
     @Test
+    void createGradeAlreadyExists() {
+        Mockito.when(testsService.getById(testId)).thenReturn(test);
+        Mockito.when(questionService.getQuestionById(questionId)).thenReturn(question);
+        Mockito.when(gradeRepository.findByTestAndQuestion(test, question)).thenReturn(Optional.of(coachGrade));
+
+        Assertions.assertThrows(CoachGradeAlreadyExistsException.class, () -> gradeService.createGrade(gradeRequest));
+    }
+
+    @Test
     void createGradeSuccess() {
         Mockito.when(testsService.getById(testId)).thenReturn(test);
         Mockito.when(questionService.getQuestionById(questionId)).thenReturn(question);
+        Mockito.when(gradeRepository.findByTestAndQuestion(test, question)).thenReturn(Optional.empty());
+
         gradeService.createGrade(gradeRequest);
 
         ArgumentCaptor<CoachGrade> captor = ArgumentCaptor.forClass(CoachGrade.class);
