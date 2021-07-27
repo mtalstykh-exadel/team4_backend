@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.dto.CoachGradeRequest;
 import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
@@ -41,13 +42,21 @@ public class CoachGradeServiceImpl implements CoachGradeService {
     }
 
     @Override
-    public void createGrade(Test test, Question question, Integer grade) {
-        gradeRepository.save(new CoachGrade(test, question, grade));
+    public void createGrade(CoachGradeRequest gradeRequest) {
+        Test test = testsService.getById(gradeRequest.getTestId());
+        Question question = questionService.getQuestionById(gradeRequest.getQuestionId());
+        gradeRepository.save(new CoachGrade(test, question, gradeRequest.getGrade()));
     }
 
     @Override
-    public void updateGrade(Long testId, Long questionId, Integer grade) {
-        if (gradeRepository.updateGrade(testId, questionId, grade) == 0) {
+    public void updateGrade(CoachGradeRequest gradeRequest) {
+        int updatedRowsCount = gradeRepository.updateGrade(
+                gradeRequest.getTestId(),
+                gradeRequest.getQuestionId(),
+                gradeRequest.getGrade()
+        );
+
+        if (updatedRowsCount == 0) {
             throw new GradeNotFoundException();
         }
     }

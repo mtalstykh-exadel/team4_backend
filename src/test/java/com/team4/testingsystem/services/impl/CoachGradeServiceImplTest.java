@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.dto.CoachGradeRequest;
 import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.exceptions.GradeNotFoundException;
@@ -8,6 +9,7 @@ import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.TestsService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -43,6 +45,20 @@ class CoachGradeServiceImplTest {
 
     @Mock
     private com.team4.testingsystem.entities.Test test;
+
+    private final Long testId = 1L;
+    private final Long questionId = 1L;
+    private final Integer grade = 10;
+    private CoachGradeRequest gradeRequest;
+
+    @BeforeEach
+    void init() {
+        gradeRequest = CoachGradeRequest.builder()
+                .testId(testId)
+                .questionId(questionId)
+                .grade(grade)
+                .build();
+    }
 
     @Test
     void getGradeTestNotFound() {
@@ -94,28 +110,45 @@ class CoachGradeServiceImplTest {
     }
 
     @Test
+    void createGradeTestNotFound() {
+        Mockito.when(testsService.getById(testId)).thenThrow(TestNotFoundException.class);
+
+        Assertions.assertThrows(TestNotFoundException.class, () -> gradeService.createGrade(gradeRequest));
+    }
+
+    @Test
+    void createGradeQuestionNotFound() {
+        Mockito.when(testsService.getById(testId)).thenReturn(test);
+        Mockito.when(questionService.getQuestionById(questionId)).thenThrow(QuestionNotFoundException.class);
+
+        Assertions.assertThrows(QuestionNotFoundException.class, () -> gradeService.createGrade(gradeRequest));
+    }
+
+    @Test
     void createGradeSuccess() {
-        gradeService.createGrade(test, question, 10);
+        Mockito.when(testsService.getById(testId)).thenReturn(test);
+        Mockito.when(questionService.getQuestionById(questionId)).thenReturn(question);
+        gradeService.createGrade(gradeRequest);
 
         ArgumentCaptor<CoachGrade> captor = ArgumentCaptor.forClass(CoachGrade.class);
         Mockito.verify(gradeRepository).save(captor.capture());
 
         Assertions.assertEquals(test, captor.getValue().getTest());
         Assertions.assertEquals(question, captor.getValue().getQuestion());
-        Assertions.assertEquals(10, captor.getValue().getGrade());
+        Assertions.assertEquals(grade, captor.getValue().getGrade());
     }
 
     @Test
     void updateGradeNotExists() {
-        Mockito.when(gradeRepository.updateGrade(1L, 1L, 10)).thenReturn(0);
+        Mockito.when(gradeRepository.updateGrade(testId, questionId, grade)).thenReturn(0);
 
-        Assertions.assertThrows(GradeNotFoundException.class, () -> gradeService.updateGrade(1L, 1L, 10));
+        Assertions.assertThrows(GradeNotFoundException.class, () -> gradeService.updateGrade(gradeRequest));
     }
 
     @Test
     void updateGradeSuccess() {
-        Mockito.when(gradeRepository.updateGrade(1L, 1L, 10)).thenReturn(1);
+        Mockito.when(gradeRepository.updateGrade(testId, questionId, grade)).thenReturn(1);
 
-        Assertions.assertDoesNotThrow(() -> gradeService.updateGrade(1L, 1L, 10));
+        Assertions.assertDoesNotThrow(() -> gradeService.updateGrade(gradeRequest));
     }
 }
