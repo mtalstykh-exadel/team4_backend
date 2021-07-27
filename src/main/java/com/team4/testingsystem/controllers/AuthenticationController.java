@@ -3,6 +3,8 @@ package com.team4.testingsystem.controllers;
 import com.team4.testingsystem.dto.AuthenticationRequest;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.AuthenticationService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,17 +22,21 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
+    @ApiOperation(value = "Heroku health check")
     @GetMapping("/health")
     public String healthCheck() {
         return "ok";
     }
 
+    @ApiOperation(value = "Get current user's name")
     @GetMapping("/name")
     public String getName(Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         return userDetails.getName();
     }
 
+    @ApiOperation(value = "Use it for authentication")
+    @ApiResponse(code = 200, message = "JWT token, use it for other requests")
     @PostMapping("/login")
     public String login(@RequestBody AuthenticationRequest credentials) {
         return authenticationService.createAuthenticationToken(
