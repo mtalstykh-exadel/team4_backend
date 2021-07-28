@@ -396,4 +396,25 @@
         </insert>
 
     </changeSet>
+
+    <changeSet id="add_error_report_table" author="Anlord241">
+        <createTable tableName="error_report">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="report_body" type="clob">
+            </column>
+            <column name="question_id" type="int">
+            </column>
+            <column name="test_id" type="int">
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="error_report" baseColumnNames="question_id"
+                                 constraintName="error_report_question_id_fk"
+                                 referencedTableName="question" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="error_report" baseColumnNames="test_id"
+                                 constraintName="error_report_test_id_fk"
+                                 referencedTableName="test" referencedColumnNames="id"/>
+    </changeSet>
+
 </databaseChangeLog>
