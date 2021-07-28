@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class FileControllerTest {
+public class FileControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
