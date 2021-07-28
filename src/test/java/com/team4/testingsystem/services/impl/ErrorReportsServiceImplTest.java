@@ -6,8 +6,8 @@ import com.team4.testingsystem.exceptions.ErrorReportNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.ErrorReportsRepository;
-import com.team4.testingsystem.repositories.QuestionRepository;
-import com.team4.testingsystem.repositories.TestsRepository;
+import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.TestsService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,10 +31,10 @@ public class ErrorReportsServiceImplTest {
     ErrorReportsRepository errorReportsRepository;
 
     @Mock
-    QuestionRepository questionRepository;
+    QuestionService questionService;
 
     @Mock
-    TestsRepository testsRepository;
+    TestsService testsService;
 
     @Mock
     private Question question;
@@ -73,9 +73,9 @@ public class ErrorReportsServiceImplTest {
 
     @Test
     void addSuccess(){
-        Mockito.when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
+        Mockito.when(questionService.getQuestionById(1L)).thenReturn(question);
 
-        Mockito.when(testsRepository.findById(1L)).thenReturn(Optional.of(test));
+        Mockito.when(testsService.getById(1L)).thenReturn(test);
 
         errorReportsService.add("Good report", 1L, 1L);
 
@@ -84,7 +84,7 @@ public class ErrorReportsServiceImplTest {
 
     @Test
     void addFailFirst(){
-        Mockito.when(questionRepository.findById(42L)).thenThrow(QuestionNotFoundException.class);
+        Mockito.when(questionService.getQuestionById(42L)).thenThrow(QuestionNotFoundException.class);
 
         Assertions.assertThrows(QuestionNotFoundException.class,
                 () -> errorReportsService.add("Bad report",42L, 42L));
@@ -92,9 +92,9 @@ public class ErrorReportsServiceImplTest {
 
     @Test
     void addFailSecond(){
-        Mockito.when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
+        Mockito.when(questionService.getQuestionById(1L)).thenReturn(question);
 
-        Mockito.when(testsRepository.findById(42L)).thenThrow(TestNotFoundException.class);
+        Mockito.when(testsService.getById(42L)).thenThrow(TestNotFoundException.class);
 
         Assertions.assertThrows(TestNotFoundException.class,
                 () -> errorReportsService.add("Bad report",1L, 42L));
