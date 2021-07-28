@@ -62,18 +62,18 @@ class TestsControllerTest {
     @org.junit.jupiter.api.Test
     void assignSuccess() {
 
-       Mockito.when(testsService.createForUser(1L)).thenReturn(1L);
+       Mockito.when(testsService.createForUser(1L, "level")).thenReturn(1L);
 
-       Assertions.assertEquals(1L, testsController.assign(1L));
+       Assertions.assertEquals(1L, testsController.assign(1L, "level"));
 
     }
 
     @org.junit.jupiter.api.Test
     void assignFail() {
 
-        Mockito.when(testsService.createForUser(42L)).thenThrow(UserNotFoundException.class);
+        Mockito.when(testsService.createForUser(42L, "level")).thenThrow(UserNotFoundException.class);
 
-        Assertions.assertThrows(UserNotFoundException.class, ()-> testsController.assign(42L));
+        Assertions.assertThrows(UserNotFoundException.class, ()-> testsController.assign(42L, "level"));
 
     }
 
@@ -87,13 +87,13 @@ class TestsControllerTest {
 
             Mockito.when(customUserDetails.getId()).thenReturn(1L);
 
-            Mockito.when(testsService.createForUser(1L)).thenReturn(1L);
+            Mockito.when(testsService.createForUser(1L, "level")).thenReturn(1L);
 
-            testsController.startNotAssigned();
+            testsController.startNotAssigned("level");
 
             verify(testsService).start(1L);
 
-            Assertions.assertEquals(1L, testsController.startNotAssigned());
+            Assertions.assertEquals(1L, testsController.startNotAssigned("level"));
         }
     }
 

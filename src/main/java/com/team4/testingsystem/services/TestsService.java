@@ -8,7 +8,9 @@ public interface TestsService {
 
     Test getById(long id);
 
-    long createForUser(long userId);
+    Test save(Test test);
+
+    long createForUser(long userId, String level);
 
     void start(long id);
 
