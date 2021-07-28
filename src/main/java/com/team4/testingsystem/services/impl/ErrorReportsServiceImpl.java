@@ -34,12 +34,12 @@ public class ErrorReportsServiceImpl implements ErrorReportsService {
     }
 
     @Override
-    public ErrorReport getById(long id){
+    public ErrorReport getById(long id) {
         return errorReportsRepository.findById(id).orElseThrow(ErrorReportNotFoundException::new);
     }
 
     @Override
-    public void add(String requestBody, Long questionId, Long testId){
+    public void add(String requestBody, Long questionId, Long testId) {
         Question question = questionService.getQuestionById(questionId);
 
         Test test = testsService.getById(testId);
@@ -48,17 +48,16 @@ public class ErrorReportsServiceImpl implements ErrorReportsService {
     }
 
     @Override
-    public void updateRequestBody(long id, String newRequestBody){
+    public void updateRequestBody(long id, String newRequestBody) {
         if (errorReportsRepository.changeReportBody(newRequestBody, id) == 0) {
             throw new ErrorReportNotFoundException();
         }
     }
 
     @Override
-    public void removeById(long id){
+    public void removeById(long id) {
         if (errorReportsRepository.removeById(id) == 0) {
             throw new ErrorReportNotFoundException();
         }
     }
-
 }
