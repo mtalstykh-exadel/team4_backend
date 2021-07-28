@@ -9,6 +9,4 @@ public interface ChosenOptionService {
 
     void save(ChosenOption chosenOption);
 
-    void update(ChosenOption chosenOption, ChosenOptionID chosenOptionID);
-
 }
