@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/tests")
 public class TestsController {
 
-    private TestsService testsService;
+    private final TestsService testsService;
 
     @Autowired
     public TestsController(TestsService testsService) {
@@ -43,18 +43,17 @@ public class TestsController {
     @ApiOperation(value = "(To be updated) Is used to assign a test for the user (HR's ability)")
     @ApiResponse(code = 200, message = "Created test's id")
     @PostMapping(path = "/assign/{userId}")
-    public long assign(@PathVariable("userId") long userId) {
-        return testsService.createForUser(userId);
+    public long assign(@PathVariable("userId") long userId, @RequestParam String level) {
+        return testsService.createForUser(userId, level);
     }
 
     @ApiOperation(value =
             "(To be updated) Is used when the user wants to learn one's level by oneself (without any HRs)")
     @ApiResponse(code = 200, message = "Started test's id")
     @PostMapping(path = "/start")
-    public long startNotAssigned() {
-
+    public long startNotAssigned(@RequestParam String level) {
         long userId = JwtTokenUtil.extractUserDetails().getId();
-        long createdTestId = testsService.createForUser(userId);
+        long createdTestId = testsService.createForUser(userId, level);
         testsService.start(createdTestId);
         return createdTestId;
     }
