@@ -15,6 +15,7 @@
     <description>English proficiency testing system</description>
     <properties>
         <java.version>11</java.version>
+        <security.version>5.5.1</security.version>
         <preliquibase.version>1.1.1</preliquibase.version>
         <liquibase.version>4.4.0</liquibase.version>
         <checkstyle.version>3.1.2</checkstyle.version>
@@ -55,6 +56,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>${security.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
