@@ -12,6 +12,7 @@ import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,9 +70,16 @@ public class CoachGradeControllerIntegrationTest {
         userDetails = new CustomUserDetails(user);
     }
 
+    @AfterEach
+    void destroy() {
+        gradeRepository.deleteAll();
+        questionRepository.deleteAll();
+        testsRepository.deleteAll();
+    }
+
     @Test
     void getGradesTestNotFound() throws Exception {
-        mockMvc.perform(get("/grades/100")
+        mockMvc.perform(get("/grades/101")
                 .with(user(userDetails)))
                 .andExpect(status().isNotFound());
     }
@@ -90,8 +98,6 @@ public class CoachGradeControllerIntegrationTest {
         List<CoachGradeDTO> grades = objectMapper.readValue(response, new TypeReference<>() {});
 
         Assertions.assertTrue(grades.isEmpty());
-
-        testsRepository.delete(test);
     }
 
     @Test
@@ -114,10 +120,6 @@ public class CoachGradeControllerIntegrationTest {
         List<CoachGradeDTO> grades = objectMapper.readValue(response, new TypeReference<>() {});
 
         Assertions.assertEquals(List.of(new CoachGradeDTO(grade)), grades);
-
-        gradeRepository.delete(grade);
-        questionRepository.delete(question);
-        testsRepository.delete(test);
     }
 
     @Test
@@ -148,19 +150,13 @@ public class CoachGradeControllerIntegrationTest {
         Assertions.assertEquals(2, grades.size());
         Assertions.assertTrue(grades.contains(new CoachGradeDTO(grade)));
         Assertions.assertTrue(grades.contains(new CoachGradeDTO(grade2)));
-
-        gradeRepository.delete(grade);
-        gradeRepository.delete(grade2);
-        questionRepository.delete(question);
-        questionRepository.delete(question2);
-        testsRepository.delete(test);
     }
 
     @Test
     void createGrade() throws Exception {
         CoachGradeDTO gradeDTO = new CoachGradeDTO();
-        gradeDTO.setTestId(100L);
-        gradeDTO.setQuestionId(100L);
+        gradeDTO.setTestId(200L);
+        gradeDTO.setQuestionId(300L);
         gradeDTO.setGrade(10);
 
         mockMvc.perform(post("/grades/")
@@ -202,17 +198,13 @@ public class CoachGradeControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(gradeDTO))
                 .with(user(userDetails)))
                 .andExpect(status().isConflict());
-
-        gradeRepository.delete(grade.get());
-        questionRepository.delete(question);
-        testsRepository.delete(test);
     }
 
     @Test
     void updateGrade() throws Exception {
         CoachGradeDTO gradeDTO = new CoachGradeDTO();
-        gradeDTO.setTestId(100L);
-        gradeDTO.setQuestionId(100L);
+        gradeDTO.setTestId(400L);
+        gradeDTO.setQuestionId(500L);
         gradeDTO.setGrade(10);
 
         mockMvc.perform(put("/grades/")
@@ -255,9 +247,5 @@ public class CoachGradeControllerIntegrationTest {
         Optional<CoachGrade> coachGrade = gradeRepository.findByTestAndQuestion(test, question);
         Assertions.assertTrue(coachGrade.isPresent());
         Assertions.assertEquals(gradeDTO.getGrade(), coachGrade.get().getGrade());
-
-        gradeRepository.delete(coachGrade.get());
-        questionRepository.delete(question);
-        testsRepository.delete(test);
     }
 }
