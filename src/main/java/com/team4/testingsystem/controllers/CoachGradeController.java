@@ -27,13 +27,6 @@ public class CoachGradeController {
         this.gradeService = gradeService;
     }
 
-    @ApiOperation(value = "Get coach's grade for a single question of the test")
-    @ApiResponse(code = 404, message = "Test, question or grade not found")
-    @GetMapping("/{testId}/{questionId}")
-    public CoachGradeDTO getGrade(@PathVariable Long testId, @PathVariable Long questionId) {
-        return new CoachGradeDTO(gradeService.getGrade(testId, questionId));
-    }
-
     @ApiOperation(value = "Get all coach's grades for the test")
     @ApiResponse(code = 404, message = "Test not found")
     @GetMapping("/{testId}")
@@ -49,14 +42,14 @@ public class CoachGradeController {
             @ApiResponse(code = 409, message = "The question is already graded")
     })
     @PostMapping("/")
-    public void createGrade(@RequestBody CoachGradeDTO coachGradeDto) {
-        gradeService.createGrade(coachGradeDto);
+    public void createGrade(@RequestBody CoachGradeDTO gradeDTO) {
+        gradeService.createGrade(gradeDTO.getTestId(), gradeDTO.getQuestionId(), gradeDTO.getGrade());
     }
 
     @ApiOperation(value = "Update grading for a single question of the test")
     @ApiResponse(code = 404, message = "Test, question or grade not found")
     @PutMapping("/")
-    public void updateGrade(@RequestBody CoachGradeDTO coachGradeDto) {
-        gradeService.updateGrade(coachGradeDto);
+    public void updateGrade(@RequestBody CoachGradeDTO gradeDTO) {
+        gradeService.updateGrade(gradeDTO.getTestId(), gradeDTO.getQuestionId(), gradeDTO.getGrade());
     }
 }

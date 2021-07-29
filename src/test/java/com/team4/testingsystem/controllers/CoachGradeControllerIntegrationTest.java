@@ -70,49 +70,14 @@ public class CoachGradeControllerIntegrationTest {
     }
 
     @Test
-    void getGrade() throws Exception {
-        mockMvc.perform(get("/grades/100/100")
-                .with(user(userDetails)))
-                .andExpect(status().isNotFound());
-
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
-        testsRepository.save(test);
-
-        mockMvc.perform(get("/grades/{testId}/100", test.getId())
-                .with(user(userDetails)))
-                .andExpect(status().isNotFound());
-
-        Question question = EntityCreatorUtil.createQuestion(user);
-        questionRepository.save(question);
-
-        mockMvc.perform(get("/grades/{testId}/{questionId}", test.getId(), question.getId())
-                .with(user(userDetails)))
-                .andExpect(status().isNotFound());
-
-        CoachGrade grade = new CoachGrade(test, question, 8);
-        gradeRepository.save(grade);
-
-        MvcResult mvcResult = mockMvc.perform(get("/grades/{testId}/{questionId}", test.getId(), question.getId())
-                .with(user(userDetails)))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String response = mvcResult.getResponse().getContentAsString();
-        CoachGradeDTO gradeDTO = objectMapper.readValue(response, CoachGradeDTO.class);
-
-        Assertions.assertEquals(new CoachGradeDTO(grade), gradeDTO);
-
-        gradeRepository.delete(grade);
-        questionRepository.delete(question);
-        testsRepository.delete(test);
-    }
-
-    @Test
-    void getGrades() throws Exception {
+    void getGradesTestNotFound() throws Exception {
         mockMvc.perform(get("/grades/100")
                 .with(user(userDetails)))
                 .andExpect(status().isNotFound());
+    }
 
+    @Test
+    void getGradesEmptyList() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
         testsRepository.save(test);
 
@@ -126,21 +91,45 @@ public class CoachGradeControllerIntegrationTest {
 
         Assertions.assertTrue(grades.isEmpty());
 
+        testsRepository.delete(test);
+    }
+
+    @Test
+    void getGradesOneGrade() throws Exception {
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        testsRepository.save(test);
+
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);
 
         CoachGrade grade = new CoachGrade(test, question, 8);
         gradeRepository.save(grade);
 
-        mvcResult = mockMvc.perform(get("/grades/{testId}", test.getId())
+        MvcResult mvcResult = mockMvc.perform(get("/grades/{testId}", test.getId())
                 .with(user(userDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        response = mvcResult.getResponse().getContentAsString();
-        grades = objectMapper.readValue(response, new TypeReference<>() {});
+        String response = mvcResult.getResponse().getContentAsString();
+        List<CoachGradeDTO> grades = objectMapper.readValue(response, new TypeReference<>() {});
 
         Assertions.assertEquals(List.of(new CoachGradeDTO(grade)), grades);
+
+        gradeRepository.delete(grade);
+        questionRepository.delete(question);
+        testsRepository.delete(test);
+    }
+
+    @Test
+    void getGradesTwoGrades() throws Exception {
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        testsRepository.save(test);
+
+        Question question = EntityCreatorUtil.createQuestion(user);
+        questionRepository.save(question);
+
+        CoachGrade grade = new CoachGrade(test, question, 8);
+        gradeRepository.save(grade);
 
         Question question2 = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question2);
@@ -148,13 +137,13 @@ public class CoachGradeControllerIntegrationTest {
         CoachGrade grade2 = new CoachGrade(test, question, 7);
         gradeRepository.save(grade2);
 
-        mvcResult = mockMvc.perform(get("/grades/{testId}", test.getId())
+        MvcResult mvcResult = mockMvc.perform(get("/grades/{testId}", test.getId())
                 .with(user(userDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        response = mvcResult.getResponse().getContentAsString();
-        grades = objectMapper.readValue(response, new TypeReference<>() {});
+        String response = mvcResult.getResponse().getContentAsString();
+        List<CoachGradeDTO> grades = objectMapper.readValue(response, new TypeReference<>() {});
 
         Assertions.assertEquals(2, grades.size());
         Assertions.assertTrue(grades.contains(new CoachGradeDTO(grade)));

@@ -54,41 +54,6 @@ class CoachGradeControllerTest {
     }
 
     @Test
-    void getGradeTestNotFound() {
-        Mockito.when(gradeService.getGrade(testId, questionId)).thenThrow(TestNotFoundException.class);
-        Assertions.assertThrows(TestNotFoundException.class, () -> gradeController.getGrade(testId, questionId));
-    }
-
-    @Test
-    void getGradeQuestionNotFound() {
-        Mockito.when(gradeService.getGrade(testId, questionId)).thenThrow(QuestionNotFoundException.class);
-        Assertions.assertThrows(QuestionNotFoundException.class, () -> gradeController.getGrade(testId, questionId));
-    }
-
-    @Test
-    void getGradeNotExists() {
-        Mockito.when(gradeService.getGrade(testId, questionId)).thenThrow(GradeNotFoundException.class);
-        Assertions.assertThrows(GradeNotFoundException.class, () -> gradeController.getGrade(testId, questionId));
-    }
-
-    @Test
-    void getGradeSuccess() {
-        Mockito.when(test.getId()).thenReturn(testId);
-        Mockito.when(question.getId()).thenReturn(questionId);
-
-        Mockito.when(coachGrade.getTest()).thenReturn(test);
-        Mockito.when(coachGrade.getQuestion()).thenReturn(question);
-        Mockito.when(coachGrade.getGrade()).thenReturn(grade);
-
-        Mockito.when(gradeService.getGrade(testId, questionId)).thenReturn(coachGrade);
-
-        CoachGradeDTO gradeDTO = gradeController.getGrade(testId, questionId);
-        Assertions.assertEquals(testId, gradeDTO.getTestId());
-        Assertions.assertEquals(questionId, gradeDTO.getQuestionId());
-        Assertions.assertEquals(grade, gradeDTO.getGrade());
-    }
-
-    @Test
     void getGradesTestNotFound() {
         Mockito.when(gradeService.getGradesByTest(testId)).thenThrow(TestNotFoundException.class);
         Assertions.assertThrows(TestNotFoundException.class, () -> gradeController.getGrades(testId));
@@ -114,19 +79,22 @@ class CoachGradeControllerTest {
 
     @Test
     void createGradeTestNotFound() {
-        Mockito.doThrow(TestNotFoundException.class).when(gradeService).createGrade(gradeRequest);
+        Mockito.doThrow(TestNotFoundException.class)
+                .when(gradeService).createGrade(testId, questionId, grade);
         Assertions.assertThrows(TestNotFoundException.class, () -> gradeController.createGrade(gradeRequest));
     }
 
     @Test
     void createGradeQuestionNotFound() {
-        Mockito.doThrow(QuestionNotFoundException.class).when(gradeService).createGrade(gradeRequest);
+        Mockito.doThrow(QuestionNotFoundException.class)
+                .when(gradeService).createGrade(testId, questionId, grade);
         Assertions.assertThrows(QuestionNotFoundException.class, () -> gradeController.createGrade(gradeRequest));
     }
 
     @Test
     void createGradeAlreadyExists() {
-        Mockito.doThrow(CoachGradeAlreadyExistsException.class).when(gradeService).createGrade(gradeRequest);
+        Mockito.doThrow(CoachGradeAlreadyExistsException.class)
+                .when(gradeService).createGrade(testId, questionId, grade);
 
         Assertions.assertThrows(CoachGradeAlreadyExistsException.class,
                 () -> gradeController.createGrade(gradeRequest));
@@ -134,29 +102,32 @@ class CoachGradeControllerTest {
 
     @Test
     void createGradeQuestionSuccess() {
-        CoachGradeDTO gradeDTO = CoachGradeDTO.builder().build();
+        CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
+                .testId(testId)
+                .questionId(questionId)
+                .grade(grade)
+                .build();
         gradeController.createGrade(gradeDTO);
 
-        ArgumentCaptor<CoachGradeDTO> captor = ArgumentCaptor.forClass(CoachGradeDTO.class);
-        Mockito.verify(gradeService).createGrade(captor.capture());
-
-        Assertions.assertEquals(gradeDTO, captor.getValue());
+        Mockito.verify(gradeService).createGrade(testId, questionId, grade);
     }
 
     @Test
     void updateGradeNotExists() {
-        Mockito.doThrow(GradeNotFoundException.class).when(gradeService).updateGrade(gradeRequest);
+        Mockito.doThrow(GradeNotFoundException.class)
+                .when(gradeService).updateGrade(testId, questionId, grade);
         Assertions.assertThrows(GradeNotFoundException.class, () -> gradeController.updateGrade(gradeRequest));
     }
 
     @Test
     void updateGradeSuccess() {
-        CoachGradeDTO gradeDTO = CoachGradeDTO.builder().build();
+        CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
+                .testId(testId)
+                .questionId(questionId)
+                .grade(grade)
+                .build();
         gradeController.updateGrade(gradeDTO);
 
-        ArgumentCaptor<CoachGradeDTO> captor = ArgumentCaptor.forClass(CoachGradeDTO.class);
-        Mockito.verify(gradeService).updateGrade(captor.capture());
-
-        Assertions.assertEquals(gradeDTO, captor.getValue());
+        Mockito.verify(gradeService).updateGrade(testId, questionId, grade);
     }
 }

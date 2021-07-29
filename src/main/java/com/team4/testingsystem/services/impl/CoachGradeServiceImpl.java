@@ -32,36 +32,28 @@ public class CoachGradeServiceImpl implements CoachGradeService {
     }
 
     @Override
-    public CoachGrade getGrade(Long testId, Long questionId) {
-        return gradeRepository.findByTestAndQuestion(
-                testsService.getById(testId),
-                questionService.getQuestionById(questionId)
-        ).orElseThrow(GradeNotFoundException::new);
-    }
-
-    @Override
     public Collection<CoachGrade> getGradesByTest(Long testId) {
         return gradeRepository.findAllByTest(testsService.getById(testId));
     }
 
     @Override
-    public void createGrade(CoachGradeDTO gradeDTO) {
-        Test test = testsService.getById(gradeDTO.getTestId());
-        Question question = questionService.getQuestionById(gradeDTO.getQuestionId());
+    public void createGrade(Long testId, Long questionId, Integer grade) {
+        Test test = testsService.getById(testId);
+        Question question = questionService.getQuestionById(questionId);
 
         if (gradeRepository.findByTestAndQuestion(test, question).isPresent()) {
             throw new CoachGradeAlreadyExistsException();
         }
 
-        gradeRepository.save(new CoachGrade(test, question, gradeDTO.getGrade()));
+        gradeRepository.save(new CoachGrade(test, question, grade));
     }
 
     @Override
-    public void updateGrade(CoachGradeDTO gradeDTO) {
-        Test test = testsService.getById(gradeDTO.getTestId());
-        Question question = questionService.getQuestionById(gradeDTO.getQuestionId());
+    public void updateGrade(Long testId, Long questionId, Integer grade) {
+        Test test = testsService.getById(testId);
+        Question question = questionService.getQuestionById(questionId);
 
-        if (gradeRepository.updateGrade(test, question, gradeDTO.getGrade()) == 0) {
+        if (gradeRepository.updateGrade(test, question, grade) == 0) {
             throw new GradeNotFoundException();
         }
     }
