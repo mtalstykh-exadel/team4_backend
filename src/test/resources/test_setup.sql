@@ -1,0 +1,4 @@
+CREATE SCHEMA IF NOT EXISTS language_testing;
+
+CREATE SEQUENCE IF NOT EXISTS language_testing.user_role_id_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE IF NOT EXISTS language_testing.user_id_seq START WITH 1 INCREMENT BY 1;
