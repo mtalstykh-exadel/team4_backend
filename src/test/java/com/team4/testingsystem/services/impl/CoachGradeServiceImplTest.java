@@ -151,15 +151,34 @@ class CoachGradeServiceImplTest {
     }
 
     @Test
+    void updateGradeTestNotFound() {
+        Mockito.when(testsService.getById(testId)).thenThrow(TestNotFoundException.class);
+
+        Assertions.assertThrows(TestNotFoundException.class, () -> gradeService.updateGrade(gradeRequest));
+    }
+
+    @Test
+    void updateGradeQuestionNotFound() {
+        Mockito.when(testsService.getById(testId)).thenReturn(test);
+        Mockito.when(questionService.getQuestionById(questionId)).thenThrow(QuestionNotFoundException.class);
+
+        Assertions.assertThrows(QuestionNotFoundException.class, () -> gradeService.updateGrade(gradeRequest));
+    }
+
+    @Test
     void updateGradeNotExists() {
-        Mockito.when(gradeRepository.updateGrade(testId, questionId, grade)).thenReturn(0);
+        Mockito.when(testsService.getById(testId)).thenReturn(test);
+        Mockito.when(questionService.getQuestionById(testId)).thenReturn(question);
+        Mockito.when(gradeRepository.updateGrade(test, question, grade)).thenReturn(0);
 
         Assertions.assertThrows(GradeNotFoundException.class, () -> gradeService.updateGrade(gradeRequest));
     }
 
     @Test
     void updateGradeSuccess() {
-        Mockito.when(gradeRepository.updateGrade(testId, questionId, grade)).thenReturn(1);
+        Mockito.when(testsService.getById(testId)).thenReturn(test);
+        Mockito.when(questionService.getQuestionById(testId)).thenReturn(question);
+        Mockito.when(gradeRepository.updateGrade(test, question, grade)).thenReturn(1);
 
         Assertions.assertDoesNotThrow(() -> gradeService.updateGrade(gradeRequest));
     }

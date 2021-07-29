@@ -21,5 +21,5 @@ public interface CoachGradeRepository extends CrudRepository<CoachGrade, Long> {
     @Transactional
     @Modifying
     @Query(value = "UPDATE CoachGrade cg SET cg.grade = ?3 WHERE cg.test = ?1 AND cg.question = ?2")
-    int updateGrade(Long testId, Long questionId, Integer grade);
+    int updateGrade(Test test, Question question, Integer grade);
 }

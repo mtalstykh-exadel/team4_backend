@@ -5,8 +5,12 @@ import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.entities.UserRole;
+import com.team4.testingsystem.enums.Status;
+
+import java.time.LocalDateTime;
 
 public class EntityCreatorUtil {
     public static Question createQuestion() {
@@ -58,11 +62,28 @@ public class EntityCreatorUtil {
         return level;
     }
 
-    public static ContentFileRequest createContentFileRequest(Long questionId, String url){
+    public static ContentFileRequest createContentFileRequest(Long questionId, String url) {
         ContentFileRequest cfr = new ContentFileRequest();
         cfr.setQuestionId(questionId);
         cfr.setUrl(url);
         return cfr;
     }
 
+    public static Test createTest(User user) {
+        return Test.builder()
+                .user(user)
+                .status(Status.STARTED)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    public static Question createQuestion(User user) {
+        return new Question.Builder()
+                .body("some text")
+                .module(createModule())
+                .level(createLevel())
+                .creator(user)
+                .isAvailable(true)
+                .build();
+    }
 }

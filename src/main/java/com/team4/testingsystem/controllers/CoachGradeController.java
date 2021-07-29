@@ -54,7 +54,7 @@ public class CoachGradeController {
     }
 
     @ApiOperation(value = "Update grading for a single question of the test")
-    @ApiResponse(code = 404, message = "Grade for this question doesn't exist")
+    @ApiResponse(code = 404, message = "Test, question or grade not found")
     @PutMapping("/")
     public void updateGrade(@RequestBody CoachGradeDTO coachGradeDto) {
         gradeService.updateGrade(coachGradeDto);

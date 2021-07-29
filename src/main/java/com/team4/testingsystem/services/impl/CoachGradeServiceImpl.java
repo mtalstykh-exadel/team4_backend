@@ -58,13 +58,10 @@ public class CoachGradeServiceImpl implements CoachGradeService {
 
     @Override
     public void updateGrade(CoachGradeDTO gradeDTO) {
-        int updatedRowsCount = gradeRepository.updateGrade(
-                gradeDTO.getTestId(),
-                gradeDTO.getQuestionId(),
-                gradeDTO.getGrade()
-        );
+        Test test = testsService.getById(gradeDTO.getTestId());
+        Question question = questionService.getQuestionById(gradeDTO.getQuestionId());
 
-        if (updatedRowsCount == 0) {
+        if (gradeRepository.updateGrade(test, question, gradeDTO.getGrade()) == 0) {
             throw new GradeNotFoundException();
         }
     }
