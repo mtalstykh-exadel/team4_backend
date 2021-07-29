@@ -154,10 +154,11 @@ public class CoachGradeControllerIntegrationTest {
 
     @Test
     void createGrade() throws Exception {
-        CoachGradeDTO gradeDTO = new CoachGradeDTO();
-        gradeDTO.setTestId(200L);
-        gradeDTO.setQuestionId(300L);
-        gradeDTO.setGrade(10);
+        CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
+                .testId(200L)
+                .questionId(300L)
+                .grade(10)
+                .build();
 
         mockMvc.perform(post("/grades/")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -202,10 +203,11 @@ public class CoachGradeControllerIntegrationTest {
 
     @Test
     void updateGrade() throws Exception {
-        CoachGradeDTO gradeDTO = new CoachGradeDTO();
-        gradeDTO.setTestId(400L);
-        gradeDTO.setQuestionId(500L);
-        gradeDTO.setGrade(10);
+        CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
+                .testId(400L)
+                .questionId(500L)
+                .grade(10)
+                .build();
 
         mockMvc.perform(put("/grades/")
                 .contentType(MediaType.APPLICATION_JSON)
