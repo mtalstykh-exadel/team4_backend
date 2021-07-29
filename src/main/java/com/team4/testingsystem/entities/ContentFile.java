@@ -1,15 +1,19 @@
 package com.team4.testingsystem.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+
 
 @Entity
 @Table(name = "content_file")
@@ -20,20 +24,22 @@ public class ContentFile {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne
-    @JsonIgnore
-    @JoinColumn(name = "question_id", nullable = false, referencedColumnName = "id")
-    private Question question;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "question_content_file",
+            joinColumns = @JoinColumn(name = "content_file_id"),
+            inverseJoinColumns = @JoinColumn(name = "question_id")
+    )
+    List<Question> questions = new ArrayList<>();
 
     @Column(name = "url")
     private String url;
 
     public ContentFile() {
-
     }
 
-    public ContentFile(Question question, String url) {
-        this.question = question;
+    public ContentFile(String url, Question question) {
+        this.questions.add(question);
         this.url = url;
     }
 
@@ -41,12 +47,12 @@ public class ContentFile {
         return id;
     }
 
-    public Question getQuestion() {
-        return question;
+    public List<Question> getQuestions() {
+        return questions;
     }
 
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
     }
 
     public String getUrl() {

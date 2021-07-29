@@ -1,11 +1,16 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.exceptions.LevelNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
+import com.team4.testingsystem.repositories.LevelRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
+import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,6 +43,9 @@ class TestsServiceImplTest {
 
     @Mock
     UsersRepository usersRepository;
+
+    @Mock
+    LevelRepository levelRepository;
 
     @Mock
     TestsRepository testsRepository;
@@ -75,15 +83,20 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void createWhenAssignFail() {
-
+        Level level = EntityCreatorUtil.createLevel();
+        Mockito.when(levelRepository
+                .findByName(level.getName())).thenReturn(Optional.of(level));
         Mockito.when(usersRepository.findById(42L)).thenThrow(UserNotFoundException.class);
 
-        Assertions.assertThrows(UserNotFoundException.class, () -> testsService.createForUser(42L));
+        Assertions.assertThrows(
+                UserNotFoundException.class, () -> testsService.createForUser(42L, Levels.A1));
     }
 
     @org.junit.jupiter.api.Test
     void createSuccess() {
-
+        Level level = EntityCreatorUtil.createLevel();
+        Mockito.when(levelRepository
+                .findByName(level.getName())).thenReturn(Optional.of(level));
         Mockito.when(usersRepository.findById(1L)).thenReturn(Optional.of(user));
 
 
@@ -94,11 +107,11 @@ class TestsServiceImplTest {
             Mockito.when(builder.user(any())).thenReturn(builder);
             Mockito.when(builder.createdAt(any())).thenReturn(builder);
             Mockito.when(builder.status(any())).thenReturn(builder);
+            Mockito.when(builder.level(any())).thenReturn(builder);
             Mockito.when(builder.build()).thenReturn(test);
 
             Mockito.when(test.getId()).thenReturn(1L);
-
-            Assertions.assertEquals(1L, testsService.createForUser(1L));
+            Assertions.assertEquals(1L, testsService.createForUser(1L, Levels.A1));
         }
 
     }
@@ -187,4 +200,15 @@ class TestsServiceImplTest {
 
     }
 
+    @org.junit.jupiter.api.Test
+    void saveSuccess(){
+        Mockito.when(testsRepository.save(test)).thenReturn(test);
+        Assertions.assertEquals(test, testsService.save(test));
+    }
+
+    @org.junit.jupiter.api.Test
+    void saveFail(){
+        Mockito.when(testsRepository.save(test)).thenThrow(RuntimeException.class);
+        Assertions.assertThrows(RuntimeException.class,()-> testsService.save(test));
+    }
 }
