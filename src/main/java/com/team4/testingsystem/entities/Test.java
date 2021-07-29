@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team4.testingsystem.enums.Status;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,8 +15,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 
 @Entity
 @Table(name = "test")
@@ -24,24 +30,26 @@ public class Test {
     @Column(name = "id")
     private Long id;
 
-
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "level_id", referencedColumnName = "id")
+    private Level level;
+
     @Column(name = "created_at")
-    private LocalDateTime  createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime  updatedAt;
+    private LocalDateTime updatedAt;
 
     @Column(name = "started_at")
-    private LocalDateTime  startedAt;
+    private LocalDateTime startedAt;
 
     @Column(name = "finished_at")
-    private LocalDateTime  finishedAt;
-
+    private LocalDateTime finishedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -50,9 +58,19 @@ public class Test {
     @Column(name = "evaluation")
     private int evaluation;
 
+
     @ManyToOne
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
     private User coach;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "test_question",
+            joinColumns = @JoinColumn(name = "test_id"),
+            inverseJoinColumns = @JoinColumn(name = "question_id")
+    )
+            
+    List<Question> questions = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -66,25 +84,21 @@ public class Test {
         return createdAt;
     }
 
-
-    public LocalDateTime  getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-
-    public LocalDateTime  getStartedAt() {
+    public LocalDateTime getStartedAt() {
         return startedAt;
     }
 
-    public LocalDateTime  getFinishedAt() {
+    public LocalDateTime getFinishedAt() {
         return finishedAt;
     }
-
 
     public Status getStatus() {
         return status;
     }
-
 
     public int getEvaluation() {
         return evaluation;
@@ -116,6 +130,26 @@ public class Test {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
+    public void setQuestion(Question question) {
+        this.questions.add(question);
+    }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
     }
 
     public void setEvaluation(int evaluation) {
@@ -178,10 +212,13 @@ public class Test {
             return this;
         }
 
+        public Builder level(Level level) {
+            test.level = level;
+            return this;
+        }
+
         public Test build() {
             return test;
         }
-
-
     }
 }

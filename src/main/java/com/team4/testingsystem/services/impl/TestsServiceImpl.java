@@ -1,10 +1,13 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
+import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +18,21 @@ import java.time.LocalDateTime;
 @Service
 public class TestsServiceImpl implements TestsService {
 
-    private TestsRepository testsRepository;
+    private final TestsRepository testsRepository;
 
-    private UsersService usersService;
+    private final UsersService usersService;
+
+    private final LevelService levelService;
 
 
     @Autowired
-    public TestsServiceImpl(TestsRepository testsRepository, UsersService usersService) {
+    public TestsServiceImpl(TestsRepository testsRepository,
+                            LevelService levelService,
+                            UsersService usersService) {
         this.testsRepository = testsRepository;
+        this.levelService = levelService;
         this.usersService = usersService;
+
     }
 
     @Override
@@ -38,14 +47,19 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public long createForUser(long userId) {
+    public Test save(Test test) {
+        return testsRepository.save(test);
+    }
 
-
+    @Override
+    public long createForUser(long userId, Levels levelName) {
+        Level level = levelService.getLevelByName(levelName.name());
         User user = usersService.getUserById(userId);
         Test test = Test.builder()
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .status(Status.NOT_STARTED)
+                .level(level)
                 .build();
         testsRepository.save(test);
 
@@ -59,6 +73,7 @@ public class TestsServiceImpl implements TestsService {
         if (testsRepository.start(LocalDateTime.now(), id) == 0) {
             throw new TestNotFoundException();
         }
+
     }
 
 
