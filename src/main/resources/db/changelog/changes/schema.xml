@@ -396,4 +396,57 @@
         </insert>
 
     </changeSet>
+
+    <changeSet id="add_level_test" author="Darina">
+        <addColumn tableName="test">
+            <column name="level_id" type="int"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="test"
+                                 baseColumnNames="level_id"
+                                 constraintName="test_level_id_fk"
+                                 referencedTableName="level"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="delete_question_id_from_content_file" author="Darina">
+        <dropColumn tableName="content_file" columnName="question_id"/>
+    </changeSet>
+
+    <changeSet id="create_table_question_content_file" author="Darina">
+        <createTable tableName="question_content_file">
+            <column name="question_id" type="int"/>
+            <column name="content_file_id" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="question_content_file"
+                                 baseColumnNames="question_id"
+                                 constraintName="content_file_question_question_id_fk"
+                                 referencedTableName="question"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="question_content_file"
+                                 baseColumnNames="content_file_id"
+                                 constraintName="content_file_question_content_id_fk"
+                                 referencedTableName="content_file"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="add_error_report_table" author="Anlord241">
+        <createTable tableName="error_report">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="report_body" type="clob">
+            </column>
+            <column name="question_id" type="int">
+            </column>
+            <column name="test_id" type="int">
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="error_report" baseColumnNames="question_id"
+                                 constraintName="error_report_question_id_fk"
+                                 referencedTableName="question" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="error_report" baseColumnNames="test_id"
+                                 constraintName="error_report_test_id_fk"
+                                 referencedTableName="test" referencedColumnNames="id"/>
+    </changeSet>
+
 </databaseChangeLog>

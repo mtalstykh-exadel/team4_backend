@@ -14,8 +14,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static org.mockito.Mockito.verify;
+
 @ExtendWith(MockitoExtension.class)
 class QuestionServiceImplTest {
+
+    @Mock
+    Question question;
 
     @Mock
     private QuestionRepository questionRepository;
@@ -44,4 +49,20 @@ class QuestionServiceImplTest {
         Question result = questionService.createQuestion(question);
         Assertions.assertEquals(question, result);
     }
+
+    @Test
+    void archiveQuestion(){
+        questionService.archiveQuestion(1L);
+        verify(questionRepository).archiveQuestion(1L);
+    }
+
+    @Test
+    void updateQuestion(){
+        questionService.updateQuestion(question, 1L);
+
+        verify(questionRepository).archiveQuestion(1L);
+
+        verify(questionRepository).save(question);
+    }
+
 }
