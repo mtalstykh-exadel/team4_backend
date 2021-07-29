@@ -270,6 +270,10 @@
                     <targetTests>
                         <param>com.team4.testingsystem.*</param>
                     </targetTests>
+                    <excludedClasses>
+                        <param>com.team4.testingsystem.entities.*</param>
+                        <param>com.team4.testingsystem.dto.*</param>
+                    </excludedClasses>
                     <mutationThreshold>60</mutationThreshold>
                     <coverageThreshold>70</coverageThreshold>
                 </configuration>

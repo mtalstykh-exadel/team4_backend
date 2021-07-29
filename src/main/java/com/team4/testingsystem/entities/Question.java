@@ -1,5 +1,7 @@
 package com.team4.testingsystem.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -32,6 +35,12 @@ public class Question {
     @ManyToOne
     @JoinColumn(name = "module_id", referencedColumnName = "id")
     private Module module;
+
+    @ManyToMany(mappedBy = "questions")
+    List<ContentFile> contentFiles = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "questions")
+    List<Test> tests = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -91,16 +100,32 @@ public class Question {
         }
         Question question = (Question) o;
         return isAvailable == question.isAvailable
-                && Objects.equals(id, question.id)
-                && Objects.equals(body, question.body)
-                && Objects.equals(creator, question.creator)
-                && Objects.equals(level, question.level)
-                && Objects.equals(module, question.module);
+               && Objects.equals(id, question.id)
+               && Objects.equals(body, question.body)
+               && Objects.equals(creator, question.creator)
+               && Objects.equals(level, question.level)
+               && Objects.equals(module, question.module);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, body, isAvailable, creator, level, module);
+    }
+
+    public List<ContentFile> getContentFiles() {
+        return contentFiles;
+    }
+
+    public void setContentFiles(List<ContentFile> contentFiles) {
+        this.contentFiles = contentFiles;
+    }
+
+    public List<Test> getTests() {
+        return tests;
+    }
+
+    public void setTests(List<Test> tests) {
+        this.tests = tests;
     }
 
     public static class Builder {
