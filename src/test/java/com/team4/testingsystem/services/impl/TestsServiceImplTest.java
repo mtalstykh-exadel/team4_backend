@@ -200,4 +200,15 @@ class TestsServiceImplTest {
 
     }
 
+    @org.junit.jupiter.api.Test
+    void saveSuccess(){
+        Mockito.when(testsRepository.save(test)).thenReturn(test);
+        Assertions.assertEquals(test, testsService.save(test));
+    }
+
+    @org.junit.jupiter.api.Test
+    void saveFail(){
+        Mockito.when(testsRepository.save(test)).thenThrow(RuntimeException.class);
+        Assertions.assertThrows(RuntimeException.class,()-> testsService.save(test));
+    }
 }
