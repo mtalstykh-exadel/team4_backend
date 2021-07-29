@@ -153,7 +153,7 @@ public class CoachGradeControllerIntegrationTest {
     }
 
     @Test
-    void createGrade() throws Exception {
+    void createGradeTestNotFound() throws Exception {
         CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
                 .testId(200L)
                 .questionId(300L)
@@ -165,22 +165,39 @@ public class CoachGradeControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(gradeDTO))
                 .with(user(userDetails)))
                 .andExpect(status().isNotFound());
+    }
 
+    @Test
+    void createGradeQuestionNotFound() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
         testsRepository.save(test);
 
-        gradeDTO.setTestId(test.getId());
+        CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
+                .testId(test.getId())
+                .questionId(301L)
+                .grade(10)
+                .build();
 
         mockMvc.perform(post("/grades/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(gradeDTO))
                 .with(user(userDetails)))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void createGradeSuccess() throws Exception {
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);
 
-        gradeDTO.setQuestionId(question.getId());
+        CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
+                .testId(test.getId())
+                .questionId(question.getId())
+                .grade(10)
+                .build();
 
         mockMvc.perform(post("/grades/")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -191,18 +208,34 @@ public class CoachGradeControllerIntegrationTest {
         Optional<CoachGrade> grade = gradeRepository.findByTestAndQuestion(test, question);
         Assertions.assertTrue(grade.isPresent());
         Assertions.assertEquals(gradeDTO.getGrade(), grade.get().getGrade());
-
-        gradeDTO.setGrade(1);
-
-        mockMvc.perform(post("/grades/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(gradeDTO))
-                .with(user(userDetails)))
-                .andExpect(status().isConflict());
     }
 
     @Test
-    void updateGrade() throws Exception {
+    void createGradeAlreadyExists() throws Exception {
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        testsRepository.save(test);
+
+        Question question = EntityCreatorUtil.createQuestion(user);
+        questionRepository.save(question);
+
+        CoachGrade grade = new CoachGrade(test, question, 10);
+        gradeRepository.save(grade);
+
+        grade.setGrade(1);
+
+        mockMvc.perform(post("/grades/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new CoachGradeDTO(grade)))
+                .with(user(userDetails)))
+                .andExpect(status().isConflict());
+
+        Optional<CoachGrade> savedGrade = gradeRepository.findByTestAndQuestion(test, question);
+        Assertions.assertTrue(savedGrade.isPresent());
+        Assertions.assertEquals(10, savedGrade.get().getGrade());
+    }
+
+    @Test
+    void updateGradeTestNotFound() throws Exception {
         CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
                 .testId(400L)
                 .questionId(500L)
@@ -214,28 +247,60 @@ public class CoachGradeControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(gradeDTO))
                 .with(user(userDetails)))
                 .andExpect(status().isNotFound());
+    }
 
+    @Test
+    void updateGradeQuestionNotFound() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
         testsRepository.save(test);
 
-        gradeDTO.setTestId(test.getId());
+        CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
+                .testId(test.getId())
+                .questionId(501L)
+                .grade(10)
+                .build();
 
         mockMvc.perform(put("/grades/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(gradeDTO))
                 .with(user(userDetails)))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateGradeNotExists() throws Exception {
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);
 
-        gradeDTO.setQuestionId(question.getId());
+        CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
+                .testId(test.getId())
+                .questionId(question.getId())
+                .grade(10)
+                .build();
 
         mockMvc.perform(put("/grades/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(gradeDTO))
                 .with(user(userDetails)))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateGradeSuccess() throws Exception {
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        testsRepository.save(test);
+
+        Question question = EntityCreatorUtil.createQuestion(user);
+        questionRepository.save(question);
+
+        CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
+                .testId(test.getId())
+                .questionId(question.getId())
+                .grade(10)
+                .build();
 
         CoachGrade grade = new CoachGrade(test, question, 2);
         gradeRepository.save(grade);
@@ -246,8 +311,8 @@ public class CoachGradeControllerIntegrationTest {
                 .with(user(userDetails)))
                 .andExpect(status().isOk());
 
-        Optional<CoachGrade> coachGrade = gradeRepository.findByTestAndQuestion(test, question);
-        Assertions.assertTrue(coachGrade.isPresent());
-        Assertions.assertEquals(gradeDTO.getGrade(), coachGrade.get().getGrade());
+        Optional<CoachGrade> savedGrade = gradeRepository.findByTestAndQuestion(test, question);
+        Assertions.assertTrue(savedGrade.isPresent());
+        Assertions.assertEquals(10, savedGrade.get().getGrade());
     }
 }
