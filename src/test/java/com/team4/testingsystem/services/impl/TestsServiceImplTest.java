@@ -5,7 +5,6 @@ import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
-import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.services.UsersService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
