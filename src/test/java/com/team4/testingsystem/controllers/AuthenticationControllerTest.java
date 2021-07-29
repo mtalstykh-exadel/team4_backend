@@ -37,10 +37,10 @@ class AuthenticationControllerTest {
     }
 
     @Test
-    void healthCheck(){
-      Assertions.assertEquals("ok", authenticationController.healthCheck());
+    void healthCheck() {
+        Assertions.assertEquals("ok", authenticationController.healthCheck());
     }
-    
+
     @Test
     void getName() {
         Authentication authentication = Mockito.mock(Authentication.class);
