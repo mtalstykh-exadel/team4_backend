@@ -10,12 +10,13 @@ import com.team4.testingsystem.services.ContentFilesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ContentFilesServiceImpl implements ContentFilesService {
 
-    private ContentFilesRepository contentFilesRepository;
-
-    private QuestionRepository questionRepository;
+    private final ContentFilesRepository contentFilesRepository;
+    private final QuestionRepository questionRepository;
 
     @Autowired
     public ContentFilesServiceImpl(ContentFilesRepository contentFilesRepository,
@@ -36,12 +37,8 @@ public class ContentFilesServiceImpl implements ContentFilesService {
 
     @Override
     public void add(String url, Long questionId) {
-
-
         Question question = questionRepository.findById(questionId).orElseThrow(QuestionNotFoundException::new);
-
-        ContentFile contentFile = new ContentFile(question, url);
-
+        ContentFile contentFile = new ContentFile(url, question);
         contentFilesRepository.save(contentFile);
     }
 

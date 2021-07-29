@@ -3,6 +3,7 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.LevelNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
@@ -50,8 +51,8 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public long createForUser(long userId, String levelName) {
-        Level level = levelRepository.findByName(levelName).orElseThrow(LevelNotFoundException::new);
+    public long createForUser(long userId, Levels levelName) {
+        Level level = levelRepository.findByName(levelName.name()).orElseThrow(LevelNotFoundException::new);
         User user = usersRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Test test = Test.builder()
                 .user(user)

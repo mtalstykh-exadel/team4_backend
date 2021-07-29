@@ -45,7 +45,7 @@ public class TestsController {
     @ApiResponse(code = 200, message = "Created test's id")
     @PostMapping(path = "/assign/{userId}")
     public long assign(@PathVariable("userId") long userId, @RequestParam Levels level) {
-        return testsService.createForUser(userId, level.name());
+        return testsService.createForUser(userId, level);
     }
 
     @ApiOperation(value =
@@ -54,7 +54,7 @@ public class TestsController {
     @PostMapping(path = "/start")
     public long startNotAssigned(@RequestParam Levels level) {
         long userId = JwtTokenUtil.extractUserDetails().getId();
-        long createdTestId = testsService.createForUser(userId, level.name());
+        long createdTestId = testsService.createForUser(userId, level);
         testsService.start(createdTestId);
         return createdTestId;
     }

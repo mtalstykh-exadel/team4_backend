@@ -1,6 +1,7 @@
 package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.enums.Levels;
 
 public interface TestsService {
 
@@ -10,7 +11,7 @@ public interface TestsService {
 
     Test save(Test test);
 
-    long createForUser(long userId, String level);
+    long createForUser(long userId, Levels level);
 
     void start(long id);
 

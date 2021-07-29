@@ -3,6 +3,7 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.exceptions.LevelNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
@@ -88,7 +89,7 @@ class TestsServiceImplTest {
         Mockito.when(usersRepository.findById(42L)).thenThrow(UserNotFoundException.class);
 
         Assertions.assertThrows(
-                UserNotFoundException.class, () -> testsService.createForUser(42L, level.getName()));
+                UserNotFoundException.class, () -> testsService.createForUser(42L, Levels.A1));
     }
 
     @org.junit.jupiter.api.Test
@@ -110,7 +111,7 @@ class TestsServiceImplTest {
             Mockito.when(builder.build()).thenReturn(test);
 
             Mockito.when(test.getId()).thenReturn(1L);
-            Assertions.assertEquals(1L, testsService.createForUser(1L, level.getName()));
+            Assertions.assertEquals(1L, testsService.createForUser(1L, Levels.A1));
         }
 
     }
