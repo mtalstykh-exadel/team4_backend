@@ -107,9 +107,6 @@
             <column name="question_id" type="int">
                 <constraints nullable="false"/>
             </column>
-            <column name="test_id" type="int">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
 
         <createTable tableName="content_file">
