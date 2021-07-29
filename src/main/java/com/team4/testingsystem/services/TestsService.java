@@ -9,6 +9,8 @@ public interface TestsService {
 
     Test getById(long id);
 
+    Iterable<Test> getByUserId(long userId);
+
     Test save(Test test);
 
     long createForUser(long userId, Levels level);

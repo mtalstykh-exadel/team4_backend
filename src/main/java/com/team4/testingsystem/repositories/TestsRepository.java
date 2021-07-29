@@ -1,6 +1,7 @@
 package com.team4.testingsystem.repositories;
 
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.entities.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -11,6 +12,8 @@ import java.time.LocalDateTime;
 
 @Repository
 public interface TestsRepository extends CrudRepository<Test, Long> {
+
+    Iterable<Test> getAllByUser(User user);
 
     @Transactional
     @Modifying

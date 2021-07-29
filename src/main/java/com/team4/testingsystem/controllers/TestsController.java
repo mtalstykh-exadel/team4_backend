@@ -40,6 +40,11 @@ public class TestsController {
         return testsService.getById(id);
     }
 
+    @ApiOperation(value = "Get all tests assigned to the current user")
+    @GetMapping(path = "/assigned")
+    public Iterable<Test> getAllAssigned() {
+        return testsService.getByUserId(JwtTokenUtil.extractUserDetails().getId());
+    }
 
     @ApiOperation(value = "(To be updated) Is used to assign a test for the user (HR's ability)")
     @ApiResponse(code = 200, message = "Created test's id")
