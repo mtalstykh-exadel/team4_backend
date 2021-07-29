@@ -88,6 +88,7 @@ public class TestsServiceImpl implements TestsService {
         }
 
     }
+    
     @Override
     public void assignCoach(long id, long coachId) {
         User coach = usersService.getUserById(coachId);
