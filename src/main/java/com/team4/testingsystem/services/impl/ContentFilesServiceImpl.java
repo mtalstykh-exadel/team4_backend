@@ -10,8 +10,6 @@ import com.team4.testingsystem.services.ContentFilesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class ContentFilesServiceImpl implements ContentFilesService {
 

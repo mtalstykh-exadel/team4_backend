@@ -1,5 +1,7 @@
 package com.team4.testingsystem.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,8 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+
+
 
 @Entity
 @Table(name = "content_file")
@@ -33,7 +35,8 @@ public class ContentFile {
     @Column(name = "url")
     private String url;
 
-    public ContentFile() {}
+    public ContentFile() {
+    }
 
     public ContentFile(String url, Question question) {
         this.questions.add(question);
