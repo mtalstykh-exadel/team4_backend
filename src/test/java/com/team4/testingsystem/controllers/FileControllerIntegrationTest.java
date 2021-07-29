@@ -3,7 +3,6 @@ package com.team4.testingsystem.controllers;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
-import com.team4.testingsystem.services.FileStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +23,15 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 @AutoConfigureMockMvc
 public class FileControllerIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    private final MockMvc mockMvc;
+
+    private final UsersRepository usersRepository;
 
     @Autowired
-    FileStorage fileStorage;
-
-    @Autowired
-    FileController fileController;
-
-    @Autowired
-    UsersRepository usersRepository;
+    FileControllerIntegrationTest(MockMvc mockMvc, UsersRepository usersRepository) {
+        this.mockMvc = mockMvc;
+        this.usersRepository = usersRepository;
+    }
 
     private CustomUserDetails userDetails;
 
