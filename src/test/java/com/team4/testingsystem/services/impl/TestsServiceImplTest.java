@@ -32,9 +32,9 @@ import static org.mockito.Mockito.verify;
 class TestsServiceImplTest {
 
     final long GOOD_TEST_ID = 1L;
-    final long GOOD_USER_ID = 1L;
-    final long BAD_USER_ID = 42L;
+    final long GOOD_USER_ID = 111L;
     final long BAD_TEST_ID = 42L;
+    final long BAD_USER_ID = 424242L;
 
     @Mock
     Test test;
@@ -172,11 +172,11 @@ class TestsServiceImplTest {
 
         Mockito.when(testsRepository.updateEvaluation(any(), anyInt(), anyLong())).thenReturn(1);
 
-        testsService.updateEvaluation(1L, 1);
+        testsService.updateEvaluation(GOOD_TEST_ID, 1);
 
         verify(testsRepository).updateEvaluation(any(LocalDateTime.class), anyInt(), anyLong());
 
-        Assertions.assertDoesNotThrow(() -> testsService.updateEvaluation(1L, 1));
+        Assertions.assertDoesNotThrow(() -> testsService.updateEvaluation(GOOD_TEST_ID, 1));
     }
 
     @org.junit.jupiter.api.Test
@@ -253,7 +253,8 @@ class TestsServiceImplTest {
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
 
         Mockito.when(testsRepository.assignCoach(user, BAD_TEST_ID)).thenReturn(0);
-        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.assignCoach(BAD_USER_ID, GOOD_USER_ID));
+
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.assignCoach(BAD_TEST_ID, GOOD_USER_ID));
     }
 
     @org.junit.jupiter.api.Test
