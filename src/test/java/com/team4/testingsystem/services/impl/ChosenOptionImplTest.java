@@ -61,6 +61,10 @@ public class ChosenOptionImplTest {
     void getChosenOptionByTestSuccess() {
 
         ArrayList<ChosenOption> chOptions = new ArrayList<>();
+        ChosenOption chOption1 = new ChosenOption();
+        ChosenOption chOption2 = new ChosenOption();
+        chOptions.add(chOption1);
+        chOptions.add(chOption2);
 
         Mockito.when(chosenOptionRepository.findChosenOptionsByTest(test)).thenReturn(chOptions);
 
