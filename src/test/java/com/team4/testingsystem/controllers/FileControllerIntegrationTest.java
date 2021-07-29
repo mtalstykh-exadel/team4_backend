@@ -39,14 +39,14 @@ public class FileControllerIntegrationTest {
     private CustomUserDetails userDetails;
 
     @BeforeEach
-    void init() throws Exception {
+    void init() {
         User user = usersRepository.findAll().iterator().next();
         userDetails = new CustomUserDetails(user);
     }
 
     @Test
     void downloadSuccess() throws Exception {
-        mockMvc.perform(get("/download/{url}", "5703afe3-c926-4c02-bb04-7a5a45620336-file.txt")
+        mockMvc.perform(get("/files/{url}", "5703afe3-c926-4c02-bb04-7a5a45620336-file.txt")
                 .with(user(userDetails)))
                 .andExpect(status().isOk());
     }
@@ -56,11 +56,10 @@ public class FileControllerIntegrationTest {
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "file.txt",
                 MediaType.MULTIPART_FORM_DATA_VALUE, "test data".getBytes());
 
-        MockHttpServletRequestBuilder builder = multipart("/upload")
-                .file(mockMultipartFile).with(user(userDetails));
+        MockHttpServletRequestBuilder builder = multipart("/files/").file(mockMultipartFile)
+                .with(user(userDetails));
 
-        mockMvc.perform(builder)
-                .andExpect(status().isOk());
+        mockMvc.perform(builder).andExpect(status().isOk());
 
     }
 }
