@@ -1,6 +1,9 @@
 package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.ContentFile;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface ContentFilesService {
 
@@ -13,4 +16,6 @@ public interface ContentFilesService {
     void updateURL(Long id, String newUrl);
 
     void removeById(Long id);
+
+    List<ContentFile> getRandomContentFiles(String level, Pageable pageable);
 }
