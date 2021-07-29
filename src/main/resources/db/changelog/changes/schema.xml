@@ -399,4 +399,21 @@
         </insert>
 
     </changeSet>
+
+    <changeSet id="add_field_testId_to_fileAnswer" author="DzmitryNovik">
+        <addColumn tableName="file_answer">
+            <column name="test_id" type="int"/>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="file_answer"
+                                 baseColumnNames="test_id"
+                                 constraintName="test_id_fk"
+                                 referencedTableName="test"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="delete_column_fileAnswerId_from_table_chosenOption" author="DzmitryNovik">
+        <dropColumn tableName="chosen_option"
+                    columnName="file_answer_id"/>
+    </changeSet>
 </databaseChangeLog>

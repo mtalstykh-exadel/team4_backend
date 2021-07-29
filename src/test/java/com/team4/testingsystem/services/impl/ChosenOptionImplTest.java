@@ -3,9 +3,11 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.entities.ChosenOptionID;
 import com.team4.testingsystem.exceptions.ChosenOptionBadRequestException;
+import com.team4.testingsystem.exceptions.ChosenOptionNotFoundException;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.repositories.ChosenOptionRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -13,6 +15,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -30,12 +33,15 @@ public class ChosenOptionImplTest {
     @Mock
     ChosenOptionRepository chosenOptionRepository;
 
+    @Mock
+    com.team4.testingsystem.entities.Test test;
+
     @InjectMocks
     ChosenOptionServiceImpl chosenOptionService;
 
 
 
-    @org.junit.jupiter.api.Test
+    @Test
     void getByIdSuccess() {
 
         Mockito.when(chosenOptionRepository.findById(chosenOptionID)).thenReturn(Optional.of(chosenOption));
@@ -43,23 +49,41 @@ public class ChosenOptionImplTest {
         Assertions.assertEquals(chosenOption, chosenOptionService.getById(chosenOptionID));
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void getByIdFail() {
 
-        Mockito.when(chosenOptionRepository.findById(chosenOptionID)).thenThrow(FileNotFoundException.class);
+        Mockito.when(chosenOptionRepository.findById(chosenOptionID)).thenThrow(EntityNotFoundException.class);
 
-        Assertions.assertThrows(FileNotFoundException.class, () -> chosenOptionService.getById(chosenOptionID));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> chosenOptionService.getById(chosenOptionID));
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
+    void getChosenOptionByTestSuccess() {
+
+        ArrayList<ChosenOption> chOptions = new ArrayList<>();
+
+        Mockito.when(chosenOptionRepository.findChosenOptionsByTest(test)).thenReturn(chOptions);
+
+        Assertions.assertEquals(chOptions, chosenOptionService.getChosenOptionByTest(test));
+    }
+
+    @Test
+    void getChosenOptionByTestFail() {
+
+        Mockito.when(chosenOptionRepository.findChosenOptionsByTest(test)).thenThrow(ChosenOptionNotFoundException.class);
+
+        Assertions.assertThrows(ChosenOptionNotFoundException.class, () -> chosenOptionService.getChosenOptionByTest(test));
+    }
+
+    @Test
     void saveSuccess(){
 
         chosenOptionService.save(chosenOption);
 
-        verify(chosenOptionRepository).save(any());
+        verify(chosenOptionRepository).save(chosenOption);
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void saveFail(){
 
         Mockito.when(chosenOptionRepository.save(chosenOption)).thenThrow(EntityNotFoundException.class);
