@@ -50,6 +50,10 @@ public class Test {
     @Column(name = "evaluation")
     private int evaluation;
 
+    @ManyToOne
+    @JoinColumn(name = "coach_id", referencedColumnName = "id")
+    private User coach;
+
     public Long getId() {
         return id;
     }
@@ -86,6 +90,10 @@ public class Test {
         return evaluation;
     }
 
+    public User getCoach() {
+        return coach;
+    }
+
     public void setUser(User user) {
         this.user = user;
     }
@@ -112,6 +120,10 @@ public class Test {
 
     public void setEvaluation(int evaluation) {
         this.evaluation = evaluation;
+    }
+
+    public void setCoach(User coach) {
+        this.coach = coach;
     }
 
     public static Builder builder() {
@@ -158,6 +170,11 @@ public class Test {
 
         public Builder evaluation(int evaluation) {
             test.evaluation = evaluation;
+            return this;
+        }
+
+        public Builder coach(User coach) {
+            test.coach = coach;
             return this;
         }
 

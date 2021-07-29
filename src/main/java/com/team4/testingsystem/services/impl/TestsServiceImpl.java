@@ -8,6 +8,7 @@ import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.services.TestsService;
+import com.team4.testingsystem.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +19,13 @@ public class TestsServiceImpl implements TestsService {
 
     private TestsRepository testsRepository;
 
-    private UsersRepository usersRepository;
+    private UsersService usersService;
 
 
     @Autowired
-    public TestsServiceImpl(TestsRepository testsRepository, UsersRepository usersRepository) {
+    public TestsServiceImpl(TestsRepository testsRepository, UsersService usersService) {
         this.testsRepository = testsRepository;
-        this.usersRepository = usersRepository;
+        this.usersService = usersService;
     }
 
     @Override
@@ -42,7 +43,7 @@ public class TestsServiceImpl implements TestsService {
     public long createForUser(long userId) {
 
 
-        User user = usersRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        User user = usersService.getUserById(userId);
         Test test = Test.builder()
                 .user(user)
                 .createdAt(LocalDateTime.now())
@@ -85,6 +86,22 @@ public class TestsServiceImpl implements TestsService {
     public void removeById(long id) {
 
         if (testsRepository.removeById(id) == 0) {
+            throw new TestNotFoundException();
+        }
+
+    }
+    @Override
+    public void assignCoach(long id, long coachId) {
+        User coach = usersService.getUserById(coachId);
+        if (testsRepository.assignCoach(coach, id) == 0) {
+            throw new TestNotFoundException();
+        }
+
+    }
+
+    @Override
+    public void deassignCoach(long id) {
+        if (testsRepository.deassignCoach(id) == 0) {
             throw new TestNotFoundException();
         }
 

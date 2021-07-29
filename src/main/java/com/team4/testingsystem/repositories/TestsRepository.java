@@ -1,6 +1,7 @@
 package com.team4.testingsystem.repositories;
 
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.entities.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -31,4 +32,17 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     @Modifying
     @Query (value = "DELETE FROM Test t where t.id = ?1")
     int removeById(Long id);
+
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE Test t SET t.coach = ?1 where t.id = ?2")
+    int assignCoach(User coach, Long id);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE Test t SET t.coach = null where t.id = ?1")
+    int deassignCoach(Long id);
+
 }
+

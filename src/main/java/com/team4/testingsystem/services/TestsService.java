@@ -18,4 +18,7 @@ public interface TestsService {
 
     void removeById(long id);
 
+    void assignCoach(long id, long coachId);
+
+    void deassignCoach(long id);
 }

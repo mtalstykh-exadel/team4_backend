@@ -6,6 +6,7 @@ import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
+import com.team4.testingsystem.services.UsersService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,7 +38,7 @@ class TestsServiceImplTest {
     User user;
 
     @Mock
-    UsersRepository usersRepository;
+    UsersService usersService;
 
     @Mock
     TestsRepository testsRepository;
@@ -76,7 +77,7 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void createWhenAssignFail() {
 
-        Mockito.when(usersRepository.findById(42L)).thenThrow(UserNotFoundException.class);
+        Mockito.when(usersService.getUserById(42L)).thenThrow(UserNotFoundException.class);
 
         Assertions.assertThrows(UserNotFoundException.class, () -> testsService.createForUser(42L));
     }
@@ -84,7 +85,7 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void createSuccess() {
 
-        Mockito.when(usersRepository.findById(1L)).thenReturn(Optional.of(user));
+        Mockito.when(usersService.getUserById(1L)).thenReturn(user);
 
 
         try (MockedStatic<Test> builderMockedStatic = Mockito.mockStatic(Test.class)) {
@@ -186,5 +187,61 @@ class TestsServiceImplTest {
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.removeById(42L));
 
     }
+
+    @org.junit.jupiter.api.Test
+    void assignCoachSuccess() {
+
+        Mockito.when(usersService.getUserById(1L)).thenReturn(user);
+
+        Mockito.when(testsRepository.assignCoach(user,1L)).thenReturn(1);
+
+        testsService.assignCoach(1L, 1L);
+
+        verify(testsRepository).assignCoach(user, 1L);
+
+        Assertions.assertDoesNotThrow(()-> testsService.assignCoach(1L, 1L));
+
+    }
+
+    @org.junit.jupiter.api.Test
+    void assignCoachFailFirst() {
+
+        Mockito.when(usersService.getUserById(42L)).thenThrow(UserNotFoundException.class);
+
+        Assertions.assertThrows(UserNotFoundException.class, () -> testsService.assignCoach(42L, 42L));
+    }
+
+    @org.junit.jupiter.api.Test
+    void assignCoachFailSecond() {
+
+        Mockito.when(usersService.getUserById(1L)).thenReturn(user);
+
+        Mockito.when(testsRepository.assignCoach(user,42L)).thenReturn(0);
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.assignCoach(42L, 1L));
+    }
+
+    @org.junit.jupiter.api.Test
+    void deassignCoachSuccess() {
+
+
+        Mockito.when(testsRepository.deassignCoach(1L)).thenReturn(1);
+
+        testsService.deassignCoach(1L);
+
+        verify(testsRepository).deassignCoach(1L);
+
+        Assertions.assertDoesNotThrow(()-> testsService.deassignCoach(1L));
+
+    }
+
+    @org.junit.jupiter.api.Test
+    void deassignCoachFail() {
+
+
+        Mockito.when(testsRepository.deassignCoach(42L)).thenReturn(0);
+
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.deassignCoach(42L));
+    }
+
 
 }
