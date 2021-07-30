@@ -11,6 +11,7 @@ import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.repositories.LevelRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
+import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,15 +24,18 @@ public class TestsServiceImpl implements TestsService {
     private final TestsRepository testsRepository;
     private final LevelRepository levelRepository;
     private final UsersRepository usersRepository;
+    private final TestGeneratingService testGeneratingService;
 
 
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
                             LevelRepository levelRepository,
-                            UsersRepository usersRepository) {
+                            UsersRepository usersRepository,
+                            TestGeneratingService testGeneratingService) {
         this.testsRepository = testsRepository;
         this.levelRepository = levelRepository;
         this.usersRepository = usersRepository;
+        this.testGeneratingService = testGeneratingService;
     }
 
     @Override
@@ -72,7 +76,8 @@ public class TestsServiceImpl implements TestsService {
         if (testsRepository.start(LocalDateTime.now(), id) == 0) {
             throw new TestNotFoundException();
         }
-
+        Test test = testGeneratingService.generateTest(getById(id));
+        save(test);
     }
 
 
