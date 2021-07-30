@@ -8,6 +8,7 @@ import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.TestGeneratingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,12 @@ public class TestGeneratingServiceImpl implements TestGeneratingService {
     private final QuestionRepository questionService;
     private final ContentFilesServiceImpl contentFilesService;
 
-    private static final Pageable COUNT_QUESTIONS_GRAMMAR = Pageable.ofSize(12);
-    private static final Pageable COUNT_QUESTIONS_LISTENING = Pageable.ofSize(10);
-    private static final Pageable ONE_ELEMENT = Pageable.ofSize(1);
+    @Value("${test-generating.const.question.count}")
+    private Integer count;
+
+    @Value("${test-generating.const.one-element}")
+    private Integer oneElement;
+
 
     @Autowired
     public TestGeneratingServiceImpl(QuestionRepository questionService,
@@ -32,25 +36,25 @@ public class TestGeneratingServiceImpl implements TestGeneratingService {
 
     @Override
     public Test generateTest(Test test) {
-        setQuestionsByModules(test, Modules.GRAMMAR.getName(), COUNT_QUESTIONS_GRAMMAR);
+        setQuestionsByModules(test, Modules.GRAMMAR.getName(), Pageable.ofSize(count));
         setQuestionsByContentFile(test);
-        setQuestionsByModules(test,  Modules.ESSAY.getName(), ONE_ELEMENT);
-        setQuestionsByModules(test,  Modules.SPEAKING.getName(), ONE_ELEMENT);
+        setQuestionsByModules(test, Modules.ESSAY.getName(), Pageable.ofSize(oneElement));
+        setQuestionsByModules(test, Modules.SPEAKING.getName(), Pageable.ofSize(oneElement));
         return test;
     }
 
 
-    private void setQuestionsByModules(Test test, String module, Pageable pageable){
+    private void setQuestionsByModules(Test test, String module, Pageable pageable) {
         Collection<Question> questions = questionService
                 .getRandomQuestions(test.getLevel().getName(), module, pageable);
         questions.forEach(test::setQuestion);
     }
 
-    private void setQuestionsByContentFile(Test test){
+    private void setQuestionsByContentFile(Test test) {
         ContentFile contentFile = contentFilesService
                 .getRandomContentFiles(test.getLevel().getName());
         Collection<Question> questions = questionService
-                .getRandomQuestionByContentFile(contentFile.getId(), COUNT_QUESTIONS_LISTENING);
+                .getRandomQuestionByContentFile(contentFile.getId(), Pageable.ofSize(count));
         questions.forEach(test::setQuestion);
     }
 
