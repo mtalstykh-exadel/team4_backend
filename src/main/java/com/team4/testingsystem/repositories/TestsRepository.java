@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @Repository
 public interface TestsRepository extends CrudRepository<Test, Long> {
 
+    Iterable<Test> getAllByUser(User user);
+
     @Transactional
     @Modifying
     @Query(value = "UPDATE Test t SET t.startedAt = ?1, t.status = 'STARTED' WHERE t.id = ?2")
@@ -42,6 +44,4 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     @Modifying
     @Query(value = "UPDATE Test t SET t.coach = null where t.id = ?1")
     int deassignCoach(Long id);
-
 }
-

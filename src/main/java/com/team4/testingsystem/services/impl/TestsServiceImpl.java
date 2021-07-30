@@ -19,11 +19,8 @@ import java.time.LocalDateTime;
 public class TestsServiceImpl implements TestsService {
 
     private final TestsRepository testsRepository;
-
-    private final UsersService usersService;
-
     private final LevelService levelService;
-
+    private final UsersService usersService;
 
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
@@ -32,7 +29,6 @@ public class TestsServiceImpl implements TestsService {
         this.testsRepository = testsRepository;
         this.levelService = levelService;
         this.usersService = usersService;
-
     }
 
     @Override
@@ -44,6 +40,14 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public Test getById(long id) {
         return testsRepository.findById(id).orElseThrow(TestNotFoundException::new);
+    }
+
+    @Override
+    public Iterable<Test> getByUserId(long userId) {
+        User user = User.builder()
+                .id(userId)
+                .build();
+        return testsRepository.getAllByUser(user);
     }
 
     @Override

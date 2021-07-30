@@ -69,7 +69,6 @@ public class Test {
             joinColumns = @JoinColumn(name = "test_id"),
             inverseJoinColumns = @JoinColumn(name = "question_id")
     )
-            
     List<Question> questions = new ArrayList<>();
 
     public Long getId() {
@@ -166,7 +165,7 @@ public class Test {
 
     public static class Builder {
 
-        private Test test;
+        private final Test test;
 
         public Builder() {
             this.test = new Test();
