@@ -4,7 +4,7 @@ import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.entities.ChosenOptionID;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.exceptions.ChosenOptionBadRequestException;
-import com.team4.testingsystem.exceptions.FileNotFoundException;
+import com.team4.testingsystem.exceptions.ChosenOptionNotFoundException;
 import com.team4.testingsystem.repositories.ChosenOptionRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.ChosenOptionService;
@@ -29,7 +29,7 @@ public class ChosenOptionServiceImpl implements ChosenOptionService {
     @Override
     public ChosenOption getById(ChosenOptionID chosenOptionID) {
         return chosenOptionRepository.findById(chosenOptionID)
-                .orElseThrow(FileNotFoundException::new);
+                .orElseThrow(ChosenOptionNotFoundException::new);
     }
 
     @Override
