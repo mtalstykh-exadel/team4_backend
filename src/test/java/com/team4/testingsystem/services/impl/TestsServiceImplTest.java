@@ -4,13 +4,13 @@ import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
-import com.team4.testingsystem.exceptions.LevelNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
-import com.team4.testingsystem.repositories.LevelRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
-import com.team4.testingsystem.repositories.UsersRepository;
+import com.team4.testingsystem.services.LevelService;
+import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,6 +32,11 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class TestsServiceImplTest {
 
+    final long GOOD_TEST_ID = 1L;
+    final long GOOD_USER_ID = 111L;
+    final long BAD_TEST_ID = 42L;
+    final long BAD_USER_ID = 424242L;
+
     @Mock
     Test test;
 
@@ -42,10 +47,10 @@ class TestsServiceImplTest {
     User user;
 
     @Mock
-    UsersRepository usersRepository;
+    UsersService usersService;
 
     @Mock
-    LevelRepository levelRepository;
+    LevelService levelService;
 
     @Mock
     TestsRepository testsRepository;
@@ -67,40 +72,47 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void getByIdSuccess() {
-
-        Mockito.when(testsRepository.findById(1L)).thenReturn(Optional.of(test));
-
-        Assertions.assertEquals(test, testsService.getById(1L));
-
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+        Assertions.assertEquals(test, testsService.getById(GOOD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
     void getByIdFail() {
 
-        Mockito.when(testsRepository.findById(42L)).thenThrow(TestNotFoundException.class);
+        Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.getById(BAD_TEST_ID));
+    }
 
-        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.getById(42L));
+    @org.junit.jupiter.api.Test
+    void getByUserIdSuccess() {
+        try (MockedStatic<User> mockUser = Mockito.mockStatic(User.class)) {
+            User.Builder mockBuilder = Mockito.mock(User.Builder.class);
+            Mockito.when(mockBuilder.id(GOOD_USER_ID)).thenReturn(mockBuilder);
+            Mockito.when(mockBuilder.build()).thenReturn(user);
 
+            mockUser.when(User::builder).thenReturn(mockBuilder);
+            Mockito.when(testsRepository.getAllByUser(user)).thenReturn(Lists.emptyList());
+
+            Assertions.assertEquals(Lists.emptyList(), testsService.getByUserId(GOOD_USER_ID));
+        }
     }
 
     @org.junit.jupiter.api.Test
     void createWhenAssignFail() {
         Level level = EntityCreatorUtil.createLevel();
-        Mockito.when(levelRepository
-                .findByName(level.getName())).thenReturn(Optional.of(level));
-        Mockito.when(usersRepository.findById(42L)).thenThrow(UserNotFoundException.class);
+        Mockito.when(levelService.getLevelByName(level.getName())).thenReturn(level);
+        Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
 
         Assertions.assertThrows(
-                UserNotFoundException.class, () -> testsService.createForUser(42L, Levels.A1));
+                UserNotFoundException.class, () -> testsService.createForUser(BAD_USER_ID, Levels.A1));
     }
 
     @org.junit.jupiter.api.Test
     void createSuccess() {
         Level level = EntityCreatorUtil.createLevel();
-        Mockito.when(levelRepository
-                .findByName(level.getName())).thenReturn(Optional.of(level));
-        Mockito.when(usersRepository.findById(1L)).thenReturn(Optional.of(user));
+        Mockito.when(levelService.getLevelByName(level.getName())).thenReturn(level);
 
+        Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
 
         try (MockedStatic<Test> builderMockedStatic = Mockito.mockStatic(Test.class)) {
 
@@ -113,13 +125,18 @@ class TestsServiceImplTest {
             Mockito.when(builder.build()).thenReturn(test);
 
             Mockito.when(test.getId()).thenReturn(1L);
-            Assertions.assertEquals(1L, testsService.createForUser(1L, Levels.A1));
+
+            Assertions.assertEquals(1L, testsService.createForUser(GOOD_USER_ID, Levels.A1));
         }
 
     }
 
     @org.junit.jupiter.api.Test
     void startSuccess() {
+
+        Mockito.when(testsRepository.start(any(), anyLong())).thenReturn(1);
+
+        testsService.start(GOOD_TEST_ID);
         Test test = new Test();
         Mockito.when(testsRepository.start(any(),anyLong())).thenReturn(1);
         Mockito.when(testsRepository.findById(1L)).thenReturn(Optional.of(test));
@@ -128,27 +145,27 @@ class TestsServiceImplTest {
 
         verify(testsRepository).start(any(LocalDateTime.class), anyLong());
 
-        Assertions.assertDoesNotThrow(()-> testsService.start(1L));
+        Assertions.assertDoesNotThrow(() -> testsService.start(GOOD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
     void startFail() {
 
-        Mockito.when(testsRepository.start(any(),anyLong())).thenReturn(0);
+        Mockito.when(testsRepository.start(any(), anyLong())).thenReturn(0);
 
-        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.start(42L));
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.start(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
     void finishSuccess() {
 
-        Mockito.when(testsRepository.finish(any(),anyInt(), anyLong())).thenReturn(1);
+        Mockito.when(testsRepository.finish(any(), anyInt(), anyLong())).thenReturn(1);
 
-        testsService.finish(1L, 1);
+        testsService.finish(GOOD_TEST_ID, 1);
 
         verify(testsRepository).finish(any(LocalDateTime.class), anyInt(), anyLong());
 
-        Assertions.assertDoesNotThrow(()-> testsService.finish(1L, 1));
+        Assertions.assertDoesNotThrow(() -> testsService.finish(GOOD_TEST_ID, 1));
     }
 
     @org.junit.jupiter.api.Test
@@ -156,20 +173,20 @@ class TestsServiceImplTest {
 
         Mockito.when(testsRepository.finish(any(), anyInt(), anyLong())).thenReturn(0);
 
-        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.finish(42L, 42));
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.finish(BAD_TEST_ID, 42));
 
     }
 
     @org.junit.jupiter.api.Test
     void updateEvaluationSuccess() {
 
-        Mockito.when(testsRepository.updateEvaluation(any(),anyInt(), anyLong())).thenReturn(1);
+        Mockito.when(testsRepository.updateEvaluation(any(), anyInt(), anyLong())).thenReturn(1);
 
-        testsService.updateEvaluation(1L, 1);
+        testsService.updateEvaluation(GOOD_TEST_ID, 1);
 
         verify(testsRepository).updateEvaluation(any(LocalDateTime.class), anyInt(), anyLong());
 
-        Assertions.assertDoesNotThrow(()-> testsService.updateEvaluation(1L, 1));
+        Assertions.assertDoesNotThrow(() -> testsService.updateEvaluation(GOOD_TEST_ID, 1));
     }
 
     @org.junit.jupiter.api.Test
@@ -178,40 +195,94 @@ class TestsServiceImplTest {
         Mockito.when(testsRepository.updateEvaluation(any(), anyInt(), anyLong())).thenReturn(0);
 
         Assertions.assertThrows(TestNotFoundException.class,
-                () -> testsService.updateEvaluation(42L, 42));
+                () -> testsService.updateEvaluation(BAD_TEST_ID, 42));
     }
 
     @org.junit.jupiter.api.Test
     void removeSuccess() {
 
-        Mockito.when(testsRepository.removeById(1L)).thenReturn(1);
+        Mockito.when(testsRepository.removeById(GOOD_TEST_ID)).thenReturn(1);
 
-        testsService.removeById(1L);
+        testsService.removeById(GOOD_TEST_ID);
 
-        verify(testsRepository).removeById(1L);
+        verify(testsRepository).removeById(GOOD_TEST_ID);
 
-        Assertions.assertDoesNotThrow(()->testsService.removeById(1L));
-
+        Assertions.assertDoesNotThrow(() -> testsService.removeById(GOOD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
     void removeFail() {
 
-        Mockito.when(testsRepository.removeById(42L)).thenReturn(0);
+        Mockito.when(testsRepository.removeById(BAD_TEST_ID)).thenReturn(0);
 
-        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.removeById(42L));
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.removeById(BAD_TEST_ID));
 
     }
 
     @org.junit.jupiter.api.Test
-    void saveSuccess(){
+    void saveSuccess() {
         Mockito.when(testsRepository.save(test)).thenReturn(test);
         Assertions.assertEquals(test, testsService.save(test));
     }
 
     @org.junit.jupiter.api.Test
-    void saveFail(){
+    void saveFail() {
         Mockito.when(testsRepository.save(test)).thenThrow(RuntimeException.class);
-        Assertions.assertThrows(RuntimeException.class,()-> testsService.save(test));
+        Assertions.assertThrows(RuntimeException.class, () -> testsService.save(test));
+    }
+
+    @org.junit.jupiter.api.Test
+    void assignCoachSuccess() {
+
+        Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
+
+        Mockito.when(testsRepository.assignCoach(user, GOOD_TEST_ID)).thenReturn(1);
+
+        testsService.assignCoach(GOOD_TEST_ID, GOOD_USER_ID);
+
+        verify(testsRepository).assignCoach(user, GOOD_TEST_ID);
+
+        Assertions.assertDoesNotThrow(() -> testsService.assignCoach(GOOD_TEST_ID, GOOD_USER_ID));
+
+    }
+
+    @org.junit.jupiter.api.Test
+    void assignCoachFailFirst() {
+
+        Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
+
+        Assertions.assertThrows(UserNotFoundException.class, () -> testsService.assignCoach(BAD_TEST_ID, BAD_USER_ID));
+    }
+
+    @org.junit.jupiter.api.Test
+    void assignCoachFailSecond() {
+
+        Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
+
+        Mockito.when(testsRepository.assignCoach(user, BAD_TEST_ID)).thenReturn(0);
+
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.assignCoach(BAD_TEST_ID, GOOD_USER_ID));
+    }
+
+    @org.junit.jupiter.api.Test
+    void deassignCoachSuccess() {
+
+
+        Mockito.when(testsRepository.deassignCoach(GOOD_TEST_ID)).thenReturn(1);
+
+        testsService.deassignCoach(GOOD_TEST_ID);
+
+        verify(testsRepository).deassignCoach(GOOD_TEST_ID);
+
+        Assertions.assertDoesNotThrow(() -> testsService.deassignCoach(GOOD_TEST_ID));
+
+    }
+
+    @org.junit.jupiter.api.Test
+    void deassignCoachFail() {
+
+        Mockito.when(testsRepository.deassignCoach(BAD_TEST_ID)).thenReturn(0);
+
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.deassignCoach(BAD_TEST_ID));
     }
 }

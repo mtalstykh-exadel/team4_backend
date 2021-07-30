@@ -100,11 +100,11 @@ public class Question {
         }
         Question question = (Question) o;
         return isAvailable == question.isAvailable
-               && Objects.equals(id, question.id)
-               && Objects.equals(body, question.body)
-               && Objects.equals(creator, question.creator)
-               && Objects.equals(level, question.level)
-               && Objects.equals(module, question.module);
+                && Objects.equals(id, question.id)
+                && Objects.equals(body, question.body)
+                && Objects.equals(creator, question.creator)
+                && Objects.equals(level, question.level)
+                && Objects.equals(module, question.module);
     }
 
     @Override
@@ -128,8 +128,12 @@ public class Question {
         this.tests = tests;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
-        private Question question;
+        private final Question question;
 
         public Builder() {
             this.question = new Question();
