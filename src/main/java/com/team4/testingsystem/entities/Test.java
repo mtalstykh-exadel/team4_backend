@@ -58,6 +58,11 @@ public class Test {
     @Column(name = "evaluation")
     private int evaluation;
 
+
+    @ManyToOne
+    @JoinColumn(name = "coach_id", referencedColumnName = "id")
+    private User coach;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "test_question",
@@ -96,6 +101,10 @@ public class Test {
 
     public int getEvaluation() {
         return evaluation;
+    }
+
+    public User getCoach() {
+        return coach;
     }
 
     public void setUser(User user) {
@@ -146,6 +155,10 @@ public class Test {
         this.evaluation = evaluation;
     }
 
+    public void setCoach(User coach) {
+        this.coach = coach;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -190,6 +203,11 @@ public class Test {
 
         public Builder evaluation(int evaluation) {
             test.evaluation = evaluation;
+            return this;
+        }
+
+        public Builder coach(User coach) {
+            test.coach = coach;
             return this;
         }
 

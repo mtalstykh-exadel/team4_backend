@@ -22,7 +22,6 @@ public class TestsServiceImpl implements TestsService {
     private final LevelService levelService;
     private final UsersService usersService;
 
-
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
                             LevelService levelService,
@@ -104,6 +103,23 @@ public class TestsServiceImpl implements TestsService {
     public void removeById(long id) {
 
         if (testsRepository.removeById(id) == 0) {
+            throw new TestNotFoundException();
+        }
+
+    }
+    
+    @Override
+    public void assignCoach(long id, long coachId) {
+        User coach = usersService.getUserById(coachId);
+        if (testsRepository.assignCoach(coach, id) == 0) {
+            throw new TestNotFoundException();
+        }
+
+    }
+
+    @Override
+    public void deassignCoach(long id) {
+        if (testsRepository.deassignCoach(id) == 0) {
             throw new TestNotFoundException();
         }
 
