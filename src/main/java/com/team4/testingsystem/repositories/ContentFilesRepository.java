@@ -23,11 +23,12 @@ public interface ContentFilesRepository extends CrudRepository<ContentFile, Long
     @Query(value = "DELETE from ContentFile cf WHERE cf.id = ?1")
     int removeById(Long id);
 
-    @Query("SELECT cf from ContentFile cf " +
-           "JOIN cf.questions q " +
-           "JOIN q.level l " +
-           "WHERE l.name = ?1 " +
-           "order by function('random') ")
-    List<ContentFile> getRandomFiles(String level, Pageable pageable);
+    @Query(value = "select * from language_testing.content_file as cf " +
+                   "join language_testing.question_content_file as qcf on cf.id = qcf.content_file_id " +
+                   "join language_testing.question as q on qcf.question_id = q.id " +
+                   "join language_testing.level as l on l.id = q.level_id " +
+                   "where l.level_name = ?1 " +
+                   "order by RANDOM() limit 1; ", nativeQuery = true)
+    ContentFile getRandomFiles(String level);
 
 }

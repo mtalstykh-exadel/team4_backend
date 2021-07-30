@@ -58,7 +58,7 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     }
 
     @Override
-    public List<ContentFile> getRandomContentFiles(String level, Pageable pageable) {
-        return contentFilesRepository.getRandomFiles(level, pageable);
+    public ContentFile getRandomContentFiles(String level) {
+        return contentFilesRepository.getRandomFiles(level);
     }
 }

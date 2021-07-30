@@ -17,5 +17,5 @@ public interface ContentFilesService {
 
     void removeById(Long id);
 
-    List<ContentFile> getRandomContentFiles(String level, Pageable pageable);
+    ContentFile getRandomContentFiles(String level);
 }
