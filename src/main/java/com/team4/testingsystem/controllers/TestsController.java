@@ -27,23 +27,16 @@ public class TestsController {
         this.testsService = testsService;
     }
 
-    @ApiOperation(value = "(Experimental) Use it to get all tests from the database")
+    @ApiOperation(value = "Get all tests assigned to the current user")
     @GetMapping(path = "/")
-    public Iterable<Test> getAll() {
-        return testsService.getAll();
+    public Iterable<Test> getCurrentUserTests() {
+        return testsService.getByUserId(JwtTokenUtil.extractUserDetails().getId());
     }
-
 
     @ApiOperation(value = "Use it to get a single test from the database by its id")
     @GetMapping(path = "/{id}")
     public Test getById(@PathVariable("id") long id) {
         return testsService.getById(id);
-    }
-
-    @ApiOperation(value = "Get all tests assigned to the current user")
-    @GetMapping(path = "/assigned")
-    public Iterable<Test> getAllAssigned() {
-        return testsService.getByUserId(JwtTokenUtil.extractUserDetails().getId());
     }
 
     @ApiOperation(value = "(To be updated) Is used to assign a test for the user (HR's ability)")

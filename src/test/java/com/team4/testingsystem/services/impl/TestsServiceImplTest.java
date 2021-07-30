@@ -82,18 +82,17 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void getByUserIdUserNotFound() {
-        Mockito.when(usersService.getUserById(42L)).thenThrow(UserNotFoundException.class);
-
-        Assertions.assertThrows(UserNotFoundException.class, () -> testsService.getByUserId(42L));
-    }
-
-    @org.junit.jupiter.api.Test
     void getByUserIdSuccess() {
-        Mockito.when(usersService.getUserById(1L)).thenReturn(user);
-        Mockito.when(testsRepository.getAllByUser(user)).thenReturn(Lists.emptyList());
+        try (MockedStatic<User> mockUser = Mockito.mockStatic(User.class)) {
+            User.Builder mockBuilder = Mockito.mock(User.Builder.class);
+            Mockito.when(mockBuilder.id(1L)).thenReturn(mockBuilder);
+            Mockito.when(mockBuilder.build()).thenReturn(user);
 
-        Assertions.assertEquals(Lists.emptyList(), testsService.getByUserId(1L));
+            mockUser.when(User::builder).thenReturn(mockBuilder);
+            Mockito.when(testsRepository.getAllByUser(user)).thenReturn(Lists.emptyList());
+
+            Assertions.assertEquals(Lists.emptyList(), testsService.getByUserId(1L));
+        }
     }
 
     @org.junit.jupiter.api.Test

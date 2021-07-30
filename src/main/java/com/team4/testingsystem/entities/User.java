@@ -95,6 +95,57 @@ public class User {
         this.tests = tests;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private final User user;
+
+        public Builder() {
+            user = new User();
+        }
+
+        public Builder id(Long id) {
+            user.setId(id);
+            return this;
+        }
+
+        public Builder name(String name) {
+            user.setName(name);
+            return this;
+        }
+
+        public Builder login(String login) {
+            user.setLogin(login);
+            return this;
+        }
+
+        public Builder password(String password) {
+            user.setPassword(password);
+            return this;
+        }
+
+        public Builder role(UserRole role) {
+            user.setRole(role);
+            return this;
+        }
+
+        public Builder language(String language) {
+            user.setLanguage(language);
+            return this;
+        }
+
+        public Builder tests(Collection<Test> tests) {
+            user.setTests(tests);
+            return this;
+        }
+
+        public User build() {
+            return user;
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -105,11 +156,11 @@ public class User {
         }
         User user = (User) o;
         return Objects.equals(id, user.id)
-               && Objects.equals(name, user.name)
-               && Objects.equals(login, user.login)
-               && Objects.equals(password, user.password)
-               && Objects.equals(role, user.role)
-               && Objects.equals(language, user.language);
+                && Objects.equals(name, user.name)
+                && Objects.equals(login, user.login)
+                && Objects.equals(password, user.password)
+                && Objects.equals(role, user.role)
+                && Objects.equals(language, user.language);
     }
 
     @Override

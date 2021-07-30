@@ -152,7 +152,7 @@ public class Test {
 
     public static class Builder {
 
-        private Test test;
+        private final Test test;
 
         public Builder() {
             this.test = new Test();

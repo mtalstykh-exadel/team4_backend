@@ -39,15 +39,6 @@ class TestsControllerTest {
     Test test;
 
     @org.junit.jupiter.api.Test
-    void getAllSuccess() {
-        List<Test> tests = new ArrayList<>();
-
-        Mockito.when(testsService.getAll()).thenReturn(tests);
-
-        Assertions.assertEquals(tests, testsController.getAll());
-    }
-
-    @org.junit.jupiter.api.Test
     void getByIdSuccess() {
         Mockito.when(testsService.getById(1L)).thenReturn(test);
 
@@ -62,7 +53,7 @@ class TestsControllerTest {
     }
 
     @org.junit.jupiter.api.Test
-    void getAllAssignedEmpty() {
+    void getCurrentUserTestsEmpty() {
         try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             CustomUserDetails mockUserDetails = Mockito.mock(CustomUserDetails.class);
             Mockito.when(mockUserDetails.getId()).thenReturn(1L);
@@ -71,7 +62,7 @@ class TestsControllerTest {
 
             Mockito.when(testsService.getByUserId(1L)).thenReturn(Lists.list(test));
 
-            Assertions.assertEquals(Lists.list(test), testsController.getAllAssigned());
+            Assertions.assertEquals(Lists.list(test), testsController.getCurrentUserTests());
         }
     }
 
