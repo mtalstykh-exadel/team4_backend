@@ -25,7 +25,7 @@ public class EntityCreatorUtil {
     public static final Long ID = 1L;
 
     public static Question createQuestion() {
-        return new Question.Builder()
+        return Question.builder()
                 .id(1L)
                 .body(QUESTION_TEXT)
                 .module(createModule())
@@ -36,7 +36,7 @@ public class EntityCreatorUtil {
     }
 
     public static QuestionDTO createQuestionDto() {
-        return new QuestionDTO.Builder()
+        return QuestionDTO.builder()
                 .body(QUESTION_TEXT)
                 .module(Modules.GRAMMAR.getName())
                 .level(Levels.A1.name())
@@ -46,17 +46,17 @@ public class EntityCreatorUtil {
     }
 
     public static User createUser() {
-        User user = new User();
         UserRole userRole = new UserRole();
         userRole.setId(ID.intValue());
         userRole.setRoleName(USER_ROLE);
-        user.setId(ID);
-        user.setName(USERNAME);
-        user.setLanguage(LANGUAGE);
-        user.setLogin(LOGIN);
-        user.setPassword(PASSWORD);
-        user.setRole(userRole);
-        return user;
+        return User.builder()
+                .id(ID)
+                .name(USERNAME)
+                .language(LANGUAGE)
+                .login(LOGIN)
+                .password(PASSWORD)
+                .role(userRole)
+                .build();
     }
 
     public static Module createModule() {
@@ -89,7 +89,7 @@ public class EntityCreatorUtil {
     }
 
     public static Question createQuestion(User user) {
-        return new Question.Builder()
+        return Question.builder()
                 .body("some text")
                 .module(createModule())
                 .level(createLevel())
