@@ -133,18 +133,13 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void startSuccess() {
-
-        Mockito.when(testsRepository.start(any(), anyLong())).thenReturn(1);
-
-        testsService.start(GOOD_TEST_ID);
         Test test = new Test();
         Mockito.when(testsRepository.start(any(),anyLong())).thenReturn(1);
-        Mockito.when(testsRepository.findById(1L)).thenReturn(Optional.of(test));
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
         Mockito.when(testGeneratingService.generateTest(any())).thenReturn(test);
-        testsService.start(1L);
+        testsService.start(GOOD_TEST_ID);
 
         verify(testsRepository).start(any(LocalDateTime.class), anyLong());
-
         Assertions.assertDoesNotThrow(() -> testsService.start(GOOD_TEST_ID));
     }
 

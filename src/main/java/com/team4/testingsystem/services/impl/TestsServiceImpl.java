@@ -8,7 +8,6 @@ import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.LevelService;
-import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
@@ -21,8 +20,6 @@ import java.time.LocalDateTime;
 public class TestsServiceImpl implements TestsService {
 
     private final TestsRepository testsRepository;
-    private final LevelRepository levelRepository;
-    private final UsersRepository usersRepository;
     private final TestGeneratingService testGeneratingService;
 
     private final LevelService levelService;
@@ -30,11 +27,9 @@ public class TestsServiceImpl implements TestsService {
 
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
-                            LevelService levelService,
+                            TestGeneratingService testGeneratingService, LevelService levelService,
                             UsersService usersService) {
         this.testsRepository = testsRepository;
-        this.levelRepository = levelRepository;
-        this.usersRepository = usersRepository;
         this.testGeneratingService = testGeneratingService;
         this.levelService = levelService;
         this.usersService = usersService;

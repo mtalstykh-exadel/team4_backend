@@ -1,6 +1,7 @@
 package com.team4.testingsystem.repositories;
 
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.entities.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -31,11 +32,11 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     @Transactional
     @Modifying
     @Query(value = "UPDATE Test t SET t.updatedAt = ?1, t.evaluation = ?2 where t.id = ?3")
-    int updateEvaluation(LocalDateTime updateDate, int evaluation,  Long id);
+    int updateEvaluation(LocalDateTime updateDate, int evaluation, Long id);
 
     @Transactional
     @Modifying
-    @Query (value = "DELETE FROM Test t where t.id = ?1")
+    @Query(value = "DELETE FROM Test t where t.id = ?1")
     int removeById(Long id);
 
     @Transactional
