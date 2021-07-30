@@ -23,17 +23,17 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 @AutoConfigureMockMvc
 public class FileControllerIntegrationTest {
 
-    private final MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-    private final UsersRepository usersRepository;
+    private UsersRepository usersRepository;
+
+    private CustomUserDetails userDetails;
 
     @Autowired
     FileControllerIntegrationTest(MockMvc mockMvc, UsersRepository usersRepository) {
         this.mockMvc = mockMvc;
         this.usersRepository = usersRepository;
     }
-
-    private CustomUserDetails userDetails;
 
     @BeforeEach
     void init() {
