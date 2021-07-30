@@ -28,6 +28,8 @@
         <pitest.junit.version>0.14</pitest.junit.version>
         <spotbugs-plugin.version>4.2.0</spotbugs-plugin.version>
         <spotbugs.version>4.3.0</spotbugs.version>
+        <swagger.version>3.0.0</swagger.version>
+        <swagger-ui.version>2.9.2</swagger-ui.version>
     </properties>
 
     <dependencies>
@@ -39,6 +41,18 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -155,13 +169,13 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>3.0.0</version>
+            <version>${swagger.version}</version>
         </dependency>
 
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.9.2</version>
+            <version>${swagger-ui.version}</version>
         </dependency>
 
     </dependencies>
@@ -262,6 +276,10 @@
                     <targetTests>
                         <param>com.team4.testingsystem.*</param>
                     </targetTests>
+                    <excludedClasses>
+                        <param>com.team4.testingsystem.entities.*</param>
+                        <param>com.team4.testingsystem.dto.*</param>
+                    </excludedClasses>
                     <mutationThreshold>60</mutationThreshold>
                     <coverageThreshold>70</coverageThreshold>
                 </configuration>
