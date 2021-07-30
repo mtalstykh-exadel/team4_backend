@@ -5,13 +5,11 @@ import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
-import com.team4.testingsystem.exceptions.LevelNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
-import com.team4.testingsystem.exceptions.UserNotFoundException;
-import com.team4.testingsystem.repositories.LevelRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
-import com.team4.testingsystem.repositories.UsersRepository;
+import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.TestsService;
+import com.team4.testingsystem.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,17 +19,20 @@ import java.time.LocalDateTime;
 public class TestsServiceImpl implements TestsService {
 
     private final TestsRepository testsRepository;
-    private final LevelRepository levelRepository;
-    private final UsersRepository usersRepository;
+
+    private final UsersService usersService;
+
+    private final LevelService levelService;
 
 
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
-                            LevelRepository levelRepository,
-                            UsersRepository usersRepository) {
+                            LevelService levelService,
+                            UsersService usersService) {
         this.testsRepository = testsRepository;
-        this.levelRepository = levelRepository;
-        this.usersRepository = usersRepository;
+        this.levelService = levelService;
+        this.usersService = usersService;
+
     }
 
     @Override
@@ -52,8 +53,8 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public long createForUser(long userId, Levels levelName) {
-        Level level = levelRepository.findByName(levelName.name()).orElseThrow(LevelNotFoundException::new);
-        User user = usersRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        Level level = levelService.getLevelByName(levelName.name());
+        User user = usersService.getUserById(userId);
         Test test = Test.builder()
                 .user(user)
                 .createdAt(LocalDateTime.now())
@@ -98,6 +99,23 @@ public class TestsServiceImpl implements TestsService {
     public void removeById(long id) {
 
         if (testsRepository.removeById(id) == 0) {
+            throw new TestNotFoundException();
+        }
+
+    }
+    
+    @Override
+    public void assignCoach(long id, long coachId) {
+        User coach = usersService.getUserById(coachId);
+        if (testsRepository.assignCoach(coach, id) == 0) {
+            throw new TestNotFoundException();
+        }
+
+    }
+
+    @Override
+    public void deassignCoach(long id) {
+        if (testsRepository.deassignCoach(id) == 0) {
             throw new TestNotFoundException();
         }
 
