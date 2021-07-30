@@ -8,7 +8,6 @@ import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.TestGeneratingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -52,7 +51,7 @@ public class TestGeneratingServiceImpl implements TestGeneratingService {
 
     private void setQuestionsByContentFile(Test test) {
         ContentFile contentFile = contentFilesService
-                .getRandomContentFiles(test.getLevel().getName());
+                .getRandomContentFile(test.getLevel().getName());
         Collection<Question> questions = questionService
                 .getRandomQuestionByContentFile(contentFile.getId(), Pageable.ofSize(count));
         questions.forEach(test::setQuestion);
