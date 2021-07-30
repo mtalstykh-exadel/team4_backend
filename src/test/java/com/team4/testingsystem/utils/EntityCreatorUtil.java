@@ -22,6 +22,7 @@ public class EntityCreatorUtil {
     public static final String USER_ROLE = "role";
     public static final String PASSWORD = "password";
     public static final String LANGUAGE = "en";
+    public static final String AVATAR = "avatar_url";
     public static final Long ID = 1L;
 
     public static Question createQuestion() {
@@ -56,6 +57,7 @@ public class EntityCreatorUtil {
                 .login(LOGIN)
                 .password(PASSWORD)
                 .role(userRole)
+                .avatar(AVATAR)
                 .build();
     }
 
