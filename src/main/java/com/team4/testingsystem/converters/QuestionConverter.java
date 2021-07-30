@@ -33,7 +33,7 @@ public class QuestionConverter {
 
     public Question convertToEntity(QuestionDTO questionDTO, Long id) {
         Question question = questionService.getQuestionById(id);
-        return new Question.Builder()
+        return Question.builder()
                 .body(getQuestionBody(question, questionDTO))
                 .isAvailable(getAvailability(question, questionDTO))
                 .creator(usersService.getUserById(JwtTokenUtil.extractUserDetails().getId()))
@@ -43,7 +43,7 @@ public class QuestionConverter {
     }
 
     public Question convertToEntity(QuestionDTO questionDTO) {
-        return new Question.Builder()
+        return Question.builder()
                 .body(questionDTO.getQuestionBody())
                 .isAvailable(questionDTO.isAvailable())
                 .creator(usersService.getUserById(JwtTokenUtil.extractUserDetails().getId()))
@@ -53,7 +53,7 @@ public class QuestionConverter {
     }
 
     public QuestionDTO convertToDTO(Question question) {
-        return new QuestionDTO.Builder()
+        return QuestionDTO.builder()
                 .body(question.getBody())
                 .isAvailable(question.isAvailable())
                 .creator(question.getCreator().getName())
