@@ -8,10 +8,7 @@ import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ContentFilesServiceImpl implements ContentFilesService {

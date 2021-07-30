@@ -50,6 +50,8 @@ class TestsServiceImplTest {
     @Mock
     TestsRepository testsRepository;
 
+    @Mock TestGeneratingServiceImpl testGeneratingService;
+
     @InjectMocks
     TestsServiceImpl testsService;
 
@@ -118,9 +120,10 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void startSuccess() {
-
+        Test test = new Test();
         Mockito.when(testsRepository.start(any(),anyLong())).thenReturn(1);
-
+        Mockito.when(testsRepository.findById(1L)).thenReturn(Optional.of(test));
+        Mockito.when(testGeneratingService.generateTest(any())).thenReturn(test);
         testsService.start(1L);
 
         verify(testsRepository).start(any(LocalDateTime.class), anyLong());

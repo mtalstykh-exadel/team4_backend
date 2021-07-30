@@ -8,9 +8,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
 public interface TestsRepository extends CrudRepository<Test, Long> {
+
+    @Override
+    Optional<Test> findById(Long id);
 
     @Transactional
     @Modifying

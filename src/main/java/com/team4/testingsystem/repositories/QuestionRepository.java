@@ -20,17 +20,17 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
     @Query(value = "update Question q set q.isAvailable = false where q.id = ?1")
     void archiveQuestion(Long id);
 
-    @Query(value = "select q from Question q " +
-                   "where q.isAvailable = true " +
-                   "and q.level.name = ?1 " +
-                   "and q.module.name = ?2 " +
-                   "order by function('random') ")
+    @Query(value = "select q from Question q "
+                   + "where q.isAvailable = true "
+                   + "and q.level.name = ?1 "
+                   + "and q.module.name = ?2 "
+                   + "order by function('random') ")
     List<Question> getRandomQuestions(String level, String module, Pageable pageable);
 
-    @Query("select q from Question q " +
-           "join q.contentFiles cf " +
-           "where cf.id = ?1 " +
-           "order by function('random') ")
+    @Query("select q from Question q "
+           + "join q.contentFiles cf "
+           + "where cf.id = ?1 "
+           + "order by function('random') ")
     List<Question> getRandomQuestionByContentFile(Long id, Pageable pageable);
 
 }
