@@ -10,8 +10,8 @@ import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.ChosenOptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.persistence.EntityNotFoundException;
 
+import javax.persistence.EntityNotFoundException;
 
 @Service
 public class ChosenOptionServiceImpl implements ChosenOptionService {
@@ -41,7 +41,7 @@ public class ChosenOptionServiceImpl implements ChosenOptionService {
     public void save(ChosenOption chosenOption) {
         try {
             chosenOptionRepository.save(chosenOption);
-        } catch(EntityNotFoundException exception) {
+        } catch (EntityNotFoundException exception) {
             throw new ChosenOptionBadRequestException();
         }
     }
