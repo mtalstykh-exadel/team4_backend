@@ -59,10 +59,10 @@ public class QuestionDTO {
         }
         QuestionDTO that = (QuestionDTO) o;
         return Objects.equals(questionBody, that.questionBody)
-               && Objects.equals(isAvailable, that.isAvailable)
-               && Objects.equals(creator, that.creator)
-               && Objects.equals(level, that.level)
-               && Objects.equals(module, that.module);
+                && Objects.equals(isAvailable, that.isAvailable)
+                && Objects.equals(creator, that.creator)
+                && Objects.equals(level, that.level)
+                && Objects.equals(module, that.module);
     }
 
     @Override
@@ -70,8 +70,12 @@ public class QuestionDTO {
         return Objects.hash(questionBody, isAvailable, creator, level, module);
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
-        private QuestionDTO questionDTO;
+        private final QuestionDTO questionDTO;
 
         public Builder() {
             this.questionDTO = new QuestionDTO();

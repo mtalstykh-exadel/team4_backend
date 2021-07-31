@@ -5,10 +5,14 @@ import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.entities.UserRole;
-import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.enums.Levels;
+
+import java.time.LocalDateTime;
 
 public class EntityCreatorUtil {
 
@@ -18,10 +22,11 @@ public class EntityCreatorUtil {
     public static final String USER_ROLE = "role";
     public static final String PASSWORD = "password";
     public static final String LANGUAGE = "en";
+    public static final String AVATAR = "avatar_url";
     public static final Long ID = 1L;
 
     public static Question createQuestion() {
-        return new Question.Builder()
+        return Question.builder()
                 .id(1L)
                 .body(QUESTION_TEXT)
                 .module(createModule())
@@ -32,7 +37,7 @@ public class EntityCreatorUtil {
     }
 
     public static QuestionDTO createQuestionDto() {
-        return new QuestionDTO.Builder()
+        return QuestionDTO.builder()
                 .body(QUESTION_TEXT)
                 .module(Modules.GRAMMAR.getName())
                 .level(Levels.A1.name())
@@ -42,17 +47,18 @@ public class EntityCreatorUtil {
     }
 
     public static User createUser() {
-        User user = new User();
         UserRole userRole = new UserRole();
         userRole.setId(ID.intValue());
         userRole.setRoleName(USER_ROLE);
-        user.setId(ID);
-        user.setName(USERNAME);
-        user.setLanguage(LANGUAGE);
-        user.setLogin(LOGIN);
-        user.setPassword(PASSWORD);
-        user.setRole(userRole);
-        return user;
+        return User.builder()
+                .id(ID)
+                .name(USERNAME)
+                .language(LANGUAGE)
+                .login(LOGIN)
+                .password(PASSWORD)
+                .role(userRole)
+                .avatar(AVATAR)
+                .build();
     }
 
     public static Module createModule() {
@@ -69,11 +75,28 @@ public class EntityCreatorUtil {
         return level;
     }
 
-    public static ContentFileRequest createContentFileRequest(Long questionId, String url){
+    public static ContentFileRequest createContentFileRequest(Long questionId, String url) {
         ContentFileRequest cfr = new ContentFileRequest();
         cfr.setQuestionId(questionId);
         cfr.setUrl(url);
         return cfr;
     }
 
+    public static Test createTest(User user) {
+        return Test.builder()
+                .user(user)
+                .status(Status.STARTED)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    public static Question createQuestion(User user) {
+        return Question.builder()
+                .body("some text")
+                .module(createModule())
+                .level(createLevel())
+                .creator(user)
+                .isAvailable(true)
+                .build();
+    }
 }

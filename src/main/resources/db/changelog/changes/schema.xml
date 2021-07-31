@@ -449,34 +449,45 @@
                                  referencedTableName="test" referencedColumnNames="id"/>
     </changeSet>
 
-    <changeSet  id="rename_table" author="DzmitryNovik">
-        <renameTable
-                      oldTableName="choosen_option"
-                      newTableName="chosen_option"/>
-    </changeSet>
-
-    <changeSet id="rename_column" author="DzmitryNovik">
-        <renameColumn tableName="chosen_option"
-                      oldColumnName="choosen_answer_id"
-                      newColumnName="chosen_answer_id"
-                      columnDataType="int"/>
-    </changeSet>
-
-    <changeSet id="add_field_testId_to_fileAnswer" author="DzmitryNovik">
-        <addColumn tableName="file_answer">
-            <column name="test_id" type="int"/>
+    <changeSet id="add_user_avatar" author="maxim12321">
+        <addColumn tableName="user">
+            <column name="avatar" type="text"/>
         </addColumn>
-
-        <addForeignKeyConstraint baseTableName="file_answer"
-                                 baseColumnNames="test_id"
-                                 constraintName="test_id_fk"
-                                 referencedTableName="test"
-                                 referencedColumnNames="id"/>
     </changeSet>
 
-    <changeSet id="delete_column_fileAnswerId_from_table_chosenOption" author="DzmitryNovik">
-        <dropColumn tableName="chosen_option"
-                    columnName="file_answer_id"/>
+    <changeSet id="update_user_avatars" author="maxim12321">
+        <update tableName="user">
+            <column name="avatar" value="https://www.meme-arsenal.com/memes/b13e5cd8fb1e4055a4da98828ec4434b.jpg"/>
+            <where>user_login='rus_user@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://pbs.twimg.com/media/EFCCM6lW4AEIZnv.png"/>
+            <where>user_login='rus_hr@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://pbs.twimg.com/media/EFIiRRyXYAA_xGw.jpg"/>
+            <where>user_login='rus_coach@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ8Mt5Mge2q4p3IYZjES9KK2pZLllTferBiw&amp;usqp=CAU"/>
+            <where>user_login='rus_admin@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://www.meme-arsenal.com/memes/4dd8cb2342fb0b33903ef63ce932f17c.jpg"/>
+            <where>user_login='eng_user@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuuh5s5y7jYV94COE8sEz1IN9Uzv6cHP8W8Pw4EUD6WbCqhsr5jxas6WMXfzucwZ8ffYw&amp;usqp=CAU"/>
+            <where>user_login='eng_hr@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCxgqz72g16sjgBVjvjtpGJqnMuUgIfutvlA&amp;usqp=CAU"/>
+            <where>user_login='eng_coach@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="http://risovach.ru/thumb/upload/200s400/2016/10/generator/mudryy-gus_127398097_orig_.jpg?32ndg"/>
+            <where>user_login='eng_admin@northsixty.com'</where>
+        </update>
     </changeSet>
 
 </databaseChangeLog>
