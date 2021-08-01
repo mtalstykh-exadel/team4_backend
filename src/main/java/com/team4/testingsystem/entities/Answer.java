@@ -1,12 +1,12 @@
 package com.team4.testingsystem.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -22,9 +22,12 @@ public class Answer {
     @Column(name = "answer_body")
     private String answerBody;
 
-    @JsonIgnore
     @ManyToOne
-    @Column(name = "question_id")
+    @JoinTable(
+            name = "question_answer",
+            joinColumns = @JoinColumn(name = "answer_id"),
+            inverseJoinColumns = @JoinColumn(name = "question_id")
+    )
     private Question question;
 
     @Column(name = "is_correct")
