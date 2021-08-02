@@ -81,7 +81,7 @@ public class TestsServiceImpl implements TestsService {
         if (testsRepository.start(LocalDateTime.now(), id) == 0) {
             throw new TestNotFoundException();
         }
-        Test test = testGeneratingService.generateTest(getById(id));
+        Test test = testGeneratingService.formTest(getById(id));
         save(test);
     }
 
