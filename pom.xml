@@ -273,6 +273,7 @@
                     <excludedClasses>
                         <param>com.team4.testingsystem.entities.*</param>
                         <param>com.team4.testingsystem.dto.*</param>
+                        <param>com.team4.testingsystem.config.*</param>
                     </excludedClasses>
                     <mutationThreshold>75</mutationThreshold>
                     <coverageThreshold>90</coverageThreshold>
