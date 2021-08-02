@@ -1,7 +1,6 @@
 package com.team4.testingsystem.entities;
 
 import java.io.Serializable;
-
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
