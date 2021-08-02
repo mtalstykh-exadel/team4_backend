@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -35,6 +36,9 @@ public class Question {
     @ManyToOne
     @JoinColumn(name = "module_id", referencedColumnName = "id")
     private Module module;
+
+    @OneToMany(mappedBy = "question")
+    List<Answer> answers = new ArrayList<>();
 
     @ManyToMany(mappedBy = "questions")
     List<ContentFile> contentFiles = new ArrayList<>();
@@ -110,6 +114,14 @@ public class Question {
     @Override
     public int hashCode() {
         return Objects.hash(id, body, isAvailable, creator, level, module);
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 
     public List<ContentFile> getContentFiles() {
