@@ -1,7 +1,7 @@
 package com.team4.testingsystem.repositories;
 
 import com.team4.testingsystem.entities.ErrorReport;
-import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.entities.ErrorReportId;
 import com.team4.testingsystem.entities.Test;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,19 +13,14 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Repository
-public interface ErrorReportsRepository extends CrudRepository<ErrorReport, Long> {
+public interface ErrorReportsRepository extends CrudRepository<ErrorReport, ErrorReportId> {
 
-    Optional<ErrorReport> findByTestAndQuestion(Test test, Question question);
+    Optional<ErrorReport> findById(ErrorReportId errorReportId);
 
-    Collection<ErrorReport> findAllByTest(Test test);
-
-    @Transactional
-    @Modifying
-    @Query(value = "UPDATE ErrorReport er SET er.reportBody = ?1 WHERE er.test = ?2 AND er.question = ?3")
-    int changeReportBody(String reportBody, Test test, Question question);
+    Collection<ErrorReport> findAllByErrorReportIdTest(Test test);
 
     @Transactional
     @Modifying
-    @Query(value = "DELETE from ErrorReport er WHERE er.test = ?1 AND er.question = ?2")
-    int removeByTestAndQuestion(Test test, Question question);
+    @Query(value = "DELETE from ErrorReport er WHERE er.errorReportId = ?1")
+    int removeById(ErrorReportId errorReportId);
 }

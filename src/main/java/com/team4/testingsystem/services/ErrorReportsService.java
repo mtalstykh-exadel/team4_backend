@@ -10,7 +10,5 @@ public interface ErrorReportsService {
 
     void add(String requestBody, Long questionId, Long testId);
 
-    void updateReportBody(long testId, long questionId, String newReportBody);
-
     void removeByTestAndQuestion(long testId, long questionId);
 }

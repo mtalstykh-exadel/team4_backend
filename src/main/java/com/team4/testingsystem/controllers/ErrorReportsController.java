@@ -3,13 +3,11 @@ package com.team4.testingsystem.controllers;
 import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.services.ErrorReportsService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,21 +35,12 @@ public class ErrorReportsController {
                 .collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Is used to add an error report")
-    @ApiResponse(code = 409, message = "The question is already reported. You can update or delete the report")
+    @ApiOperation(value = "Use it to add or update an error report")
     @PostMapping(path = "/")
     public void add(@RequestBody ErrorReportDTO errorReportDTO) {
         errorReportsService.add(errorReportDTO.getReportBody(),
                 errorReportDTO.getQuestionId(),
                 errorReportDTO.getTestId());
-    }
-
-    @ApiOperation(value = "Use it to change report body")
-    @PutMapping(path = "/")
-    public void updateReportBody(@RequestBody ErrorReportDTO errorReportDTO) {
-        errorReportsService.updateReportBody(errorReportDTO.getTestId(),
-                errorReportDTO.getQuestionId(),
-                errorReportDTO.getReportBody());
     }
 
     @ApiOperation(value = "Use it to remove an error report from the database")

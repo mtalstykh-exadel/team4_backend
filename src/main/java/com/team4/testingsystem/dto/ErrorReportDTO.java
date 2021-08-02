@@ -18,8 +18,8 @@ public class ErrorReportDTO implements Serializable {
 
     public ErrorReportDTO(ErrorReport errorReport) {
         this.reportBody = errorReport.getReportBody();
-        this.questionId = errorReport.getQuestion().getId();
-        this.testId = errorReport.getTest().getId();
+        this.questionId = errorReport.getErrorReportId().getQuestion().getId();
+        this.testId = errorReport.getErrorReportId().getTest().getId();
     }
 
     public String getReportBody() {

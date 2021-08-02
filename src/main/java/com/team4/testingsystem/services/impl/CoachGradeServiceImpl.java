@@ -38,7 +38,7 @@ public class CoachGradeServiceImpl implements CoachGradeService {
     @Override
     public void createGrade(Long testId, Long questionId, Integer grade) {
         Test test = testsService.getById(testId);
-        Question question = questionService.getQuestionById(questionId);
+        Question question = questionService.getById(questionId);
 
         if (gradeRepository.findByTestAndQuestion(test, question).isPresent()) {
             throw new CoachGradeAlreadyExistsException();
@@ -50,7 +50,7 @@ public class CoachGradeServiceImpl implements CoachGradeService {
     @Override
     public void updateGrade(Long testId, Long questionId, Integer grade) {
         Test test = testsService.getById(testId);
-        Question question = questionService.getQuestionById(questionId);
+        Question question = questionService.getById(questionId);
 
         if (gradeRepository.updateGrade(test, question, grade) == 0) {
             throw new GradeNotFoundException();

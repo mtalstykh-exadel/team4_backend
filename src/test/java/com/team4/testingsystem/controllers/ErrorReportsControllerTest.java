@@ -2,8 +2,8 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.entities.ErrorReport;
+import com.team4.testingsystem.entities.ErrorReportId;
 import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.exceptions.ErrorReportAlreadyExistsException;
 import com.team4.testingsystem.exceptions.ErrorReportNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
@@ -48,6 +48,9 @@ public class ErrorReportsControllerTest {
     Question question;
 
     @Mock
+    ErrorReportId errorReportId;
+
+    @Mock
     ErrorReport errorReport;
 
     @InjectMocks
@@ -59,8 +62,12 @@ public class ErrorReportsControllerTest {
         Mockito.when(test.getId()).thenReturn(GOOD_TEST_ID);
         Mockito.when(question.getId()).thenReturn(GOOD_QUESTION_ID);
 
-        Mockito.when(errorReport.getTest()).thenReturn(test);
-        Mockito.when(errorReport.getQuestion()).thenReturn(question);
+        Mockito.when(errorReport.getErrorReportId()).thenReturn(errorReportId);
+
+        Mockito.when(errorReportId.getTest()).thenReturn(test);
+
+        Mockito.when(errorReportId.getQuestion()).thenReturn(question);
+
         Mockito.when(errorReport.getReportBody()).thenReturn(GOOD_REPORT_BODY);
 
         Mockito.when(errorReportsService.getReportsByTest(GOOD_TEST_ID))
@@ -83,12 +90,10 @@ public class ErrorReportsControllerTest {
 
     @Test
     void addSuccess() {
-        errorReportsController
-                .add(EntityCreatorUtil
-                        .createErrorReportDTO(GOOD_REPORT_BODY,
-                                GOOD_QUESTION_ID,
-                                GOOD_TEST_ID));
-
+        errorReportsController.add(EntityCreatorUtil.createErrorReportDTO(
+                GOOD_REPORT_BODY,
+                GOOD_QUESTION_ID,
+                GOOD_TEST_ID));
         verify(errorReportsService).add(GOOD_REPORT_BODY, GOOD_QUESTION_ID, GOOD_TEST_ID);
     }
 
@@ -104,73 +109,13 @@ public class ErrorReportsControllerTest {
     }
 
     @Test
-    void addFailSecond(){
+    void addFailSecond() {
         doThrow(TestNotFoundException.class).when(errorReportsService)
                 .add(BAD_REPORT_BODY, GOOD_QUESTION_ID, BAD_TEST_ID);
 
         Assertions.assertThrows(TestNotFoundException.class,
                 () -> errorReportsController.add(EntityCreatorUtil
                         .createErrorReportDTO(BAD_REPORT_BODY, GOOD_QUESTION_ID, BAD_TEST_ID)));
-    }
-
-    @Test
-    void addFailThird(){
-        doThrow(ErrorReportAlreadyExistsException.class).when(errorReportsService)
-                .add(GOOD_REPORT_BODY, GOOD_QUESTION_ID, GOOD_TEST_ID);
-
-        Assertions.assertThrows(ErrorReportAlreadyExistsException.class,
-                () -> errorReportsController.add(EntityCreatorUtil
-                        .createErrorReportDTO(GOOD_REPORT_BODY, GOOD_QUESTION_ID, GOOD_TEST_ID)));
-    }
-
-    @Test
-    void updateReportBodySuccess() {
-
-        errorReportsController.updateReportBody(EntityCreatorUtil
-                .createErrorReportDTO(GOOD_REPORT_BODY,
-                        GOOD_QUESTION_ID,
-                        GOOD_TEST_ID));
-
-        verify(errorReportsService).updateReportBody(GOOD_TEST_ID, GOOD_QUESTION_ID, GOOD_REPORT_BODY);
-    }
-
-    @Test
-    void updateReportBodyFailFirst() {
-
-        doThrow(TestNotFoundException.class).when(errorReportsService)
-                .updateReportBody(BAD_TEST_ID, GOOD_QUESTION_ID, BAD_REPORT_BODY);
-
-        Assertions.assertThrows(TestNotFoundException.class,
-                ()-> errorReportsController.updateReportBody(EntityCreatorUtil
-                        .createErrorReportDTO(BAD_REPORT_BODY,
-                                GOOD_QUESTION_ID,
-                                BAD_TEST_ID)));
-    }
-
-    @Test
-    void updateReportBodyFailSecond() {
-
-        doThrow(QuestionNotFoundException.class).when(errorReportsService)
-                .updateReportBody(GOOD_TEST_ID, BAD_QUESTION_ID, BAD_REPORT_BODY);
-
-        Assertions.assertThrows(QuestionNotFoundException.class,
-                ()-> errorReportsController.updateReportBody(EntityCreatorUtil
-                        .createErrorReportDTO(BAD_REPORT_BODY,
-                                BAD_QUESTION_ID,
-                                GOOD_TEST_ID)));
-    }
-
-    @Test
-    void updateReportBodyFailThird() {
-
-        doThrow(ErrorReportNotFoundException.class).when(errorReportsService)
-                .updateReportBody(BAD_TEST_ID, BAD_QUESTION_ID, BAD_REPORT_BODY);
-
-        Assertions.assertThrows(ErrorReportNotFoundException.class,
-                ()-> errorReportsController.updateReportBody(EntityCreatorUtil
-                        .createErrorReportDTO(BAD_REPORT_BODY,
-                                BAD_QUESTION_ID,
-                                BAD_TEST_ID)));
     }
 
     @Test

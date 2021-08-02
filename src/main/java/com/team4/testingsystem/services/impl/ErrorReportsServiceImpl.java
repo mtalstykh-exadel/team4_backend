@@ -1,9 +1,9 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.ErrorReport;
+import com.team4.testingsystem.entities.ErrorReportId;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.exceptions.ErrorReportAlreadyExistsException;
 import com.team4.testingsystem.exceptions.ErrorReportNotFoundException;
 import com.team4.testingsystem.repositories.ErrorReportsRepository;
 import com.team4.testingsystem.services.ErrorReportsService;
@@ -35,35 +35,30 @@ public class ErrorReportsServiceImpl implements ErrorReportsService {
 
     @Override
     public Collection<ErrorReport> getReportsByTest(Long testId) {
-        return errorReportsRepository.findAllByTest(testsService.getById(testId));
+        return errorReportsRepository.findAllByErrorReportIdTest(testsService.getById(testId));
     }
 
 
     @Override
-    public void add(String requestBody, Long questionId, Long testId) {
-        Question question = questionService.getQuestionById(questionId);
+    public void add(String reportBody, Long questionId, Long testId) {
+        Question question = questionService.getById(questionId);
 
         Test test = testsService.getById(testId);
 
-        if (errorReportsRepository.findByTestAndQuestion(test, question).isPresent()) {
-            throw new ErrorReportAlreadyExistsException();
-        }
+        ErrorReportId errorReportId = new ErrorReportId(test, question);
 
-        errorReportsRepository.save(new ErrorReport(requestBody, question, test));
-    }
-
-    public void updateReportBody(long testId, long questionId, String newReportBody) {
-        if (errorReportsRepository.changeReportBody(newReportBody,
-                testsService.getById(testId),
-                questionService.getQuestionById(questionId)) == 0) {
-            throw new ErrorReportNotFoundException();
-        }
+        errorReportsRepository.save(new ErrorReport(errorReportId, reportBody));
     }
 
     @Override
     public void removeByTestAndQuestion(long testId, long questionId) {
-        if (errorReportsRepository.removeByTestAndQuestion(testsService.getById(testId),
-                questionService.getQuestionById(questionId)) == 0) {
+        Question question = questionService.getById(questionId);
+
+        Test test = testsService.getById(testId);
+
+        ErrorReportId errorReportId = new ErrorReportId(test, question);
+
+        if (errorReportsRepository.removeById(errorReportId) == 0) {
             throw new ErrorReportNotFoundException();
         }
     }

@@ -32,7 +32,7 @@ public class QuestionConverter {
     }
 
     public Question convertToEntity(QuestionDTO questionDTO, Long id) {
-        Question question = questionService.getQuestionById(id);
+        Question question = questionService.getById(id);
         return Question.builder()
                 .body(getQuestionBody(question, questionDTO))
                 .isAvailable(getAvailability(question, questionDTO))
