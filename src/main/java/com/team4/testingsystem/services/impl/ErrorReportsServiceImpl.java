@@ -3,13 +3,18 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.entities.ErrorReport;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.exceptions.ErrorReportAlreadyExistsException;
 import com.team4.testingsystem.exceptions.ErrorReportNotFoundException;
 import com.team4.testingsystem.repositories.ErrorReportsRepository;
 import com.team4.testingsystem.services.ErrorReportsService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.TestsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
+@Service
 public class ErrorReportsServiceImpl implements ErrorReportsService {
 
 
@@ -29,14 +34,10 @@ public class ErrorReportsServiceImpl implements ErrorReportsService {
     }
 
     @Override
-    public Iterable<ErrorReport> getAll() {
-        return errorReportsRepository.findAll();
+    public Collection<ErrorReport> getReportsByTest(Long testId) {
+        return errorReportsRepository.findAllByTest(testsService.getById(testId));
     }
 
-    @Override
-    public ErrorReport getById(long id) {
-        return errorReportsRepository.findById(id).orElseThrow(ErrorReportNotFoundException::new);
-    }
 
     @Override
     public void add(String requestBody, Long questionId, Long testId) {
@@ -44,19 +45,25 @@ public class ErrorReportsServiceImpl implements ErrorReportsService {
 
         Test test = testsService.getById(testId);
 
+        if (errorReportsRepository.findByTestAndQuestion(test, question).isPresent()) {
+            throw new ErrorReportAlreadyExistsException();
+        }
+
         errorReportsRepository.save(new ErrorReport(requestBody, question, test));
     }
 
-    @Override
-    public void updateRequestBody(long id, String newRequestBody) {
-        if (errorReportsRepository.changeReportBody(newRequestBody, id) == 0) {
+    public void updateReportBody(long testId, long questionId, String newReportBody) {
+        if (errorReportsRepository.changeReportBody(newReportBody,
+                testsService.getById(testId),
+                questionService.getQuestionById(questionId)) == 0) {
             throw new ErrorReportNotFoundException();
         }
     }
 
     @Override
-    public void removeById(long id) {
-        if (errorReportsRepository.removeById(id) == 0) {
+    public void removeByTestAndQuestion(long testId, long questionId) {
+        if (errorReportsRepository.removeByTestAndQuestion(testsService.getById(testId),
+                questionService.getQuestionById(questionId)) == 0) {
             throw new ErrorReportNotFoundException();
         }
     }

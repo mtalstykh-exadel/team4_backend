@@ -30,6 +30,10 @@ public class ErrorReport {
     @JoinColumn(name = "test_id")
     private Test test;
 
+    public ErrorReport(){
+
+    }
+
     public ErrorReport(String reportBody, Question question, Test test) {
         this.reportBody = reportBody;
         this.question = question;
