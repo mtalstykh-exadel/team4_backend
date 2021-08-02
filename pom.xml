@@ -274,8 +274,8 @@
                         <param>com.team4.testingsystem.entities.*</param>
                         <param>com.team4.testingsystem.dto.*</param>
                     </excludedClasses>
-                    <mutationThreshold>60</mutationThreshold>
-                    <coverageThreshold>70</coverageThreshold>
+                    <mutationThreshold>75</mutationThreshold>
+                    <coverageThreshold>90</coverageThreshold>
                 </configuration>
                 <executions>
                     <execution>
