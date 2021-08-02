@@ -2,8 +2,8 @@ package com.team4.testingsystem.entities;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import java.io.Serializable;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 @Embeddable
 public class ErrorReportId implements Serializable {
