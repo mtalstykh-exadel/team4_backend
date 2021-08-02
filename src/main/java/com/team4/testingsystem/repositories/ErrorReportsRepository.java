@@ -17,7 +17,7 @@ public interface ErrorReportsRepository extends CrudRepository<ErrorReport, Long
 
     Optional<ErrorReport> findByTestAndQuestion(Test test, Question question);
 
-    Collection <ErrorReport> findAllByTest(Test test);
+    Collection<ErrorReport> findAllByTest(Test test);
 
     @Transactional
     @Modifying
