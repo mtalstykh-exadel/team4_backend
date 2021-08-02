@@ -490,4 +490,15 @@
         </update>
     </changeSet>
 
+    <changeSet id="update_status_type" author="Darina">
+        <sql>
+            ALTER TYPE status RENAME TO status_old;
+            CREATE TYPE status AS ENUM('COMPLETED', 'ASSIGNED', 'VERIFIED', 'STARTED');
+            ALTER TABLE test ALTER COLUMN status TYPE status
+            USING status::text::status;
+            DROP TYPE status_old;
+        </sql>
+
+    </changeSet>
+
 </databaseChangeLog>
