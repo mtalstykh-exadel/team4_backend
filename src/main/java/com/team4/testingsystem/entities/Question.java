@@ -37,7 +37,7 @@ public class Question {
     @JoinColumn(name = "module_id", referencedColumnName = "id")
     private Module module;
 
-    @OneToMany(mappedBy = "answer")
+    @OneToMany(mappedBy = "question")
     List<Answer> answers = new ArrayList<>();
 
     @ManyToMany(mappedBy = "questions")

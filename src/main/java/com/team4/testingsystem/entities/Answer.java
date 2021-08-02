@@ -6,7 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -23,11 +22,7 @@ public class Answer {
     private String answerBody;
 
     @ManyToOne
-    @JoinTable(
-            name = "question_answer",
-            joinColumns = @JoinColumn(name = "answer_id"),
-            inverseJoinColumns = @JoinColumn(name = "question_id")
-    )
+    @JoinColumn(name = "answer_id")
     private Question question;
 
     @Column(name = "is_correct")
