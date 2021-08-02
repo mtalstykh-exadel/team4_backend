@@ -140,8 +140,12 @@ public class Question {
         this.tests = tests;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
-        private Question question;
+        private final Question question;
 
         public Builder() {
             this.question = new Question();

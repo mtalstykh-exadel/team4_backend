@@ -28,7 +28,6 @@ public class JwtTokenUtil {
         }
     }
 
-
     public String extractUsername(String token) throws JwtException {
         return extractClaim(token, Claims::getSubject);
     }
@@ -58,6 +57,7 @@ public class JwtTokenUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("name", userDetails.getName());
         claims.put("role", userDetails.getRoleName());
+        claims.put("avatar", userDetails.getAvatar());
         return createToken(userDetails.getUsername(), userDetails.getId(), claims);
     }
 
