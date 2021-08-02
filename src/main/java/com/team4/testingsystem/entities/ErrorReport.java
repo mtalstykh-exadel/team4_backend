@@ -4,10 +4,11 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "error_report")
-public class ErrorReport {
+public class ErrorReport implements Serializable {
 
     @EmbeddedId
     ErrorReportId errorReportId;
