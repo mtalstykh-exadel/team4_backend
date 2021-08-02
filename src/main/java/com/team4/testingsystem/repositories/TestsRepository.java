@@ -2,6 +2,7 @@ package com.team4.testingsystem.repositories;
 
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.enums.Status;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,6 +20,8 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     Optional<Test> findById(Long id);
 
     Iterable<Test> getAllByUser(User user);
+
+    List<Test> getByStatus(Status status);
 
     @Transactional
     @Modifying
