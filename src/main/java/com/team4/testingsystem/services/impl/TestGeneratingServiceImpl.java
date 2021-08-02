@@ -22,8 +22,7 @@ public class TestGeneratingServiceImpl implements TestGeneratingService {
     @Value("${test-generating.const.question.count}")
     private Integer count;
 
-    @Value("${test-generating.const.one-element}")
-    private Integer oneElement;
+    private static final Integer oneElement = 1;
 
 
     @Autowired
@@ -34,7 +33,7 @@ public class TestGeneratingServiceImpl implements TestGeneratingService {
     }
 
     @Override
-    public Test generateTest(Test test) {
+    public Test formTest(Test test) {
         setQuestionsByModules(test, Modules.GRAMMAR.getName(), Pageable.ofSize(count));
         setQuestionsByContentFile(test);
         setQuestionsByModules(test, Modules.ESSAY.getName(), Pageable.ofSize(oneElement));

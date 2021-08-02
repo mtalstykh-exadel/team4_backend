@@ -136,7 +136,7 @@ class TestsServiceImplTest {
         Test test = new Test();
         Mockito.when(testsRepository.start(any(),anyLong())).thenReturn(1);
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
-        Mockito.when(testGeneratingService.generateTest(any())).thenReturn(test);
+        Mockito.when(testGeneratingService.formTest(any())).thenReturn(test);
         testsService.start(GOOD_TEST_ID);
 
         verify(testsRepository).start(any(LocalDateTime.class), anyLong());
