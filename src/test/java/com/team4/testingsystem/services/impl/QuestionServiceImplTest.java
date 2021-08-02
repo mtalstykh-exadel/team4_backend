@@ -11,9 +11,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,18 +55,32 @@ class QuestionServiceImplTest {
     }
 
     @Test
-    void archiveQuestion(){
+    void archiveQuestion() {
         questionService.archiveQuestion(1L);
         verify(questionRepository).archiveQuestion(1L);
     }
 
     @Test
-    void updateQuestion(){
+    void updateQuestion() {
         questionService.updateQuestion(question, 1L);
-
         verify(questionRepository).archiveQuestion(1L);
-
         verify(questionRepository).save(question);
+    }
+
+    @Test
+    void getRandomQuestions() {
+        List<Question> questions = new ArrayList<>();
+        Mockito.when(questionRepository
+                .getRandomQuestions(any(), any(), any())).thenReturn(questions);
+        Assertions.assertEquals(questions, questionService.getRandomQuestions(any(), any(), any()));
+    }
+
+    @Test
+    void getRandomQuestionsByContentFile() {
+        List<Question> questions = new ArrayList<>();
+        Mockito.when(questionRepository
+                .getRandomQuestionByContentFile(any(), any())).thenReturn(questions);
+        Assertions.assertEquals(questions, questionService.getRandomQuestionsByContentFile(any(), any()));
     }
 
 }
