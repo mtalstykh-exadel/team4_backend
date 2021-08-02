@@ -9,9 +9,15 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
 public interface TestsRepository extends CrudRepository<Test, Long> {
+
+    @Override
+    Optional<Test> findById(Long id);
+
+    Iterable<Test> getAllByUser(User user);
 
     @Transactional
     @Modifying
@@ -26,11 +32,11 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     @Transactional
     @Modifying
     @Query(value = "UPDATE Test t SET t.updatedAt = ?1, t.evaluation = ?2 where t.id = ?3")
-    int updateEvaluation(LocalDateTime updateDate, int evaluation,  Long id);
+    int updateEvaluation(LocalDateTime updateDate, int evaluation, Long id);
 
     @Transactional
     @Modifying
-    @Query (value = "DELETE FROM Test t where t.id = ?1")
+    @Query(value = "DELETE FROM Test t where t.id = ?1")
     int removeById(Long id);
 
     @Transactional
@@ -42,6 +48,4 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     @Modifying
     @Query(value = "UPDATE Test t SET t.coach = null where t.id = ?1")
     int deassignCoach(Long id);
-
 }
-
