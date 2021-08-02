@@ -6,11 +6,13 @@ import com.team4.testingsystem.exceptions.FileSavingFailedException;
 import com.team4.testingsystem.repositories.FilesRepository;
 import com.team4.testingsystem.services.FileStorage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Profile(value = "!test")
 @Service
 public class FileStorageImpl implements FileStorage {
     private final FilesRepository filesRepository;
