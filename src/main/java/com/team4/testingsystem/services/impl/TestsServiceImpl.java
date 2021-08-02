@@ -72,7 +72,7 @@ public class TestsServiceImpl implements TestsService {
         Test test = Test.builder()
                 .user(user)
                 .createdAt(LocalDateTime.now())
-                .status(Status.NOT_STARTED)
+                .status(Status.ASSIGNED)
                 .level(level)
                 .build();
         testsRepository.save(test);

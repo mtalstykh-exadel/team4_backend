@@ -4,6 +4,7 @@ import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
@@ -279,5 +280,12 @@ class TestsServiceImplTest {
         Mockito.when(testsRepository.deassignCoach(BAD_TEST_ID)).thenReturn(0);
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.deassignCoach(BAD_TEST_ID));
+    }
+
+    @org.junit.jupiter.api.Test
+    void getByStatus(){
+        List<Test> tests = new ArrayList<>();
+        Mockito.when(testsRepository.getByStatus(any())).thenReturn(tests);
+        Assertions.assertEquals(tests, testsService.getByStatus(Status.COMPLETED));
     }
 }

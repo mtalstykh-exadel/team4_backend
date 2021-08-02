@@ -1,7 +1,9 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.security.CustomUserDetails;
@@ -19,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
@@ -168,4 +171,11 @@ class TestsControllerTest {
         Assertions.assertThrows(TestNotFoundException.class, () -> testsController.removeById(42L));
     }
 
+    @org.junit.jupiter.api.Test
+    void getUnverifiedTests(){
+        List<Test> tests = new ArrayList<>();
+        List<TestDTO> testsDto = new ArrayList<>();
+        Mockito.when(testsService.getByStatus(any())).thenReturn(tests);
+        Assertions.assertEquals(testsDto, testsController.getUnverifiedTests());
+    }
 }
