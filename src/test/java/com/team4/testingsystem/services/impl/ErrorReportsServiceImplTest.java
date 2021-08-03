@@ -1,8 +1,8 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.ErrorReport;
-import com.team4.testingsystem.entities.ErrorReportId;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.exceptions.ErrorReportNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
@@ -61,7 +61,7 @@ public class ErrorReportsServiceImplTest {
 
         Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
 
-        Mockito.when(errorReportsRepository.findAllByErrorReportIdTest(test)).thenReturn(errorReports);
+        Mockito.when(errorReportsRepository.findAllById_Test(test)).thenReturn(errorReports);
 
         Assertions.assertEquals(errorReports, errorReportsService.getReportsByTest(GOOD_TEST_ID));
     }
@@ -112,7 +112,7 @@ public class ErrorReportsServiceImplTest {
 
         Mockito.when(questionService.getById(GOOD_QUESTION_ID)).thenReturn(question);
 
-        try (MockedConstruction<ErrorReportId> mockedConstruction = Mockito.mockConstruction(ErrorReportId.class,
+        try (MockedConstruction<TestQuestionID> mockedConstruction = Mockito.mockConstruction(TestQuestionID.class,
                 (mock, context) -> {
                     Mockito.when(errorReportsRepository.removeById(mock)).thenReturn(1);
 
@@ -156,7 +156,7 @@ public class ErrorReportsServiceImplTest {
         Mockito.when(questionService.getById(BAD_QUESTION_ID)).thenReturn(question);
 
 
-        try (MockedConstruction<ErrorReportId> mockedConstruction = Mockito.mockConstruction(ErrorReportId.class,
+        try (MockedConstruction<TestQuestionID> mockedConstruction = Mockito.mockConstruction(TestQuestionID.class,
                 (mock, context) -> {
                     //Error report doesn't exist
                     Mockito.when(errorReportsRepository.removeById(mock)).thenReturn(0);
