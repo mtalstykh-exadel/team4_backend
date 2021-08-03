@@ -1,4 +1,4 @@
-package com.team4.testingsystem.repositories;
+package com.team4.testingsystem.services.impl;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
@@ -8,6 +8,7 @@ import com.amazonaws.util.IOUtils;
 import com.team4.testingsystem.exceptions.FileDeletingFailedException;
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.exceptions.FileSavingFailedException;
+import com.team4.testingsystem.services.FilesService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,14 +24,14 @@ import java.nio.file.Path;
 
 @Profile("release")
 @Service
-public class AmazonS3Repository implements FilesRepository {
+public class AmazonS3Service implements FilesService {
     private final AmazonS3 amazonS3;
 
     @Value("${cloud.s3.bucket-name}")
     private String bucketName;
 
     @Autowired
-    public AmazonS3Repository(AmazonS3 amazonS3) {
+    public AmazonS3Service(AmazonS3 amazonS3) {
         this.amazonS3 = amazonS3;
     }
 

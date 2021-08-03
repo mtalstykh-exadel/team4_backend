@@ -53,13 +53,7 @@ public class QuestionConverter {
     }
 
     public QuestionDTO convertToDTO(Question question) {
-        return QuestionDTO.builder()
-                .body(question.getBody())
-                .isAvailable(question.isAvailable())
-                .creator(question.getCreator().getName())
-                .level(question.getLevel().getName())
-                .module(question.getModule().getName())
-                .build();
+        return new QuestionDTO(question);
     }
 
     private String getQuestionBody(Question question, QuestionDTO questionDTO) {

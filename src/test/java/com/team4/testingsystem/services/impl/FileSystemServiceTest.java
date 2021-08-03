@@ -1,4 +1,4 @@
-package com.team4.testingsystem.repositories;
+package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import org.junit.jupiter.api.AfterEach;
@@ -17,9 +17,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @ExtendWith(MockitoExtension.class)
-class FileSystemRepositoryTest {
+class FileSystemServiceTest {
     @Spy
-    private FileSystemRepository fileSystemRepository;
+    private FileSystemService fileSystemService;
 
     private static final String SOURCE_FILE_NAME = "source_file.txt";
     private static final String FILE_NAME = "test_file.txt";
@@ -53,9 +53,9 @@ class FileSystemRepositoryTest {
 
     @Test
     void saveFileSuccess() {
-        Mockito.when(fileSystemRepository.generateFilePath(FILE_NAME)).thenReturn(FILE_PATH);
+        Mockito.when(fileSystemService.generateFilePath(FILE_NAME)).thenReturn(FILE_PATH);
 
-        fileSystemRepository.save(FILE_NAME, sourceFile);
+        fileSystemService.save(FILE_NAME, sourceFile);
 
         Assertions.assertTrue(Files.exists(FILE_PATH));
         try {
@@ -67,14 +67,14 @@ class FileSystemRepositoryTest {
 
     @Test
     void saveFileAlreadyExists() {
-        Mockito.when(fileSystemRepository.generateFilePath(FILE_NAME)).thenReturn(FILE_PATH);
+        Mockito.when(fileSystemService.generateFilePath(FILE_NAME)).thenReturn(FILE_PATH);
         try {
             Files.writeString(FILE_PATH, TEST_CONTENT + TEST_CONTENT);
         } catch (IOException e) {
             Assertions.fail();
         }
 
-        Assertions.assertDoesNotThrow(() -> fileSystemRepository.save(FILE_NAME, sourceFile));
+        Assertions.assertDoesNotThrow(() -> fileSystemService.save(FILE_NAME, sourceFile));
 
         Assertions.assertTrue(Files.exists(FILE_PATH));
         try {
@@ -87,9 +87,9 @@ class FileSystemRepositoryTest {
     @Test
     void saveFileDirectoryNotExists() {
         Path nonExistingPath = Path.of("non-existing-dir/" + FILE_NAME);
-        Mockito.when(fileSystemRepository.generateFilePath(FILE_NAME)).thenReturn(nonExistingPath);
+        Mockito.when(fileSystemService.generateFilePath(FILE_NAME)).thenReturn(nonExistingPath);
 
-        Assertions.assertDoesNotThrow(() -> fileSystemRepository.save(FILE_NAME, sourceFile));
+        Assertions.assertDoesNotThrow(() -> fileSystemService.save(FILE_NAME, sourceFile));
 
         Assertions.assertTrue(Files.exists(nonExistingPath));
 
@@ -103,15 +103,15 @@ class FileSystemRepositoryTest {
 
     @Test
     void loadFileNotExists() {
-        Mockito.when(fileSystemRepository.generateFilePath(FILE_NAME)).thenReturn(FILE_PATH);
+        Mockito.when(fileSystemService.generateFilePath(FILE_NAME)).thenReturn(FILE_PATH);
 
         Assertions.assertThrows(FileLoadingFailedException.class,
-                () -> fileSystemRepository.load(FILE_NAME));
+                () -> fileSystemService.load(FILE_NAME));
     }
 
     @Test
     void loadFileSuccess() {
-        Mockito.when(fileSystemRepository.generateFilePath(FILE_NAME)).thenReturn(FILE_PATH);
+        Mockito.when(fileSystemService.generateFilePath(FILE_NAME)).thenReturn(FILE_PATH);
         try {
             Files.writeString(FILE_PATH, TEST_CONTENT);
         } catch (IOException e) {
@@ -120,7 +120,7 @@ class FileSystemRepositoryTest {
 
         try {
             Assertions.assertArrayEquals(TEST_CONTENT.getBytes(StandardCharsets.UTF_8),
-                    fileSystemRepository.load(FILE_NAME).getInputStream().readAllBytes());
+                    fileSystemService.load(FILE_NAME).getInputStream().readAllBytes());
         } catch (IOException e) {
             Assertions.fail();
         }
@@ -128,35 +128,35 @@ class FileSystemRepositoryTest {
 
     @Test
     void deleteFileNotExists() {
-        Mockito.when(fileSystemRepository.generateFilePath(FILE_NAME)).thenReturn(FILE_PATH);
+        Mockito.when(fileSystemService.generateFilePath(FILE_NAME)).thenReturn(FILE_PATH);
 
-        Assertions.assertDoesNotThrow(() -> fileSystemRepository.delete(FILE_NAME));
+        Assertions.assertDoesNotThrow(() -> fileSystemService.delete(FILE_NAME));
     }
 
     @Test
     void deleteFileSuccess() {
-        Mockito.when(fileSystemRepository.generateFilePath(FILE_NAME)).thenReturn(FILE_PATH);
+        Mockito.when(fileSystemService.generateFilePath(FILE_NAME)).thenReturn(FILE_PATH);
         try {
             Files.writeString(FILE_PATH, TEST_CONTENT);
         } catch (IOException e) {
             Assertions.fail();
         }
 
-        Assertions.assertDoesNotThrow(() -> fileSystemRepository.delete(FILE_NAME));
+        Assertions.assertDoesNotThrow(() -> fileSystemService.delete(FILE_NAME));
         Assertions.assertTrue(Files.notExists(FILE_PATH));
     }
 
     @Test
     void saveLoadDelete() {
-        Assertions.assertDoesNotThrow(() -> fileSystemRepository.save(FILE_NAME, sourceFile));
+        Assertions.assertDoesNotThrow(() -> fileSystemService.save(FILE_NAME, sourceFile));
 
         try {
             Assertions.assertArrayEquals(TEST_CONTENT.getBytes(StandardCharsets.UTF_8),
-                    fileSystemRepository.load(FILE_NAME).getInputStream().readAllBytes());
+                    fileSystemService.load(FILE_NAME).getInputStream().readAllBytes());
         } catch (IOException e) {
             Assertions.fail();
         }
 
-        Assertions.assertDoesNotThrow(() -> fileSystemRepository.delete(FILE_NAME));
+        Assertions.assertDoesNotThrow(() -> fileSystemService.delete(FILE_NAME));
     }
 }

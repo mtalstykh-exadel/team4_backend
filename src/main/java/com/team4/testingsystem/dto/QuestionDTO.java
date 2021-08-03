@@ -1,6 +1,11 @@
 package com.team4.testingsystem.dto;
 
+import com.team4.testingsystem.entities.Answer;
+import com.team4.testingsystem.entities.Question;
+
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class QuestionDTO {
     private String questionBody;
@@ -8,6 +13,17 @@ public class QuestionDTO {
     private String creator;
     private String level;
     private String module;
+    private List<String> answers;
+
+    public QuestionDTO(Question question) {
+        this.questionBody = question.getBody();
+        this.isAvailable = question.isAvailable();
+        this.creator = question.getCreator().getName();
+        this.level = question.getLevel().getName();
+        this.module = question.getModule().getName();
+        this.answers = question.getAnswers()
+                .stream().map(Answer::getAnswerBody).collect(Collectors.toList());
+    }
 
     public String getCreator() {
         return creator;
@@ -49,6 +65,14 @@ public class QuestionDTO {
         this.module = module;
     }
 
+    public List<String> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<String> answers) {
+        this.answers = answers;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -59,55 +83,15 @@ public class QuestionDTO {
         }
         QuestionDTO that = (QuestionDTO) o;
         return Objects.equals(questionBody, that.questionBody)
-                && Objects.equals(isAvailable, that.isAvailable)
-                && Objects.equals(creator, that.creator)
-                && Objects.equals(level, that.level)
-                && Objects.equals(module, that.module);
+               && Objects.equals(isAvailable, that.isAvailable)
+               && Objects.equals(creator, that.creator)
+               && Objects.equals(level, that.level)
+               && Objects.equals(module, that.module)
+               && Objects.equals(answers, that.answers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(questionBody, isAvailable, creator, level, module);
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private final QuestionDTO questionDTO;
-
-        public Builder() {
-            this.questionDTO = new QuestionDTO();
-        }
-
-        public Builder body(String body) {
-            questionDTO.questionBody = body;
-            return this;
-        }
-
-        public Builder isAvailable(boolean isAvailable) {
-            questionDTO.isAvailable = isAvailable;
-            return this;
-        }
-
-        public Builder creator(String creator) {
-            questionDTO.creator = creator;
-            return this;
-        }
-
-        public Builder level(String level) {
-            questionDTO.level = level;
-            return this;
-        }
-
-        public Builder module(String module) {
-            questionDTO.module = module;
-            return this;
-        }
-
-        public QuestionDTO build() {
-            return questionDTO;
-        }
+        return Objects.hash(questionBody, isAvailable, creator, level, module, answers);
     }
 }
