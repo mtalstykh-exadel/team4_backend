@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.QuestionRepository;
@@ -48,8 +49,9 @@ class QuestionServiceImplTest {
     @Test
     void createQuestion() {
         Question question = EntityCreatorUtil.createQuestion();
+        List<String> answers = new ArrayList<>();
         Mockito.when(questionRepository.save(question)).thenReturn(question);
-        Question result = questionService.createQuestion(question);
+        Question result = questionService.createQuestion(question, answers);
         Assertions.assertEquals(question, result);
     }
 
