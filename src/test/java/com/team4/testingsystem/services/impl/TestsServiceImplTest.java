@@ -55,7 +55,8 @@ class TestsServiceImplTest {
     @Mock
     TestsRepository testsRepository;
 
-    @Mock TestGeneratingServiceImpl testGeneratingService;
+    @Mock
+    TestGeneratingServiceImpl testGeneratingService;
 
     @InjectMocks
     TestsServiceImpl testsService;
@@ -85,16 +86,20 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void getByUserIdSuccess() {
-        try (MockedStatic<User> mockUser = Mockito.mockStatic(User.class)) {
-            User.Builder mockBuilder = Mockito.mock(User.Builder.class);
-            Mockito.when(mockBuilder.id(GOOD_USER_ID)).thenReturn(mockBuilder);
-            Mockito.when(mockBuilder.build()).thenReturn(user);
+        List<Test> tests = new ArrayList<>();
+        Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
 
-            mockUser.when(User::builder).thenReturn(mockBuilder);
-            Mockito.when(testsRepository.getAllByUser(user)).thenReturn(Lists.emptyList());
+        Mockito.when(testsRepository.getAllByUser(user)).thenReturn(tests);
 
-            Assertions.assertEquals(Lists.emptyList(), testsService.getByUserId(GOOD_USER_ID));
-        }
+        Assertions.assertEquals(tests, testsService.getByUserId(GOOD_USER_ID));
+
+    }
+
+    @org.junit.jupiter.api.Test
+    void getByUserIdFailUserNotFound() {
+
+        Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
+        Assertions.assertThrows(UserNotFoundException.class, () -> testsService.getByUserId(BAD_USER_ID));
     }
 
     @org.junit.jupiter.api.Test
