@@ -242,7 +242,7 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void assignCoachFailFirst() {
+    void assignCoachFailUserNotFound() {
 
         Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
 
@@ -250,7 +250,7 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void assignCoachFailSecond() {
+    void assignCoachFailTestNotFound() {
 
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
 

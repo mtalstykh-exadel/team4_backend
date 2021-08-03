@@ -61,11 +61,11 @@ class ErrorReportsControllerIntegrationTest {
 
     @Autowired
     ErrorReportsControllerIntegrationTest(MockMvc mockMvc,
-                                                 UsersRepository usersRepository,
-                                                 QuestionRepository questionRepository,
-                                                 TestsRepository testsRepository,
-                                                 ErrorReportsRepository errorReportsRepository,
-                                                 ObjectMapper objectMapper) {
+                                          UsersRepository usersRepository,
+                                          QuestionRepository questionRepository,
+                                          TestsRepository testsRepository,
+                                          ErrorReportsRepository errorReportsRepository,
+                                          ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.usersRepository = usersRepository;
         this.questionRepository = questionRepository;
@@ -101,7 +101,8 @@ class ErrorReportsControllerIntegrationTest {
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        List<ErrorReportDTO> reports = objectMapper.readValue(response, new TypeReference<>() {});
+        List<ErrorReportDTO> reports = objectMapper.readValue(response, new TypeReference<>() {
+        });
 
         Assertions.assertTrue(reports.isEmpty());
     }
@@ -135,7 +136,8 @@ class ErrorReportsControllerIntegrationTest {
 
 
         String response = mvcResult.getResponse().getContentAsString();
-        List<ErrorReportDTO> reports = objectMapper.readValue(response, new TypeReference<>() {});
+        List<ErrorReportDTO> reports = objectMapper.readValue(response, new TypeReference<>() {
+        });
 
         Assertions.assertEquals(2, reports.size());
         Assertions.assertTrue(reports.contains(new ErrorReportDTO(errorReport1)));
@@ -176,7 +178,7 @@ class ErrorReportsControllerIntegrationTest {
 
 
     @Test
-    void addFailReportNotFound() throws Exception{
+    void addFailReportNotFound() throws Exception {
 
         ErrorReportDTO errorReportDTO = EntityCreatorUtil
                 .createErrorReportDTO(BAD_REPORT_BODY, BAD_QUESTION_ID, BAD_TEST_ID);
@@ -240,7 +242,7 @@ class ErrorReportsControllerIntegrationTest {
     }
 
     @Test
-    void removeFail() throws Exception{
+    void removeFail() throws Exception {
         mockMvc.perform(delete("/error_reports/")
                 .param("testId", String.valueOf(BAD_TEST_ID))
                 .param("questionId", String.valueOf(BAD_QUESTION_ID))
