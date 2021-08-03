@@ -24,7 +24,7 @@ public class Answer implements Serializable {
     private String answerBody;
 
     @ManyToOne
-    @JoinColumn(name = "answer_id")
+    @JoinColumn(name = "question_id")
     private Question question;
 
     @Column(name = "is_correct")

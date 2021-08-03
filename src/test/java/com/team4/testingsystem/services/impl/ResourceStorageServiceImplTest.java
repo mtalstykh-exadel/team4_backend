@@ -3,7 +3,7 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.exceptions.FileDeletingFailedException;
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.exceptions.FileSavingFailedException;
-import com.team4.testingsystem.repositories.FilesRepository;
+import com.team4.testingsystem.services.FilesService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,12 +21,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @ExtendWith(MockitoExtension.class)
-class FileStorageImplTest {
+class ResourceStorageServiceImplTest {
     @Mock
-    private FilesRepository filesRepository;
+    private FilesService filesService;
 
     @InjectMocks
-    private FileStorageImpl fileStorage;
+    private ResourceStorageServiceImpl fileStorage;
 
     private static final String SOURCE_FILE_NAME = "source_file.txt";
 
@@ -56,7 +56,7 @@ class FileStorageImplTest {
 
     @Test
     void uploadFailed() {
-        Mockito.doThrow(new FileSavingFailedException()).when(filesRepository)
+        Mockito.doThrow(new FileSavingFailedException()).when(filesService)
                 .save(Mockito.contains(SOURCE_FILE_NAME), Mockito.eq(sourceFile));
 
         Assertions.assertThrows(FileSavingFailedException.class,
@@ -66,7 +66,7 @@ class FileStorageImplTest {
     @Test
     void uploadSuccess() {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        Mockito.doNothing().when(filesRepository)
+        Mockito.doNothing().when(filesService)
                 .save(captor.capture(), Mockito.eq(sourceFile));
 
         String fileUrl = fileStorage.upload(sourceFile);
@@ -75,7 +75,7 @@ class FileStorageImplTest {
 
     @Test
     void loadFailed() {
-        Mockito.when(filesRepository.load(SOURCE_FILE_NAME))
+        Mockito.when(filesService.load(SOURCE_FILE_NAME))
                 .thenThrow(new FileLoadingFailedException());
 
         Assertions.assertThrows(FileLoadingFailedException.class,
@@ -84,14 +84,14 @@ class FileStorageImplTest {
 
     @Test
     void loadSuccess() {
-        Mockito.when(filesRepository.load(SOURCE_FILE_NAME)).thenReturn(sourceFile);
-        Assertions.assertEquals(sourceFile, filesRepository.load(SOURCE_FILE_NAME));
+        Mockito.when(filesService.load(SOURCE_FILE_NAME)).thenReturn(sourceFile);
+        Assertions.assertEquals(sourceFile, filesService.load(SOURCE_FILE_NAME));
     }
 
     @Test
     void deleteFailed() {
         Mockito.doThrow(new FileDeletingFailedException())
-                .when(filesRepository).delete(SOURCE_FILE_NAME);
+                .when(filesService).delete(SOURCE_FILE_NAME);
 
         Assertions.assertThrows(FileDeletingFailedException.class,
                 () -> fileStorage.delete(SOURCE_FILE_NAME));
@@ -99,7 +99,7 @@ class FileStorageImplTest {
 
     @Test
     void deleteSuccess() {
-        Mockito.doNothing().when(filesRepository).delete(SOURCE_FILE_NAME);
+        Mockito.doNothing().when(filesService).delete(SOURCE_FILE_NAME);
         Assertions.assertDoesNotThrow(() -> fileStorage.delete(SOURCE_FILE_NAME));
     }
 }
