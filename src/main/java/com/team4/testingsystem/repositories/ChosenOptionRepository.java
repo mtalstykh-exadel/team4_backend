@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ChosenOptionRepository extends CrudRepository<ChosenOption, ChosenOptionID> {
 
-    Iterable<ChosenOption> findChosenOptionsByTest(Test test);
+    Iterable<ChosenOption> findChosenOptionsByChosenOptionID_Test(Test test);
 
 }

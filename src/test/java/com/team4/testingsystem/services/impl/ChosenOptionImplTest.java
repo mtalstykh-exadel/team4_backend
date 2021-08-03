@@ -61,7 +61,7 @@ public class ChosenOptionImplTest {
         chOptions.add(chOption1);
         chOptions.add(chOption2);
 
-        Mockito.when(chosenOptionRepository.findChosenOptionsByTest(test)).thenReturn(chOptions);
+        Mockito.when(chosenOptionRepository.findChosenOptionsByChosenOptionID_Test(test)).thenReturn(chOptions);
 
         Assertions.assertEquals(chOptions, chosenOptionService.getChosenOptionByTest(test));
     }
@@ -71,7 +71,7 @@ public class ChosenOptionImplTest {
 
         ArrayList<ChosenOption> chOptions = new ArrayList<>();
 
-        Mockito.when(chosenOptionRepository.findChosenOptionsByTest(test)).thenReturn(chOptions);
+        Mockito.when(chosenOptionRepository.findChosenOptionsByChosenOptionID_Test(test)).thenReturn(chOptions);
 
         Assertions.assertEquals(chOptions, chosenOptionService.getChosenOptionByTest(test));
     }

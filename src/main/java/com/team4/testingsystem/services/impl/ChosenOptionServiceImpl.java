@@ -6,7 +6,6 @@ import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.exceptions.ChosenOptionBadRequestException;
 import com.team4.testingsystem.exceptions.ChosenOptionNotFoundException;
 import com.team4.testingsystem.repositories.ChosenOptionRepository;
-import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.ChosenOptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,13 +16,10 @@ import javax.persistence.EntityNotFoundException;
 public class ChosenOptionServiceImpl implements ChosenOptionService {
 
     private ChosenOptionRepository chosenOptionRepository;
-    private QuestionRepository questionRepository;
 
     @Autowired
-    public ChosenOptionServiceImpl(ChosenOptionRepository chosenOptionRepository,
-                                    QuestionRepository questionRepository) {
+    public ChosenOptionServiceImpl(ChosenOptionRepository chosenOptionRepository) {
         this.chosenOptionRepository = chosenOptionRepository;
-        this.questionRepository = questionRepository;
     }
 
     @Override
@@ -34,7 +30,7 @@ public class ChosenOptionServiceImpl implements ChosenOptionService {
 
     @Override
     public Iterable<ChosenOption> getChosenOptionByTest(Test test) {
-        return chosenOptionRepository.findChosenOptionsByTest(test);
+        return chosenOptionRepository.findChosenOptionsByChosenOptionID_Test(test);
     }
 
     @Override

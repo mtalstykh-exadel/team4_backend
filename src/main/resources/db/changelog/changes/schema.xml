@@ -490,7 +490,7 @@
         </update>
     </changeSet>
 
-    <changeSet  id="rename_table" author="DzmitryNovik">
+    <!--<changeSet  id="rename_table" author="DzmitryNovik">
         <renameTable
                 oldTableName="choosen_option"
                 newTableName="chosen_option"/>
@@ -518,6 +518,6 @@
     <changeSet id="delete_column_fileAnswerId_from_table_chosenOption" author="DzmitryNovik">
     <dropColumn tableName="chosen_option"
                 columnName="file_answer_id"/>
-    </changeSet>
+    </changeSet>-->
 
 </databaseChangeLog>
