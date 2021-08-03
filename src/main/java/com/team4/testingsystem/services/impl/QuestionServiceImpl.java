@@ -55,4 +55,15 @@ public class QuestionServiceImpl implements QuestionService {
         return questionRepository.getRandomQuestionByContentFile(id, pageable);
     }
 
+    @Override
+    public List<Question> getQuestionsByTestIdAndModule(Long id, String module) {
+        return questionRepository.getQuestionsByTestIdAndModule(id, module);
+    }
+
+    @Override
+    public Question getQuestionByTestIdAndModule(Long id, String module) {
+        return questionRepository
+                .getQuestionByTestIdAndModule(id, module).orElseThrow(QuestionNotFoundException::new);
+    }
+
 }

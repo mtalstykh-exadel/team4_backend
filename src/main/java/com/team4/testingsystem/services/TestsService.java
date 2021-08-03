@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services;
 
+import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
 
@@ -15,7 +16,7 @@ public interface TestsService {
 
     long createForUser(long userId, Levels level);
 
-    void start(long id);
+    TestDTO start(long id);
 
     void finish(long id, int evaluation);
 
