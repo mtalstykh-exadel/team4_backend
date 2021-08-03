@@ -36,7 +36,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(value = "test")
-public class CoachGradeControllerIntegrationTest {
+class CoachGradeControllerIntegrationTest {
     private final MockMvc mockMvc;
 
     private final UsersRepository usersRepository;
@@ -50,12 +50,12 @@ public class CoachGradeControllerIntegrationTest {
     private CustomUserDetails userDetails;
 
     @Autowired
-    public CoachGradeControllerIntegrationTest(MockMvc mockMvc,
-                                               UsersRepository usersRepository,
-                                               QuestionRepository questionRepository,
-                                               TestsRepository testsRepository,
-                                               CoachGradeRepository gradeRepository,
-                                               ObjectMapper objectMapper) {
+    CoachGradeControllerIntegrationTest(MockMvc mockMvc,
+                                        UsersRepository usersRepository,
+                                        QuestionRepository questionRepository,
+                                        TestsRepository testsRepository,
+                                        CoachGradeRepository gradeRepository,
+                                        ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.usersRepository = usersRepository;
         this.questionRepository = questionRepository;

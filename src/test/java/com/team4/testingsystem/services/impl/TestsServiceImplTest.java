@@ -55,6 +55,8 @@ class TestsServiceImplTest {
     @Mock
     TestsRepository testsRepository;
 
+    @Mock TestGeneratingServiceImpl testGeneratingService;
+
     @InjectMocks
     TestsServiceImpl testsService;
 
@@ -70,20 +72,15 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void getByIdSuccess() {
-
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
-
         Assertions.assertEquals(test, testsService.getById(GOOD_TEST_ID));
-
     }
 
     @org.junit.jupiter.api.Test
     void getByIdFail() {
 
         Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
-
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.getById(BAD_TEST_ID));
-
     }
 
     @org.junit.jupiter.api.Test
@@ -136,13 +133,13 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void startSuccess() {
-
-        Mockito.when(testsRepository.start(any(), anyLong())).thenReturn(1);
-
+        Test test = new Test();
+        Mockito.when(testsRepository.start(any(),anyLong())).thenReturn(1);
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+        Mockito.when(testGeneratingService.formTest(any())).thenReturn(test);
         testsService.start(GOOD_TEST_ID);
 
         verify(testsRepository).start(any(LocalDateTime.class), anyLong());
-
         Assertions.assertDoesNotThrow(() -> testsService.start(GOOD_TEST_ID));
     }
 

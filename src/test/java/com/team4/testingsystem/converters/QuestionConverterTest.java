@@ -45,7 +45,7 @@ class QuestionConverterTest {
         CustomUserDetails userDetails = new CustomUserDetails(user);
         try(MockedStatic<JwtTokenUtil> jwtTokenUtilMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)){
             jwtTokenUtilMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
-            Mockito.when(questionService.getQuestionById(question.getId())).thenReturn(question);
+            Mockito.when(questionService.getById(question.getId())).thenReturn(question);
             Mockito.when(usersService.getUserById(JwtTokenUtil.extractUserDetails().getId())).thenReturn(user);
             Mockito.when(levelService.getLevelByName(questionDTO.getLevel())).thenReturn(question.getLevel());
             Mockito.when(moduleService.getModuleByName(questionDTO.getModule())).thenReturn(question.getModule());
