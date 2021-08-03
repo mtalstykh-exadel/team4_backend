@@ -1,8 +1,8 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.ChosenOption;
-import com.team4.testingsystem.entities.ChosenOptionID;
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.exceptions.ChosenOptionBadRequestException;
 import com.team4.testingsystem.exceptions.ChosenOptionNotFoundException;
 import com.team4.testingsystem.repositories.ChosenOptionRepository;
@@ -15,7 +15,7 @@ import javax.persistence.EntityNotFoundException;
 @Service
 public class ChosenOptionServiceImpl implements ChosenOptionService {
 
-    private ChosenOptionRepository chosenOptionRepository;
+    private final ChosenOptionRepository chosenOptionRepository;
 
     @Autowired
     public ChosenOptionServiceImpl(ChosenOptionRepository chosenOptionRepository) {
@@ -23,14 +23,14 @@ public class ChosenOptionServiceImpl implements ChosenOptionService {
     }
 
     @Override
-    public ChosenOption getById(ChosenOptionID chosenOptionID) {
-        return chosenOptionRepository.findById(chosenOptionID)
+    public ChosenOption getById(TestQuestionID testQuestionID) {
+        return chosenOptionRepository.findById(testQuestionID)
                 .orElseThrow(ChosenOptionNotFoundException::new);
     }
 
     @Override
     public Iterable<ChosenOption> getChosenOptionByTest(Test test) {
-        return chosenOptionRepository.findChosenOptionsByChosenOptionID_Test(test);
+        return chosenOptionRepository.findById_Test(test);
     }
 
     @Override

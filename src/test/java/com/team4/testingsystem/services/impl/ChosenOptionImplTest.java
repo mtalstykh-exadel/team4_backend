@@ -1,7 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.ChosenOption;
-import com.team4.testingsystem.entities.ChosenOptionID;
+import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.exceptions.ChosenOptionBadRequestException;
 import com.team4.testingsystem.repositories.ChosenOptionRepository;
 import org.junit.jupiter.api.Assertions;
@@ -23,7 +23,7 @@ public class ChosenOptionImplTest {
     ChosenOption chosenOption;
 
     @Mock
-    ChosenOptionID chosenOptionID;
+    TestQuestionID testQuestionID;
 
     @Mock
     ChosenOptionRepository chosenOptionRepository;
@@ -39,17 +39,17 @@ public class ChosenOptionImplTest {
     @Test
     void getByIdSuccess() {
 
-        Mockito.when(chosenOptionRepository.findById(chosenOptionID)).thenReturn(Optional.of(chosenOption));
+        Mockito.when(chosenOptionRepository.findById(testQuestionID)).thenReturn(Optional.of(chosenOption));
 
-        Assertions.assertEquals(chosenOption, chosenOptionService.getById(chosenOptionID));
+        Assertions.assertEquals(chosenOption, chosenOptionService.getById(testQuestionID));
     }
 
     @Test
     void getByIdFail() {
 
-        Mockito.when(chosenOptionRepository.findById(chosenOptionID)).thenThrow(EntityNotFoundException.class);
+        Mockito.when(chosenOptionRepository.findById(testQuestionID)).thenThrow(EntityNotFoundException.class);
 
-        Assertions.assertThrows(EntityNotFoundException.class, () -> chosenOptionService.getById(chosenOptionID));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> chosenOptionService.getById(testQuestionID));
     }
 
     @Test
@@ -61,7 +61,7 @@ public class ChosenOptionImplTest {
         chOptions.add(chOption1);
         chOptions.add(chOption2);
 
-        Mockito.when(chosenOptionRepository.findChosenOptionsByChosenOptionID_Test(test)).thenReturn(chOptions);
+        Mockito.when(chosenOptionRepository.findById_Test(test)).thenReturn(chOptions);
 
         Assertions.assertEquals(chOptions, chosenOptionService.getChosenOptionByTest(test));
     }
@@ -71,7 +71,7 @@ public class ChosenOptionImplTest {
 
         ArrayList<ChosenOption> chOptions = new ArrayList<>();
 
-        Mockito.when(chosenOptionRepository.findChosenOptionsByChosenOptionID_Test(test)).thenReturn(chOptions);
+        Mockito.when(chosenOptionRepository.findById_Test(test)).thenReturn(chOptions);
 
         Assertions.assertEquals(chOptions, chosenOptionService.getChosenOptionByTest(test));
     }
