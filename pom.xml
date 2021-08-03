@@ -14,9 +14,10 @@
     <name>testingsystem</name>
     <description>English proficiency testing system</description>
     <scm>
-        <connection>scm:git:https://github.com/AntonMaksimenkau/team4_backend</connection>
-        <developerConnection>scm:git:https://github.com/AntonMaksimenkau/team4_backend</developerConnection>
-        <url>https://github.com/AntonMaksimenkau/team4_backend</url>
+        <connection>scm:git:${project.scm.url}</connection>
+        <developerConnection>scm:git:${project.scm.url}</developerConnection>
+        <url>git@github.com:AntonMaksimenkau/team4_backend.git</url>
+        <tag>HEAD</tag>
     </scm>
     <properties>
         <java.version>11</java.version>
