@@ -255,7 +255,6 @@
                     </excludedClasses>
                     <mutationThreshold>75</mutationThreshold>
                     <coverageThreshold>90</coverageThreshold>
-                    <threads>8</threads>
                 </configuration>
             </plugin>
 
