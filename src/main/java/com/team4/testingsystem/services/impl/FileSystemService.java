@@ -20,7 +20,7 @@ import java.nio.file.Path;
 public class FileSystemService implements FilesService {
     @Override
     public void save(String fileName, Resource file) throws FileSavingFailedException {
-        Path newFilePath =generateFilePath(fileName);
+        Path newFilePath = generateFilePath(fileName);
 
         try {
             FileUtils.copyInputStreamToFile(file.getInputStream(), new File(newFilePath.toString()));
