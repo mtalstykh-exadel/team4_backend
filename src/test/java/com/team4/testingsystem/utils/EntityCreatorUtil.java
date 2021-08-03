@@ -39,13 +39,7 @@ public class EntityCreatorUtil {
     }
 
     public static QuestionDTO createQuestionDto() {
-        return QuestionDTO.builder()
-                .body(QUESTION_TEXT)
-                .module(Modules.GRAMMAR.getName())
-                .level(Levels.A1.name())
-                .creator(USERNAME)
-                .isAvailable(true)
-                .build();
+        return new QuestionDTO(createQuestion());
     }
 
     public static User createUser() {
