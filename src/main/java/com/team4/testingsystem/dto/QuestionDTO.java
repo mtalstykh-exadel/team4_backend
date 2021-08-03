@@ -74,22 +74,19 @@ public class QuestionDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         QuestionDTO that = (QuestionDTO) o;
         return Objects.equals(questionBody, that.questionBody)
                && Objects.equals(isAvailable, that.isAvailable)
                && Objects.equals(creator, that.creator)
                && Objects.equals(level, that.level)
-               && Objects.equals(module, that.module);
+               && Objects.equals(module, that.module)
+               && Objects.equals(answers, that.answers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(questionBody, isAvailable, creator, level, module);
+        return Objects.hash(questionBody, isAvailable, creator, level, module, answers);
     }
 }
