@@ -1,6 +1,5 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.converters.TestConverter;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
@@ -19,7 +18,6 @@ public class TestGeneratingServiceImpl implements TestGeneratingService {
 
     private final QuestionRepository questionService;
     private final ContentFilesServiceImpl contentFilesService;
-    private final TestConverter testConverter;
 
     @Value("${test-generating.const.question.count}")
     private Integer count;
@@ -29,10 +27,9 @@ public class TestGeneratingServiceImpl implements TestGeneratingService {
 
     @Autowired
     public TestGeneratingServiceImpl(QuestionRepository questionService,
-                                     ContentFilesServiceImpl contentFilesService, TestConverter testConverter) {
+                                     ContentFilesServiceImpl contentFilesService) {
         this.questionService = questionService;
         this.contentFilesService = contentFilesService;
-        this.testConverter = testConverter;
     }
 
     @Override
