@@ -2,8 +2,8 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.entities.ErrorReport;
-import com.team4.testingsystem.entities.ErrorReportId;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.exceptions.ErrorReportNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
@@ -48,7 +48,7 @@ public class ErrorReportsControllerTest {
     Question question;
 
     @Mock
-    ErrorReportId errorReportId;
+    TestQuestionID testQuestionID;
 
     @Mock
     ErrorReport errorReport;
@@ -62,11 +62,11 @@ public class ErrorReportsControllerTest {
         Mockito.when(test.getId()).thenReturn(GOOD_TEST_ID);
         Mockito.when(question.getId()).thenReturn(GOOD_QUESTION_ID);
 
-        Mockito.when(errorReport.getErrorReportId()).thenReturn(errorReportId);
+        Mockito.when(errorReport.getId()).thenReturn(testQuestionID);
 
-        Mockito.when(errorReportId.getTest()).thenReturn(test);
+        Mockito.when(testQuestionID.getTest()).thenReturn(test);
 
-        Mockito.when(errorReportId.getQuestion()).thenReturn(question);
+        Mockito.when(testQuestionID.getQuestion()).thenReturn(question);
 
         Mockito.when(errorReport.getReportBody()).thenReturn(GOOD_REPORT_BODY);
 

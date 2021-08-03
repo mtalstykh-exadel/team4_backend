@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.entities.ErrorReport;
-import com.team4.testingsystem.entities.ErrorReportId;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.repositories.ErrorReportsRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
@@ -119,14 +119,14 @@ class ErrorReportsControllerIntegrationTest {
         Question question2 = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question2);
 
-        ErrorReportId errorReportId1 = new ErrorReportId(test, question1);
+        TestQuestionID testQuestionID1 = new TestQuestionID(test, question1);
 
-        ErrorReportId errorReportId2 = new ErrorReportId(test, question2);
+        TestQuestionID testQuestionID2 = new TestQuestionID(test, question2);
 
-        ErrorReport errorReport1 = new ErrorReport(errorReportId1, "1");
+        ErrorReport errorReport1 = new ErrorReport(testQuestionID1, "1");
         errorReportsRepository.save(errorReport1);
 
-        ErrorReport errorReport2 = new ErrorReport(errorReportId2, "2");
+        ErrorReport errorReport2 = new ErrorReport(testQuestionID2, "2");
         errorReportsRepository.save(errorReport2);
 
         MvcResult mvcResult = mockMvc.perform(get("/error_reports/{testId}", test.getId())
@@ -159,7 +159,7 @@ class ErrorReportsControllerIntegrationTest {
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);
 
-        ErrorReportId errorReportId = new ErrorReportId(test, question);
+        TestQuestionID testQuestionID = new TestQuestionID(test, question);
 
         ErrorReportDTO errorReportDTO = EntityCreatorUtil
                 .createErrorReportDTO(GOOD_REPORT_BODY, question.getId(), test.getId());
@@ -171,7 +171,7 @@ class ErrorReportsControllerIntegrationTest {
                 .andExpect(status().isOk());
 
 
-        Optional<ErrorReport> report = errorReportsRepository.findById(errorReportId);
+        Optional<ErrorReport> report = errorReportsRepository.findById(testQuestionID);
         Assertions.assertTrue(report.isPresent());
         Assertions.assertEquals(GOOD_REPORT_BODY, report.get().getReportBody());
     }
@@ -198,9 +198,9 @@ class ErrorReportsControllerIntegrationTest {
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);
 
-        ErrorReportId errorReportId = new ErrorReportId(test, question);
+        TestQuestionID testQuestionID = new TestQuestionID(test, question);
 
-        ErrorReport errorReport = new ErrorReport(errorReportId, GOOD_REPORT_BODY);
+        ErrorReport errorReport = new ErrorReport(testQuestionID, GOOD_REPORT_BODY);
         errorReportsRepository.save(errorReport);
 
         ErrorReportDTO errorReportDTO = EntityCreatorUtil
@@ -212,7 +212,7 @@ class ErrorReportsControllerIntegrationTest {
                 .with(user(userDetails)))
                 .andExpect(status().isOk());
 
-        Optional<ErrorReport> report = errorReportsRepository.findById(errorReportId);
+        Optional<ErrorReport> report = errorReportsRepository.findById(testQuestionID);
         Assertions.assertEquals(NEW_REPORT_BODY, report.get().getReportBody());
     }
 
@@ -225,9 +225,9 @@ class ErrorReportsControllerIntegrationTest {
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);
 
-        ErrorReportId errorReportId = new ErrorReportId(test, question);
+        TestQuestionID testQuestionID = new TestQuestionID(test, question);
 
-        ErrorReport errorReport = new ErrorReport(errorReportId, GOOD_REPORT_BODY);
+        ErrorReport errorReport = new ErrorReport(testQuestionID, GOOD_REPORT_BODY);
         errorReportsRepository.save(errorReport);
 
 
@@ -237,7 +237,7 @@ class ErrorReportsControllerIntegrationTest {
                 .with(user(userDetails)))
                 .andExpect(status().isOk());
 
-        Optional<ErrorReport> report = errorReportsRepository.findById(errorReportId);
+        Optional<ErrorReport> report = errorReportsRepository.findById(testQuestionID);
         Assertions.assertTrue(report.isEmpty());
     }
 
