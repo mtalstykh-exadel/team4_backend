@@ -34,7 +34,7 @@ public class TestsController {
 
     @ApiOperation(value = "Get all tests assigned to the user")
     @GetMapping(path = "/history/{userId}")
-    public Iterable <Test> getUsersTests(@PathVariable("userId") long userId) {
+    public Iterable<Test> getUsersTests(@PathVariable("userId") long userId) {
         return testsService.getByUserId(userId);
     }
 
