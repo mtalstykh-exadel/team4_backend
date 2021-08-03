@@ -1,5 +1,6 @@
 package com.team4.testingsystem.entities;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -12,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "user_role")
-public class UserRole {
+public class UserRole implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

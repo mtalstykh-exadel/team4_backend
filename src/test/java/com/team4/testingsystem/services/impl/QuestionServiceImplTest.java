@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,14 +35,14 @@ class QuestionServiceImplTest {
     void getQuestionById() {
         Question question = EntityCreatorUtil.createQuestion();
         Mockito.when(questionRepository.findById(question.getId())).thenReturn(Optional.of(question));
-        Question result = questionService.getQuestionById(question.getId());
+        Question result = questionService.getById(question.getId());
         Assertions.assertEquals(question, result);
     }
 
     @Test
     void questionByIdNotFoundException() {
         Mockito.when(questionRepository.findById(1L)).thenThrow(new QuestionNotFoundException());
-        Assertions.assertThrows(QuestionNotFoundException.class, () -> questionService.getQuestionById(1L));
+        Assertions.assertThrows(QuestionNotFoundException.class, () -> questionService.getById(1L));
     }
 
     @Test
