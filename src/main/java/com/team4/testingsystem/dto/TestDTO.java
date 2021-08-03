@@ -106,17 +106,34 @@ public class TestDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         TestDTO testDTO = (TestDTO) o;
         return Objects.equals(level, testDTO.level)
                && Objects.equals(createdAt, testDTO.createdAt)
                && Objects.equals(finishedAt, testDTO.finishedAt)
-               && Objects.equals(coach, testDTO.coach);
+               && Objects.equals(coach, testDTO.coach)
+               && Objects.equals(grammarQuestions, testDTO.grammarQuestions)
+               && Objects.equals(listeningQuestions, testDTO.listeningQuestions)
+               && Objects.equals(essayQuestion, testDTO.essayQuestion)
+               && Objects.equals(speakingQuestion, testDTO.speakingQuestion)
+               && Objects.equals(contentFile, testDTO.contentFile);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(level, createdAt, finishedAt, coach);
+        return Objects.hash(level,
+                createdAt,
+                finishedAt,
+                coach,
+                grammarQuestions,
+                listeningQuestions,
+                essayQuestion,
+                speakingQuestion,
+                contentFile);
     }
 }

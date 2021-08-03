@@ -1,11 +1,17 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.converters.TestConverter;
+import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.security.CustomUserDetails;
+import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
+import com.team4.testingsystem.services.impl.TestGeneratingServiceImpl;
+import com.team4.testingsystem.utils.EntityCreatorUtil;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
@@ -17,7 +23,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
-
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
@@ -36,11 +42,18 @@ class TestsControllerTest {
     @Mock
     CustomUserDetails customUserDetails;
 
+    @Mock
+    TestGeneratingService testGeneratingService;
+
+    @Mock
+    TestConverter testConverter;
+
     @InjectMocks
     TestsController testsController;
 
     @Mock
     Test test;
+
 
     @org.junit.jupiter.api.Test
     void getByIdSuccess() {
@@ -90,21 +103,19 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void startNotAssignedSuccess() {
-
+        Test test = EntityCreatorUtil.createTest(new User());
+        TestDTO testDTO = new TestDTO(
+                test.getLevel().getName(),
+                test.getCreatedAt(),
+                test.getFinishedAt()
+        );
         try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
-
             builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
-
-
             Mockito.when(customUserDetails.getId()).thenReturn(1L);
-
             Mockito.when(testsService.createForUser(1L, Levels.A1)).thenReturn(1L);
+            Mockito.when(testsService.start(1L)).thenReturn(testDTO);
 
-            testsController.startNotAssigned(Levels.A1);
-
-            verify(testsService).start(1L);
-
-            Assertions.assertEquals(1L, testsController.startNotAssigned(Levels.A1));
+            Assertions.assertEquals(testDTO, testsController.startNotAssigned(Levels.A1));
         }
     }
 

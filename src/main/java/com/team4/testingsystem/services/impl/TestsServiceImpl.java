@@ -29,7 +29,9 @@ public class TestsServiceImpl implements TestsService {
 
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
-                            TestGeneratingService testGeneratingService, TestConverter testConverter, LevelService levelService,
+                            TestGeneratingService testGeneratingService,
+                            TestConverter testConverter,
+                            LevelService levelService,
                             UsersService usersService) {
         this.testsRepository = testsRepository;
         this.testGeneratingService = testGeneratingService;

@@ -1,5 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.converters.TestConverter;
+import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
@@ -56,6 +58,9 @@ class TestsServiceImplTest {
     TestsRepository testsRepository;
 
     @Mock TestGeneratingServiceImpl testGeneratingService;
+
+    @Mock
+    TestConverter testConverter;
 
     @InjectMocks
     TestsServiceImpl testsService;
@@ -133,14 +138,18 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void startSuccess() {
-        Test test = new Test();
+        User user = EntityCreatorUtil.createUser();
+        Test test = EntityCreatorUtil.createTest(user);
+        TestDTO testDTO = EntityCreatorUtil.createTestDTO(test);
         Mockito.when(testsRepository.start(any(),anyLong())).thenReturn(1);
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
         Mockito.when(testGeneratingService.formTest(any())).thenReturn(test);
-        testsService.start(GOOD_TEST_ID);
+        Mockito.when(testConverter.convertToDTO(test)).thenReturn(testDTO);
+        TestDTO result = testsService.start(GOOD_TEST_ID);
 
         verify(testsRepository).start(any(LocalDateTime.class), anyLong());
         Assertions.assertDoesNotThrow(() -> testsService.start(GOOD_TEST_ID));
+        Assertions.assertEquals(testDTO, result);
     }
 
     @org.junit.jupiter.api.Test

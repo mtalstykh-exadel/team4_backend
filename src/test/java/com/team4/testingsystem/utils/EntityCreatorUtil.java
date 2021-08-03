@@ -3,6 +3,7 @@ package com.team4.testingsystem.utils;
 import com.team4.testingsystem.dto.ContentFileRequest;
 import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
+import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.ErrorReport;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Module;
@@ -15,6 +16,8 @@ import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.enums.Levels;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EntityCreatorUtil {
 
@@ -79,21 +82,35 @@ public class EntityCreatorUtil {
     }
 
     public static ErrorReportDTO createErrorReportDTO(String reportBody, long questionId, long testId) {
-        ErrorReportDTO errorReportDTO = ErrorReportDTO
+        return ErrorReportDTO
                 .builder()
                 .questionId(questionId)
                 .testId(testId)
                 .reportBody(reportBody)
                 .build();
-        return errorReportDTO;
     }
 
     public static Test createTest(User user) {
         return Test.builder()
                 .user(user)
                 .status(Status.STARTED)
+                .level(createLevel())
                 .createdAt(LocalDateTime.now())
                 .build();
+    }
+
+    public static TestDTO createTestDTO(Test test){
+        QuestionDTO questionDTO = new QuestionDTO(createQuestion(createUser()));
+        List<QuestionDTO> questionsDTO = new ArrayList<>();
+        TestDTO testDTO = new TestDTO(
+                test.getLevel().getName(),
+                test.getCreatedAt(),
+                test.getFinishedAt());
+        testDTO.setGrammarQuestions(questionsDTO);
+        testDTO.setListeningQuestions(questionsDTO);
+        testDTO.setEssayQuestion(questionDTO);
+        testDTO.setSpeakingQuestion(questionDTO);
+        return testDTO;
     }
 
     public static Question createQuestion(User user) {
