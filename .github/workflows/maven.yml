@@ -41,7 +41,7 @@ jobs:
       - name: Run SpotBugs static analysis
         run: mvn spotbugs:check
       - name: Check coverage and mutation
-        run: mvn pitest:scmMutationCoverage -DdestinationBranch=origin/develop
+        run: mvn pitest:mutationCoverage
       - name: Status check
         if: always()
         uses: ouzi-dev/commit-status-updater@v1.1.2
