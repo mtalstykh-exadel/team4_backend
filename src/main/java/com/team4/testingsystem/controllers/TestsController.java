@@ -7,7 +7,6 @@ import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,9 +74,16 @@ public class TestsController {
         testsService.updateEvaluation(testId, evaluation);
     }
 
-    @ApiOperation(value = "(Experimental) Is used to remove a test from the database")
-    @DeleteMapping(path = "/{id}")
-    public void removeById(@PathVariable("id") long id) {
-        testsService.removeById(id);
+    @ApiOperation (value = "Use it to assign a test for the coach")
+    @PostMapping(path = "/assign_coach/{testId}")
+    public void assignCoach(@PathVariable("testId") long testId, @RequestParam long coachId){
+        testsService.assignCoach(testId, coachId);
     }
+
+    @ApiOperation (value = "Use it to deassign coaches")
+    @PostMapping(path = "/deassign_coach/{testId}")
+    public void deassignCoach(@PathVariable("testId") long testId) {
+        testsService.deassignCoach(testId);
+    }
+
 }
