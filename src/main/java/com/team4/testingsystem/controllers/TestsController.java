@@ -32,6 +32,12 @@ public class TestsController {
         return testsService.getByUserId(JwtTokenUtil.extractUserDetails().getId());
     }
 
+    @ApiOperation(value = "Get all tests assigned to the user")
+    @GetMapping(path = "/history/{userId}")
+    public Iterable <Test> getUsersTests(@PathVariable("userId") long userId) {
+        return testsService.getByUserId(userId);
+    }
+
     @ApiOperation(value = "Use it to get a single test from the database by its id")
     @GetMapping(path = "/{id}")
     public Test getById(@PathVariable("id") long id) {
