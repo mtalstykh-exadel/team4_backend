@@ -8,7 +8,7 @@ import java.util.List;
 public interface QuestionService {
     Question getById(Long id);
 
-    Question createQuestion(Question question);
+    Question createQuestion(Question question, List<String> textAnswers);
 
     void archiveQuestion(Long id);
 
@@ -17,4 +17,5 @@ public interface QuestionService {
     List<Question> getRandomQuestions(String level, String module, Pageable pageable);
 
     List<Question> getRandomQuestionsByContentFile(Long id, Pageable pageable);
+
 }

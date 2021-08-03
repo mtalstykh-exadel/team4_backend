@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.QuestionRepository;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,8 +29,12 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Question createQuestion(Question question) {
-        return questionRepository.save(question);
+    public Question createQuestion(Question question, List<String> textAnswers) {
+        Question resultQuestion = questionRepository.save(question);
+        List<Answer> answers = new ArrayList<>();
+        textAnswers.forEach(answer-> answers.add(new Answer(answer, resultQuestion)));
+        resultQuestion.setAnswers(answers);
+        return questionRepository.save(resultQuestion);
     }
 
 
