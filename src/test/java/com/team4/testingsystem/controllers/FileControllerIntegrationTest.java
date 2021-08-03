@@ -1,6 +1,7 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.impl.FileStorageForTests;
@@ -67,6 +68,15 @@ public class FileControllerIntegrationTest {
     }
 
     @Test
+    void downloadFailed() throws Exception {
+        Resource resource = new ByteArrayResource(FILE_CONTENT.getBytes());
+        fileStorage.save(FILE_PATH, resource);
+        mockMvc.perform(get(PATH + "{url}", "non-existent file.txt")
+                .with(user(userDetails)))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
     void uploadSuccess() throws Exception {
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", FILE_PATH,
                 MediaType.MULTIPART_FORM_DATA_VALUE, FILE_CONTENT.getBytes());
@@ -81,6 +91,6 @@ public class FileControllerIntegrationTest {
     @AfterEach
     void destroy() {
         fileStorage.delete(FILE_PATH);
-        Assertions.assertNull(fileStorage.load(FILE_PATH));
+        Assertions.assertThrows(FileLoadingFailedException.class,()->fileStorage.load(FILE_PATH));
     }
 }
