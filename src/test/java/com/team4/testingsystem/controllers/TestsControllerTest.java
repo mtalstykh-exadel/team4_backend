@@ -160,14 +160,14 @@ class TestsControllerTest {
 
 
     @org.junit.jupiter.api.Test
-    void assignCoachSuccess(){
+    void assignCoachSuccess() {
         testsController.assignCoach(GOOD_TEST_ID, GOOD_USER_ID);
 
         verify(testsService).assignCoach(GOOD_TEST_ID, GOOD_USER_ID);
     }
 
     @org.junit.jupiter.api.Test
-    void assignCoachFailFirst(){
+    void assignCoachFailFirst() {
         doThrow(UserNotFoundException.class).when(testsService).assignCoach(GOOD_TEST_ID, BAD_USER_ID);
 
         Assertions.assertThrows(UserNotFoundException.class,
@@ -175,7 +175,7 @@ class TestsControllerTest {
     }
 
     @org.junit.jupiter.api.Test
-    void assignCoachFailSecond(){
+    void assignCoachFailSecond() {
         doThrow(TestNotFoundException.class).when(testsService).assignCoach(BAD_TEST_ID, GOOD_USER_ID);
 
         Assertions.assertThrows(TestNotFoundException.class,
@@ -183,14 +183,14 @@ class TestsControllerTest {
     }
 
     @org.junit.jupiter.api.Test
-    void deassignCoachSuccess(){
+    void deassignCoachSuccess() {
         testsController.deassignCoach(GOOD_TEST_ID);
 
         verify(testsService).deassignCoach(GOOD_TEST_ID);
     }
 
     @org.junit.jupiter.api.Test
-    void deassignCoachFail(){
+    void deassignCoachFail() {
         doThrow(TestNotFoundException.class).when(testsService).deassignCoach(BAD_TEST_ID);
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsController.deassignCoach(BAD_TEST_ID));

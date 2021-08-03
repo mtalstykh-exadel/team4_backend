@@ -74,16 +74,15 @@ public class TestsController {
         testsService.updateEvaluation(testId, evaluation);
     }
 
-    @ApiOperation (value = "Use it to assign a test for the coach")
+    @ApiOperation(value = "Use it to assign a test for the coach")
     @PostMapping(path = "/assign_coach/{testId}")
-    public void assignCoach(@PathVariable("testId") long testId, @RequestParam long coachId){
+    public void assignCoach(@PathVariable("testId") long testId, @RequestParam long coachId) {
         testsService.assignCoach(testId, coachId);
     }
 
-    @ApiOperation (value = "Use it to deassign coaches")
+    @ApiOperation(value = "Use it to deassign coaches")
     @PostMapping(path = "/deassign_coach/{testId}")
     public void deassignCoach(@PathVariable("testId") long testId) {
         testsService.deassignCoach(testId);
     }
-
 }
