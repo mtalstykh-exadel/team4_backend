@@ -45,6 +45,10 @@ public class FileControllerIntegrationTest {
 
     private static final String FILE_CONTENT = "test data";
 
+    private static final String WRONG_FILE_NAME = "non-existent file.txt";
+
+    private static final String WRONG_PATH = "/";
+
     @Autowired
     FileControllerIntegrationTest(MockMvc mockMvc, FileStorageForTests fileStorage, UsersRepository usersRepository) {
         this.mockMvc = mockMvc;
@@ -58,22 +62,36 @@ public class FileControllerIntegrationTest {
         userDetails = new CustomUserDetails(user);
     }
 
-    @Test
-    void downloadSuccess() throws Exception {
+    void saveFile() {
         Resource resource = new ByteArrayResource(FILE_CONTENT.getBytes());
         fileStorage.save(FILE_PATH, resource);
+    }
+
+    @Test
+    void downloadSuccess() throws Exception {
+        saveFile();
+
         mockMvc.perform(get(PATH + "{url}", FILE_PATH)
                 .with(user(userDetails)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void downloadFailed() throws Exception {
-        Resource resource = new ByteArrayResource(FILE_CONTENT.getBytes());
-        fileStorage.save(FILE_PATH, resource);
-        mockMvc.perform(get(PATH + "{url}", "non-existent file.txt")
+    void downloadInternalServerError() throws Exception {
+        saveFile();
+
+        mockMvc.perform(get(PATH + "{url}", WRONG_FILE_NAME)
                 .with(user(userDetails)))
                 .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void downloadNotFound() throws Exception {
+        saveFile();
+
+        mockMvc.perform(get(WRONG_PATH + "{url}", WRONG_FILE_NAME)
+                .with(user(userDetails)))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -85,12 +103,25 @@ public class FileControllerIntegrationTest {
                 .with(user(userDetails));
 
         mockMvc.perform(builder).andExpect(status().isOk());
-
     }
+
+    @Test
+    void uploadNotFound() throws Exception {
+        saveFile();
+
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", FILE_PATH,
+                MediaType.MULTIPART_FORM_DATA_VALUE, FILE_CONTENT.getBytes());
+
+        MockHttpServletRequestBuilder builder = multipart(WRONG_PATH).file(mockMultipartFile)
+                .with(user(userDetails));
+
+        mockMvc.perform(builder).andExpect(status().isNotFound());
+    }
+
 
     @AfterEach
     void destroy() {
         fileStorage.delete(FILE_PATH);
-        Assertions.assertThrows(FileLoadingFailedException.class,()->fileStorage.load(FILE_PATH));
+        Assertions.assertThrows(FileLoadingFailedException.class, () -> fileStorage.load(FILE_PATH));
     }
 }
