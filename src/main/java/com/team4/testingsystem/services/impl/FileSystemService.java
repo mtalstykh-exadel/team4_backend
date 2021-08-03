@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-@Profile("!release")
+@Profile("!release&!test")
 @Service
 public class FileSystemService implements FilesService {
     @Override
