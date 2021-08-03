@@ -98,7 +98,7 @@ public class ErrorReportsControllerTest {
     }
 
     @Test
-    void addFailFirst() {
+    void addFailQuestionNotFound() {
 
         doThrow(QuestionNotFoundException.class).when(errorReportsService)
                 .add(BAD_REPORT_BODY, BAD_QUESTION_ID, GOOD_TEST_ID);
@@ -109,7 +109,7 @@ public class ErrorReportsControllerTest {
     }
 
     @Test
-    void addFailSecond() {
+    void addFailTestNotFound() {
         doThrow(TestNotFoundException.class).when(errorReportsService)
                 .add(BAD_REPORT_BODY, GOOD_QUESTION_ID, BAD_TEST_ID);
 
@@ -127,7 +127,7 @@ public class ErrorReportsControllerTest {
     }
 
     @Test
-    void removeFailFirst() {
+    void removeFailTestNotFound() {
 
         doThrow(TestNotFoundException.class).when(errorReportsService)
                 .removeByTestAndQuestion(BAD_TEST_ID, GOOD_QUESTION_ID);
@@ -137,7 +137,7 @@ public class ErrorReportsControllerTest {
     }
 
     @Test
-    void removeFailSecond() {
+    void removeFailQuestionNotFound() {
 
         doThrow(QuestionNotFoundException.class).when(errorReportsService)
                 .removeByTestAndQuestion(GOOD_TEST_ID, BAD_QUESTION_ID);
@@ -147,7 +147,7 @@ public class ErrorReportsControllerTest {
     }
 
     @Test
-    void removeFailThird() {
+    void removeFailErrorReportNotFound() {
 
         doThrow(ErrorReportNotFoundException.class).when(errorReportsService)
                 .removeByTestAndQuestion(BAD_TEST_ID, BAD_QUESTION_ID);

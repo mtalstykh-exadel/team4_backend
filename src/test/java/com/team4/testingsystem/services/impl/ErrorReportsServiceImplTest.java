@@ -87,7 +87,7 @@ public class ErrorReportsServiceImplTest {
 
 
     @Test
-    void addFailFirst() {
+    void addFailQuestionNotFound() {
         Mockito.when(questionService.getById(BAD_QUESTION_ID)).thenThrow(QuestionNotFoundException.class);
 
         Assertions.assertThrows(QuestionNotFoundException.class,
@@ -95,7 +95,7 @@ public class ErrorReportsServiceImplTest {
     }
 
     @Test
-    void addFailSecond() {
+    void addFailTestNotFound() {
         Mockito.when(questionService.getById(GOOD_QUESTION_ID)).thenReturn(question);
 
         Mockito.when(testsService.getById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
@@ -130,7 +130,7 @@ public class ErrorReportsServiceImplTest {
     }
 
     @Test
-    void removeFailFirst() {
+    void removeFailQuestionNotFound() {
         Mockito.when(questionService.getById(BAD_QUESTION_ID)).thenThrow(QuestionNotFoundException.class);
 
         Assertions.assertThrows(QuestionNotFoundException.class,
@@ -138,7 +138,7 @@ public class ErrorReportsServiceImplTest {
     }
 
     @Test
-    void removeFailSecond() {
+    void removeFailTestNotFound() {
 
         Mockito.when(questionService.getById(GOOD_QUESTION_ID)).thenReturn(question);
 
@@ -150,7 +150,7 @@ public class ErrorReportsServiceImplTest {
 
 
     @Test
-    void removeFailThird() {
+    void removeFailErrorReportNotFound() {
         Mockito.when(testsService.getById(BAD_TEST_ID)).thenReturn(test);
 
         Mockito.when(questionService.getById(BAD_QUESTION_ID)).thenReturn(question);
