@@ -13,12 +13,6 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>testingsystem</name>
     <description>English proficiency testing system</description>
-    <scm>
-        <connection>scm:git:${project.scm.url}</connection>
-        <developerConnection>scm:git:${project.scm.url}</developerConnection>
-        <url>git@github.com:AntonMaksimenkau/team4_backend.git</url>
-        <tag>HEAD</tag>
-    </scm>
     <properties>
         <java.version>11</java.version>
         <preliquibase.version>1.1.1</preliquibase.version>
@@ -261,8 +255,6 @@
                     </excludedClasses>
                     <mutationThreshold>75</mutationThreshold>
                     <coverageThreshold>90</coverageThreshold>
-                    <include>ADDED,UNKNOWN,MODIFIED</include>
-                    <threads>8</threads>
                 </configuration>
             </plugin>
 
