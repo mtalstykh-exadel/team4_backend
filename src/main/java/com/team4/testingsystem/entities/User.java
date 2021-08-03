@@ -1,5 +1,6 @@
 package com.team4.testingsystem.entities;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -14,7 +15,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "user")
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -38,6 +39,9 @@ public class User {
 
     @Column(name = "language")
     private String language;
+
+    @Column(name = "avatar")
+    private String avatar;
 
     public Long getId() {
         return id;
@@ -95,6 +99,14 @@ public class User {
         this.tests = tests;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -141,6 +153,11 @@ public class User {
             return this;
         }
 
+        public Builder avatar(String avatar) {
+            user.setAvatar(avatar);
+            return this;
+        }
+
         public User build() {
             return user;
         }
@@ -160,11 +177,12 @@ public class User {
                 && Objects.equals(login, user.login)
                 && Objects.equals(password, user.password)
                 && Objects.equals(role, user.role)
-                && Objects.equals(language, user.language);
+                && Objects.equals(language, user.language)
+                && Objects.equals(avatar, user.avatar);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tests, name, login, password, role, language);
+        return Objects.hash(id, tests, name, login, password, role, language, avatar);
     }
 }

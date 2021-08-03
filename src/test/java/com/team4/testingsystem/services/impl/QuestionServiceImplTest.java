@@ -12,8 +12,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,14 +35,14 @@ class QuestionServiceImplTest {
     void getQuestionById() {
         Question question = EntityCreatorUtil.createQuestion();
         Mockito.when(questionRepository.findById(question.getId())).thenReturn(Optional.of(question));
-        Question result = questionService.getQuestionById(question.getId());
+        Question result = questionService.getById(question.getId());
         Assertions.assertEquals(question, result);
     }
 
     @Test
     void questionByIdNotFoundException() {
         Mockito.when(questionRepository.findById(1L)).thenThrow(new QuestionNotFoundException());
-        Assertions.assertThrows(QuestionNotFoundException.class, () -> questionService.getQuestionById(1L));
+        Assertions.assertThrows(QuestionNotFoundException.class, () -> questionService.getById(1L));
     }
 
     @Test
@@ -51,18 +54,32 @@ class QuestionServiceImplTest {
     }
 
     @Test
-    void archiveQuestion(){
+    void archiveQuestion() {
         questionService.archiveQuestion(1L);
         verify(questionRepository).archiveQuestion(1L);
     }
 
     @Test
-    void updateQuestion(){
+    void updateQuestion() {
         questionService.updateQuestion(question, 1L);
-
         verify(questionRepository).archiveQuestion(1L);
-
         verify(questionRepository).save(question);
+    }
+
+    @Test
+    void getRandomQuestions() {
+        List<Question> questions = new ArrayList<>();
+        Mockito.when(questionRepository
+                .getRandomQuestions(any(), any(), any())).thenReturn(questions);
+        Assertions.assertEquals(questions, questionService.getRandomQuestions(any(), any(), any()));
+    }
+
+    @Test
+    void getRandomQuestionsByContentFile() {
+        List<Question> questions = new ArrayList<>();
+        Mockito.when(questionRepository
+                .getRandomQuestionByContentFile(any(), any())).thenReturn(questions);
+        Assertions.assertEquals(questions, questionService.getRandomQuestionsByContentFile(any(), any()));
     }
 
 }

@@ -29,7 +29,7 @@ class QuestionControllerTest {
     void getQuestion() {
         Question question = EntityCreatorUtil.createQuestion();
         QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
-        Mockito.when(questionService.getQuestionById(question.getId())).thenReturn(question);
+        Mockito.when(questionService.getById(question.getId())).thenReturn(question);
         Mockito.when(questionConverter.convertToDTO(question)).thenReturn(questionDTO);
         QuestionDTO result = questionController.getQuestion(question.getId());
 

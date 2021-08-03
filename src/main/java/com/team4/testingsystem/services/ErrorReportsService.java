@@ -2,14 +2,13 @@ package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.ErrorReport;
 
-public interface ErrorReportsService {
-    Iterable<ErrorReport> getAll();
+import java.util.Collection;
 
-    ErrorReport getById(long id);
+public interface ErrorReportsService {
+
+    Collection<ErrorReport> getReportsByTest(Long testId);
 
     void add(String requestBody, Long questionId, Long testId);
 
-    void updateRequestBody(long id, String newRequestBody);
-
-    void removeById(long id);
+    void removeByTestAndQuestion(long testId, long questionId);
 }

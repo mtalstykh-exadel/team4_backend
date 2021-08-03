@@ -1,4 +1,4 @@
-package com.team4.testingsystem.repositories;
+package com.team4.testingsystem.services.impl;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
@@ -26,12 +26,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @ExtendWith(MockitoExtension.class)
-class AmazonS3RepositoryTest {
+class AmazonS3ServiceTest {
     @Mock
     private AmazonS3 amazonS3;
 
     @InjectMocks
-    private AmazonS3Repository amazonS3Repository;
+    private AmazonS3Service amazonS3Service;
 
     @Value("${cloud.s3.bucket-name}")
     private String bucketName;
@@ -47,7 +47,7 @@ class AmazonS3RepositoryTest {
 
     @BeforeEach
     void init() {
-        amazonS3Repository = new AmazonS3Repository(amazonS3);
+        amazonS3Service = new AmazonS3Service(amazonS3);
 
         try {
             Files.writeString(SOURCE_FILE_PATH, TEST_CONTENT);
@@ -78,12 +78,12 @@ class AmazonS3RepositoryTest {
         ).thenThrow(new AmazonServiceException(""));
 
         Assertions.assertThrows(FileSavingFailedException.class,
-                () -> amazonS3Repository.save(FILE_NAME, sourceFile));
+                () -> amazonS3Service.save(FILE_NAME, sourceFile));
     }
 
     @Test
     void saveSuccess() throws IOException {
-        AmazonS3Repository spyRepository = Mockito.spy(amazonS3Repository);
+        AmazonS3Service spyRepository = Mockito.spy(amazonS3Service);
         Mockito.when(spyRepository.createTempFile(FILE_NAME)).thenReturn(FILE_PATH);
 
         spyRepository.save(FILE_NAME, sourceFile);
@@ -109,7 +109,7 @@ class AmazonS3RepositoryTest {
                 .thenThrow(new AmazonServiceException(""));
 
         Assertions.assertThrows(FileLoadingFailedException.class,
-                () -> amazonS3Repository.load(FILE_NAME));
+                () -> amazonS3Service.load(FILE_NAME));
     }
 
     @Test
@@ -120,7 +120,7 @@ class AmazonS3RepositoryTest {
         Mockito.when(amazonS3.getObject(bucketName, FILE_NAME)).thenReturn(s3Object);
 
         Assertions.assertArrayEquals(TEST_CONTENT.getBytes(StandardCharsets.UTF_8),
-                amazonS3Repository.load(FILE_NAME).getInputStream().readAllBytes());
+                amazonS3Service.load(FILE_NAME).getInputStream().readAllBytes());
     }
 
     @Test
@@ -129,13 +129,13 @@ class AmazonS3RepositoryTest {
                 .when(amazonS3).deleteObject(bucketName, FILE_NAME);
 
         Assertions.assertThrows(FileDeletingFailedException.class,
-                () -> amazonS3Repository.delete(FILE_NAME));
+                () -> amazonS3Service.delete(FILE_NAME));
     }
 
     @Test
     void deleteSuccess() {
         Mockito.doNothing().when(amazonS3).deleteObject(bucketName, FILE_NAME);
 
-        Assertions.assertDoesNotThrow(() -> amazonS3Repository.delete(FILE_NAME));
+        Assertions.assertDoesNotThrow(() -> amazonS3Service.delete(FILE_NAME));
     }
 }
