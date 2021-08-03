@@ -490,7 +490,7 @@
         </update>
     </changeSet>
 
-    <!--<changeSet  id="rename_table" author="DzmitryNovik">
+    <changeSet  id="rename_table" author="DzmitryNovik">
         <renameTable
                 oldTableName="choosen_option"
                 newTableName="chosen_option"/>
@@ -510,7 +510,7 @@
 
         <addForeignKeyConstraint baseTableName="file_answer"
                                  baseColumnNames="test_id"
-                                 constraintName="test_id_fk"
+                                 constraintName="file_answer_test_id_fk"
                                  referencedTableName="test"
                                  referencedColumnNames="id"/>
     </changeSet>
@@ -518,6 +518,6 @@
     <changeSet id="delete_column_fileAnswerId_from_table_chosenOption" author="DzmitryNovik">
     <dropColumn tableName="chosen_option"
                 columnName="file_answer_id"/>
-    </changeSet>-->
+    </changeSet>
 
 </databaseChangeLog>
