@@ -28,6 +28,11 @@ public class AuthenticationController {
         return "ok";
     }
 
+    @GetMapping("/test")
+    public String testMethod() {
+        return "test if PITest checks coverage";
+    }
+
     @ApiOperation(value = "Get current user's name")
     @GetMapping("/name")
     public String getName(Authentication authentication) {
