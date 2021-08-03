@@ -14,6 +14,10 @@ public class QuestionDTO {
     private String level;
     private String module;
     private List<String> answers;
+    private String correct;
+
+    public QuestionDTO() {
+    }
 
     public QuestionDTO(Question question) {
         this.questionBody = question.getBody();
@@ -71,6 +75,14 @@ public class QuestionDTO {
 
     public void setAnswers(List<String> answers) {
         this.answers = answers;
+    }
+
+    public String getCorrect() {
+        return correct;
+    }
+
+    public void setCorrect(String correct) {
+        this.correct = correct;
     }
 
     @Override
