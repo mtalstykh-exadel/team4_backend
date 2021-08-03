@@ -1,7 +1,9 @@
 package com.team4.testingsystem.utils;
 
 import com.team4.testingsystem.dto.ContentFileRequest;
+import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
+import com.team4.testingsystem.entities.ErrorReport;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.Question;
@@ -82,6 +84,16 @@ public class EntityCreatorUtil {
         return cfr;
     }
 
+    public static ErrorReportDTO createErrorReportDTO(String reportBody, long questionId, long testId) {
+        ErrorReportDTO errorReportDTO = ErrorReportDTO
+                .builder()
+                .questionId(questionId)
+                .testId(testId)
+                .reportBody(reportBody)
+                .build();
+        return errorReportDTO;
+    }
+
     public static Test createTest(User user) {
         return Test.builder()
                 .user(user)
@@ -99,4 +111,5 @@ public class EntityCreatorUtil {
                 .isAvailable(true)
                 .build();
     }
+
 }

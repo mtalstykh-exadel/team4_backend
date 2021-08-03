@@ -30,7 +30,7 @@ public class QuestionController {
     @ApiOperation(value = "Get a single question from the database by it's id")
     @GetMapping("/{id}")
     public QuestionDTO getQuestion(@PathVariable("id") Long id) {
-        return questionConverter.convertToDTO(questionService.getQuestionById(id));
+        return questionConverter.convertToDTO(questionService.getById(id));
     }
 
     @ApiOperation(value = "Add a new question")

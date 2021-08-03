@@ -120,4 +120,11 @@ class ContentFilesServiceImplTest {
 
     }
 
+    @Test
+    void getRandomContentFiles() {
+        ContentFile contentFile = new ContentFile();
+        Mockito.when(contentFilesRepository.getRandomFiles(any())).thenReturn(contentFile);
+        Assertions.assertEquals(contentFile, contentFilesService.getRandomContentFile(any()));
+    }
+
 }

@@ -3,6 +3,7 @@ package com.team4.testingsystem.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team4.testingsystem.enums.Status;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "test")
-public class Test {
+public class Test implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

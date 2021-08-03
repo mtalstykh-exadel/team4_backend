@@ -8,6 +8,7 @@ import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.LevelService;
+import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,17 @@ import java.time.LocalDateTime;
 public class TestsServiceImpl implements TestsService {
 
     private final TestsRepository testsRepository;
+    private final TestGeneratingService testGeneratingService;
+
     private final LevelService levelService;
     private final UsersService usersService;
 
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
-                            LevelService levelService,
+                            TestGeneratingService testGeneratingService, LevelService levelService,
                             UsersService usersService) {
         this.testsRepository = testsRepository;
+        this.testGeneratingService = testGeneratingService;
         this.levelService = levelService;
         this.usersService = usersService;
     }
@@ -77,7 +81,8 @@ public class TestsServiceImpl implements TestsService {
         if (testsRepository.start(LocalDateTime.now(), id) == 0) {
             throw new TestNotFoundException();
         }
-
+        Test test = testGeneratingService.formTest(getById(id));
+        save(test);
     }
 
 
@@ -107,7 +112,7 @@ public class TestsServiceImpl implements TestsService {
         }
 
     }
-    
+
     @Override
     public void assignCoach(long id, long coachId) {
         User coach = usersService.getUserById(coachId);

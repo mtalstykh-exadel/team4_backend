@@ -53,4 +53,9 @@ public class ContentFilesServiceImpl implements ContentFilesService {
             throw new FileNotFoundException();
         }
     }
+
+    @Override
+    public ContentFile getRandomContentFile(String level) {
+        return contentFilesRepository.getRandomFiles(level);
+    }
 }
