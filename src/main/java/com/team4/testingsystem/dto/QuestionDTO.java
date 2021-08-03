@@ -1,10 +1,11 @@
 package com.team4.testingsystem.dto;
 
+import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.Question;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class QuestionDTO {
     private String questionBody;
@@ -20,8 +21,8 @@ public class QuestionDTO {
         this.creator = question.getCreator().getName();
         this.level = question.getLevel().getName();
         this.module = question.getModule().getName();
-        this.answers = new ArrayList<>();
-        question.getAnswers().forEach(answer -> answers.add(answer.getAnswerBody()));
+        this.answers = question.getAnswers()
+                .stream().map(Answer::getAnswerBody).collect(Collectors.toList());
     }
 
     public String getCreator() {
@@ -74,8 +75,12 @@ public class QuestionDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         QuestionDTO that = (QuestionDTO) o;
         return Objects.equals(questionBody, that.questionBody)
                && Objects.equals(isAvailable, that.isAvailable)
