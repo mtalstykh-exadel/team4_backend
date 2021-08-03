@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,7 +39,7 @@ public class Question implements Serializable {
     @JoinColumn(name = "module_id", referencedColumnName = "id")
     private Module module;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     List<Answer> answers = new ArrayList<>();
 
     @ManyToMany(mappedBy = "questions")
@@ -179,6 +180,11 @@ public class Question implements Serializable {
 
         public Builder module(Module module) {
             question.module = module;
+            return this;
+        }
+
+        public Builder answers(List<Answer> answers){
+            question.setAnswers(answers);
             return this;
         }
 

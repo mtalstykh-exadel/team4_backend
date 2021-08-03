@@ -33,6 +33,11 @@ public class Answer implements Serializable {
     public Answer() {
     }
 
+    public Answer(String answerBody, Question question) {
+        this.answerBody = answerBody;
+        this.question = question;
+    }
+
     public long getId() {
         return id;
     }
