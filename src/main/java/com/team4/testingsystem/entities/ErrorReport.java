@@ -11,7 +11,7 @@ import javax.persistence.Table;
 public class ErrorReport implements Serializable {
 
     @EmbeddedId
-    ErrorReportId errorReportId;
+    TestQuestionID id;
 
     @Column(name = "report_body")
     private String reportBody;
@@ -19,18 +19,17 @@ public class ErrorReport implements Serializable {
     public ErrorReport(){
     }
 
-    public ErrorReport(ErrorReportId errorReportId, String reportBody) {
-        this.errorReportId = errorReportId;
+    public ErrorReport(TestQuestionID id, String reportBody) {
+        this.id = id;
         this.reportBody = reportBody;
     }
 
-
-    public ErrorReportId getErrorReportId() {
-        return errorReportId;
+    public TestQuestionID getId() {
+        return id;
     }
 
-    public void setErrorReportId(ErrorReportId errorReportId) {
-        this.errorReportId = errorReportId;
+    public void setId(TestQuestionID testQuestionID) {
+        this.id = testQuestionID;
     }
 
     public String getReportBody() {
@@ -40,6 +39,4 @@ public class ErrorReport implements Serializable {
     public void setReportBody(String reportBody) {
         this.reportBody = reportBody;
     }
-
-
 }

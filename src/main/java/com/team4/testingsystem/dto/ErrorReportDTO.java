@@ -18,8 +18,8 @@ public class ErrorReportDTO implements Serializable {
 
     public ErrorReportDTO(ErrorReport errorReport) {
         this.reportBody = errorReport.getReportBody();
-        this.questionId = errorReport.getErrorReportId().getQuestion().getId();
-        this.testId = errorReport.getErrorReportId().getTest().getId();
+        this.questionId = errorReport.getId().getQuestion().getId();
+        this.testId = errorReport.getId().getTest().getId();
     }
 
     public String getReportBody() {
@@ -95,5 +95,4 @@ public class ErrorReportDTO implements Serializable {
     public int hashCode() {
         return Objects.hash(testId, questionId, reportBody);
     }
-
 }

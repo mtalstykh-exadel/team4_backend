@@ -2,6 +2,7 @@ package com.team4.testingsystem.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -12,10 +13,10 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "chosen_option")
-public class ChosenOption {
+public class ChosenOption implements Serializable {
 
     @EmbeddedId
-    ChosenOptionID chosenOptionID;
+    TestQuestionID id;
 
     @OneToOne
     @JsonIgnore
@@ -23,20 +24,19 @@ public class ChosenOption {
     private Answer answer;
 
     public ChosenOption() {
-
     }
 
-    public ChosenOption(ChosenOptionID chosenOptionID, Answer answer) {
-        this.chosenOptionID = chosenOptionID;
+    public ChosenOption(TestQuestionID id, Answer answer) {
+        this.id = id;
         this.answer = answer;
     }
 
-    public ChosenOptionID getChosenOptionID() {
-        return chosenOptionID;
+    public TestQuestionID getId() {
+        return id;
     }
 
-    public void setChosenOptionID(ChosenOptionID chosenOptionID) {
-        this.chosenOptionID = chosenOptionID;
+    public void setId(TestQuestionID id) {
+        this.id = id;
     }
 
     public Answer getAnswer() {
@@ -56,12 +56,11 @@ public class ChosenOption {
             return false;
         }
         ChosenOption that = (ChosenOption) o;
-        return chosenOptionID.equals(that.chosenOptionID) && answer.equals(that.answer);
+        return id.equals(that.id) && answer.equals(that.answer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(chosenOptionID, answer);
+        return Objects.hash(id, answer);
     }
 }
-
