@@ -32,7 +32,7 @@ public class QuestionServiceImpl implements QuestionService {
     public Question createQuestion(Question question, List<String> textAnswers) {
         Question resultQuestion = questionRepository.save(question);
         List<Answer> answers = new ArrayList<>();
-        textAnswers.forEach(answer-> answers.add(new Answer(answer, resultQuestion)));
+        textAnswers.forEach(answer -> answers.add(new Answer(answer, resultQuestion)));
         resultQuestion.setAnswers(answers);
         return questionRepository.save(resultQuestion);
     }

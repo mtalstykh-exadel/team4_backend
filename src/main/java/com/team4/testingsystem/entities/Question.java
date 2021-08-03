@@ -106,11 +106,11 @@ public class Question implements Serializable {
         }
         Question question = (Question) o;
         return isAvailable == question.isAvailable
-                && Objects.equals(id, question.id)
-                && Objects.equals(body, question.body)
-                && Objects.equals(creator, question.creator)
-                && Objects.equals(level, question.level)
-                && Objects.equals(module, question.module);
+               && Objects.equals(id, question.id)
+               && Objects.equals(body, question.body)
+               && Objects.equals(creator, question.creator)
+               && Objects.equals(level, question.level)
+               && Objects.equals(module, question.module);
     }
 
     @Override
@@ -183,7 +183,7 @@ public class Question implements Serializable {
             return this;
         }
 
-        public Builder answers(List<Answer> answers){
+        public Builder answers(List<Answer> answers) {
             question.setAnswers(answers);
             return this;
         }

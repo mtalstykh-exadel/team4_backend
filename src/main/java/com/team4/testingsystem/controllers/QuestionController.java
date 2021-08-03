@@ -2,7 +2,6 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.QuestionDTO;
-import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.services.QuestionService;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/question")
