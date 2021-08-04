@@ -86,16 +86,8 @@ class QuestionServiceImplTest {
     void getQuestionsByTestIdAndModule() {
         List<Question> questions = new ArrayList<>();
         Mockito.when(questionRepository
-                .getQuestionsByTestIdAndModule(any(), any())).thenReturn(questions);
-        Assertions.assertEquals(questions, questionService.getQuestionsByTestIdAndModule(any(), any()));
-    }
-
-    @Test
-    void getQuestionByTestIdAndModule() {
-        Question question = EntityCreatorUtil.createQuestion();
-        Mockito.when(questionRepository
-                .getQuestionByTestIdAndModule(any(), any())).thenReturn(Optional.ofNullable(question));
-        Assertions.assertEquals(question, questionService.getQuestionByTestIdAndModule(any(), any()));
+                .getQuestionsByTestId(any())).thenReturn(questions);
+        Assertions.assertEquals(questions, questionService.getQuestionsByTestId(any()));
     }
 
 }
