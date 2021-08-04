@@ -16,14 +16,10 @@ import com.team4.testingsystem.enums.Status;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
 
 public class EntityCreatorUtil {
 
@@ -107,7 +103,7 @@ public class EntityCreatorUtil {
 
     public static TestDTO createTestDTO(Test test) {
         List<Question> questions = new ArrayList<>();
-        for (Modules module : Modules.values()){
+        for (Modules module : Modules.values()) {
             Question question = EntityCreatorUtil.createQuestion(createUser());
             Module module1 = new Module();
             module1.setName(module.getName());
@@ -115,8 +111,8 @@ public class EntityCreatorUtil {
             questions.add(question);
         }
         Map<String, List<QuestionDTO>> questionsDTO = questions.stream()
-                .collect(groupingBy(question1 -> question1.getModule().getName(),
-                        mapping(QuestionDTO::new, toList())));
+                .map(QuestionDTO::new)
+                .collect(groupingBy(QuestionDTO::getModule));
         TestDTO testDTO = new TestDTO(test);
         testDTO.setQuestions(questionsDTO);
         return testDTO;

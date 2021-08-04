@@ -1,8 +1,6 @@
 package com.team4.testingsystem.converters;
 
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
 
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.dto.TestDTO;
@@ -35,19 +33,19 @@ public class TestConverter {
     public TestDTO convertToDTO(Test test) {
         TestDTO testDTO = new TestDTO(test);
         Long questionId = setQuestions(testDTO, test.getId());
-        testDTO.setContentFile(appendContentFile(questionId).getUrl());
+        testDTO.setContentFile(getContentFile(questionId).getUrl());
         return testDTO;
     }
 
-    private ContentFile appendContentFile(Long id) {
+    private ContentFile getContentFile(Long id) {
         return contentFilesService.getContentFileByQuestionId(id);
     }
 
     private Long setQuestions(TestDTO testDTO, Long id) {
         List<Question> questions = questionService.getQuestionsByTestId(id);
         Map<String, List<QuestionDTO>> map = questions.stream()
-                .collect(groupingBy(question1 -> question1.getModule().getName(),
-                        mapping(QuestionDTO::new, toList())));
+                .map(QuestionDTO::new)
+                .collect(groupingBy(QuestionDTO::getModule));
         testDTO.setQuestions(map);
         return questions.stream()
                 .filter(question1 -> question1.getModule().getName().equals(Modules.LISTENING.getName()))
