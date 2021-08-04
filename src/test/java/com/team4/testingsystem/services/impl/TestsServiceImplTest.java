@@ -310,7 +310,8 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void getByStatus() {
         List<Test> tests = new ArrayList<>();
-        Mockito.when(testsRepository.getByStatus(any())).thenReturn(tests);
-        Assertions.assertEquals(tests, testsService.getByStatus(Status.COMPLETED));
+        Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
+        Mockito.when(testsRepository.getByStatuses(any())).thenReturn(tests);
+        Assertions.assertEquals(tests, testsService.getByStatuses(statuses));
     }
 }

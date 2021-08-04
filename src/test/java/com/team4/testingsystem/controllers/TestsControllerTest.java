@@ -231,7 +231,7 @@ class TestsControllerTest {
     void getUnverifiedTests(){
         List<Test> tests = new ArrayList<>();
         List<TestDTO> testsDto = new ArrayList<>();
-        Mockito.when(testsService.getByStatus(any())).thenReturn(tests);
+        Mockito.when(testsService.getByStatuses(any())).thenReturn(tests);
         Assertions.assertEquals(testsDto, testsController.getUnverifiedTests());
     }
 }
