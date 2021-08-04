@@ -1,8 +1,10 @@
 package com.team4.testingsystem.enums;
 
 public enum Status {
-    COMPLETED,
     ASSIGNED,
+    STARTED,
+    COMPLETED,
+    IN_VERIFICATION,
     VERIFIED,
-    STARTED
+    EXPIRED
 }

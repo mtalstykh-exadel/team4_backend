@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
+
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
@@ -12,7 +13,6 @@ import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -141,7 +141,7 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void startSuccess() {
         Test test = new Test();
-        Mockito.when(testsRepository.start(any(),anyLong())).thenReturn(1);
+        Mockito.when(testsRepository.start(any(), anyLong())).thenReturn(1);
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
         Mockito.when(testGeneratingService.formTest(any())).thenReturn(test);
         testsService.start(GOOD_TEST_ID);
@@ -308,7 +308,7 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void getByStatus(){
+    void getByStatus() {
         List<Test> tests = new ArrayList<>();
         Mockito.when(testsRepository.getByStatus(any())).thenReturn(tests);
         Assertions.assertEquals(tests, testsService.getByStatus(Status.COMPLETED));

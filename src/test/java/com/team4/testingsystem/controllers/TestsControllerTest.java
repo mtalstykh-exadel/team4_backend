@@ -1,10 +1,8 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.dto.TestDTO;
-import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
-import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
@@ -19,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +44,7 @@ class TestsControllerTest {
     TestsController testsController;
 
     @Mock
-    Test test;
+    com.team4.testingsystem.entities.Test test;
 
     @org.junit.jupiter.api.Test
     void getByIdSuccess() {
