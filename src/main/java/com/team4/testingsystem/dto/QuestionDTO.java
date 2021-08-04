@@ -1,20 +1,20 @@
 package com.team4.testingsystem.dto;
 
-import com.team4.testingsystem.entities.Answer;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.testingsystem.entities.Question;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuestionDTO {
     private String questionBody;
     private Boolean isAvailable;
     private String creator;
     private String level;
     private String module;
-    private List<String> answers;
-    private String correct;
+    private List<AnswerDTO> answers;
 
     public QuestionDTO() {
     }
@@ -26,7 +26,7 @@ public class QuestionDTO {
         this.level = question.getLevel().getName();
         this.module = question.getModule().getName();
         this.answers = question.getAnswers()
-                .stream().map(Answer::getAnswerBody).collect(Collectors.toList());
+                .stream().map(AnswerDTO::new).collect(Collectors.toList());
     }
 
     public String getCreator() {
@@ -69,20 +69,12 @@ public class QuestionDTO {
         this.module = module;
     }
 
-    public List<String> getAnswers() {
+    public List<AnswerDTO> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(List<String> answers) {
+    public void setAnswers(List<AnswerDTO> answers) {
         this.answers = answers;
-    }
-
-    public String getCorrect() {
-        return correct;
-    }
-
-    public void setCorrect(String correct) {
-        this.correct = correct;
     }
 
     @Override
