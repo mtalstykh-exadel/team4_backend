@@ -1,6 +1,9 @@
 package com.team4.testingsystem.controllers;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
@@ -15,10 +18,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,16 +43,20 @@ class TestsControllerIntegrationTest {
 
     private final UsersRepository usersRepository;
 
+    private final ObjectMapper objectMapper;
+
     private User user;
     private CustomUserDetails userDetails;
 
     @Autowired
     TestsControllerIntegrationTest(MockMvc mockMvc,
                                    TestsRepository testsRepository,
-                                   UsersRepository userRepository) {
+                                   UsersRepository userRepository,
+                                   ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.testsRepository = testsRepository;
         this.usersRepository = userRepository;
+        this.objectMapper = objectMapper;
     }
 
     @BeforeEach
@@ -58,6 +68,40 @@ class TestsControllerIntegrationTest {
     @AfterEach
     void destroy() {
         testsRepository.deleteAll();
+    }
+
+    @Test
+    void getUsersTestsSuccess() throws Exception {
+        com.team4.testingsystem.entities.Test test1 = EntityCreatorUtil.createTest(user);
+        testsRepository.save(test1);
+
+        com.team4.testingsystem.entities.Test test2 = EntityCreatorUtil.createTest(user);
+        testsRepository.save(test2);
+
+        long userId = user.getId();
+
+
+        MvcResult mvcResult = mockMvc.perform(get("/tests/history/{userId}", userId)
+                .with(user(userDetails)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+
+        String response = mvcResult.getResponse().getContentAsString();
+        List<com.team4.testingsystem.entities.Test> tests = objectMapper.readValue(response, new TypeReference<>() {
+        });
+
+        System.out.println(test1.equals(tests.get(0)));
+        Assertions.assertEquals(2, tests.size());
+        Assertions.assertEquals(test1.getId(), tests.get(0).getId());
+        Assertions.assertEquals(test2.getId(), tests.get(1).getId());
+    }
+
+    @Test
+    void getUsersTestsFailUserNotFound() throws Exception {
+        mockMvc.perform(get("/tests/history/{userId}", BAD_USER_ID)
+                .with(user(userDetails)))
+                .andExpect(status().isNotFound());
     }
 
     @Test
