@@ -13,7 +13,7 @@ public interface TestsService {
 
     Test getById(long id);
 
-    Iterable<Test> getByUserId(long userId);
+    List<Test> getByUserId(long userId);
 
     List<Test> getByStatuses(Status[] status);
 

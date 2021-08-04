@@ -54,8 +54,7 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public Iterable<Test> getByUserId(long userId) {
-
+    public List<Test> getByUserId(long userId) {
         User user = usersService.getUserById(userId);
         return testsRepository.getAllByUser(user);
     }

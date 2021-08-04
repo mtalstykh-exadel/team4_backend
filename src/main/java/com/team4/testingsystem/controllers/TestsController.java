@@ -33,28 +33,26 @@ public class TestsController {
 
     @ApiOperation(value = "Get all tests assigned to the current user")
     @GetMapping(path = "/")
-    public Iterable<Test> getCurrentUserTests() {
-        return testsService.getByUserId(JwtTokenUtil.extractUserDetails().getId());
+    public Iterable<TestDTO> getCurrentUserTests() {
+        return convertToDTO(testsService.getByUserId(JwtTokenUtil.extractUserDetails().getId()));
     }
 
     @ApiOperation(value = "Get all tests assigned to the user")
     @GetMapping(path = "/history/{userId}")
-    public Iterable<Test> getUsersTests(@PathVariable("userId") long userId) {
-        return testsService.getByUserId(userId);
+    public List<TestDTO> getUsersTests(@PathVariable("userId") long userId) {
+        return convertToDTO(testsService.getByUserId(userId));
     }
 
     @ApiOperation(value = "Use it to get a single test from the database by its id")
     @GetMapping(path = "/{id}")
-    public Test getById(@PathVariable("id") long id) {
-        return testsService.getById(id);
+    public TestDTO getById(@PathVariable("id") long id) {
+        return new TestDTO(testsService.getById(id));
     }
-
 
     @GetMapping(path = "/unverified")
     public List<TestDTO> getUnverifiedTests() {
-        Status[] statuses = { Status.COMPLETED, Status.IN_VERIFICATION };
-        List<Test> tests = testsService.getByStatuses(statuses);
-        return tests.stream().map(TestDTO::new).collect(Collectors.toList());
+        Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
+        return convertToDTO(testsService.getByStatuses(statuses));
     }
 
     @ApiOperation(value = "(To be updated) Is used to assign a test for the user (HR's ability)")
@@ -103,5 +101,11 @@ public class TestsController {
     @PostMapping(path = "/deassign_coach/{testId}")
     public void deassignCoach(@PathVariable("testId") long testId) {
         testsService.deassignCoach(testId);
+    }
+
+    private List<TestDTO> convertToDTO(List<Test> tests) {
+        return tests.stream()
+                .map(TestDTO::new)
+                .collect(Collectors.toList());
     }
 }

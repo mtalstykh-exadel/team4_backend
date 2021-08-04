@@ -15,6 +15,7 @@ import com.team4.testingsystem.utils.EntityCreatorUtil;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -32,35 +33,39 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class TestsControllerTest {
 
-    final long GOOD_TEST_ID = 1L;
-    final long BAD_TEST_ID = 42L;
+    private final long GOOD_TEST_ID = 1L;
+    private final long BAD_TEST_ID = 42L;
 
-    final long GOOD_USER_ID = 11L;
-    final long BAD_USER_ID = 4242L;
-
-    @Mock
-    TestsService testsService;
+    private final long GOOD_USER_ID = 11L;
+    private final long BAD_USER_ID = 4242L;
 
     @Mock
-    CustomUserDetails customUserDetails;
+    private TestsService testsService;
 
     @Mock
-    TestGeneratingService testGeneratingService;
+    private CustomUserDetails customUserDetails;
 
     @Mock
-    TestConverter testConverter;
+    private TestGeneratingService testGeneratingService;
+
+    @Mock
+    private TestConverter testConverter;
 
     @InjectMocks
-    TestsController testsController;
+    private TestsController testsController;
 
-    @Mock
-    com.team4.testingsystem.entities.Test test;
+    private Test test;
+
+    @BeforeEach
+    void init() {
+        test = EntityCreatorUtil.createTest(EntityCreatorUtil.createUser());
+    }
 
     @org.junit.jupiter.api.Test
     void getByIdSuccess() {
         Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
 
-        Assertions.assertEquals(test, testsController.getById(GOOD_TEST_ID));
+        Assertions.assertEquals(new TestDTO(test), testsController.getById(GOOD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
@@ -80,7 +85,7 @@ class TestsControllerTest {
 
             Mockito.when(testsService.getByUserId(1L)).thenReturn(Lists.list(test));
 
-            Assertions.assertEquals(Lists.list(test), testsController.getCurrentUserTests());
+            Assertions.assertEquals(Lists.list(new TestDTO(test)), testsController.getCurrentUserTests());
         }
     }
 
@@ -90,7 +95,7 @@ class TestsControllerTest {
 
         Mockito.when(testsService.getByUserId(GOOD_USER_ID)).thenReturn(tests);
 
-        Assertions.assertEquals(tests, testsController.getUsersTests(GOOD_USER_ID));
+        Assertions.assertEquals(Lists.emptyList(), testsController.getUsersTests(GOOD_USER_ID));
     }
 
 
