@@ -15,7 +15,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -50,11 +52,9 @@ class QuestionControllerTest {
     void addQuestion() {
         Question question = EntityCreatorUtil.createQuestion();
         QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
-        List<String> answers = new ArrayList<>();
         Mockito.when(questionConverter.convertToEntity(questionDTO)).thenReturn(question);
-        Mockito.when(questionService.createQuestion(question, answers)).thenReturn(question);
+        Mockito.when(questionService.createQuestion(question)).thenReturn(question);
         Mockito.when(questionConverter.convertToDTO(question)).thenReturn(questionDTO);
-        Mockito.doNothing().when(answerRepository).updateCorrect(any());
         QuestionDTO result = questionController.addQuestion(questionDTO);
 
         Assertions.assertEquals(questionDTO, result);

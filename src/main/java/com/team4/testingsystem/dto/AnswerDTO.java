@@ -35,8 +35,12 @@ public class AnswerDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         AnswerDTO answerDTO = (AnswerDTO) o;
         return Objects.equals(answer, answerDTO.answer)
                && Objects.equals(correct, answerDTO.correct);
