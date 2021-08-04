@@ -33,6 +33,12 @@ public class TestsController {
         return testsService.getByUserId(JwtTokenUtil.extractUserDetails().getId());
     }
 
+    @ApiOperation(value = "Get all tests assigned to the user")
+    @GetMapping(path = "/history/{userId}")
+    public Iterable<Test> getUsersTests(@PathVariable("userId") long userId) {
+        return testsService.getByUserId(userId);
+    }
+
     @ApiOperation(value = "Use it to get a single test from the database by its id")
     @GetMapping(path = "/{id}")
     public Test getById(@PathVariable("id") long id) {
@@ -76,6 +82,7 @@ public class TestsController {
 
     @ApiOperation(value = "Use it to assign a test for the coach")
     @PostMapping(path = "/assign_coach/{testId}")
+    @ApiResponse(code = 409, message = "Coach can't verify his own test")
     public void assignCoach(@PathVariable("testId") long testId, @RequestParam long coachId) {
         testsService.assignCoach(testId, coachId);
     }
