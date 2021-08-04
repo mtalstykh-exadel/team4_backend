@@ -490,15 +490,34 @@
         </update>
     </changeSet>
 
-    <changeSet id="update_status_type" author="Darina">
-        <sql>
-            ALTER TYPE status RENAME TO status_old;
-            CREATE TYPE status AS ENUM('COMPLETED', 'ASSIGNED', 'VERIFIED', 'STARTED');
-            ALTER TABLE test ALTER COLUMN status TYPE status
-            USING status::text::status;
-            DROP TYPE status_old;
-        </sql>
+    <changeSet  id="rename_table" author="DzmitryNovik">
+        <renameTable
+                oldTableName="choosen_option"
+                newTableName="chosen_option"/>
+    </changeSet>
 
+    <changeSet id="rename_column" author="DzmitryNovik">
+        <renameColumn tableName="chosen_option"
+                      oldColumnName="choosen_answer_id"
+                      newColumnName="chosen_answer_id"
+                      columnDataType="int"/>
+    </changeSet>
+
+    <changeSet id="add_field_testId_to_fileAnswer" author="DzmitryNovik">
+        <addColumn tableName="file_answer">
+            <column name="test_id" type="int"/>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="file_answer"
+                                 baseColumnNames="test_id"
+                                 constraintName="file_answer_test_id_fk"
+                                 referencedTableName="test"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="delete_column_fileAnswerId_from_table_chosenOption" author="DzmitryNovik">
+    <dropColumn tableName="chosen_option"
+                columnName="file_answer_id"/>
     </changeSet>
 
 </databaseChangeLog>

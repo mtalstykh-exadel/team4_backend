@@ -22,7 +22,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Question getQuestionById(Long id) {
+    public Question getById(Long id) {
         return questionRepository.findById(id).orElseThrow(QuestionNotFoundException::new);
     }
 

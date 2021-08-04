@@ -1,11 +1,11 @@
-package com.team4.testingsystem.repositories;
+package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.exceptions.FileDeletingFailedException;
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.exceptions.FileSavingFailedException;
 import org.springframework.core.io.Resource;
 
-public interface FilesRepository {
+public interface FilesService {
     void save(String fileName, Resource file) throws FileSavingFailedException;
 
     Resource load(String fileName) throws FileLoadingFailedException;

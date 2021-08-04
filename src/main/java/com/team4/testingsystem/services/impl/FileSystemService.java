@@ -1,8 +1,9 @@
-package com.team4.testingsystem.repositories;
+package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.exceptions.FileDeletingFailedException;
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.exceptions.FileSavingFailedException;
+import com.team4.testingsystem.services.FilesService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.FileSystemResource;
@@ -14,9 +15,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-@Profile("!release")
+@Profile("!release&!test")
 @Service
-public class FileSystemRepository implements FilesRepository {
+public class FileSystemService implements FilesService {
     @Override
     public void save(String fileName, Resource file) throws FileSavingFailedException {
         Path newFilePath = generateFilePath(fileName);

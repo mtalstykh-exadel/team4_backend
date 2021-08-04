@@ -3,21 +3,25 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.entities.ErrorReport;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.exceptions.ErrorReportNotFoundException;
 import com.team4.testingsystem.repositories.ErrorReportsRepository;
 import com.team4.testingsystem.services.ErrorReportsService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.TestsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
+@Service
 public class ErrorReportsServiceImpl implements ErrorReportsService {
 
+    private final ErrorReportsRepository errorReportsRepository;
 
-    private ErrorReportsRepository errorReportsRepository;
+    private final QuestionService questionService;
 
-    private QuestionService questionService;
-
-    private TestsService testsService;
+    private final TestsService testsService;
 
     @Autowired
     public ErrorReportsServiceImpl(ErrorReportsRepository errorReportsRepository,
@@ -29,34 +33,30 @@ public class ErrorReportsServiceImpl implements ErrorReportsService {
     }
 
     @Override
-    public Iterable<ErrorReport> getAll() {
-        return errorReportsRepository.findAll();
+    public Collection<ErrorReport> getReportsByTest(Long testId) {
+        return errorReportsRepository.findAllById_Test(testsService.getById(testId));
     }
 
     @Override
-    public ErrorReport getById(long id) {
-        return errorReportsRepository.findById(id).orElseThrow(ErrorReportNotFoundException::new);
-    }
-
-    @Override
-    public void add(String requestBody, Long questionId, Long testId) {
-        Question question = questionService.getQuestionById(questionId);
+    public void add(String reportBody, Long questionId, Long testId) {
+        Question question = questionService.getById(questionId);
 
         Test test = testsService.getById(testId);
 
-        errorReportsRepository.save(new ErrorReport(requestBody, question, test));
+        TestQuestionID errorReportId = new TestQuestionID(test, question);
+
+        errorReportsRepository.save(new ErrorReport(errorReportId, reportBody));
     }
 
     @Override
-    public void updateRequestBody(long id, String newRequestBody) {
-        if (errorReportsRepository.changeReportBody(newRequestBody, id) == 0) {
-            throw new ErrorReportNotFoundException();
-        }
-    }
+    public void removeByTestAndQuestion(long testId, long questionId) {
+        Question question = questionService.getById(questionId);
 
-    @Override
-    public void removeById(long id) {
-        if (errorReportsRepository.removeById(id) == 0) {
+        Test test = testsService.getById(testId);
+
+        TestQuestionID errorReportId = new TestQuestionID(test, question);
+
+        if (errorReportsRepository.removeById(errorReportId) == 0) {
             throw new ErrorReportNotFoundException();
         }
     }

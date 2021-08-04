@@ -2,6 +2,7 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.ErrorReport;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.exceptions.ErrorReportNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
@@ -13,12 +14,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -26,6 +27,14 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 public class ErrorReportsServiceImplTest {
 
+
+    final Long GOOD_TEST_ID = 1L;
+
+    final Long BAD_TEST_ID = 42L;
+
+    final Long GOOD_QUESTION_ID = 111L;
+
+    final Long BAD_QUESTION_ID = 424242L;
 
     @Mock
     ErrorReportsRepository errorReportsRepository;
@@ -42,102 +51,118 @@ public class ErrorReportsServiceImplTest {
     @Mock
     private com.team4.testingsystem.entities.Test test;
 
-    @Mock
-    private ErrorReport errorReport;
 
     @InjectMocks
     ErrorReportsServiceImpl errorReportsService;
 
     @Test
-    void getAllSuccess(){
+    void getByTestSuccess() {
         List<ErrorReport> errorReports = new ArrayList<>();
-        Mockito.when(errorReportsRepository.findAll()).thenReturn(errorReports);
 
-        Assertions.assertEquals(errorReports, errorReportsService.getAll());
+        Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
+
+        Mockito.when(errorReportsRepository.findAllById_Test(test)).thenReturn(errorReports);
+
+        Assertions.assertEquals(errorReports, errorReportsService.getReportsByTest(GOOD_TEST_ID));
     }
 
     @Test
-    void getByIdSuccess() {
-        Mockito.when(errorReportsRepository.findById(1L)).thenReturn(Optional.of(errorReport));
+    void getByTestFail() {
 
-        Assertions.assertEquals(errorReport, errorReportsService.getById(1L));
-    }
-
-    @Test
-    void getByIdFail() {
-
-        Mockito.when(errorReportsRepository.findById(42L)).thenThrow(ErrorReportNotFoundException.class);
-
-        Assertions.assertThrows(ErrorReportNotFoundException.class, () -> errorReportsService.getById(42L));
-    }
-
-    @Test
-    void addSuccess(){
-        Mockito.when(questionService.getQuestionById(1L)).thenReturn(question);
-
-        Mockito.when(testsService.getById(1L)).thenReturn(test);
-
-        errorReportsService.add("Good report", 1L, 1L);
-
-        verify(errorReportsRepository).save(any());
-    }
-
-    @Test
-    void addFailFirst(){
-        Mockito.when(questionService.getQuestionById(42L)).thenThrow(QuestionNotFoundException.class);
-
-        Assertions.assertThrows(QuestionNotFoundException.class,
-                () -> errorReportsService.add("Bad report",42L, 42L));
-    }
-
-    @Test
-    void addFailSecond(){
-        Mockito.when(questionService.getQuestionById(1L)).thenReturn(question);
-
-        Mockito.when(testsService.getById(42L)).thenThrow(TestNotFoundException.class);
+        Mockito.when(testsService.getById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
 
         Assertions.assertThrows(TestNotFoundException.class,
-                () -> errorReportsService.add("Bad report",1L, 42L));
+                () -> errorReportsService.getReportsByTest(BAD_TEST_ID));
     }
 
     @Test
-    void updateRequestBodySuccess(){
-        Mockito.when(errorReportsRepository.changeReportBody("Good report", 1L)).thenReturn(1);
+    void addSuccess() {
+        Mockito.when(questionService.getById(GOOD_QUESTION_ID)).thenReturn(question);
 
-        errorReportsService.updateRequestBody(1L, "Good report");
+        Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
 
-        verify(errorReportsRepository).changeReportBody("Good report", 1L);
+            errorReportsService.add("Good report", GOOD_QUESTION_ID, GOOD_TEST_ID);
+            verify(errorReportsRepository).save(any());
+    }
 
-        Assertions.assertDoesNotThrow(()->errorReportsService.updateRequestBody(1L, "Good report"));
+
+    @Test
+    void addFailQuestionNotFound() {
+        Mockito.when(questionService.getById(BAD_QUESTION_ID)).thenThrow(QuestionNotFoundException.class);
+
+        Assertions.assertThrows(QuestionNotFoundException.class,
+                () -> errorReportsService.add("Bad report", BAD_QUESTION_ID, GOOD_TEST_ID));
     }
 
     @Test
-    void updateRequestBodyFail(){
-        Mockito.when(errorReportsRepository.changeReportBody("Bad report", 42L)).thenReturn(0);
+    void addFailTestNotFound() {
+        Mockito.when(questionService.getById(GOOD_QUESTION_ID)).thenReturn(question);
 
-        Assertions.assertThrows(ErrorReportNotFoundException.class,
-                () -> errorReportsService.updateRequestBody(42L, "Bad report"));
+        Mockito.when(testsService.getById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
+
+        Assertions.assertThrows(TestNotFoundException.class,
+                () -> errorReportsService.add("Bad report", GOOD_QUESTION_ID, BAD_TEST_ID));
     }
+
 
     @Test
     void removeSuccess() {
 
-        Mockito.when(errorReportsRepository.removeById(1L)).thenReturn(1);
+        Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
 
-        errorReportsService.removeById(1L);
+        Mockito.when(questionService.getById(GOOD_QUESTION_ID)).thenReturn(question);
 
-        verify(errorReportsRepository).removeById(1L);
+        try (MockedConstruction<TestQuestionID> mockedConstruction = Mockito.mockConstruction(TestQuestionID.class,
+                (mock, context) -> {
+                    Mockito.when(errorReportsRepository.removeById(mock)).thenReturn(1);
 
-        Assertions.assertDoesNotThrow(()->errorReportsService.removeById(1L));
+                })) {
+
+            errorReportsService.removeByTestAndQuestion(GOOD_TEST_ID, GOOD_QUESTION_ID);
+
+            verify(errorReportsRepository).removeById(any());
+
+            Assertions.assertDoesNotThrow(() -> errorReportsService.removeByTestAndQuestion(GOOD_TEST_ID, GOOD_QUESTION_ID));
+
+        }
+
 
     }
 
     @Test
-    void removeFail() {
+    void removeFailQuestionNotFound() {
+        Mockito.when(questionService.getById(BAD_QUESTION_ID)).thenThrow(QuestionNotFoundException.class);
 
-        Mockito.when(errorReportsRepository.removeById(42L)).thenReturn(0);
+        Assertions.assertThrows(QuestionNotFoundException.class,
+                () -> errorReportsService.removeByTestAndQuestion(GOOD_TEST_ID, BAD_QUESTION_ID));
+    }
 
-        Assertions.assertThrows(ErrorReportNotFoundException.class, () -> errorReportsService.removeById(42L));
+    @Test
+    void removeFailTestNotFound() {
 
+        Mockito.when(questionService.getById(GOOD_QUESTION_ID)).thenReturn(question);
+
+        Mockito.when(testsService.getById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
+
+        Assertions.assertThrows(TestNotFoundException.class,
+                () -> errorReportsService.removeByTestAndQuestion(BAD_TEST_ID, GOOD_QUESTION_ID));
+    }
+
+
+    @Test
+    void removeFailErrorReportNotFound() {
+        Mockito.when(testsService.getById(BAD_TEST_ID)).thenReturn(test);
+
+        Mockito.when(questionService.getById(BAD_QUESTION_ID)).thenReturn(question);
+
+
+        try (MockedConstruction<TestQuestionID> mockedConstruction = Mockito.mockConstruction(TestQuestionID.class,
+                (mock, context) -> {
+                    //Error report doesn't exist
+                    Mockito.when(errorReportsRepository.removeById(mock)).thenReturn(0);
+                })) {
+            Assertions.assertThrows(ErrorReportNotFoundException.class,
+                    () -> errorReportsService.removeByTestAndQuestion(BAD_TEST_ID, BAD_QUESTION_ID));
+        }
     }
 }
