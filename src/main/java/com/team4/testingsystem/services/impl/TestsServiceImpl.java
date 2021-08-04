@@ -5,6 +5,7 @@ import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
+import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.LevelService;
@@ -115,9 +116,12 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public void assignCoach(long id, long coachId) {
         User coach = usersService.getUserById(coachId);
-        if (testsRepository.assignCoach(coach, id) == 0) {
-            throw new TestNotFoundException();
+
+        if (getById(id).getUser().getId() == coachId) {
+            throw new CoachAssignmentFailException();
         }
+
+        testsRepository.assignCoach(coach, id);
 
     }
 
