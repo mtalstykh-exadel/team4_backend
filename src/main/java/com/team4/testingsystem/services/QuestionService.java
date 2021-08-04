@@ -18,7 +18,5 @@ public interface QuestionService {
 
     List<Question> getRandomQuestionsByContentFile(Long id, Pageable pageable);
 
-    List<Question> getQuestionsByTestIdAndModule(Long id, String module);
-
-    Question getQuestionByTestIdAndModule(Long id, String module);
+    List<Question> getQuestionsByTestId(Long id);
 }

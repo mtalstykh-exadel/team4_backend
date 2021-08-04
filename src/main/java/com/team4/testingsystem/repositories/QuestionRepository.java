@@ -35,17 +35,6 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
 
     @Query("select q from Question q "
            + "join q.tests t "
-           + "where t.id = ?1 "
-           + "and q.module.name = ?2")
-    List<Question> getQuestionsByTestIdAndModule(Long id, String module);
-
-    @Query(value = "select * from language_testing.question as q "
-                   + "join language_testing.module as m on q.module_id = m.id "
-                   + "join language_testing.test_question as tq on q.id = tq.question_id "
-                   + "join language_testing.test as t on t.id = tq.test_id "
-                   + "where t.id = ?1 "
-                   + "and m.module_name = ?2 "
-                   + "limit 1; ", nativeQuery = true)
-    Optional<Question> getQuestionByTestIdAndModule(Long id, String module);
-
+           + "where t.id = ?1 ")
+    List<Question> getQuestionsByTestId(Long id);
 }
