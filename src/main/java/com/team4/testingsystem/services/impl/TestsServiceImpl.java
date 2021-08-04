@@ -118,7 +118,7 @@ public class TestsServiceImpl implements TestsService {
     public void assignCoach(long id, long coachId) {
         User coach = usersService.getUserById(coachId);
 
-        if (getById(id).getUser().getId() == coachId){
+        if (getById(id).getUser().getId() == coachId) {
             throw new CoachAssignmentFailException();
         }
 
