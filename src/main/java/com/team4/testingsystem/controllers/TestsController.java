@@ -76,6 +76,7 @@ public class TestsController {
 
     @ApiOperation(value = "Use it to assign a test for the coach")
     @PostMapping(path = "/assign_coach/{testId}")
+    @ApiResponse(code = 409, message = "Coach can't verify his own test")
     public void assignCoach(@PathVariable("testId") long testId, @RequestParam long coachId) {
         testsService.assignCoach(testId, coachId);
     }
