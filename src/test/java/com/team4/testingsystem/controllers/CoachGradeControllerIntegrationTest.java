@@ -4,9 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team4.testingsystem.dto.CoachGradeDTO;
 import com.team4.testingsystem.entities.CoachGrade;
+import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
+import com.team4.testingsystem.repositories.LevelRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
@@ -39,6 +42,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 class CoachGradeControllerIntegrationTest {
     private final MockMvc mockMvc;
 
+    private final LevelRepository levelRepository;
     private final UsersRepository usersRepository;
     private final QuestionRepository questionRepository;
     private final TestsRepository testsRepository;
@@ -48,15 +52,18 @@ class CoachGradeControllerIntegrationTest {
 
     private User user;
     private CustomUserDetails userDetails;
+    private Level level;
 
     @Autowired
     CoachGradeControllerIntegrationTest(MockMvc mockMvc,
+                                        LevelRepository levelRepository,
                                         UsersRepository usersRepository,
                                         QuestionRepository questionRepository,
                                         TestsRepository testsRepository,
                                         CoachGradeRepository gradeRepository,
                                         ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
+        this.levelRepository = levelRepository;
         this.usersRepository = usersRepository;
         this.questionRepository = questionRepository;
         this.testsRepository = testsRepository;
@@ -68,6 +75,8 @@ class CoachGradeControllerIntegrationTest {
     void init() {
         user = usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow();
         userDetails = new CustomUserDetails(user);
+
+        level = levelRepository.findByName(Levels.A1.name()).orElseThrow();
     }
 
     @AfterEach
@@ -86,7 +95,7 @@ class CoachGradeControllerIntegrationTest {
 
     @Test
     void getGradesEmptyList() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         MvcResult mvcResult = mockMvc.perform(get("/grades/{testId}", test.getId())
@@ -102,7 +111,7 @@ class CoachGradeControllerIntegrationTest {
 
     @Test
     void getGradesOneGrade() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
@@ -124,7 +133,7 @@ class CoachGradeControllerIntegrationTest {
 
     @Test
     void getGradesTwoGrades() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
@@ -169,7 +178,7 @@ class CoachGradeControllerIntegrationTest {
 
     @Test
     void createGradeQuestionNotFound() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
@@ -187,7 +196,7 @@ class CoachGradeControllerIntegrationTest {
 
     @Test
     void createGradeSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
@@ -212,7 +221,7 @@ class CoachGradeControllerIntegrationTest {
 
     @Test
     void createGradeAlreadyExists() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
@@ -251,7 +260,7 @@ class CoachGradeControllerIntegrationTest {
 
     @Test
     void updateGradeQuestionNotFound() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
@@ -269,7 +278,7 @@ class CoachGradeControllerIntegrationTest {
 
     @Test
     void updateGradeNotExists() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
@@ -290,7 +299,7 @@ class CoachGradeControllerIntegrationTest {
 
     @Test
     void updateGradeSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
