@@ -3,7 +3,6 @@ package com.team4.testingsystem.controllers;
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.services.QuestionService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class QuestionController {
     private final QuestionService questionService;
     private final QuestionConverter questionConverter;
-    private final AnswerRepository answerRepository;
 
     @Autowired
     public QuestionController(QuestionService questionService,
-                              QuestionConverter questionConverter,
-                              AnswerRepository answerRepository) {
+                              QuestionConverter questionConverter) {
         this.questionService = questionService;
         this.questionConverter = questionConverter;
-        this.answerRepository = answerRepository;
     }
 
     @ApiOperation(value = "Get a single question from the database by it's id")
@@ -42,8 +38,10 @@ public class QuestionController {
     @PostMapping("/")
     public QuestionDTO addQuestion(@RequestBody QuestionDTO questionDTO) {
         Question question = questionService
-                .createQuestion(questionConverter.convertToEntity(questionDTO), questionDTO.getAnswers());
-        answerRepository.updateCorrect(questionDTO.getCorrect());
+                .createQuestion(questionConverter.convertToEntity(questionDTO));
+        if (questionDTO.getAnswers() != null) {
+            questionService.addAnswers(question, questionDTO.getAnswers());
+        }
         return questionConverter.convertToDTO(question);
     }
 
