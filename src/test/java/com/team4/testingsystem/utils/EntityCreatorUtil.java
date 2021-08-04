@@ -4,16 +4,15 @@ import com.team4.testingsystem.dto.ContentFileRequest;
 import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.dto.TestDTO;
-import com.team4.testingsystem.entities.ErrorReport;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.entities.UserRole;
-import com.team4.testingsystem.enums.Status;
-import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.enums.Status;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -99,13 +98,10 @@ public class EntityCreatorUtil {
                 .build();
     }
 
-    public static TestDTO createTestDTO(Test test){
+    public static TestDTO createTestDTO(Test test) {
         QuestionDTO questionDTO = new QuestionDTO(createQuestion(createUser()));
         List<QuestionDTO> questionsDTO = new ArrayList<>();
-        TestDTO testDTO = new TestDTO(
-                test.getLevel().getName(),
-                test.getCreatedAt(),
-                test.getFinishedAt());
+        TestDTO testDTO = new TestDTO(test);
         testDTO.setGrammarQuestions(questionsDTO);
         testDTO.setListeningQuestions(questionsDTO);
         testDTO.setEssayQuestion(questionDTO);

@@ -15,6 +15,9 @@ public class QuestionDTO {
     private String module;
     private List<String> answers;
 
+    public QuestionDTO() {
+    }
+
     public QuestionDTO(Question question) {
         this.questionBody = question.getBody();
         this.isAvailable = question.isAvailable();

@@ -28,26 +28,30 @@ public class TestConverter {
     }
 
     public TestDTO convertToDTO(Test test) {
-        TestDTO testDTO = new TestDTO(
-                test.getLevel().getName(),
-                test.getCreatedAt(),
-                test.getFinishedAt());
-        testDTO.setGrammarQuestions(getQuestions(test.getId(), Modules.GRAMMAR));
-        testDTO.setListeningQuestions(getQuestions(test.getId(), Modules.LISTENING));
-        testDTO.setEssayQuestion(getQuestion(test.getId(), Modules.ESSAY));
-        testDTO.setSpeakingQuestion(getQuestion(test.getId(), Modules.SPEAKING));
-        Question question = questionService
-                .getQuestionByTestIdAndModule(test.getId(), Modules.LISTENING.getName());
-        ContentFile contentFile = contentFilesService
-                .getContentFileByQuestionId(question.getId());
-        testDTO.setContentFile(contentFile.getUrl());
+        TestDTO testDTO = new TestDTO(test);
+        setQuestions(testDTO, test.getId());
+        testDTO.setContentFile(appendContentFile(test.getId()).getUrl());
         return testDTO;
     }
 
+    private ContentFile appendContentFile(Long testId) {
+        Question question = questionService
+                .getQuestionByTestIdAndModule(testId, Modules.LISTENING.getName());
+        return contentFilesService.getContentFileByQuestionId(question.getId());
+    }
+
+    private void setQuestions(TestDTO testDTO, Long id) {
+        testDTO.setGrammarQuestions(getQuestions(id, Modules.GRAMMAR));
+        testDTO.setListeningQuestions(getQuestions(id, Modules.LISTENING));
+        testDTO.setEssayQuestion(getQuestion(id, Modules.ESSAY));
+        testDTO.setSpeakingQuestion(getQuestion(id, Modules.SPEAKING));
+    }
+
     private List<QuestionDTO> getQuestions(Long id, Modules module) {
-        List<Question> questions = questionService
-                .getQuestionsByTestIdAndModule(id, module.getName());
-        return questions.stream().map(QuestionDTO::new).collect(Collectors.toList());
+        return questionService.getQuestionsByTestIdAndModule(id, module.getName())
+                .stream()
+                .map(QuestionDTO::new)
+                .collect(Collectors.toList());
     }
 
     private QuestionDTO getQuestion(Long id, Modules module) {

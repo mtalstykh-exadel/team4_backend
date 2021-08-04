@@ -12,26 +12,23 @@ public class TestDTO {
     private String level;
     private LocalDateTime createdAt;
     private LocalDateTime finishedAt;
-    private String coach;
+    private UserDTO coach;
     private List<QuestionDTO> grammarQuestions;
     private List<QuestionDTO> listeningQuestions;
     private QuestionDTO essayQuestion;
     private QuestionDTO speakingQuestion;
     private String contentFile;
 
-    public TestDTO(String level,
-                   LocalDateTime createdAt,
-                   LocalDateTime finishedAt) {
-        this.level = level;
-        this.createdAt = createdAt;
-        this.finishedAt = finishedAt;
+    public TestDTO() {
     }
 
     public TestDTO(Test test) {
         level = test.getLevel().getName();
         createdAt = test.getCreatedAt();
         finishedAt = test.getFinishedAt();
-        coach = test.getCoach().getName();
+        if (test.getCoach() != null) {
+            coach = new UserDTO(test.getCoach());
+        }
     }
 
     public List<QuestionDTO> getGrammarQuestions() {
@@ -98,11 +95,11 @@ public class TestDTO {
         this.finishedAt = finishedAt;
     }
 
-    public String getCoach() {
+    public UserDTO getCoach() {
         return coach;
     }
 
-    public void setCoach(String coach) {
+    public void setCoach(UserDTO coach) {
         this.coach = coach;
     }
 

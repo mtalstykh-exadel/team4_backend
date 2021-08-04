@@ -10,7 +10,6 @@ import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
-import com.team4.testingsystem.services.impl.TestGeneratingServiceImpl;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.assertj.core.util.Lists;
@@ -22,8 +21,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
@@ -104,11 +101,7 @@ class TestsControllerTest {
     @org.junit.jupiter.api.Test
     void startNotAssignedSuccess() {
         Test test = EntityCreatorUtil.createTest(new User());
-        TestDTO testDTO = new TestDTO(
-                test.getLevel().getName(),
-                test.getCreatedAt(),
-                test.getFinishedAt()
-        );
+        TestDTO testDTO = new TestDTO(test);
         try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
             builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
             Mockito.when(customUserDetails.getId()).thenReturn(1L);
