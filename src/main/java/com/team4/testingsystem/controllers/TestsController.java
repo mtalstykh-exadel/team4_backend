@@ -1,7 +1,9 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import io.swagger.annotations.ApiOperation;
@@ -14,6 +16,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/tests")
@@ -42,6 +47,14 @@ public class TestsController {
     @GetMapping(path = "/{id}")
     public Test getById(@PathVariable("id") long id) {
         return testsService.getById(id);
+    }
+
+
+    @GetMapping(path = "/unverified")
+    public List<TestDTO> getUnverifiedTests() {
+        Status[] statuses = { Status.COMPLETED, Status.IN_VERIFICATION };
+        List<Test> tests = testsService.getByStatuses(statuses);
+        return tests.stream().map(TestDTO::new).collect(Collectors.toList());
     }
 
     @ApiOperation(value = "(To be updated) Is used to assign a test for the user (HR's ability)")
