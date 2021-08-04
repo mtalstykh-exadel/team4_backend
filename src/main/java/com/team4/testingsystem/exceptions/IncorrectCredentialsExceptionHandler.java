@@ -11,8 +11,8 @@ public class IncorrectCredentialsExceptionHandler extends ResponseEntityExceptio
 
     @ExceptionHandler(value = {IncorrectCredentialsException.class})
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-    public String handleNotFoundException(IncorrectCredentialsException e) {
-        return "Incorrect login or password";
+    public Response handleNotFoundException(IncorrectCredentialsException e) {
+        return new Response("Incorrect login or password");
     }
 
 }

@@ -11,7 +11,7 @@ public class ConflictExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ConflictException.class})
     @ResponseStatus(value = HttpStatus.CONFLICT)
-    public String handleConflictException(ConflictException e) {
-        return e.getMessage();
+    public Response handleConflictException(ConflictException e) {
+        return new Response(e.getMessage());
     }
 }

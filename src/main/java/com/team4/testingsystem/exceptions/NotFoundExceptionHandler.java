@@ -11,7 +11,7 @@ public class NotFoundExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {NotFoundException.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public String handleNotFoundException(NotFoundException e) {
-        return e.getMessage();
+    public Response handleNotFoundException(NotFoundException e) {
+        return new Response(e.getMessage());
     }
 }

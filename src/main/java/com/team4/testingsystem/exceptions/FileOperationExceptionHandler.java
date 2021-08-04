@@ -11,7 +11,7 @@ public class FileOperationExceptionHandler extends ResponseEntityExceptionHandle
 
     @ExceptionHandler(value = {FileOperationException.class})
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public String handleFileOperationException(FileOperationException e) {
-        return e.getMessage();
+    public Response handleFileOperationException(FileOperationException e) {
+        return new Response(e.getMessage());
     }
 }
