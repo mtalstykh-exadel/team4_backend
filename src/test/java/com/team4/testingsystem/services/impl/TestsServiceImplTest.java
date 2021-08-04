@@ -2,10 +2,12 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.converters.TestConverter;
 import com.team4.testingsystem.dto.TestDTO;
+
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
@@ -13,7 +15,6 @@ import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -148,6 +149,8 @@ class TestsServiceImplTest {
         Test test = EntityCreatorUtil.createTest(user);
         TestDTO testDTO = EntityCreatorUtil.createTestDTO(test);
         Mockito.when(testsRepository.start(any(),anyLong())).thenReturn(1);
+        Test test = new Test();
+        Mockito.when(testsRepository.start(any(), anyLong())).thenReturn(1);
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
         Mockito.when(testGeneratingService.formTest(any())).thenReturn(test);
         Mockito.when(testConverter.convertToDTO(test)).thenReturn(testDTO);
@@ -247,9 +250,9 @@ class TestsServiceImplTest {
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
 
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
-        
+
         Mockito.when(test.getUser()).thenReturn(user);
-        
+
         Mockito.when(user.getId()).thenReturn(GOOD_USER_ID + 1);
 
         testsService.assignCoach(GOOD_TEST_ID, GOOD_USER_ID);
@@ -313,5 +316,13 @@ class TestsServiceImplTest {
         Mockito.when(testsRepository.deassignCoach(BAD_TEST_ID)).thenReturn(0);
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.deassignCoach(BAD_TEST_ID));
+    }
+
+    @org.junit.jupiter.api.Test
+    void getByStatus() {
+        List<Test> tests = new ArrayList<>();
+        Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
+        Mockito.when(testsRepository.getByStatuses(any())).thenReturn(tests);
+        Assertions.assertEquals(tests, testsService.getByStatuses(statuses));
     }
 }

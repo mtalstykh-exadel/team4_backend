@@ -2,6 +2,7 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.TestConverter;
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
@@ -26,6 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
@@ -54,7 +56,7 @@ class TestsControllerTest {
     TestsController testsController;
 
     @Mock
-    Test test;
+    com.team4.testingsystem.entities.Test test;
 
     @org.junit.jupiter.api.Test
     void getByIdSuccess() {
@@ -231,4 +233,11 @@ class TestsControllerTest {
         Assertions.assertThrows(TestNotFoundException.class, () -> testsController.deassignCoach(BAD_TEST_ID));
     }
 
+    @org.junit.jupiter.api.Test
+    void getUnverifiedTests(){
+        List<Test> tests = new ArrayList<>();
+        List<TestDTO> testsDto = new ArrayList<>();
+        Mockito.when(testsService.getByStatuses(any())).thenReturn(tests);
+        Assertions.assertEquals(testsDto, testsController.getUnverifiedTests());
+    }
 }

@@ -15,8 +15,8 @@ public class TestDTO {
     private LocalDateTime finishedAt;
     private LocalDateTime updatedAt;
     private LocalDateTime startedAt;
-
     private UserDTO coach;
+    private int evaluation;
     private Map<String, List<QuestionDTO>> questions;
     private String contentFile;
 
@@ -29,9 +29,22 @@ public class TestDTO {
         finishedAt = test.getFinishedAt();
         updatedAt = test.getUpdatedAt();
         startedAt = test.getStartedAt();
+        evaluation = test.getEvaluation();
         if (test.getCoach() != null) {
             coach = new UserDTO(test.getCoach());
         }
+    }
+
+    public UserDTO getCoach() {
+        return coach;
+    }
+
+    public int getEvaluation() {
+        return evaluation;
+    }
+
+    public void setEvaluation(int evaluation) {
+        this.evaluation = evaluation;
     }
 
     public LocalDateTime getUpdatedAt() {
@@ -64,6 +77,8 @@ public class TestDTO {
 
     public void setContentFile(String contentFile) {
         this.contentFile = contentFile;
+    public void setCoach(UserDTO coach) {
+        this.coach = coach;
     }
 
     public String getLevel() {
@@ -110,6 +125,9 @@ public class TestDTO {
         return Objects.equals(level, testDTO.level)
                && Objects.equals(createdAt, testDTO.createdAt)
                && Objects.equals(finishedAt, testDTO.finishedAt)
+               && Objects.equals(updatedAt, testDTO.updatedAt)
+               && Objects.equals(startedAt, testDTO.startedAt)
+               && Objects.equals(coach, testDTO.coach);
                && Objects.equals(coach, testDTO.coach)
                && Objects.equals(questions, testDTO.questions)
                && Objects.equals(contentFile, testDTO.contentFile);
@@ -117,6 +135,7 @@ public class TestDTO {
 
     @Override
     public int hashCode() {
+        return Objects.hash(level, createdAt, finishedAt, updatedAt, startedAt, coach);
         return Objects.hash(level,
                 createdAt,
                 finishedAt,

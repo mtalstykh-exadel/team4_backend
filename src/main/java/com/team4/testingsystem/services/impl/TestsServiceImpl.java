@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class TestsServiceImpl implements TestsService {
@@ -60,6 +61,11 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
+    public List<Test> getByStatuses(Status[] statuses) {
+        return testsRepository.getByStatuses(statuses);
+    }
+
+    @Override
     public Test save(Test test) {
         return testsRepository.save(test);
     }
@@ -71,7 +77,7 @@ public class TestsServiceImpl implements TestsService {
         Test test = Test.builder()
                 .user(user)
                 .createdAt(LocalDateTime.now())
-                .status(Status.NOT_STARTED)
+                .status(Status.ASSIGNED)
                 .level(level)
                 .build();
         testsRepository.save(test);
