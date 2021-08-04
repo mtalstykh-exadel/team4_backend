@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.dto.AnswerDTO;
 import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
@@ -29,14 +30,19 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Question createQuestion(Question question, List<String> textAnswers) {
+    public Question createQuestion(Question question) {
         Question resultQuestion = questionRepository.save(question);
-        List<Answer> answers = new ArrayList<>();
-        textAnswers.forEach(answer -> answers.add(new Answer(answer, resultQuestion)));
-        resultQuestion.setAnswers(answers);
         return questionRepository.save(resultQuestion);
     }
 
+    @Transactional
+    @Override
+    public Question addAnswers(Question question, List<AnswerDTO> textAnswers) {
+        List<Answer> answers = new ArrayList<>();
+        textAnswers.forEach(answerDTO -> answers.add(new Answer(answerDTO, question)));
+        question.setAnswers(answers);
+        return questionRepository.save(question);
+    }
 
     @Transactional
     @Override
