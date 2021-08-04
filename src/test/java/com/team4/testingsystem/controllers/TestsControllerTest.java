@@ -1,7 +1,9 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.security.CustomUserDetails;
@@ -17,6 +19,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -68,6 +72,24 @@ class TestsControllerTest {
 
             Assertions.assertEquals(Lists.list(test), testsController.getCurrentUserTests());
         }
+    }
+
+    @org.junit.jupiter.api.Test
+    void getUsersTestsSuccess() {
+        List<Test> tests = new ArrayList<>();
+
+        Mockito.when(testsService.getByUserId(GOOD_USER_ID)).thenReturn(tests);
+
+        Assertions.assertEquals(tests, testsController.getUsersTests(GOOD_USER_ID));
+    }
+
+
+    @org.junit.jupiter.api.Test
+    void getUsersTestsFailUserNotFound() {
+
+        Mockito.when(testsService.getByUserId(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
+
+        Assertions.assertThrows(UserNotFoundException.class, () -> testsController.getUsersTests(BAD_USER_ID));
     }
 
     @org.junit.jupiter.api.Test
@@ -181,6 +203,15 @@ class TestsControllerTest {
         Assertions.assertThrows(TestNotFoundException.class,
                 () -> testsController.assignCoach(BAD_TEST_ID, GOOD_USER_ID));
     }
+
+    @org.junit.jupiter.api.Test
+    void assignCoachFailSelfAssignment() {
+        doThrow(CoachAssignmentFailException.class).when(testsService).assignCoach(GOOD_TEST_ID, GOOD_USER_ID);
+
+        Assertions.assertThrows(CoachAssignmentFailException.class,
+                () -> testsController.assignCoach(GOOD_TEST_ID, GOOD_USER_ID));
+    }
+
 
     @org.junit.jupiter.api.Test
     void deassignCoachSuccess() {

@@ -19,6 +19,9 @@ public class QuestionDTO {
     public QuestionDTO() {
     }
 
+    public QuestionDTO() {
+    }
+
     public QuestionDTO(Question question) {
         this.questionBody = question.getBody();
         this.isAvailable = question.isAvailable();
