@@ -6,13 +6,18 @@ import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
 
 @Component
 public class TestConverter {
@@ -29,34 +34,24 @@ public class TestConverter {
 
     public TestDTO convertToDTO(Test test) {
         TestDTO testDTO = new TestDTO(test);
-        setQuestions(testDTO, test.getId());
-        testDTO.setContentFile(appendContentFile(test.getId()).getUrl());
+        Long questionId = setQuestions(testDTO, test.getId());
+        testDTO.setContentFile(appendContentFile(questionId).getUrl());
         return testDTO;
     }
 
-    private ContentFile appendContentFile(Long testId) {
-        Question question = questionService
-                .getQuestionByTestIdAndModule(testId, Modules.LISTENING.getName());
-        return contentFilesService.getContentFileByQuestionId(question.getId());
+    private ContentFile appendContentFile(Long id) {
+        return contentFilesService.getContentFileByQuestionId(id);
     }
 
-    private void setQuestions(TestDTO testDTO, Long id) {
-        testDTO.setGrammarQuestions(getQuestions(id, Modules.GRAMMAR));
-        testDTO.setListeningQuestions(getQuestions(id, Modules.LISTENING));
-        testDTO.setEssayQuestion(getQuestion(id, Modules.ESSAY));
-        testDTO.setSpeakingQuestion(getQuestion(id, Modules.SPEAKING));
+    private Long setQuestions(TestDTO testDTO, Long id) {
+        List<Question> questions = questionService.getQuestionsByTestId(id);
+        Map<String, List<QuestionDTO>> map = questions.stream()
+                .collect(groupingBy(question1 -> question1.getModule().getName(),
+                        mapping(QuestionDTO::new, toList())));
+        testDTO.setQuestions(map);
+        return questions.stream()
+                .filter(question1 -> question1.getModule().getName().equals(Modules.LISTENING.getName()))
+                .findFirst().orElseThrow(QuestionNotFoundException::new).getId();
     }
 
-    private List<QuestionDTO> getQuestions(Long id, Modules module) {
-        return questionService.getQuestionsByTestIdAndModule(id, module.getName())
-                .stream()
-                .map(QuestionDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    private QuestionDTO getQuestion(Long id, Modules module) {
-        Question question = questionService
-                .getQuestionByTestIdAndModule(id, module.getName());
-        return new QuestionDTO(question);
-    }
 }

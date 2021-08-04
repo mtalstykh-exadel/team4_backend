@@ -5,6 +5,7 @@ import com.team4.testingsystem.entities.Test;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -12,11 +13,11 @@ public class TestDTO {
     private String level;
     private LocalDateTime createdAt;
     private LocalDateTime finishedAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime startedAt;
+
     private UserDTO coach;
-    private List<QuestionDTO> grammarQuestions;
-    private List<QuestionDTO> listeningQuestions;
-    private QuestionDTO essayQuestion;
-    private QuestionDTO speakingQuestion;
+    private Map<String, List<QuestionDTO>> questions;
     private String contentFile;
 
     public TestDTO() {
@@ -26,41 +27,35 @@ public class TestDTO {
         level = test.getLevel().getName();
         createdAt = test.getCreatedAt();
         finishedAt = test.getFinishedAt();
+        updatedAt = test.getUpdatedAt();
+        startedAt = test.getStartedAt();
         if (test.getCoach() != null) {
             coach = new UserDTO(test.getCoach());
         }
     }
 
-    public List<QuestionDTO> getGrammarQuestions() {
-        return grammarQuestions;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setGrammarQuestions(List<QuestionDTO> grammarQuestions) {
-        this.grammarQuestions = grammarQuestions;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    public List<QuestionDTO> getListeningQuestions() {
-        return listeningQuestions;
+    public LocalDateTime getStartedAt() {
+        return startedAt;
     }
 
-    public void setListeningQuestions(List<QuestionDTO> listeningQuestions) {
-        this.listeningQuestions = listeningQuestions;
+    public void setStartedAt(LocalDateTime startedAt) {
+        this.startedAt = startedAt;
     }
 
-    public QuestionDTO getEssayQuestion() {
-        return essayQuestion;
+    public Map<String, List<QuestionDTO>> getQuestions() {
+        return questions;
     }
 
-    public void setEssayQuestion(QuestionDTO essayQuestion) {
-        this.essayQuestion = essayQuestion;
-    }
-
-    public QuestionDTO getSpeakingQuestion() {
-        return speakingQuestion;
-    }
-
-    public void setSpeakingQuestion(QuestionDTO speakingQuestion) {
-        this.speakingQuestion = speakingQuestion;
+    public void setQuestions(Map<String, List<QuestionDTO>> questions) {
+        this.questions = questions;
     }
 
     public String getContentFile() {
@@ -116,10 +111,7 @@ public class TestDTO {
                && Objects.equals(createdAt, testDTO.createdAt)
                && Objects.equals(finishedAt, testDTO.finishedAt)
                && Objects.equals(coach, testDTO.coach)
-               && Objects.equals(grammarQuestions, testDTO.grammarQuestions)
-               && Objects.equals(listeningQuestions, testDTO.listeningQuestions)
-               && Objects.equals(essayQuestion, testDTO.essayQuestion)
-               && Objects.equals(speakingQuestion, testDTO.speakingQuestion)
+               && Objects.equals(questions, testDTO.questions)
                && Objects.equals(contentFile, testDTO.contentFile);
     }
 
@@ -129,10 +121,7 @@ public class TestDTO {
                 createdAt,
                 finishedAt,
                 coach,
-                grammarQuestions,
-                listeningQuestions,
-                essayQuestion,
-                speakingQuestion,
+                questions,
                 contentFile);
     }
 }
