@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/tests")
@@ -51,11 +51,10 @@ public class TestsController {
 
 
     @GetMapping(path = "/unverified")
-    public List<TestDTO> getUnverifiedTests(){
-        List<Test> tests = testsService.getByStatus(Status.COMPLETED);
-        List<TestDTO> testDTOS = new ArrayList<>();
-        tests.forEach(test -> testDTOS.add(new TestDTO(test)));
-        return testDTOS;
+    public List<TestDTO> getUnverifiedTests() {
+        Status[] statuses = { Status.COMPLETED, Status.IN_VERIFICATION };
+        List<Test> tests = testsService.getByStatuses(statuses);
+        return tests.stream().map(TestDTO::new).collect(Collectors.toList());
     }
 
     @ApiOperation(value = "(To be updated) Is used to assign a test for the user (HR's ability)")
