@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -58,7 +59,6 @@ public class Test implements Serializable {
 
     @Column(name = "evaluation")
     private int evaluation;
-
 
     @ManyToOne
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
@@ -220,5 +220,43 @@ public class Test implements Serializable {
         public Test build() {
             return test;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Test test = (Test) o;
+        return Objects.equals(id, test.id)
+                && Objects.equals(user, test.user)
+                && Objects.equals(level, test.level)
+                && Objects.equals(createdAt, test.createdAt)
+                && Objects.equals(updatedAt, test.updatedAt)
+                && Objects.equals(startedAt, test.startedAt)
+                && Objects.equals(finishedAt, test.finishedAt)
+                && Objects.equals(status, test.status)
+                && Objects.equals(evaluation, test.evaluation)
+                && Objects.equals(coach, test.coach)
+                && Objects.equals(questions, test.questions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id,
+                user,
+                level,
+                createdAt,
+                updatedAt,
+                startedAt,
+                finishedAt,
+                status,
+                evaluation,
+                coach,
+                questions);
     }
 }
