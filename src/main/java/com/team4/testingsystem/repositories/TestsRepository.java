@@ -16,10 +16,7 @@ import java.util.Optional;
 @Repository
 public interface TestsRepository extends CrudRepository<Test, Long> {
 
-    @Override
-    Optional<Test> findById(Long id);
-
-    Iterable<Test> getAllByUser(User user);
+    List<Test> getAllByUser(User user);
 
     @Query("select t from Test t where t.status in ?1")
     List<Test> getByStatuses(Status[] statuses);
