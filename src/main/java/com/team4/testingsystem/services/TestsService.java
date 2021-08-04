@@ -14,7 +14,7 @@ public interface TestsService {
 
     Iterable<Test> getByUserId(long userId);
 
-    List<Test> getByStatus(Status status);
+    List<Test> getByStatuses(Status[] status);
 
     Test save(Test test);
 

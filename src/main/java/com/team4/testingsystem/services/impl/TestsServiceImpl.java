@@ -56,8 +56,8 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public List<Test> getByStatus(Status status) {
-        return testsRepository.getByStatus(status);
+    public List<Test> getByStatuses(Status[] statuses) {
+        return testsRepository.getByStatuses(statuses);
     }
 
     @Override

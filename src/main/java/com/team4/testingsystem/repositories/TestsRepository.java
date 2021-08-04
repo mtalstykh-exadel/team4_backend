@@ -21,7 +21,8 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     Iterable<Test> getAllByUser(User user);
 
-    List<Test> getByStatus(Status status);
+    @Query("select t from Test t where t.status in ?1")
+    List<Test> getByStatuses(Status[] statuses);
 
     @Transactional
     @Modifying
@@ -30,7 +31,7 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.finishedAt = ?1, t.status = 'FINISHED', t.evaluation = ?2  where t.id = ?3")
+    @Query(value = "UPDATE Test t SET t.finishedAt = ?1, t.status = 'COMPLETED', t.evaluation = ?2  where t.id = ?3")
     int finish(LocalDateTime finishDate, int evaluation, Long id);
 
     @Transactional
