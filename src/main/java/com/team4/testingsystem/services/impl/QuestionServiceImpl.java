@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -31,15 +32,15 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Question createQuestion(Question question) {
-        Question resultQuestion = questionRepository.save(question);
-        return questionRepository.save(resultQuestion);
+        return questionRepository.save(question);
     }
 
     @Transactional
     @Override
     public Question addAnswers(Question question, List<AnswerDTO> textAnswers) {
-        List<Answer> answers = new ArrayList<>();
-        textAnswers.forEach(answerDTO -> answers.add(new Answer(answerDTO, question)));
+        List<Answer> answers = textAnswers.stream()
+                .map(answerDTO -> new Answer(answerDTO, question))
+                .collect(Collectors.toList());
         question.setAnswers(answers);
         return questionRepository.save(question);
     }

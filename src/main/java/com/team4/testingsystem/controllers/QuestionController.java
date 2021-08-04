@@ -42,7 +42,7 @@ public class QuestionController {
         if (questionDTO.getAnswers() != null) {
             questionService.addAnswers(question, questionDTO.getAnswers());
         }
-        return questionConverter.convertToDTO(question);
+        return questionDTO;
     }
 
     @ApiOperation(value = "Archive the question")
