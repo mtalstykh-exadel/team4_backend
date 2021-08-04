@@ -68,17 +68,16 @@ public class TestsController {
             "(To be updated) Is used when the user wants to learn one's level by oneself (without any HRs)")
     @ApiResponse(code = 200, message = "Started test's id")
     @PostMapping(path = "/start")
-    public long startNotAssigned(@RequestParam Levels level) {
+    public TestDTO startNotAssigned(@RequestParam Levels level) {
         long userId = JwtTokenUtil.extractUserDetails().getId();
         long createdTestId = testsService.createForUser(userId, level);
-        testsService.start(createdTestId);
-        return createdTestId;
+        return testsService.start(createdTestId);
     }
 
     @ApiOperation(value = "Is used when the user starts test which was assigned by an HR")
     @PostMapping(path = "/start/{testId}")
-    public void startAssigned(@PathVariable("testId") long testId) {
-        testsService.start(testId);
+    public TestDTO startAssigned(@PathVariable("testId") long testId) {
+        return testsService.start(testId);
     }
 
     @ApiOperation(value = "Is used to finish tests")

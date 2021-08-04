@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.testingsystem.entities.Test;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -15,6 +17,11 @@ public class TestDTO {
     private LocalDateTime startedAt;
     private UserDTO coach;
     private int evaluation;
+    private Map<String, List<QuestionDTO>> questions;
+    private String contentFile;
+
+    public TestDTO() {
+    }
 
     public TestDTO(Test test) {
         level = test.getLevel().getName();
@@ -26,10 +33,6 @@ public class TestDTO {
         if (test.getCoach() != null) {
             coach = new UserDTO(test.getCoach());
         }
-    }
-
-    public UserDTO getCoach() {
-        return coach;
     }
 
     public int getEvaluation() {
@@ -56,8 +59,20 @@ public class TestDTO {
         this.startedAt = startedAt;
     }
 
-    public void setCoach(UserDTO coach) {
-        this.coach = coach;
+    public Map<String, List<QuestionDTO>> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(Map<String, List<QuestionDTO>> questions) {
+        this.questions = questions;
+    }
+
+    public String getContentFile() {
+        return contentFile;
+    }
+
+    public void setContentFile(String contentFile) {
+        this.contentFile = contentFile;
     }
 
     public String getLevel() {
@@ -82,6 +97,14 @@ public class TestDTO {
 
     public void setFinishedAt(LocalDateTime finishedAt) {
         this.finishedAt = finishedAt;
+    }
+
+    public UserDTO getCoach() {
+        return coach;
+    }
+
+    public void setCoach(UserDTO coach) {
+        this.coach = coach;
     }
 
     @Override

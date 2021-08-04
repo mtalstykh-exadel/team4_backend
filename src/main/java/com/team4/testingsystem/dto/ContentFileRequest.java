@@ -7,6 +7,9 @@ public class ContentFileRequest implements Serializable {
     private String url;
     private Long questionId;
 
+    public ContentFileRequest() {
+    }
+
     public String getUrl() {
         return url;
     }
