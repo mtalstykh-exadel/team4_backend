@@ -2,7 +2,6 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.TestConverter;
 import com.team4.testingsystem.dto.TestDTO;
-import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
@@ -22,7 +21,6 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -234,7 +232,7 @@ class TestsControllerTest {
     }
 
     @org.junit.jupiter.api.Test
-    void getUnverifiedTests(){
+    void getUnverifiedTests() {
         List<Test> tests = new ArrayList<>();
         List<TestDTO> testsDto = new ArrayList<>();
         Mockito.when(testsService.getByStatuses(any())).thenReturn(tests);

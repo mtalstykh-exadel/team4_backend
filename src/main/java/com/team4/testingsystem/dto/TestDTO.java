@@ -35,10 +35,6 @@ public class TestDTO {
         }
     }
 
-    public UserDTO getCoach() {
-        return coach;
-    }
-
     public int getEvaluation() {
         return evaluation;
     }
@@ -77,8 +73,6 @@ public class TestDTO {
 
     public void setContentFile(String contentFile) {
         this.contentFile = contentFile;
-    public void setCoach(UserDTO coach) {
-        this.coach = coach;
     }
 
     public String getLevel() {
@@ -128,19 +122,10 @@ public class TestDTO {
                && Objects.equals(updatedAt, testDTO.updatedAt)
                && Objects.equals(startedAt, testDTO.startedAt)
                && Objects.equals(coach, testDTO.coach);
-               && Objects.equals(coach, testDTO.coach)
-               && Objects.equals(questions, testDTO.questions)
-               && Objects.equals(contentFile, testDTO.contentFile);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(level, createdAt, finishedAt, updatedAt, startedAt, coach);
-        return Objects.hash(level,
-                createdAt,
-                finishedAt,
-                coach,
-                questions,
-                contentFile);
     }
 }

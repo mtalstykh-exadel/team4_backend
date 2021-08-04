@@ -149,7 +149,6 @@ class TestsServiceImplTest {
         Test test = EntityCreatorUtil.createTest(user);
         TestDTO testDTO = EntityCreatorUtil.createTestDTO(test);
         Mockito.when(testsRepository.start(any(),anyLong())).thenReturn(1);
-        Test test = new Test();
         Mockito.when(testsRepository.start(any(), anyLong())).thenReturn(1);
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
         Mockito.when(testGeneratingService.formTest(any())).thenReturn(test);
