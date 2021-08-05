@@ -97,7 +97,7 @@ public class EntityCreatorUtil {
                 .user(user)
                 .status(Status.STARTED)
                 .level(createLevel())
-                .createdAt(LocalDateTime.now())
+                .assignedAt(LocalDateTime.now())
                 .build();
     }
 

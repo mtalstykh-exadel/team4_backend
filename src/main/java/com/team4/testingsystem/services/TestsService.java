@@ -5,6 +5,7 @@ import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TestsService {
@@ -19,7 +20,9 @@ public interface TestsService {
 
     Test save(Test test);
 
-    long createForUser(long userId, Levels level);
+    long startForUser(long userId, Levels level);
+
+    long assignForUser(long userId, Levels level, LocalDateTime deadline);
 
     TestDTO start(long id);
 

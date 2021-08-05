@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 
 @Entity
 @Table(name = "question")
@@ -38,7 +40,7 @@ public class Question implements Serializable {
     @JoinColumn(name = "module_id", referencedColumnName = "id")
     private Module module;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     List<Answer> answers = new ArrayList<>();
 
     @ManyToMany(mappedBy = "questions")
@@ -105,16 +107,27 @@ public class Question implements Serializable {
         }
         Question question = (Question) o;
         return isAvailable == question.isAvailable
-                && Objects.equals(id, question.id)
-                && Objects.equals(body, question.body)
-                && Objects.equals(creator, question.creator)
-                && Objects.equals(level, question.level)
-                && Objects.equals(module, question.module);
+               && Objects.equals(id, question.id)
+               && Objects.equals(body, question.body)
+               && Objects.equals(creator, question.creator)
+               && Objects.equals(level, question.level)
+               && Objects.equals(module, question.module)
+               && Objects.equals(answers, question.answers)
+               && Objects.equals(contentFiles, question.contentFiles)
+               && Objects.equals(tests, question.tests);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, body, isAvailable, creator, level, module);
+        return Objects.hash(id,
+                body,
+                isAvailable,
+                creator,
+                level,
+                module,
+                answers,
+                contentFiles,
+                tests);
     }
 
     public List<Answer> getAnswers() {
@@ -179,6 +192,11 @@ public class Question implements Serializable {
 
         public Builder module(Module module) {
             question.module = module;
+            return this;
+        }
+
+        public Builder answers(List<Answer> answers) {
+            question.setAnswers(answers);
             return this;
         }
 
