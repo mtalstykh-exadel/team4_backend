@@ -4,12 +4,10 @@ import com.team4.testingsystem.dto.CoachGradeDTO;
 import com.team4.testingsystem.services.CoachGradeService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,20 +34,10 @@ public class CoachGradeController {
                 .collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Add grading for a single question of the test")
-    @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "Test or question not found"),
-            @ApiResponse(code = 409, message = "The question is already graded")
-    })
+    @ApiOperation(value = "Use it to add or update grading for a single question of the test")
     @PostMapping("/")
-    public void createGrade(@RequestBody CoachGradeDTO gradeDTO) {
-        gradeService.createGrade(gradeDTO.getTestId(), gradeDTO.getQuestionId(), gradeDTO.getGrade());
+    public void add(@RequestBody CoachGradeDTO gradeDTO) {
+        gradeService.add(gradeDTO.getTestId(), gradeDTO.getQuestionId(), gradeDTO.getGrade());
     }
 
-    @ApiOperation(value = "Update grading for a single question of the test")
-    @ApiResponse(code = 404, message = "Test, question or grade not found")
-    @PutMapping("/")
-    public void updateGrade(@RequestBody CoachGradeDTO gradeDTO) {
-        gradeService.updateGrade(gradeDTO.getTestId(), gradeDTO.getQuestionId(), gradeDTO.getGrade());
-    }
 }
