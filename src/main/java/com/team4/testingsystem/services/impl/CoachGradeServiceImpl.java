@@ -3,8 +3,7 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.exceptions.CoachGradeAlreadyExistsException;
-import com.team4.testingsystem.exceptions.GradeNotFoundException;
+import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.services.CoachGradeService;
 import com.team4.testingsystem.services.QuestionService;
@@ -32,28 +31,20 @@ public class CoachGradeServiceImpl implements CoachGradeService {
 
     @Override
     public Collection<CoachGrade> getGradesByTest(Long testId) {
-        return gradeRepository.findAllByTest(testsService.getById(testId));
+        return gradeRepository.findAllById_Test(testsService.getById(testId));
     }
 
     @Override
-    public void createGrade(Long testId, Long questionId, Integer grade) {
+    public void add(Long testId, Long questionId, Integer grade) {
+
         Test test = testsService.getById(testId);
+
         Question question = questionService.getById(questionId);
 
-        if (gradeRepository.findByTestAndQuestion(test, question).isPresent()) {
-            throw new CoachGradeAlreadyExistsException();
-        }
+        TestQuestionID testQuestionID = new TestQuestionID(test, question);
 
-        gradeRepository.save(new CoachGrade(test, question, grade));
+        gradeRepository.save(new CoachGrade(testQuestionID, grade));
+
     }
 
-    @Override
-    public void updateGrade(Long testId, Long questionId, Integer grade) {
-        Test test = testsService.getById(testId);
-        Question question = questionService.getById(questionId);
-
-        if (gradeRepository.updateGrade(test, question, grade) == 0) {
-            throw new GradeNotFoundException();
-        }
-    }
 }
