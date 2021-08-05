@@ -7,6 +7,7 @@ import com.team4.testingsystem.entities.ErrorReport;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.repositories.ErrorReportsRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
@@ -52,6 +53,7 @@ class ErrorReportsControllerIntegrationTest {
     private final UsersRepository usersRepository;
     private final QuestionRepository questionRepository;
     private final TestsRepository testsRepository;
+    private final AnswerRepository answerRepository;
     private final ErrorReportsRepository errorReportsRepository;
 
     private final ObjectMapper objectMapper;
@@ -64,18 +66,20 @@ class ErrorReportsControllerIntegrationTest {
                                           UsersRepository usersRepository,
                                           QuestionRepository questionRepository,
                                           TestsRepository testsRepository,
-                                          ErrorReportsRepository errorReportsRepository,
+                                          AnswerRepository answerRepository, ErrorReportsRepository errorReportsRepository,
                                           ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.usersRepository = usersRepository;
         this.questionRepository = questionRepository;
         this.testsRepository = testsRepository;
+        this.answerRepository = answerRepository;
         this.errorReportsRepository = errorReportsRepository;
         this.objectMapper = objectMapper;
     }
 
     @BeforeEach
     void init() {
+        answerRepository.deleteAll();
         user = usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow();
         userDetails = new CustomUserDetails(user);
     }
@@ -83,6 +87,7 @@ class ErrorReportsControllerIntegrationTest {
     @AfterEach
     void destroy() {
         errorReportsRepository.deleteAll();
+        answerRepository.deleteAll();
         questionRepository.deleteAll();
         testsRepository.deleteAll();
     }

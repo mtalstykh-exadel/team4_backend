@@ -6,6 +6,7 @@ import com.team4.testingsystem.dto.CoachGradeDTO;
 import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
@@ -43,6 +44,7 @@ class CoachGradeControllerIntegrationTest {
     private final QuestionRepository questionRepository;
     private final TestsRepository testsRepository;
     private final CoachGradeRepository gradeRepository;
+    private final AnswerRepository answerRepository;
 
     private final ObjectMapper objectMapper;
 
@@ -55,17 +57,19 @@ class CoachGradeControllerIntegrationTest {
                                         QuestionRepository questionRepository,
                                         TestsRepository testsRepository,
                                         CoachGradeRepository gradeRepository,
-                                        ObjectMapper objectMapper) {
+                                        AnswerRepository answerRepository, ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.usersRepository = usersRepository;
         this.questionRepository = questionRepository;
         this.testsRepository = testsRepository;
         this.gradeRepository = gradeRepository;
+        this.answerRepository = answerRepository;
         this.objectMapper = objectMapper;
     }
 
     @BeforeEach
     void init() {
+        answerRepository.deleteAll();
         user = usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow();
         userDetails = new CustomUserDetails(user);
     }
@@ -73,6 +77,7 @@ class CoachGradeControllerIntegrationTest {
     @AfterEach
     void destroy() {
         gradeRepository.deleteAll();
+        answerRepository.deleteAll();
         questionRepository.deleteAll();
         testsRepository.deleteAll();
     }
