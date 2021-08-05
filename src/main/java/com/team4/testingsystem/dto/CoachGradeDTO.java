@@ -14,8 +14,8 @@ public class CoachGradeDTO implements Serializable {
     }
 
     public CoachGradeDTO(CoachGrade coachGrade) {
-        this.testId = coachGrade.getTest().getId();
-        this.questionId = coachGrade.getQuestion().getId();
+        this.testId = coachGrade.getId().getTest().getId();
+        this.questionId = coachGrade.getId().getQuestion().getId();
         this.grade = coachGrade.getGrade();
     }
 
