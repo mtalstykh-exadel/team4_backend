@@ -4,3 +4,4 @@ CREATE SEQUENCE IF NOT EXISTS language_testing.user_role_id_seq START WITH 1 INC
 CREATE SEQUENCE IF NOT EXISTS language_testing.user_id_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE IF NOT EXISTS language_testing.question_id_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE IF NOT EXISTS language_testing.answer_id_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE IF NOT EXISTS language_testing.content_file_id_seq START WITH 1 INCREMENT BY 1;
