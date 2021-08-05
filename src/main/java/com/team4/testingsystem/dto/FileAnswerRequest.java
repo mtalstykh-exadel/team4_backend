@@ -7,6 +7,9 @@ public class FileAnswerRequest implements Serializable {
     private long questionId;
     private String url;
 
+    public FileAnswerRequest() {
+    }
+
     public String getUrl() {
         return url;
     }

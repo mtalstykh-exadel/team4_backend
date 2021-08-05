@@ -17,4 +17,6 @@ public interface QuestionService {
     List<Question> getRandomQuestions(String level, String module, Pageable pageable);
 
     List<Question> getRandomQuestionsByContentFile(Long id, Pageable pageable);
+
+    List<Question> getQuestionsByTestId(Long id);
 }

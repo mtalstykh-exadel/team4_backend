@@ -520,4 +520,25 @@
                 columnName="file_answer_id"/>
     </changeSet>
 
+    <changeSet id="replace_status_type" author="Darina">
+        <modifyDataType
+                columnName="status"
+                newDataType="varchar(256)"
+                schemaName="language_testing"
+                tableName="test"/>
+        <sql>DROP TYPE status;</sql>
+        <sql>CREATE TYPE status AS ENUM (
+                'ASSIGNED',
+                'STARTED',
+                'COMPLETED',
+                'IN_VERIFICATION',
+                'VERIFIED',
+                'EXPIRED');
+        </sql>
+        <modifyDataType
+                columnName="status"
+                newDataType="status"
+                schemaName="language_testing"
+                tableName="test"/>
+    </changeSet>
 </databaseChangeLog>
