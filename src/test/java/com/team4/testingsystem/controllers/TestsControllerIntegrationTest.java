@@ -72,11 +72,11 @@ class TestsControllerIntegrationTest {
     @Test
     void getUsersTestsSuccess() throws Exception {
         com.team4.testingsystem.entities.Test test1 = EntityCreatorUtil.createTest(user);
-        test1.setCreatedAt(null);
+        test1.setAssignedAt(null);
         testsRepository.save(test1);
 
         com.team4.testingsystem.entities.Test test2 = EntityCreatorUtil.createTest(user);
-        test2.setCreatedAt(null);
+        test2.setAssignedAt(null);
         testsRepository.save(test2);
 
         long userId = user.getId();

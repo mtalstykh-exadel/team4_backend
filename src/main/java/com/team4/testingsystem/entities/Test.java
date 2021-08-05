@@ -41,17 +41,20 @@ public class Test implements Serializable {
     @JoinColumn(name = "level_id", referencedColumnName = "id")
     private Level level;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(name = "assigned_at")
+    private LocalDateTime assignedAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "verified_at")
+    private LocalDateTime verifiedAt;
 
     @Column(name = "started_at")
     private LocalDateTime startedAt;
 
-    @Column(name = "finished_at")
-    private LocalDateTime finishedAt;
+    @Column(name = "completed_at")
+    private LocalDateTime completedAt;
+
+    @Column(name = "deadline")
+    private LocalDateTime deadline;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -80,20 +83,24 @@ public class Test implements Serializable {
         return user;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getAssignedAt() {
+        return assignedAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
+    public LocalDateTime getVerifiedAt() {
+        return verifiedAt;
     }
 
     public LocalDateTime getStartedAt() {
         return startedAt;
     }
 
-    public LocalDateTime getFinishedAt() {
-        return finishedAt;
+    public LocalDateTime getCompletedAt() {
+        return completedAt;
+    }
+
+    public LocalDateTime getDeadline() {
+        return deadline;
     }
 
     public Status getStatus() {
@@ -112,20 +119,24 @@ public class Test implements Serializable {
         this.user = user;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setAssignedAt(LocalDateTime createdAt) {
+        this.assignedAt = createdAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setVerifiedAt(LocalDateTime updatedAt) {
+        this.verifiedAt = updatedAt;
     }
 
     public void setStartedAt(LocalDateTime startedAt) {
         this.startedAt = startedAt;
     }
 
-    public void setFinishedAt(LocalDateTime finishedAt) {
-        this.finishedAt = finishedAt;
+    public void setCompletedAt(LocalDateTime finishedAt) {
+        this.completedAt = finishedAt;
+    }
+
+    public void setDeadline(LocalDateTime deadline) {
+        this.deadline = deadline;
     }
 
     public void setStatus(Status status) {
@@ -177,13 +188,13 @@ public class Test implements Serializable {
             return this;
         }
 
-        public Builder createdAt(LocalDateTime createdAt) {
-            test.createdAt = createdAt;
+        public Builder assignedAt(LocalDateTime assignedAt) {
+            test.assignedAt = assignedAt;
             return this;
         }
 
-        public Builder updatedAt(LocalDateTime updatedAt) {
-            test.updatedAt = updatedAt;
+        public Builder verifiedAt(LocalDateTime verifiedAt) {
+            test.verifiedAt = verifiedAt;
             return this;
         }
 
@@ -192,8 +203,13 @@ public class Test implements Serializable {
             return this;
         }
 
-        public Builder finishedAt(LocalDateTime finishedAt) {
-            test.finishedAt = finishedAt;
+        public Builder completedAt(LocalDateTime completedAt) {
+            test.completedAt = completedAt;
+            return this;
+        }
+
+        public Builder deadline(LocalDateTime deadline) {
+            test.deadline = deadline;
             return this;
         }
 
@@ -235,10 +251,11 @@ public class Test implements Serializable {
         return Objects.equals(id, test.id)
                 && Objects.equals(user, test.user)
                 && Objects.equals(level, test.level)
-                && Objects.equals(createdAt, test.createdAt)
-                && Objects.equals(updatedAt, test.updatedAt)
+                && Objects.equals(assignedAt, test.assignedAt)
+                && Objects.equals(verifiedAt, test.verifiedAt)
                 && Objects.equals(startedAt, test.startedAt)
-                && Objects.equals(finishedAt, test.finishedAt)
+                && Objects.equals(completedAt, test.completedAt)
+                && Objects.equals(deadline, test.deadline)
                 && Objects.equals(status, test.status)
                 && Objects.equals(evaluation, test.evaluation)
                 && Objects.equals(coach, test.coach)
@@ -247,16 +264,8 @@ public class Test implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id,
-                user,
-                level,
-                createdAt,
-                updatedAt,
-                startedAt,
-                finishedAt,
-                status,
-                evaluation,
-                coach,
-                questions);
+        return Objects.hash(id, user, level,
+                assignedAt, verifiedAt, startedAt, completedAt, deadline,
+                status, evaluation, coach, questions);
     }
 }
