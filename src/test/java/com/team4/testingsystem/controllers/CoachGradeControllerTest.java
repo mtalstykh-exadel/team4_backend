@@ -80,7 +80,7 @@ class CoachGradeControllerTest {
         Assertions.assertEquals(grade, grades.get(0).getGrade());
     }
     @Test
-    void createGradeQuestionSuccess() {
+    void addGradeQuestionSuccess() {
         CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
                 .testId(testId)
                 .questionId(questionId)
@@ -92,14 +92,14 @@ class CoachGradeControllerTest {
     }
 
     @Test
-    void createGradeTestNotFound() {
+    void addGradeTestNotFound() {
         Mockito.doThrow(TestNotFoundException.class)
                 .when(gradeService).add(testId, questionId, grade);
         Assertions.assertThrows(TestNotFoundException.class, () -> gradeController.add(gradeRequest));
     }
 
     @Test
-    void createGradeQuestionNotFound() {
+    void addGradeQuestionNotFound() {
         Mockito.doThrow(QuestionNotFoundException.class)
                 .when(gradeService).add(testId, questionId, grade);
         Assertions.assertThrows(QuestionNotFoundException.class, () -> gradeController.add(gradeRequest));

@@ -33,7 +33,7 @@ class CoachGradeServiceImplTest {
 
     @InjectMocks
     private CoachGradeServiceImpl gradeService;
-    
+
 
     @Mock
     private Question question;
@@ -75,7 +75,7 @@ class CoachGradeServiceImplTest {
     }
 
     @Test
-    void createGradeTestNotFound() {
+    void addGradeTestNotFound() {
         Mockito.when(testsService.getById(testId)).thenThrow(TestNotFoundException.class);
 
         Assertions.assertThrows(TestNotFoundException.class,

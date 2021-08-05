@@ -160,7 +160,7 @@ class CoachGradeControllerIntegrationTest {
     }
 
     @Test
-    void createGradeTestNotFound() throws Exception {
+    void addGradeTestNotFound() throws Exception {
         CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
                 .testId(200L)
                 .questionId(300L)
@@ -175,7 +175,7 @@ class CoachGradeControllerIntegrationTest {
     }
 
     @Test
-    void createGradeQuestionNotFound() throws Exception {
+    void addGradeQuestionNotFound() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
         testsRepository.save(test);
 
@@ -193,7 +193,7 @@ class CoachGradeControllerIntegrationTest {
     }
 
     @Test
-    void createGradeSuccess() throws Exception {
+    void addGradeSuccess() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
         testsRepository.save(test);
 
