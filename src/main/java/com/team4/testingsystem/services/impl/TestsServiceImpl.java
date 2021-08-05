@@ -70,24 +70,38 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public long createForUser(long userId, Levels levelName) {
-        Level level = levelService.getLevelByName(levelName.name());
-        User user = usersService.getUserById(userId);
-        Test test = Test.builder()
-                .user(user)
-                .createdAt(LocalDateTime.now())
-                .status(Status.ASSIGNED)
-                .level(level)
+    public long startForUser(long userId, Levels levelName) {
+        Test test = createForUser(userId, levelName)
+                .startedAt(LocalDateTime.now())
+                .status(Status.STARTED)
                 .build();
-        testsRepository.save(test);
 
+        testsRepository.save(test);
         return test.getId();
     }
 
+    @Override
+    public long assignForUser(long userId, Levels levelName, LocalDateTime deadline) {
+        Test test = createForUser(userId, levelName)
+                .assignedAt(LocalDateTime.now())
+                .deadline(deadline)
+                .status(Status.ASSIGNED)
+                .build();
+
+        testsRepository.save(test);
+        return test.getId();
+    }
+
+    private Test.Builder createForUser(long userId, Levels levelName) {
+        Level level = levelService.getLevelByName(levelName.name());
+        User user = usersService.getUserById(userId);
+        return Test.builder()
+                .user(user)
+                .level(level);
+    }
 
     @Override
     public TestDTO start(long id) {
-
         if (testsRepository.start(LocalDateTime.now(), id) == 0) {
             throw new TestNotFoundException();
         }
@@ -96,32 +110,25 @@ public class TestsServiceImpl implements TestsService {
         return testConverter.convertToDTO(test);
     }
 
-
     @Override
     public void finish(long id, int evaluation) {
-
         if (testsRepository.finish(LocalDateTime.now(), evaluation, id) == 0) {
             throw new TestNotFoundException();
         }
     }
 
-
     @Override
     public void updateEvaluation(long id, int newEvaluation) {
-
         if (testsRepository.updateEvaluation(LocalDateTime.now(), newEvaluation, id) == 0) {
             throw new TestNotFoundException();
         }
-
     }
 
     @Override
     public void removeById(long id) {
-
         if (testsRepository.removeById(id) == 0) {
             throw new TestNotFoundException();
         }
-
     }
 
     @Override
@@ -133,7 +140,6 @@ public class TestsServiceImpl implements TestsService {
         }
 
         testsRepository.assignCoach(coach, id);
-
     }
 
     @Override
@@ -141,6 +147,5 @@ public class TestsServiceImpl implements TestsService {
         if (testsRepository.deassignCoach(id) == 0) {
             throw new TestNotFoundException();
         }
-
     }
 }
