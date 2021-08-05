@@ -95,4 +95,12 @@ class QuestionServiceImplTest {
         Assertions.assertEquals(questions, questionService.getRandomQuestionsByContentFile(any(), any()));
     }
 
+    @Test
+    void getQuestionsByTestIdAndModule() {
+        List<Question> questions = new ArrayList<>();
+        Mockito.when(questionRepository
+                .getQuestionsByTestId(any())).thenReturn(questions);
+        Assertions.assertEquals(questions, questionService.getQuestionsByTestId(any()));
+    }
+
 }

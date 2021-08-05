@@ -68,4 +68,9 @@ public class QuestionServiceImpl implements QuestionService {
         return questionRepository.getRandomQuestionByContentFile(id, pageable);
     }
 
+    @Override
+    public List<Question> getQuestionsByTestId(Long id) {
+        return questionRepository.getQuestionsByTestId(id);
+    }
+
 }
