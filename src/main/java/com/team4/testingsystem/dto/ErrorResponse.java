@@ -1,15 +1,14 @@
-package com.team4.testingsystem.exceptions;
-
+package com.team4.testingsystem.dto;
 
 import java.time.LocalDateTime;
 
-public class Response {
+public class ErrorResponse {
 
     private String message;
 
     private String date;
 
-    public Response(String message) {
+    public ErrorResponse(String message) {
         this.message = message;
         this.date = LocalDateTime.now().toString();
     }

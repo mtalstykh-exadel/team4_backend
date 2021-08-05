@@ -1,5 +1,6 @@
 package com.team4.testingsystem.exceptions;
 
+import com.team4.testingsystem.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -11,26 +12,26 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ConflictException.class})
     @ResponseStatus(value = HttpStatus.CONFLICT)
-    public Response handleConflictException(ConflictException e) {
-        return new Response(e.getMessage());
+    public ErrorResponse handleConflictException(ConflictException e) {
+        return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler(value = {FileOperationException.class})
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    public Response handleFileOperationException(FileOperationException e) {
-        return new Response(e.getMessage());
+    public ErrorResponse handleFileOperationException(FileOperationException e) {
+        return new ErrorResponse(e.getMessage());
     }
 
 
     @ExceptionHandler(value = {IncorrectCredentialsException.class})
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-    public Response handleNotFoundException(IncorrectCredentialsException e) {
-        return new Response("Incorrect login or password");
+    public ErrorResponse handleNotFoundException(IncorrectCredentialsException e) {
+        return new ErrorResponse("Incorrect login or password");
     }
 
     @ExceptionHandler(value = {NotFoundException.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public Response handleNotFoundException(NotFoundException e) {
-        return new Response(e.getMessage());
+    public ErrorResponse handleNotFoundException(NotFoundException e) {
+        return new ErrorResponse(e.getMessage());
     }
 }
