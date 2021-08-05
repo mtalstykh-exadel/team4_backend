@@ -1060,6 +1060,532 @@
         </insert>
     </changeSet>
 
+    <changeSet id="add_questions_B1_grammar" author="Darina">
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Grammar')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'eng_hr@northsixty.com')"/>
+            <column name="question_body">Choose the correct option</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">When going out are we?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">When do we go out?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">When are you going to go out?</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">When did you are going out?</column>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Grammar')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'eng_hr@northsixty.com')"/>
+            <column name="question_body">Choose the correct option</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">I worked tomorrow</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">I don't working tomorrow</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">I will work tomorrow</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">I working tomorrow</column>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Grammar')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Choose the correct option. Answer: Yes, just now</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Did you finish your project?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Have you got finished your project?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Have you finished your project?</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Will you finished your project?</column>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Grammar')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Choose the correct option</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">I am usually having some coffee and toast for my breakfast</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">. I am used to have some coffee and toast for my breakfast</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">I usually have some coffee and toast for my breakfast</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">I usually will have have some coffee and toast for my breakfast</column>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Grammar')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'eng_hr@northsixty.com')"/>
+            <column name="question_body">Choose the correct option</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">I'm trying to eat a more healthy diet</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">I am will trying to eat a more healthy diet</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">I'm trying to eat a healthier diet</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">I try to eat a more healthy diet</column>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Grammar')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Choose the correct option</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">He's never gone to New York</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">He is never gone to New York</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">. He's never been to New York</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">He's gone often to New York</column>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Grammar')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'eng_hr@northsixty.com')"/>
+            <column name="question_body">Choose the correct option</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">At this rate, they are never here on time</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">At this rate, they never here on time</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">At this rate, they will never be here on time</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">At this rate, they are never going here on time</column>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Grammar')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'eng_hr@northsixty.com')"/>
+            <column name="question_body">Choose the correct option</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Are you studied Chinese before?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Will you studied Chinese before?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Have you studied Chinese before?</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Are you studying Chinese before?</column>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Grammar')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Choose the correct option. Answer: Thank you, that's very kind</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">I could do that</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">I could had do that</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">I can do that for you</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">I could to make that for youw</column>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Grammar')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Choose the correct option. Answer: Yes, in the Autumn</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Are you going to University?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Do you like University?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Are you going to go to University?</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Will you went to University?</column>
+        </insert>
+
+    </changeSet>
+    <changeSet id="add_question_B1_essay" author="Darina">
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Essay')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'eng_hr@northsixty.com')"/>
+            <column name="question_body">My Favourite Writers</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Essay')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">My Plans For The Future</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Essay')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'eng_hr@northsixty.com')"/>
+            <column name="question_body">My personality, my character</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Essay')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Bad habits: smoking, alcohol, drugs</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Essay')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Healthy lifestyle</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Essay')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'eng_hr@northsixty.com')"/>
+            <column name="question_body">Geographical position of the USA</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Essay')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">American Traditions</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Essay')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Australia</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Essay')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Travelling</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Essay')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Business Trips</column>
+        </insert>
+    </changeSet>
+    <changeSet id="add_question_B1_speaking" author="Darina">
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Speaking')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'eng_hr@northsixty.com')"/>
+            <column name="question_body">Business Trips</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Speaking')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'eng_hr@northsixty.com')"/>
+            <column name="question_body">My Favourite Writers</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Speaking')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'eng_hr@northsixty.com')"/>
+            <column name="question_body">My Plans For The Future</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Speaking')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'eng_hr@northsixty.com')"/>
+            <column name="question_body">My personality, my character</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Speaking')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Bad habits: smoking, alcohol, drugs</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Speaking')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Healthy lifestyle</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Speaking')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'eng_hr@northsixty.com')"/>
+            <column name="question_body">Geographical position of the USA</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Speaking')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">American Traditions</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Speaking')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Australia</column>
+        </insert>
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Speaking')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'eng_hr@northsixty.com')"/>
+            <column name="question_body">Travelling</column>
+        </insert>
+    </changeSet>
 
 </databaseChangeLog>
 
