@@ -490,7 +490,7 @@
         </update>
     </changeSet>
 
-    <changeSet  id="rename_table" author="DzmitryNovik">
+    <changeSet id="rename_table" author="DzmitryNovik">
         <renameTable
                 oldTableName="choosen_option"
                 newTableName="chosen_option"/>
@@ -516,8 +516,22 @@
     </changeSet>
 
     <changeSet id="delete_column_fileAnswerId_from_table_chosenOption" author="DzmitryNovik">
-    <dropColumn tableName="chosen_option"
-                columnName="file_answer_id"/>
+        <dropColumn tableName="chosen_option"
+                    columnName="file_answer_id"/>
     </changeSet>
 
+    <changeSet id="change_status_type_to_string" author="maxim12321">
+        <modifyDataType tableName="test" columnName="status" newDataType="text"/>
+    </changeSet>
+
+    <changeSet id="update_statuses" author="maxim12321">
+        <update tableName="test">
+            <column name="status" value="ASSIGNED"/>
+            <where>status='NOT_STARTED'</where>
+        </update>
+        <update tableName="test">
+            <column name="status" value="COMPLETED"/>
+            <where>status='FINISHED'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
