@@ -31,7 +31,9 @@ public class TestEvaluationServiceImpl implements TestEvaluationService {
             testQuestionID.setQuestion(question);
             chosenAnswer = chosenOptionService.getById(testQuestionID).getAnswer();
 
-            if (chosenAnswer.isCorrect()) evaluation++;
+            if (chosenAnswer.isCorrect()) {
+                evaluation++;
+            }
 
         }
         return evaluation;
