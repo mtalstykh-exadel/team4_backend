@@ -490,7 +490,7 @@
         </update>
     </changeSet>
 
-    <changeSet  id="rename_table" author="DzmitryNovik">
+    <changeSet id="rename_table" author="DzmitryNovik">
         <renameTable
                 oldTableName="choosen_option"
                 newTableName="chosen_option"/>
@@ -516,29 +516,22 @@
     </changeSet>
 
     <changeSet id="delete_column_fileAnswerId_from_table_chosenOption" author="DzmitryNovik">
-    <dropColumn tableName="chosen_option"
-                columnName="file_answer_id"/>
+        <dropColumn tableName="chosen_option"
+                    columnName="file_answer_id"/>
     </changeSet>
 
-    <changeSet id="replace_status_type" author="Darina">
-        <modifyDataType
-                columnName="status"
-                newDataType="varchar(256)"
-                schemaName="language_testing"
-                tableName="test"/>
-        <sql>DROP TYPE status;</sql>
-        <sql>CREATE TYPE status AS ENUM (
-                'ASSIGNED',
-                'STARTED',
-                'COMPLETED',
-                'IN_VERIFICATION',
-                'VERIFIED',
-                'EXPIRED');
-        </sql>
-        <modifyDataType
-                columnName="status"
-                newDataType="status"
-                schemaName="language_testing"
-                tableName="test"/>
+    <changeSet id="change_status_type_to_string" author="maxim12321">
+        <modifyDataType tableName="test" columnName="status" newDataType="text"/>
+    </changeSet>
+
+    <changeSet id="update_statuses" author="maxim12321">
+        <update tableName="test">
+            <column name="status" value="ASSIGNED"/>
+            <where>status='NOT_STARTED'</where>
+        </update>
+        <update tableName="test">
+            <column name="status" value="COMPLETED"/>
+            <where>status='FINISHED'</where>
+        </update>
     </changeSet>
 </databaseChangeLog>
