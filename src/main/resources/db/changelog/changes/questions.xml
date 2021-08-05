@@ -2602,7 +2602,7 @@
         <insert tableName="question">
             <column name="id" valueSequenceNext="question_id_seq"/>
             <column name="level_id"
-                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1"/>
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
             <column name="module_id"
                     valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Speaking')"/>
             <column name="creator_user_id"
@@ -3129,7 +3129,7 @@
         <insert tableName="question">
             <column name="id" valueSequenceNext="question_id_seq"/>
             <column name="level_id"
-                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C2"/>
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C2')"/>
             <column name="module_id"
                     valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Speaking')"/>
             <column name="creator_user_id"
@@ -3167,6 +3167,7 @@
             <column name="question_body">Mass Media</column>
         </insert>
     </changeSet>
+
 
 
 </databaseChangeLog>
