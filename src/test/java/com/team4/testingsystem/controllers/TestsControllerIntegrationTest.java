@@ -1,6 +1,8 @@
 package com.team4.testingsystem.controllers;
 
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
@@ -15,10 +17,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,16 +42,20 @@ class TestsControllerIntegrationTest {
 
     private final UsersRepository usersRepository;
 
+    private final ObjectMapper objectMapper;
+
     private User user;
     private CustomUserDetails userDetails;
 
     @Autowired
     TestsControllerIntegrationTest(MockMvc mockMvc,
                                    TestsRepository testsRepository,
-                                   UsersRepository userRepository) {
+                                   UsersRepository userRepository,
+                                   ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.testsRepository = testsRepository;
         this.usersRepository = userRepository;
+        this.objectMapper = objectMapper;
     }
 
     @BeforeEach
@@ -61,22 +70,56 @@ class TestsControllerIntegrationTest {
     }
 
     @Test
+    void getUsersTestsSuccess() throws Exception {
+        com.team4.testingsystem.entities.Test test1 = EntityCreatorUtil.createTest(user);
+        test1.setCreatedAt(null);
+        testsRepository.save(test1);
+
+        com.team4.testingsystem.entities.Test test2 = EntityCreatorUtil.createTest(user);
+        test2.setCreatedAt(null);
+        testsRepository.save(test2);
+
+        long userId = user.getId();
+
+        MvcResult mvcResult = mockMvc.perform(get("/tests/history/{userId}", userId)
+                .with(user(userDetails)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = mvcResult.getResponse().getContentAsString();
+        List<TestDTO> tests = objectMapper.readValue(response, new TypeReference<>() {});
+
+        Assertions.assertEquals(2, tests.size());
+        Assertions.assertTrue(tests.contains(new TestDTO(test1)));
+        Assertions.assertTrue(tests.contains(new TestDTO(test2)));
+    }
+
+    @Test
+    void getUsersTestsFailUserNotFound() throws Exception {
+        mockMvc.perform(get("/tests/history/{userId}", BAD_USER_ID)
+                .with(user(userDetails)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void assignCoachSuccess() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
         testsRepository.save(test);
 
+        User coach = usersRepository.findByLogin("rus_coach@northsixty.com").orElseThrow();
 
-        long userId = user.getId();
+        long coachId = coach.getId();
         long testId = test.getId();
 
         mockMvc.perform(post("/tests/assign_coach/{testId}", testId)
-                .param("coachId", String.valueOf(userId))
+                .param("coachId", String.valueOf(coachId))
                 .with(user(userDetails)))
                 .andExpect(status().isOk());
 
-
         Optional<com.team4.testingsystem.entities.Test> updatedTest = testsRepository.findById(testId);
-        Assertions.assertEquals(userId, updatedTest.get().getCoach().getId());
+
+        Assertions.assertTrue(updatedTest.isPresent());
+        Assertions.assertEquals(coachId, updatedTest.get().getCoach().getId());
     }
 
     @Test
@@ -91,12 +134,10 @@ class TestsControllerIntegrationTest {
                 .param("coachId", String.valueOf(userId))
                 .with(user(userDetails)))
                 .andExpect(status().isNotFound());
-
     }
 
     @Test
     void assignCoachFailTestNotFound() throws Exception {
-
         long userId = user.getId();
         long testId = BAD_TEST_ID;
 
@@ -104,7 +145,20 @@ class TestsControllerIntegrationTest {
                 .param("coachId", String.valueOf(userId))
                 .with(user(userDetails)))
                 .andExpect(status().isNotFound());
+    }
 
+    @Test
+    void assignCoachFailSelfAssignment() throws Exception {
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        testsRepository.save(test);
+
+        long userId = user.getId();
+        long testId = test.getId();
+
+        mockMvc.perform(post("/tests/assign_coach/{testId}", testId)
+                .param("coachId", String.valueOf(userId))
+                .with(user(userDetails)))
+                .andExpect(status().isConflict());
     }
 
     @Test
@@ -121,7 +175,6 @@ class TestsControllerIntegrationTest {
                 .with(user(userDetails)))
                 .andExpect(status().isOk());
 
-
         Optional<com.team4.testingsystem.entities.Test> updatedTest = testsRepository.findById(testId);
         Assertions.assertTrue(updatedTest.isPresent());
         Assertions.assertNull(updatedTest.get().getCoach());
@@ -132,7 +185,5 @@ class TestsControllerIntegrationTest {
         mockMvc.perform(post("/tests/deassign_coach/{testId}", BAD_TEST_ID)
                 .with(user(userDetails)))
                 .andExpect(status().isNotFound());
-
     }
-
 }

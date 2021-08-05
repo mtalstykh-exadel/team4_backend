@@ -28,4 +28,8 @@ public interface ContentFilesRepository extends CrudRepository<ContentFile, Long
                    + "order by RANDOM() limit 1; ", nativeQuery = true)
     ContentFile getRandomFiles(String level);
 
+    @Query("select cf from ContentFile cf "
+           + "join cf.questions q "
+           + "where q.id = ?1")
+    ContentFile getContentFileByQuestionId(Long id);
 }

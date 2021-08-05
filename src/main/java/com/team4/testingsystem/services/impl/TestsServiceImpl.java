@@ -1,10 +1,13 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.converters.TestConverter;
+import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
+import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.LevelService;
@@ -15,22 +18,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class TestsServiceImpl implements TestsService {
 
     private final TestsRepository testsRepository;
     private final TestGeneratingService testGeneratingService;
-
+    private final TestConverter testConverter;
     private final LevelService levelService;
     private final UsersService usersService;
 
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
-                            TestGeneratingService testGeneratingService, LevelService levelService,
+                            TestGeneratingService testGeneratingService,
+                            TestConverter testConverter,
+                            LevelService levelService,
                             UsersService usersService) {
         this.testsRepository = testsRepository;
         this.testGeneratingService = testGeneratingService;
+        this.testConverter = testConverter;
         this.levelService = levelService;
         this.usersService = usersService;
     }
@@ -47,11 +54,14 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public Iterable<Test> getByUserId(long userId) {
-        User user = User.builder()
-                .id(userId)
-                .build();
+    public List<Test> getByUserId(long userId) {
+        User user = usersService.getUserById(userId);
         return testsRepository.getAllByUser(user);
+    }
+
+    @Override
+    public List<Test> getByStatuses(Status[] statuses) {
+        return testsRepository.getByStatuses(statuses);
     }
 
     @Override
@@ -66,7 +76,7 @@ public class TestsServiceImpl implements TestsService {
         Test test = Test.builder()
                 .user(user)
                 .createdAt(LocalDateTime.now())
-                .status(Status.NOT_STARTED)
+                .status(Status.ASSIGNED)
                 .level(level)
                 .build();
         testsRepository.save(test);
@@ -76,13 +86,14 @@ public class TestsServiceImpl implements TestsService {
 
 
     @Override
-    public void start(long id) {
+    public TestDTO start(long id) {
 
         if (testsRepository.start(LocalDateTime.now(), id) == 0) {
             throw new TestNotFoundException();
         }
         Test test = testGeneratingService.formTest(getById(id));
         save(test);
+        return testConverter.convertToDTO(test);
     }
 
 
@@ -116,9 +127,12 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public void assignCoach(long id, long coachId) {
         User coach = usersService.getUserById(coachId);
-        if (testsRepository.assignCoach(coach, id) == 0) {
-            throw new TestNotFoundException();
+
+        if (getById(id).getUser().getId() == coachId) {
+            throw new CoachAssignmentFailException();
         }
+
+        testsRepository.assignCoach(coach, id);
 
     }
 
