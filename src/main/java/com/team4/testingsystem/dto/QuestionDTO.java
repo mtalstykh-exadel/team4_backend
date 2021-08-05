@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuestionDTO {
     private String questionBody;
-    private Boolean isAvailable;
     private String creator;
     private String level;
     private String module;
@@ -21,7 +20,6 @@ public class QuestionDTO {
 
     public QuestionDTO(Question question) {
         this.questionBody = question.getBody();
-        this.isAvailable = question.isAvailable();
         this.creator = question.getCreator().getName();
         this.level = question.getLevel().getName();
         this.module = question.getModule().getName();
@@ -43,14 +41,6 @@ public class QuestionDTO {
 
     public void setQuestionBody(String questionBody) {
         this.questionBody = questionBody;
-    }
-
-    public Boolean isAvailable() {
-        return isAvailable;
-    }
-
-    public void setAvailable(boolean available) {
-        isAvailable = available;
     }
 
     public String getLevel() {
@@ -87,7 +77,6 @@ public class QuestionDTO {
         }
         QuestionDTO that = (QuestionDTO) o;
         return Objects.equals(questionBody, that.questionBody)
-               && Objects.equals(isAvailable, that.isAvailable)
                && Objects.equals(creator, that.creator)
                && Objects.equals(level, that.level)
                && Objects.equals(module, that.module)
@@ -96,6 +85,6 @@ public class QuestionDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(questionBody, isAvailable, creator, level, module, answers);
+        return Objects.hash(questionBody, creator, level, module, answers);
     }
 }

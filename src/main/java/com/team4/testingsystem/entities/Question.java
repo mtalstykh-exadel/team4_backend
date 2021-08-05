@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+
 @Entity
 @Table(name = "question")
 public class Question implements Serializable {
@@ -110,12 +111,23 @@ public class Question implements Serializable {
                && Objects.equals(body, question.body)
                && Objects.equals(creator, question.creator)
                && Objects.equals(level, question.level)
-               && Objects.equals(module, question.module);
+               && Objects.equals(module, question.module)
+               && Objects.equals(answers, question.answers)
+               && Objects.equals(contentFiles, question.contentFiles)
+               && Objects.equals(tests, question.tests);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, body, isAvailable, creator, level, module);
+        return Objects.hash(id,
+                body,
+                isAvailable,
+                creator,
+                level,
+                module,
+                answers,
+                contentFiles,
+                tests);
     }
 
     public List<Answer> getAnswers() {

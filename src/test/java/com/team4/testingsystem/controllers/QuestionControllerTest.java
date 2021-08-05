@@ -54,7 +54,6 @@ class QuestionControllerTest {
         QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
         Mockito.when(questionConverter.convertToEntity(questionDTO)).thenReturn(question);
         Mockito.when(questionService.createQuestion(question)).thenReturn(question);
-        Mockito.when(questionConverter.convertToDTO(question)).thenReturn(questionDTO);
         QuestionDTO result = questionController.addQuestion(questionDTO);
 
         Assertions.assertEquals(questionDTO, result);
