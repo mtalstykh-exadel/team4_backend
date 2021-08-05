@@ -17,7 +17,7 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {FileOperationException.class})
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(value = HttpStatus.EXPECTATION_FAILED)
     public ErrorResponse handleFileOperationException(FileOperationException e) {
         return new ErrorResponse(e.getMessage());
     }
