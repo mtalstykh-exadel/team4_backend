@@ -10,12 +10,16 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
+import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
+import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -27,6 +31,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -65,17 +70,16 @@ class TestsServiceImplTest {
     @Mock
     TestConverter testConverter;
 
+    @Mock
+    List<Test> tests;
+
+    @Mock
+    Stream<Test> stream;
+
+
     @InjectMocks
     TestsServiceImpl testsService;
 
-
-    @org.junit.jupiter.api.Test
-    void getAllSuccess() {
-        List<Test> tests = new ArrayList<>();
-        Mockito.when(testsRepository.findAll()).thenReturn(tests);
-
-        Assertions.assertEquals(tests, testsService.getAll());
-    }
 
     @org.junit.jupiter.api.Test
     void getByIdSuccess() {
@@ -91,7 +95,6 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void getByUserIdSuccess() {
-        List<Test> tests = new ArrayList<>();
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
 
         Mockito.when(testsRepository.getAllByUser(user)).thenReturn(tests);
@@ -106,22 +109,25 @@ class TestsServiceImplTest {
         Assertions.assertThrows(UserNotFoundException.class, () -> testsService.getByUserId(BAD_USER_ID));
     }
 
-    @org.junit.jupiter.api.Test
-    void startWhenAssignFail() {
-        Level level = EntityCreatorUtil.createLevel();
-        Mockito.when(levelService.getLevelByName(level.getName())).thenReturn(level);
-        Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
-
-        Assertions.assertThrows(
-                UserNotFoundException.class, () -> testsService.startForUser(BAD_USER_ID, Levels.A1));
-    }
 
     @org.junit.jupiter.api.Test
     void startForUserSuccess() {
-        Level level = EntityCreatorUtil.createLevel();
-        Mockito.when(levelService.getLevelByName(level.getName())).thenReturn(level);
+
 
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
+
+        Mockito.when(testsRepository.getAllByUser(user)).thenReturn(tests);
+
+        Mockito.when(tests.stream()).thenReturn(stream);
+
+        Mockito.when(stream.filter(any())).thenReturn(stream);
+
+        Mockito.when(stream.collect(any())).thenReturn(tests);
+
+        Mockito.when(tests.size()).thenReturn(1);
+
+        Level level = EntityCreatorUtil.createLevel();
+        Mockito.when(levelService.getLevelByName(level.getName())).thenReturn(level);
 
         try (MockedStatic<Test> builderMockedStatic = Mockito.mockStatic(Test.class)) {
 
@@ -137,6 +143,39 @@ class TestsServiceImplTest {
 
             Assertions.assertEquals(1L, testsService.startForUser(GOOD_USER_ID, Levels.A1));
         }
+    }
+
+    @org.junit.jupiter.api.Test
+    void startForUserFailUserNotFound() {
+
+        Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
+
+        Assertions.assertThrows(
+                UserNotFoundException.class, () -> testsService.startForUser(BAD_USER_ID, Levels.A1));
+    }
+
+
+    @org.junit.jupiter.api.Test
+    void startForUserFailTestsLimit() {
+
+        Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
+
+        Mockito.when(testsRepository.getAllByUser(user)).thenReturn(tests);
+
+        Mockito.when(tests.stream()).thenReturn(stream);
+
+        Mockito.when(stream.filter(any())).thenReturn(stream);
+
+        Mockito.when(stream.collect(any())).thenReturn(tests);
+
+        Mockito.when(tests.size()).thenReturn(3);
+
+        Mockito.when(tests.get(0)).thenReturn(test);
+
+        Mockito.when(test.getStartedAt()).thenReturn(LocalDateTime.now());
+
+        Assertions.assertThrows(
+                TestsLimitExceededException.class, () -> testsService.startForUser(GOOD_USER_ID, Levels.A1));
     }
 
     @org.junit.jupiter.api.Test
@@ -334,7 +373,6 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void getByStatus() {
-        List<Test> tests = new ArrayList<>();
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
         Mockito.when(testsRepository.getByStatuses(any())).thenReturn(tests);
         Assertions.assertEquals(tests, testsService.getByStatuses(statuses));

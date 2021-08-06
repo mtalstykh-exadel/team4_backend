@@ -8,6 +8,7 @@ import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
+import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.TestGeneratingService;
@@ -140,6 +141,17 @@ class TestsControllerTest {
             Mockito.when(testsService.start(1L)).thenReturn(testDTO);
 
             Assertions.assertEquals(testDTO, testsController.startNotAssigned(Levels.A1));
+        }
+    }
+    @org.junit.jupiter.api.Test
+    void startNotAssignedFail() {
+        try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
+            builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
+            Mockito.when(customUserDetails.getId()).thenReturn(1L);
+            Mockito.when(testsService.startForUser(1L, Levels.A1)).thenThrow(TestsLimitExceededException.class);
+
+            Assertions.assertThrows(TestsLimitExceededException.class,
+                    () -> testsController.startNotAssigned(Levels.A1));
         }
     }
 
