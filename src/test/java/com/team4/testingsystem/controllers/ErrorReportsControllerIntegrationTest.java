@@ -8,7 +8,9 @@ import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.ErrorReportsRepository;
 import com.team4.testingsystem.repositories.LevelRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
@@ -56,8 +58,9 @@ class ErrorReportsControllerIntegrationTest {
     private final UsersRepository usersRepository;
     private final QuestionRepository questionRepository;
     private final TestsRepository testsRepository;
+    private final AnswerRepository answerRepository;
     private final ErrorReportsRepository errorReportsRepository;
-
+    private final ContentFilesRepository contentFilesRepository;
     private final ObjectMapper objectMapper;
 
     private User user;
@@ -70,28 +73,34 @@ class ErrorReportsControllerIntegrationTest {
                                           UsersRepository usersRepository,
                                           QuestionRepository questionRepository,
                                           TestsRepository testsRepository,
+                                          AnswerRepository answerRepository,
                                           ErrorReportsRepository errorReportsRepository,
+                                          ContentFilesRepository contentFilesRepository,
                                           ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.levelRepository = levelRepository;
         this.usersRepository = usersRepository;
         this.questionRepository = questionRepository;
         this.testsRepository = testsRepository;
+        this.answerRepository = answerRepository;
         this.errorReportsRepository = errorReportsRepository;
+        this.contentFilesRepository = contentFilesRepository;
         this.objectMapper = objectMapper;
     }
 
     @BeforeEach
     void init() {
+        answerRepository.deleteAll();
         user = usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow();
         userDetails = new CustomUserDetails(user);
-
         level = levelRepository.findByName(Levels.A1.name()).orElseThrow();
     }
 
     @AfterEach
     void destroy() {
         errorReportsRepository.deleteAll();
+        contentFilesRepository.deleteAll();
+        answerRepository.deleteAll();
         questionRepository.deleteAll();
         testsRepository.deleteAll();
     }
@@ -121,6 +130,7 @@ class ErrorReportsControllerIntegrationTest {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
+
         Question question1 = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question1);
 
@@ -141,6 +151,7 @@ class ErrorReportsControllerIntegrationTest {
                 .with(user(userDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
+
 
         String response = mvcResult.getResponse().getContentAsString();
         List<ErrorReportDTO> reports = objectMapper.readValue(response, new TypeReference<>() {
@@ -182,8 +193,10 @@ class ErrorReportsControllerIntegrationTest {
         Assertions.assertEquals(GOOD_REPORT_BODY, report.get().getReportBody());
     }
 
+
     @Test
     void addFailReportNotFound() throws Exception {
+
         ErrorReportDTO errorReportDTO = EntityCreatorUtil
                 .createErrorReportDTO(BAD_REPORT_BODY, BAD_QUESTION_ID, BAD_TEST_ID);
 
@@ -220,6 +233,7 @@ class ErrorReportsControllerIntegrationTest {
         Assertions.assertEquals(NEW_REPORT_BODY, report.get().getReportBody());
     }
 
+
     @Test
     void removeSuccess() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
@@ -252,4 +266,5 @@ class ErrorReportsControllerIntegrationTest {
                 .with(user(userDetails)))
                 .andExpect(status().isNotFound());
     }
+
 }

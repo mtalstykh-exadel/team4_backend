@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/content_files")
 public class ContentFilesController {
 
-    private ContentFilesService contentFilesService;
+    private final ContentFilesService contentFilesService;
 
     @Autowired
     public ContentFilesController(ContentFilesService contentFilesService) {
