@@ -14,6 +14,7 @@ import com.team4.testingsystem.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +44,7 @@ public class TestConverter {
 
     private Long setQuestions(TestDTO testDTO, Long id) {
         List<Question> questions = questionService.getQuestionsByTestId(id);
+        questions.forEach(question -> Collections.shuffle(question.getAnswers()));
         Map<String, List<QuestionDTO>> map = questions.stream()
                 .map(QuestionDTO::new)
                 .collect(groupingBy(QuestionDTO::getModule));
