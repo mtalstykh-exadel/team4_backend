@@ -21,10 +21,10 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     List<Test> getByStatuses(Status[] statuses);
 
 
-    @Query("select t from Test t" +
-            " where t.user = ?1 " +
-            "and t.assignedAt is null " +
-            "and t.startedAt >= ?2")
+    @Query("select t from Test t"
+            + " where t.user = ?1 "
+            + "and t.assignedAt is null "
+            + "and t.startedAt >= ?2")
     List<Test> getSelfStartedByUserAfter(User user, LocalDateTime date);
 
     @Transactional
