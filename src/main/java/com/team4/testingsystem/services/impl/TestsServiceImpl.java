@@ -9,6 +9,7 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
+import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.TestGeneratingService;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TestsServiceImpl implements TestsService {
@@ -40,11 +42,6 @@ public class TestsServiceImpl implements TestsService {
         this.testConverter = testConverter;
         this.levelService = levelService;
         this.usersService = usersService;
-    }
-
-    @Override
-    public Iterable<Test> getAll() {
-        return testsRepository.findAll();
     }
 
 
@@ -71,6 +68,16 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public long startForUser(long userId, Levels levelName) {
+        List<Test> selfStarted = getByUserId(userId)
+                .stream()
+                .filter((test) -> test.getAssignedAt() == null)
+                .filter((test) -> test.getStartedAt().isAfter(LocalDateTime.now().minusDays(1)))
+                .collect(Collectors.toList());
+
+        if (selfStarted.size() >= 3) {
+            throw new TestsLimitExceededException(selfStarted.get(0).getStartedAt().plusDays(1).toString());
+        }
+
         Test test = createForUser(userId, levelName)
                 .startedAt(LocalDateTime.now())
                 .status(Status.STARTED)
