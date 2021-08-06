@@ -15,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.Authentication;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationControllerTest {
@@ -46,13 +45,6 @@ class AuthenticationControllerTest {
         Assertions.assertEquals("ok", authenticationController.healthCheck());
     }
 
-    @Test
-    void getName() {
-        Authentication authentication = Mockito.mock(Authentication.class);
-        Mockito.when(authentication.getPrincipal()).thenReturn(userDetails);
-
-        Assertions.assertEquals(userDetails.getName(), authenticationController.getName(authentication));
-    }
 
     @Test
     void loginIncorrectCredentials() {

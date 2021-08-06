@@ -8,7 +8,6 @@ import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,13 +29,6 @@ public class AuthenticationController {
     @GetMapping("/health")
     public String healthCheck() {
         return "ok";
-    }
-
-    @ApiOperation(value = "Get current user's name")
-    @GetMapping("/name")
-    public String getName(Authentication authentication) {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return userDetails.getName();
     }
 
     @ApiOperation(value = "Use it for authentication")
