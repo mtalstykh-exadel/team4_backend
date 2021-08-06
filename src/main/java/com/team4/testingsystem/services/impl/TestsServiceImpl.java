@@ -68,11 +68,8 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public long startForUser(long userId, Levels levelName) {
-        List<Test> selfStarted = getByUserId(userId)
-                .stream()
-                .filter((test) -> test.getAssignedAt() == null)
-                .filter((test) -> test.getStartedAt().isAfter(LocalDateTime.now().minusDays(1)))
-                .collect(Collectors.toList());
+        User user = usersService.getUserById(userId);
+        List<Test> selfStarted = testsRepository.getSelfStartedByUserAfter(user, LocalDateTime.now().minusDays(1));
 
         if (selfStarted.size() >= 3) {
             throw new TestsLimitExceededException(selfStarted.get(0).getStartedAt().plusDays(1).toString());

@@ -13,13 +13,10 @@ import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
-import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -28,10 +25,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -73,10 +68,6 @@ class TestsServiceImplTest {
     @Mock
     List<Test> tests;
 
-    @Mock
-    Stream<Test> stream;
-
-
     @InjectMocks
     TestsServiceImpl testsService;
 
@@ -116,13 +107,7 @@ class TestsServiceImplTest {
 
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
 
-        Mockito.when(testsRepository.getAllByUser(user)).thenReturn(tests);
-
-        Mockito.when(tests.stream()).thenReturn(stream);
-
-        Mockito.when(stream.filter(any())).thenReturn(stream);
-
-        Mockito.when(stream.collect(any())).thenReturn(tests);
+        Mockito.when(testsRepository.getSelfStartedByUserAfter(any(), any())).thenReturn(tests);
 
         Mockito.when(tests.size()).thenReturn(1);
 
@@ -160,13 +145,7 @@ class TestsServiceImplTest {
 
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
 
-        Mockito.when(testsRepository.getAllByUser(user)).thenReturn(tests);
-
-        Mockito.when(tests.stream()).thenReturn(stream);
-
-        Mockito.when(stream.filter(any())).thenReturn(stream);
-
-        Mockito.when(stream.collect(any())).thenReturn(tests);
+        Mockito.when(testsRepository.getSelfStartedByUserAfter(any(), any())).thenReturn(tests);
 
         Mockito.when(tests.size()).thenReturn(3);
 
