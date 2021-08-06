@@ -12,6 +12,7 @@ import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.LevelService;
+import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
@@ -27,7 +28,9 @@ public class TestsServiceImpl implements TestsService {
 
     private final TestsRepository testsRepository;
     private final TestGeneratingService testGeneratingService;
+    private final TestEvaluationService testEvaluationService;
     private final TestConverter testConverter;
+
     private final LevelService levelService;
     private final UsersService usersService;
 
@@ -37,16 +40,17 @@ public class TestsServiceImpl implements TestsService {
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
                             TestGeneratingService testGeneratingService,
+                            TestEvaluationService testEvaluationService,
                             TestConverter testConverter,
                             LevelService levelService,
                             UsersService usersService) {
         this.testsRepository = testsRepository;
         this.testGeneratingService = testGeneratingService;
+        this.testEvaluationService = testEvaluationService;
         this.testConverter = testConverter;
         this.levelService = levelService;
         this.usersService = usersService;
     }
-
 
     @Override
     public Test getById(long id) {
@@ -118,10 +122,10 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public void finish(long id, int evaluation) {
-        if (testsRepository.finish(LocalDateTime.now(), evaluation, id) == 0) {
-            throw new TestNotFoundException();
-        }
+    public void finish(long id) {
+
+        testsRepository.finish(LocalDateTime.now(), testEvaluationService.getEvaluationByTest(getById(id)), id);
+
     }
 
     @Override
