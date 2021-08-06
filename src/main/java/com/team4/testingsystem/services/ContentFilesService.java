@@ -15,4 +15,6 @@ public interface ContentFilesService {
     void removeById(Long id);
 
     ContentFile getRandomContentFile(String level);
+
+    ContentFile getContentFileByQuestionId(Long id);
 }

@@ -1,31 +1,30 @@
 package com.team4.testingsystem.dto;
 
-import com.team4.testingsystem.entities.Answer;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.testingsystem.entities.Question;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuestionDTO {
     private String questionBody;
-    private Boolean isAvailable;
     private String creator;
     private String level;
     private String module;
-    private List<String> answers;
+    private List<AnswerDTO> answers;
 
     public QuestionDTO() {
     }
 
     public QuestionDTO(Question question) {
         this.questionBody = question.getBody();
-        this.isAvailable = question.isAvailable();
         this.creator = question.getCreator().getName();
         this.level = question.getLevel().getName();
         this.module = question.getModule().getName();
         this.answers = question.getAnswers()
-                .stream().map(Answer::getAnswerBody).collect(Collectors.toList());
+                .stream().map(AnswerDTO::new).collect(Collectors.toList());
     }
 
     public String getCreator() {
@@ -44,14 +43,6 @@ public class QuestionDTO {
         this.questionBody = questionBody;
     }
 
-    public Boolean isAvailable() {
-        return isAvailable;
-    }
-
-    public void setAvailable(boolean available) {
-        isAvailable = available;
-    }
-
     public String getLevel() {
         return level;
     }
@@ -68,11 +59,11 @@ public class QuestionDTO {
         this.module = module;
     }
 
-    public List<String> getAnswers() {
+    public List<AnswerDTO> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(List<String> answers) {
+    public void setAnswers(List<AnswerDTO> answers) {
         this.answers = answers;
     }
 
@@ -86,7 +77,6 @@ public class QuestionDTO {
         }
         QuestionDTO that = (QuestionDTO) o;
         return Objects.equals(questionBody, that.questionBody)
-               && Objects.equals(isAvailable, that.isAvailable)
                && Objects.equals(creator, that.creator)
                && Objects.equals(level, that.level)
                && Objects.equals(module, that.module)
@@ -95,6 +85,6 @@ public class QuestionDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(questionBody, isAvailable, creator, level, module, answers);
+        return Objects.hash(questionBody, creator, level, module, answers);
     }
 }

@@ -33,4 +33,8 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
            + "order by function('random') ")
     List<Question> getRandomQuestionByContentFile(Long id, Pageable pageable);
 
+    @Query("select q from Question q "
+           + "join q.tests t "
+           + "where t.id = ?1 ")
+    List<Question> getQuestionsByTestId(Long id);
 }

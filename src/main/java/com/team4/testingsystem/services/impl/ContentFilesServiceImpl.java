@@ -58,4 +58,9 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     public ContentFile getRandomContentFile(String level) {
         return contentFilesRepository.getRandomFiles(level);
     }
+
+    @Override
+    public ContentFile getContentFileByQuestionId(Long id) {
+        return contentFilesRepository.getContentFileByQuestionId(id);
+    }
 }

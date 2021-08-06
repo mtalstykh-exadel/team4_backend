@@ -127,4 +127,11 @@ class ContentFilesServiceImplTest {
         Assertions.assertEquals(contentFile, contentFilesService.getRandomContentFile(any()));
     }
 
+    @Test
+    void getContentFileByQuestionId() {
+        ContentFile contentFile = new ContentFile();
+        Mockito.when(contentFilesRepository.getContentFileByQuestionId(any())).thenReturn(contentFile);
+        Assertions.assertEquals(contentFile, contentFilesService.getContentFileByQuestionId(any()));
+    }
+
 }

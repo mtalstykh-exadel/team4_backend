@@ -3,6 +3,7 @@ package com.team4.testingsystem.controllers;
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
@@ -13,6 +14,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.any;
+
 
 @ExtendWith(MockitoExtension.class)
 class QuestionControllerTest {
@@ -21,6 +29,9 @@ class QuestionControllerTest {
 
     @Mock
     private QuestionConverter questionConverter;
+
+    @Mock
+    private AnswerRepository answerRepository;
 
     @InjectMocks
     private QuestionController questionController;
@@ -43,7 +54,6 @@ class QuestionControllerTest {
         QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
         Mockito.when(questionConverter.convertToEntity(questionDTO)).thenReturn(question);
         Mockito.when(questionService.createQuestion(question)).thenReturn(question);
-        Mockito.when(questionConverter.convertToDTO(question)).thenReturn(questionDTO);
         QuestionDTO result = questionController.addQuestion(questionDTO);
 
         Assertions.assertEquals(questionDTO, result);

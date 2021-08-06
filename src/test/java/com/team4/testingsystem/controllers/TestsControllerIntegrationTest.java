@@ -3,6 +3,7 @@ package com.team4.testingsystem.controllers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team4.testingsystem.entities.Level;
+import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.repositories.LevelRepository;
@@ -92,13 +93,11 @@ class TestsControllerIntegrationTest {
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        List<com.team4.testingsystem.entities.Test> tests = objectMapper.readValue(response, new TypeReference<>() {
-        });
+        List<TestDTO> tests = objectMapper.readValue(response, new TypeReference<>() {});
 
-        System.out.println(test1.equals(tests.get(0)));
         Assertions.assertEquals(2, tests.size());
-        Assertions.assertEquals(test1.getId(), tests.get(0).getId());
-        Assertions.assertEquals(test2.getId(), tests.get(1).getId());
+        Assertions.assertTrue(tests.contains(new TestDTO(test1)));
+        Assertions.assertTrue(tests.contains(new TestDTO(test2)));
     }
 
     @Test
@@ -117,7 +116,6 @@ class TestsControllerIntegrationTest {
 
         long coachId = coach.getId();
         long testId = test.getId();
-
 
         mockMvc.perform(post("/tests/assign_coach/{testId}", testId)
                 .param("coachId", String.valueOf(coachId))
@@ -193,6 +191,5 @@ class TestsControllerIntegrationTest {
         mockMvc.perform(post("/tests/deassign_coach/{testId}", BAD_TEST_ID)
                 .with(user(userDetails)))
                 .andExpect(status().isNotFound());
-
     }
 }

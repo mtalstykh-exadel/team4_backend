@@ -1,5 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.dto.AnswerDTO;
+import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.QuestionRepository;
@@ -13,7 +15,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -54,6 +58,15 @@ class QuestionServiceImplTest {
     }
 
     @Test
+    void addAnswers(){
+        Question question = EntityCreatorUtil.createQuestion();
+        Mockito.when(questionRepository.save(question)).thenReturn(question);
+        List<AnswerDTO> textAnswers = new ArrayList<>();
+        Question result = questionService.addAnswers(question, textAnswers);
+        Assertions.assertEquals(question, result);
+    }
+
+    @Test
     void archiveQuestion() {
         questionService.archiveQuestion(1L);
         verify(questionRepository).archiveQuestion(1L);
@@ -80,6 +93,14 @@ class QuestionServiceImplTest {
         Mockito.when(questionRepository
                 .getRandomQuestionByContentFile(any(), any())).thenReturn(questions);
         Assertions.assertEquals(questions, questionService.getRandomQuestionsByContentFile(any(), any()));
+    }
+
+    @Test
+    void getQuestionsByTestIdAndModule() {
+        List<Question> questions = new ArrayList<>();
+        Mockito.when(questionRepository
+                .getQuestionsByTestId(any())).thenReturn(questions);
+        Assertions.assertEquals(questions, questionService.getQuestionsByTestId(any()));
     }
 
 }

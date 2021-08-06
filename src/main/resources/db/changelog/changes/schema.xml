@@ -524,6 +524,31 @@
                     columnName="file_answer_id"/>
     </changeSet>
 
+    <changeSet id="change_status_type_to_string" author="maxim12321">
+        <modifyDataType tableName="test" columnName="status" newDataType="text"/>
+    </changeSet>
+
+    <changeSet id="update_statuses" author="maxim12321">
+        <update tableName="test">
+            <column name="status" value="ASSIGNED"/>
+            <where>status='NOT_STARTED'</where>
+        </update>
+        <update tableName="test">
+            <column name="status" value="COMPLETED"/>
+            <where>status='FINISHED'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="update_test_dates" author="maxim12321">
+        <renameColumn tableName="test" oldColumnName="created_at" newColumnName="assigned_at"/>
+        <renameColumn tableName="test" oldColumnName="updated_at" newColumnName="verified_at"/>
+        <renameColumn tableName="test" oldColumnName="finished_at" newColumnName="completed_at"/>
+
+        <addColumn tableName="test">
+            <column name="deadline" type="datetime"/>
+        </addColumn>
+    </changeSet>
+
     <changeSet id="add_not_null_constraints" author="maxim12321">
         <addNotNullConstraint tableName="answer" columnName="is_correct"/>
         <addNotNullConstraint tableName="answer" columnName="question_id"/>
@@ -543,7 +568,6 @@
         <addNotNullConstraint tableName="question_content_file" columnName="content_file_id"/>
         <addNotNullConstraint tableName="question_content_file" columnName="question_id"/>
 
-        <addNotNullConstraint tableName="test" columnName="created_at"/>
         <addNotNullConstraint tableName="test" columnName="level_id"/>
         <addNotNullConstraint tableName="test" columnName="status"/>
         <addNotNullConstraint tableName="test" columnName="user_id"/>

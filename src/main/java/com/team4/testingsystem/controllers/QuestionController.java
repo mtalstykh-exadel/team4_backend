@@ -22,7 +22,8 @@ public class QuestionController {
     private final QuestionConverter questionConverter;
 
     @Autowired
-    public QuestionController(QuestionService questionService, QuestionConverter questionConverter) {
+    public QuestionController(QuestionService questionService,
+                              QuestionConverter questionConverter) {
         this.questionService = questionService;
         this.questionConverter = questionConverter;
     }
@@ -36,8 +37,12 @@ public class QuestionController {
     @ApiOperation(value = "Add a new question")
     @PostMapping("/")
     public QuestionDTO addQuestion(@RequestBody QuestionDTO questionDTO) {
-        Question question = questionService.createQuestion(questionConverter.convertToEntity(questionDTO));
-        return questionConverter.convertToDTO(question);
+        Question question = questionService
+                .createQuestion(questionConverter.convertToEntity(questionDTO));
+        if (questionDTO.getAnswers() != null) {
+            questionService.addAnswers(question, questionDTO.getAnswers());
+        }
+        return questionDTO;
     }
 
     @ApiOperation(value = "Archive the question")
