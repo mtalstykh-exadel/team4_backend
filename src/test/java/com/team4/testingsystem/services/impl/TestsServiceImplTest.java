@@ -65,11 +65,12 @@ class TestsServiceImplTest {
 
     @Mock
     TestEvaluationService testEvaluationService;
+
+    @Mock
     TestConverter testConverter;
 
     @InjectMocks
     TestsServiceImpl testsService;
-
 
     @org.junit.jupiter.api.Test
     void getAllSuccess() {
@@ -206,7 +207,6 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void finishSuccess() {
         Test test = new Test();
-
         Mockito.when(testsRepository.finish(any(), anyInt(), anyLong())).thenReturn(1);
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
         Mockito.when(testEvaluationService.getEvaluationByTest(test)).thenReturn(anyInt());
@@ -226,9 +226,6 @@ class TestsServiceImplTest {
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.finish(BAD_TEST_ID));
 
-        Mockito.when(testsRepository.finish(any(), anyInt(), anyLong())).thenReturn(0);
-
-        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.finish(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
