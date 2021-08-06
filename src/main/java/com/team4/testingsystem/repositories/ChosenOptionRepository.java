@@ -6,7 +6,9 @@ import com.team4.testingsystem.entities.TestQuestionID;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ChosenOptionRepository extends CrudRepository<ChosenOption, TestQuestionID> {
-    Iterable<ChosenOption> findById_Test(Test test);
+    List<ChosenOption> findById_Test(Test test);
 }
