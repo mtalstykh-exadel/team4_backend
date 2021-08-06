@@ -79,4 +79,40 @@ public class Answer implements Serializable {
         isCorrect = correct;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private final Answer answer;
+
+        public Builder() {
+            this.answer = new Answer();
+        }
+
+        public Builder id(long id) {
+            answer.id = id;
+            return this;
+        }
+
+        public Builder answerBody(String answerBody) {
+            answer.answerBody = answerBody;
+            return this;
+        }
+
+        public Builder question(Question question) {
+            answer.question = question;
+            return this;
+        }
+
+        public Builder isCorrect(boolean isCorrect) {
+            answer.isCorrect = isCorrect;
+            return this;
+        }
+
+        public Answer build() {
+            return answer;
+        }
+    }
 }
