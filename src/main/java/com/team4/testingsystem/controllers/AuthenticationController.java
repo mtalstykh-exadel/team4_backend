@@ -28,13 +28,6 @@ public class AuthenticationController {
         return "ok";
     }
 
-    @ApiOperation(value = "Get current user's name")
-    @GetMapping("/name")
-    public String getName(Authentication authentication) {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return userDetails.getName();
-    }
-
     @ApiOperation(value = "Use it for authentication")
     @ApiResponse(code = 200, message = "JWT token, use it for other requests")
     @PostMapping("/login")
