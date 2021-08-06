@@ -10,6 +10,7 @@ import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.ErrorReportsRepository;
 import com.team4.testingsystem.repositories.LevelRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
@@ -59,7 +60,7 @@ class ErrorReportsControllerIntegrationTest {
     private final TestsRepository testsRepository;
     private final AnswerRepository answerRepository;
     private final ErrorReportsRepository errorReportsRepository;
-
+    private final ContentFilesRepository contentFilesRepository;
     private final ObjectMapper objectMapper;
 
     private User user;
@@ -74,6 +75,7 @@ class ErrorReportsControllerIntegrationTest {
                                           TestsRepository testsRepository,
                                           AnswerRepository answerRepository,
                                           ErrorReportsRepository errorReportsRepository,
+                                          ContentFilesRepository contentFilesRepository,
                                           ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.levelRepository = levelRepository;
@@ -82,6 +84,7 @@ class ErrorReportsControllerIntegrationTest {
         this.testsRepository = testsRepository;
         this.answerRepository = answerRepository;
         this.errorReportsRepository = errorReportsRepository;
+        this.contentFilesRepository = contentFilesRepository;
         this.objectMapper = objectMapper;
     }
 
@@ -90,13 +93,13 @@ class ErrorReportsControllerIntegrationTest {
         answerRepository.deleteAll();
         user = usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow();
         userDetails = new CustomUserDetails(user);
-
         level = levelRepository.findByName(Levels.A1.name()).orElseThrow();
     }
 
     @AfterEach
     void destroy() {
         errorReportsRepository.deleteAll();
+        contentFilesRepository.deleteAll();
         answerRepository.deleteAll();
         questionRepository.deleteAll();
         testsRepository.deleteAll();
