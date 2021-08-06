@@ -14,7 +14,6 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.enums.Status;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -84,20 +83,18 @@ public class EntityCreatorUtil {
     }
 
     public static ErrorReportDTO createErrorReportDTO(String reportBody, long questionId, long testId) {
-        return ErrorReportDTO
-                .builder()
+        return ErrorReportDTO.builder()
                 .questionId(questionId)
                 .testId(testId)
                 .reportBody(reportBody)
                 .build();
     }
 
-    public static Test createTest(User user) {
+    public static Test createTest(User user, Level level) {
         return Test.builder()
                 .user(user)
                 .status(Status.STARTED)
-                .level(createLevel())
-                .assignedAt(LocalDateTime.now())
+                .level(level)
                 .build();
     }
 
@@ -127,5 +124,4 @@ public class EntityCreatorUtil {
                 .isAvailable(true)
                 .build();
     }
-
 }

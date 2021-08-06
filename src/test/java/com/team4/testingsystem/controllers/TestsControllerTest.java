@@ -3,6 +3,7 @@ package com.team4.testingsystem.controllers;
 import com.team4.testingsystem.converters.TestConverter;
 import com.team4.testingsystem.dto.AssignTestRequest;
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
@@ -61,7 +62,7 @@ class TestsControllerTest {
 
     @BeforeEach
     void init() {
-        test = EntityCreatorUtil.createTest(EntityCreatorUtil.createUser());
+        test = EntityCreatorUtil.createTest(EntityCreatorUtil.createUser(), EntityCreatorUtil.createLevel());
     }
 
     @org.junit.jupiter.api.Test
@@ -131,7 +132,7 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void startNotAssignedSuccess() {
-        Test test = EntityCreatorUtil.createTest(new User());
+        Test test = EntityCreatorUtil.createTest(new User(), new Level());
         TestDTO testDTO = new TestDTO(test);
         try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
             builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
