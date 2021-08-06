@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface TestsService {
 
-    Iterable<Test> getAll();
-
     Test getById(long id);
 
     List<Test> getByUserId(long userId);
