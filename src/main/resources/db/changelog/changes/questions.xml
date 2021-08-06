@@ -5602,7 +5602,7 @@
         <insert tableName="question">
             <column name="id" valueSequenceNext="question_id_seq"/>
             <column name="level_id"
-                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B2)"/>
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B2')"/>
             <column name="module_id"
                     valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
             <column name="creator_user_id"
@@ -6039,7 +6039,7 @@
         <insert tableName="question">
             <column name="id" valueSequenceNext="question_id_seq"/>
             <column name="level_id"
-                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B2)"/>
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'B2')"/>
             <column name="module_id"
                     valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
             <column name="creator_user_id"
@@ -6102,6 +6102,739 @@
             <column name="id" valueSequenceNext="answer_id_seq"/>
             <column name="question_id" valueSequenceCurrent="question_id_seq"/>
             <column name="answer_body">vacuum cleaner</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+    </changeSet>
+
+    <changeSet id="add_content_files_C1" author="Darina">
+        <insert tableName="content_file">
+            <column name="id" valueSequenceNext="content_file_id_seq"/>
+            <column name="url">listening-C1-10.mp3</column>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">How do they both know Stacy?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">They all grew up together in the same town</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">One person knows her from elementary school and the other from middle school</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">One person knows her from middle school and the other from university</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">One person knows her from middle school and the other from high school</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">What is one thing they have in common besides knowing Stacy?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">They went to the same university</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">They work at the same place</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">They majored in the same subject</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">They both went to grad school</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">What conclusion can we come to regarding the work ethics of the lady?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">She wouldn't make it as a consultant because she doesn't want to work many hours</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">She sounds like she doesn't want to work but would rather play</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Both A and B</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Neither A or B</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Where is this conversation leading to?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Just a friendly conversation</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">A love triangle might form here</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Possibly a start of a relationship</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">A new job might be coming for someone</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">I'm a friend of __.</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">July</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Ben</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Stacy</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Tiffany</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">That's cool. What a ___world.</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">big</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">huge</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">small</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">common</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">We went to the same ___.</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">church</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">club</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">sorority</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">mall</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">I think it is important to like your ___.</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">town</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">friend</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">job</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">family</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">I majored in ___.</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Maths</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Astrology</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Sociology</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Physics</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">I went to ___.</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Stanford</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Oxford</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Berkley</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">work</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="content_file">
+            <column name="id" valueSequenceNext="content_file_id_seq"/>
+            <column name="url">listening-C1-11.mp3</column>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Why are these people planning a trip to Cancun?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">For a family vacation</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">For a business trip</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">For their honeymoon</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">For a bachelor party</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Why did they decide on Cancun over the Caribbean?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">One person has been to the Caribbean before</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Cancun is supposed to have better weather that weekend</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Cancun was much cheaper</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Caribbean hotels were all full</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">They have a lot of information about Cancun. Where did they get this information?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">They are getting a lot of information from the Internet</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">They had a friend who told them everything about Cancun</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">They are looking at brochures</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">She has been there before so she knows many of the activities</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">When do they plan on going to Cancun?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Next summer</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">In the fall</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">In a couple of months</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">In a couple of weeks</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Hey honey, where do you think we should go for our ___?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">weekend</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">anniversary</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">honeymoon</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">wedding</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">I always wanted to go to ___.</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">France</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Spain</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Mexico</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">Ibiza</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">Do you know how much it would cost for airfare and ___?</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">restaurants</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">clubs</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">hotel</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">cars</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">I found a deal for only ___ dollars.</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">twenty hundred</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">fifty hundred</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">twelve hundred</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">one  hundred</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">I better make sure my ___ is not expired.</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">visa</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">documents</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">passport</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">vaucher</column>
+        </insert>
+        <insert tableName="question_content_file">
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="content_file_id" valueSequenceCurrent="content_file_id_seq"/>
+        </insert>
+
+        <insert tableName="question">
+            <column name="id" valueSequenceNext="question_id_seq"/>
+            <column name="level_id"
+                    valueComputed="(select l.id from language_testing.level as l where l.level_name = 'C1')"/>
+            <column name="module_id"
+                    valueComputed="(select m.id from language_testing.module as m where m.module_name = 'Listening')"/>
+            <column name="creator_user_id"
+                    valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')"/>
+            <column name="question_body">I want to ___ at least one day.</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">swim</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">play volleyball</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">golf</column>
+            <column name="is_correct">true</column>
+        </insert>
+        <insert tableName="answer">
+            <column name="id" valueSequenceNext="answer_id_seq"/>
+            <column name="question_id" valueSequenceCurrent="question_id_seq"/>
+            <column name="answer_body">rest</column>
         </insert>
         <insert tableName="question_content_file">
             <column name="question_id" valueSequenceCurrent="question_id_seq"/>
