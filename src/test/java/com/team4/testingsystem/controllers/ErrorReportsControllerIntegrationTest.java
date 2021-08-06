@@ -72,6 +72,7 @@ class ErrorReportsControllerIntegrationTest {
                                           UsersRepository usersRepository,
                                           QuestionRepository questionRepository,
                                           TestsRepository testsRepository,
+                                          AnswerRepository answerRepository,
                                           ErrorReportsRepository errorReportsRepository,
                                           ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;

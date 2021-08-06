@@ -65,6 +65,8 @@ class CoachGradeControllerIntegrationTest {
                                         QuestionRepository questionRepository,
                                         TestsRepository testsRepository,
                                         CoachGradeRepository gradeRepository,
+                                        AnswerRepository answerRepository,
+                                        ContentFilesRepository contentFilesRepository,
                                         ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.levelRepository = levelRepository;
@@ -72,6 +74,8 @@ class CoachGradeControllerIntegrationTest {
         this.questionRepository = questionRepository;
         this.testsRepository = testsRepository;
         this.gradeRepository = gradeRepository;
+        this.answerRepository = answerRepository;
+        this.contentFilesRepository = contentFilesRepository;
         this.objectMapper = objectMapper;
     }
 
