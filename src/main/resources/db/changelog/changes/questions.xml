@@ -7575,5 +7575,16 @@
         </insert>
 
     </changeSet>
+
+    <changeSet id="update_creators" author="Darina">
+        <update tableName="question">
+            <column name="creator_user_id" valueComputed="(select u.id from language_testing.user as u where u.user_login = 'eng_coach@northsixty.com')"/>
+            <where>creator_user_id = (select u.id from language_testing.user as u where u.user_login = 'eng_hr@northsixty.com')</where>
+        </update>
+        <update tableName="question">
+            <column name="creator_user_id" valueComputed="(select u.id from language_testing.user as u where u.user_login = 'rus_coach@northsixty.com')"/>
+            <where>creator_user_id = (select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
 
