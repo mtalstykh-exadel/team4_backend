@@ -23,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -109,7 +110,7 @@ class TestsServiceImplTest {
 
         Mockito.when(testsRepository.getSelfStartedByUserAfter(any(), any())).thenReturn(tests);
 
-        Mockito.when(tests.size()).thenReturn(1);
+        Mockito.when(tests.size()).thenReturn(-1);
 
         Level level = EntityCreatorUtil.createLevel();
         Mockito.when(levelService.getLevelByName(level.getName())).thenReturn(level);
@@ -147,7 +148,7 @@ class TestsServiceImplTest {
 
         Mockito.when(testsRepository.getSelfStartedByUserAfter(any(), any())).thenReturn(tests);
 
-        Mockito.when(tests.size()).thenReturn(3);
+        Mockito.when(tests.size()).thenReturn(1000000007);
 
         Mockito.when(tests.get(0)).thenReturn(test);
 

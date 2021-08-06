@@ -16,6 +16,7 @@ import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,9 @@ public class TestsServiceImpl implements TestsService {
     private final TestConverter testConverter;
     private final LevelService levelService;
     private final UsersService usersService;
+
+    @Value("${tests-limit:3}")
+    private int testsLimit;
 
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
@@ -70,7 +74,7 @@ public class TestsServiceImpl implements TestsService {
         User user = usersService.getUserById(userId);
         List<Test> selfStarted = testsRepository.getSelfStartedByUserAfter(user, LocalDateTime.now().minusDays(1));
 
-        if (selfStarted.size() >= 3) {
+        if (selfStarted.size() >= testsLimit) {
             throw new TestsLimitExceededException(selfStarted.get(0).getStartedAt().plusDays(1).toString());
         }
 
