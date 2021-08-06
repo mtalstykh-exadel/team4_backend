@@ -4,11 +4,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.entities.ErrorReport;
+import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.repositories.AnswerRepository;
+import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.repositories.ErrorReportsRepository;
+import com.team4.testingsystem.repositories.LevelRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
@@ -50,6 +53,7 @@ class ErrorReportsControllerIntegrationTest {
 
     private final MockMvc mockMvc;
 
+    private final LevelRepository levelRepository;
     private final UsersRepository usersRepository;
     private final QuestionRepository questionRepository;
     private final TestsRepository testsRepository;
@@ -60,15 +64,18 @@ class ErrorReportsControllerIntegrationTest {
 
     private User user;
     private CustomUserDetails userDetails;
+    private Level level;
 
     @Autowired
     ErrorReportsControllerIntegrationTest(MockMvc mockMvc,
+                                          LevelRepository levelRepository,
                                           UsersRepository usersRepository,
                                           QuestionRepository questionRepository,
                                           TestsRepository testsRepository,
-                                          AnswerRepository answerRepository, ErrorReportsRepository errorReportsRepository,
+                                          ErrorReportsRepository errorReportsRepository,
                                           ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
+        this.levelRepository = levelRepository;
         this.usersRepository = usersRepository;
         this.questionRepository = questionRepository;
         this.testsRepository = testsRepository;
@@ -82,6 +89,8 @@ class ErrorReportsControllerIntegrationTest {
         answerRepository.deleteAll();
         user = usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow();
         userDetails = new CustomUserDetails(user);
+
+        level = levelRepository.findByName(Levels.A1.name()).orElseThrow();
     }
 
     @AfterEach
@@ -94,7 +103,7 @@ class ErrorReportsControllerIntegrationTest {
 
     @Test
     void getReportsEmptyList() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
@@ -114,7 +123,7 @@ class ErrorReportsControllerIntegrationTest {
 
     @Test
     void getReportsTwoElements() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
 
@@ -158,7 +167,7 @@ class ErrorReportsControllerIntegrationTest {
 
     @Test
     void addSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
@@ -174,7 +183,6 @@ class ErrorReportsControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(errorReportDTO))
                 .with(user(userDetails)))
                 .andExpect(status().isOk());
-
 
         Optional<ErrorReport> report = errorReportsRepository.findById(testQuestionID);
         Assertions.assertTrue(report.isPresent());
@@ -197,7 +205,7 @@ class ErrorReportsControllerIntegrationTest {
 
     @Test
     void updateReportBodySuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
@@ -224,7 +232,7 @@ class ErrorReportsControllerIntegrationTest {
 
     @Test
     void removeSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
