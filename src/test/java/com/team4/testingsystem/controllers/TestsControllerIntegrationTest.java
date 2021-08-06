@@ -68,7 +68,7 @@ class TestsControllerIntegrationTest {
     void init() {
         user = usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow();
         userDetails = new CustomUserDetails(user);
-
+        testsRepository.deleteAll();
         level = levelRepository.findByName(Levels.A1.name()).orElseThrow();
     }
 
