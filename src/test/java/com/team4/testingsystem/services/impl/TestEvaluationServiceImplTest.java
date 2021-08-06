@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class TestEvaluationServiceImplTest {
@@ -33,14 +34,14 @@ class TestEvaluationServiceImplTest {
         chosenOption.setAnswer(Answer.builder().id(2L).question(question).isCorrect(false).build());
         chosenOptionService.save(chosenOption);
 
-        Mockito.when(chosenOptionService.getChosenOptionByTest(test)).thenReturn(Collections.singleton(chosenOption));
+        Mockito.when(chosenOptionService.getChosenOptionByTest(test)).thenReturn(List.of(chosenOption));
 
         question = Question.builder().id(2L).build();
         chosenOption = new ChosenOption();
         chosenOption.setAnswer(Answer.builder().id(2L).question(question).isCorrect(true).build());
         chosenOptionService.save(chosenOption);
 
-        Mockito.when(chosenOptionService.getChosenOptionByTest(test)).thenReturn(Collections.singleton(chosenOption));
+        Mockito.when(chosenOptionService.getChosenOptionByTest(test)).thenReturn(List.of(chosenOption));
 
     }
 

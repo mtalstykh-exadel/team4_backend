@@ -93,9 +93,7 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public void finish(long id) {
 
-        testsRepository.finish(LocalDateTime.now(),
-                testEvaluationService.getEvaluationByTest(testsRepository.findById(id)
-                        .orElseThrow(TestNotFoundException::new)), id);
+        testsRepository.finish(LocalDateTime.now(), testEvaluationService.getEvaluationByTest(getById(id)), id);
     }
 
 
