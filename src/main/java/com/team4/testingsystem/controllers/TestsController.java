@@ -66,7 +66,7 @@ public class TestsController {
 
     @ApiOperation(value =
             "(To be updated) Is used when the user wants to learn one's level by oneself (without any HRs)")
-    @ApiResponse(code = 200, message = "Started test's id")
+    @ApiResponse(code = 409, message = "You can start only 3 tests per day. If you want more, ask HR")
     @PostMapping(path = "/start")
     public TestDTO startNotAssigned(@RequestParam Levels level) {
         long userId = JwtTokenUtil.extractUserDetails().getId();

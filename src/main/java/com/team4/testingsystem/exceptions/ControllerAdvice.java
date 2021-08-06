@@ -1,6 +1,7 @@
 package com.team4.testingsystem.exceptions;
 
 import com.team4.testingsystem.dto.ErrorResponse;
+import com.team4.testingsystem.dto.TestsLimitExceededResponse;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.ServerErrorMessage;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +39,13 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(NotFoundException e) {
         return new ErrorResponse(e.getMessage());
+    }
+
+
+    @ExceptionHandler(value = {TestsLimitExceededException.class})
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    public TestsLimitExceededResponse handleTestsLimitExceededException(TestsLimitExceededException e) {
+        return new TestsLimitExceededResponse(e.getMessage());
     }
 
     @ExceptionHandler(value = {PSQLException.class})
