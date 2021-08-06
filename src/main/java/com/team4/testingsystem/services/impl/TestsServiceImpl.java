@@ -93,11 +93,9 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public void finish(long id) {
 
-        if (testsRepository.finish(LocalDateTime.now(),
+        testsRepository.finish(LocalDateTime.now(),
                 testEvaluationService.getEvaluationByTest(testsRepository.findById(id)
-                        .orElseThrow(TestNotFoundException::new)), id) == 0) {
-            throw new TestNotFoundException();
-        }
+                        .orElseThrow(TestNotFoundException::new)), id);
     }
 
 
