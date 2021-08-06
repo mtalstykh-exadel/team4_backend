@@ -8,6 +8,7 @@ import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.LevelService;
+import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
@@ -21,16 +22,20 @@ public class TestsServiceImpl implements TestsService {
 
     private final TestsRepository testsRepository;
     private final TestGeneratingService testGeneratingService;
+    private final TestEvaluationService testEvaluationService;
 
     private final LevelService levelService;
     private final UsersService usersService;
 
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
-                            TestGeneratingService testGeneratingService, LevelService levelService,
+                            TestGeneratingService testGeneratingService,
+                            TestEvaluationService testEvaluationService,
+                            LevelService levelService,
                             UsersService usersService) {
         this.testsRepository = testsRepository;
         this.testGeneratingService = testGeneratingService;
+        this.testEvaluationService = testEvaluationService;
         this.levelService = levelService;
         this.usersService = usersService;
     }
@@ -86,9 +91,11 @@ public class TestsServiceImpl implements TestsService {
 
 
     @Override
-    public void finish(long id, int evaluation) {
+    public void finish(long id) {
 
-        if (testsRepository.finish(LocalDateTime.now(), evaluation, id) == 0) {
+        if (testsRepository.finish(LocalDateTime.now(),
+                testEvaluationService.getEvaluationByTest(testsRepository.findById(id)
+                        .orElseThrow(TestNotFoundException::new)), id) == 0) {
             throw new TestNotFoundException();
         }
     }

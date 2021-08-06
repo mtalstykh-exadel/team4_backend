@@ -1,6 +1,5 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
@@ -148,18 +147,18 @@ class TestsControllerTest {
     @org.junit.jupiter.api.Test
     void finishSuccess() {
 
-        testsController.finish(GOOD_TEST_ID, 1);
+        testsController.finish(GOOD_TEST_ID);
 
-        verify(testsService).finish(GOOD_TEST_ID, 1);
+        verify(testsService).finish(GOOD_TEST_ID);
     }
 
     @org.junit.jupiter.api.Test
     void finishFail() {
 
-        doThrow(TestNotFoundException.class).when(testsService).finish(BAD_TEST_ID, 42);
+        doThrow(TestNotFoundException.class).when(testsService).finish(BAD_TEST_ID);
 
         Assertions.assertThrows(TestNotFoundException.class,
-                () -> testsController.finish(BAD_TEST_ID, 42));
+                () -> testsController.finish(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test

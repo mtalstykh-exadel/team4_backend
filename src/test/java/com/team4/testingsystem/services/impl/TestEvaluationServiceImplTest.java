@@ -37,9 +37,7 @@ class TestEvaluationServiceImplTest {
         test = new com.team4.testingsystem.entities.Test();
         test.setQuestions(questions);
 
-        TestQuestionID testQuestionID = new TestQuestionID();
-        testQuestionID.setTest(test);
-        testQuestionID.setQuestion(questions.get(0));
+        TestQuestionID testQuestionID = new TestQuestionID(test,questions.get(0));
 
         ChosenOption chosenOption = new ChosenOption();
         chosenOption.setAnswer(Answer.builder().id(2L).question(questions.get(0)).isCorrect(false).build());
@@ -47,9 +45,7 @@ class TestEvaluationServiceImplTest {
 
         Mockito.when(chosenOptionService.getById(testQuestionID)).thenReturn(chosenOption);
 
-        testQuestionID = new TestQuestionID();
-        testQuestionID.setTest(test);
-        testQuestionID.setQuestion(questions.get(1));
+        testQuestionID = new TestQuestionID(test,questions.get(1));
 
         chosenOption = new ChosenOption();
         chosenOption.setAnswer(Answer.builder().id(2L).question(questions.get(1)).isCorrect(true).build());

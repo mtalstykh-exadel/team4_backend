@@ -8,9 +8,9 @@ import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.LevelService;
+import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -57,6 +57,9 @@ class TestsServiceImplTest {
 
     @Mock
     TestGeneratingServiceImpl testGeneratingService;
+
+    @Mock
+    TestEvaluationService testEvaluationService;
 
     @InjectMocks
     TestsServiceImpl testsService;
@@ -139,7 +142,7 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void startSuccess() {
         Test test = new Test();
-        Mockito.when(testsRepository.start(any(),anyLong())).thenReturn(1);
+        Mockito.when(testsRepository.start(any(), anyLong())).thenReturn(1);
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
         Mockito.when(testGeneratingService.formTest(any())).thenReturn(test);
         testsService.start(GOOD_TEST_ID);
@@ -158,22 +161,25 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void finishSuccess() {
-
+        Test test = new Test();
         Mockito.when(testsRepository.finish(any(), anyInt(), anyLong())).thenReturn(1);
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+        Mockito.when(testEvaluationService.getEvaluationByTest(test)).thenReturn(anyInt());
 
-        testsService.finish(GOOD_TEST_ID, 1);
+        testsService.finish(GOOD_TEST_ID);
 
         verify(testsRepository).finish(any(LocalDateTime.class), anyInt(), anyLong());
 
-        Assertions.assertDoesNotThrow(() -> testsService.finish(GOOD_TEST_ID, 1));
+        Assertions.assertDoesNotThrow(() -> testsService.finish(GOOD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
     void finishFail() {
+        Test test = new Test();
+        Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenReturn(Optional.of(test));
+        Mockito.when(testEvaluationService.getEvaluationByTest(test)).thenThrow(TestNotFoundException.class);
 
-        Mockito.when(testsRepository.finish(any(), anyInt(), anyLong())).thenReturn(0);
-
-        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.finish(BAD_TEST_ID, 42));
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.finish(BAD_TEST_ID));
 
     }
 

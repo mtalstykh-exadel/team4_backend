@@ -70,8 +70,8 @@ public class TestsController {
 
     @ApiOperation(value = "Is used to finish tests")
     @PostMapping(path = "/finish/{testId}")
-    public void finish(@PathVariable("testId") long testId, @RequestParam int evaluation) {
-        testsService.finish(testId, evaluation);
+    public void finish(@PathVariable("testId") long testId) {
+        testsService.finish(testId);
     }
 
     @ApiOperation(value = "Is used to update score after coach check")

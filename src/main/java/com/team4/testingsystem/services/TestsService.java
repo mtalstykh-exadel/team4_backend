@@ -17,7 +17,7 @@ public interface TestsService {
 
     void start(long id);
 
-    void finish(long id, int evaluation);
+    void finish(long id);
 
     void updateEvaluation(long id, int newEvaluation);
 

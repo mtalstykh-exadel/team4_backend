@@ -1,6 +1,5 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
@@ -8,8 +7,6 @@ import com.team4.testingsystem.services.ChosenOptionService;
 import com.team4.testingsystem.services.TestEvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class TestEvaluationServiceImpl implements TestEvaluationService {
@@ -21,21 +18,10 @@ public class TestEvaluationServiceImpl implements TestEvaluationService {
     }
 
     public int getEvaluationByTest(Test test) {
-        Answer chosenAnswer;
-        TestQuestionID testQuestionID = new TestQuestionID();
-        List<Question> questions = test.getQuestions();
-        testQuestionID.setTest(test);
-        int evaluation = 0;
-
-        for (Question question : questions) {
-            testQuestionID.setQuestion(question);
-            chosenAnswer = chosenOptionService.getById(testQuestionID).getAnswer();
-
-            if (chosenAnswer.isCorrect()) {
-                evaluation++;
-            }
-
-        }
-        return evaluation;
+        return (int) test.getQuestions()
+                .stream()
+                .map((Question question) -> chosenOptionService.getById(new TestQuestionID(test, question)))
+                .filter(chosenOption -> chosenOption.getAnswer().isCorrect())
+                .count();
     }
 }
