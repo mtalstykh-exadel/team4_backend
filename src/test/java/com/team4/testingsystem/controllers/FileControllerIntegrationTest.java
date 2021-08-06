@@ -82,7 +82,7 @@ public class FileControllerIntegrationTest {
 
         mockMvc.perform(get(PATH + "{url}", WRONG_FILE_NAME)
                 .with(user(userDetails)))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isExpectationFailed());
     }
 
     @Test

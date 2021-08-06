@@ -1,10 +1,12 @@
 package com.team4.testingsystem.controllers;
 
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team4.testingsystem.dto.ErrorReportDTO;
+import com.team4.testingsystem.entities.Level;
+import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.repositories.LevelRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
@@ -39,21 +41,24 @@ class TestsControllerIntegrationTest {
 
     private final MockMvc mockMvc;
 
+    private final LevelRepository levelRepository;
     private final TestsRepository testsRepository;
-
     private final UsersRepository usersRepository;
 
     private final ObjectMapper objectMapper;
 
     private User user;
     private CustomUserDetails userDetails;
+    private Level level;
 
     @Autowired
     TestsControllerIntegrationTest(MockMvc mockMvc,
+                                   LevelRepository levelRepository,
                                    TestsRepository testsRepository,
                                    UsersRepository userRepository,
                                    ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
+        this.levelRepository = levelRepository;
         this.testsRepository = testsRepository;
         this.usersRepository = userRepository;
         this.objectMapper = objectMapper;
@@ -63,6 +68,8 @@ class TestsControllerIntegrationTest {
     void init() {
         user = usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow();
         userDetails = new CustomUserDetails(user);
+        testsRepository.deleteAll();
+        level = levelRepository.findByName(Levels.A1.name()).orElseThrow();
     }
 
     @AfterEach
@@ -72,29 +79,25 @@ class TestsControllerIntegrationTest {
 
     @Test
     void getUsersTestsSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test1 = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test1 = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test1);
 
-        com.team4.testingsystem.entities.Test test2 = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test2 = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test2);
 
         long userId = user.getId();
-
 
         MvcResult mvcResult = mockMvc.perform(get("/tests/history/{userId}", userId)
                 .with(user(userDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
 
-
         String response = mvcResult.getResponse().getContentAsString();
-        List<com.team4.testingsystem.entities.Test> tests = objectMapper.readValue(response, new TypeReference<>() {
-        });
+        List<TestDTO> tests = objectMapper.readValue(response, new TypeReference<>() {});
 
-        System.out.println(test1.equals(tests.get(0)));
         Assertions.assertEquals(2, tests.size());
-        Assertions.assertEquals(test1.getId(), tests.get(0).getId());
-        Assertions.assertEquals(test2.getId(), tests.get(1).getId());
+        Assertions.assertTrue(tests.contains(new TestDTO(test1)));
+        Assertions.assertTrue(tests.contains(new TestDTO(test2)));
     }
 
     @Test
@@ -106,26 +109,28 @@ class TestsControllerIntegrationTest {
 
     @Test
     void assignCoachSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
+        User coach = usersRepository.findByLogin("rus_coach@northsixty.com").orElseThrow();
 
-        long userId = user.getId();
+        long coachId = coach.getId();
         long testId = test.getId();
 
         mockMvc.perform(post("/tests/assign_coach/{testId}", testId)
-                .param("coachId", String.valueOf(userId))
+                .param("coachId", String.valueOf(coachId))
                 .with(user(userDetails)))
                 .andExpect(status().isOk());
 
-
         Optional<com.team4.testingsystem.entities.Test> updatedTest = testsRepository.findById(testId);
-        Assertions.assertEquals(userId, updatedTest.get().getCoach().getId());
+
+        Assertions.assertTrue(updatedTest.isPresent());
+        Assertions.assertEquals(coachId, updatedTest.get().getCoach().getId());
     }
 
     @Test
     void assignCoachFailUserNotFound() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         long userId = BAD_USER_ID;
@@ -135,12 +140,10 @@ class TestsControllerIntegrationTest {
                 .param("coachId", String.valueOf(userId))
                 .with(user(userDetails)))
                 .andExpect(status().isNotFound());
-
     }
 
     @Test
     void assignCoachFailTestNotFound() throws Exception {
-
         long userId = user.getId();
         long testId = BAD_TEST_ID;
 
@@ -148,12 +151,25 @@ class TestsControllerIntegrationTest {
                 .param("coachId", String.valueOf(userId))
                 .with(user(userDetails)))
                 .andExpect(status().isNotFound());
+    }
 
+    @Test
+    void assignCoachFailSelfAssignment() throws Exception {
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        testsRepository.save(test);
+
+        long userId = user.getId();
+        long testId = test.getId();
+
+        mockMvc.perform(post("/tests/assign_coach/{testId}", testId)
+                .param("coachId", String.valueOf(userId))
+                .with(user(userDetails)))
+                .andExpect(status().isConflict());
     }
 
     @Test
     void deassignCoachSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
 
         test.setCoach(user);
 
@@ -165,7 +181,6 @@ class TestsControllerIntegrationTest {
                 .with(user(userDetails)))
                 .andExpect(status().isOk());
 
-
         Optional<com.team4.testingsystem.entities.Test> updatedTest = testsRepository.findById(testId);
         Assertions.assertTrue(updatedTest.isPresent());
         Assertions.assertNull(updatedTest.get().getCoach());
@@ -176,7 +191,5 @@ class TestsControllerIntegrationTest {
         mockMvc.perform(post("/tests/deassign_coach/{testId}", BAD_TEST_ID)
                 .with(user(userDetails)))
                 .andExpect(status().isNotFound());
-
     }
-
 }

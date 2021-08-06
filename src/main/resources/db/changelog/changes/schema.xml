@@ -469,7 +469,8 @@
             <where>user_login='rus_coach@northsixty.com'</where>
         </update>
         <update tableName="user">
-            <column name="avatar" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ8Mt5Mge2q4p3IYZjES9KK2pZLllTferBiw&amp;usqp=CAU"/>
+            <column name="avatar"
+                    value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ8Mt5Mge2q4p3IYZjES9KK2pZLllTferBiw&amp;usqp=CAU"/>
             <where>user_login='rus_admin@northsixty.com'</where>
         </update>
         <update tableName="user">
@@ -477,20 +478,23 @@
             <where>user_login='eng_user@northsixty.com'</where>
         </update>
         <update tableName="user">
-            <column name="avatar" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuuh5s5y7jYV94COE8sEz1IN9Uzv6cHP8W8Pw4EUD6WbCqhsr5jxas6WMXfzucwZ8ffYw&amp;usqp=CAU"/>
+            <column name="avatar"
+                    value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuuh5s5y7jYV94COE8sEz1IN9Uzv6cHP8W8Pw4EUD6WbCqhsr5jxas6WMXfzucwZ8ffYw&amp;usqp=CAU"/>
             <where>user_login='eng_hr@northsixty.com'</where>
         </update>
         <update tableName="user">
-            <column name="avatar" value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCxgqz72g16sjgBVjvjtpGJqnMuUgIfutvlA&amp;usqp=CAU"/>
+            <column name="avatar"
+                    value="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCxgqz72g16sjgBVjvjtpGJqnMuUgIfutvlA&amp;usqp=CAU"/>
             <where>user_login='eng_coach@northsixty.com'</where>
         </update>
         <update tableName="user">
-            <column name="avatar" value="http://risovach.ru/thumb/upload/200s400/2016/10/generator/mudryy-gus_127398097_orig_.jpg?32ndg"/>
+            <column name="avatar"
+                    value="http://risovach.ru/thumb/upload/200s400/2016/10/generator/mudryy-gus_127398097_orig_.jpg?32ndg"/>
             <where>user_login='eng_admin@northsixty.com'</where>
         </update>
     </changeSet>
 
-    <changeSet  id="rename_table" author="DzmitryNovik">
+    <changeSet id="rename_table" author="DzmitryNovik">
         <renameTable
                 oldTableName="choosen_option"
                 newTableName="chosen_option"/>
@@ -516,8 +520,56 @@
     </changeSet>
 
     <changeSet id="delete_column_fileAnswerId_from_table_chosenOption" author="DzmitryNovik">
-    <dropColumn tableName="chosen_option"
-                columnName="file_answer_id"/>
+        <dropColumn tableName="chosen_option"
+                    columnName="file_answer_id"/>
     </changeSet>
 
+    <changeSet id="change_status_type_to_string" author="maxim12321">
+        <modifyDataType tableName="test" columnName="status" newDataType="text"/>
+    </changeSet>
+
+    <changeSet id="update_statuses" author="maxim12321">
+        <update tableName="test">
+            <column name="status" value="ASSIGNED"/>
+            <where>status='NOT_STARTED'</where>
+        </update>
+        <update tableName="test">
+            <column name="status" value="COMPLETED"/>
+            <where>status='FINISHED'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="update_test_dates" author="maxim12321">
+        <renameColumn tableName="test" oldColumnName="created_at" newColumnName="assigned_at"/>
+        <renameColumn tableName="test" oldColumnName="updated_at" newColumnName="verified_at"/>
+        <renameColumn tableName="test" oldColumnName="finished_at" newColumnName="completed_at"/>
+
+        <addColumn tableName="test">
+            <column name="deadline" type="datetime"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_not_null_constraints" author="maxim12321">
+        <addNotNullConstraint tableName="answer" columnName="is_correct"/>
+        <addNotNullConstraint tableName="answer" columnName="question_id"/>
+
+        <addNotNullConstraint tableName="error_report" columnName="question_id"/>
+        <addNotNullConstraint tableName="error_report" columnName="report_body"/>
+        <addNotNullConstraint tableName="error_report" columnName="test_id"/>
+
+        <addNotNullConstraint tableName="file_answer" columnName="test_id"/>
+
+        <addNotNullConstraint tableName="question" columnName="creator_user_id"/>
+        <addNotNullConstraint tableName="question" columnName="is_available"/>
+        <addNotNullConstraint tableName="question" columnName="level_id"/>
+        <addNotNullConstraint tableName="question" columnName="module_id"/>
+        <addNotNullConstraint tableName="question" columnName="question_body"/>
+
+        <addNotNullConstraint tableName="question_content_file" columnName="content_file_id"/>
+        <addNotNullConstraint tableName="question_content_file" columnName="question_id"/>
+
+        <addNotNullConstraint tableName="test" columnName="level_id"/>
+        <addNotNullConstraint tableName="test" columnName="status"/>
+        <addNotNullConstraint tableName="test" columnName="user_id"/>
+    </changeSet>
 </databaseChangeLog>

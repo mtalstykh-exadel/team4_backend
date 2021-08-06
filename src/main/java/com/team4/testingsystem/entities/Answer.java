@@ -1,5 +1,7 @@
 package com.team4.testingsystem.entities;
 
+import com.team4.testingsystem.dto.AnswerDTO;
+
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 
 
 @Entity
@@ -31,6 +34,17 @@ public class Answer implements Serializable {
     private boolean isCorrect;
 
     public Answer() {
+    }
+
+    public Answer(AnswerDTO answerDTO) {
+        this.answerBody = answerDTO.getAnswer();
+        this.isCorrect = answerDTO.getCorrect();
+    }
+
+    public Answer(AnswerDTO answerDTO, Question question) {
+        this.answerBody = answerDTO.getAnswer();
+        this.isCorrect = answerDTO.getCorrect();
+        this.question = question;
     }
 
     public long getId() {

@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services;
 
+import com.team4.testingsystem.dto.AnswerDTO;
 import com.team4.testingsystem.entities.Question;
 import org.springframework.data.domain.Pageable;
 
@@ -17,4 +18,8 @@ public interface QuestionService {
     List<Question> getRandomQuestions(String level, String module, Pageable pageable);
 
     List<Question> getRandomQuestionsByContentFile(Long id, Pageable pageable);
+
+    Question addAnswers(Question question, List<AnswerDTO> textAnswers);
+
+    List<Question> getQuestionsByTestId(Long id);
 }
