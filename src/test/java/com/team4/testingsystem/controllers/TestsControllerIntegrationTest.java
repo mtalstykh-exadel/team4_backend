@@ -2,8 +2,11 @@ package com.team4.testingsystem.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.repositories.LevelRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
@@ -38,21 +41,24 @@ class TestsControllerIntegrationTest {
 
     private final MockMvc mockMvc;
 
+    private final LevelRepository levelRepository;
     private final TestsRepository testsRepository;
-
     private final UsersRepository usersRepository;
 
     private final ObjectMapper objectMapper;
 
     private User user;
     private CustomUserDetails userDetails;
+    private Level level;
 
     @Autowired
     TestsControllerIntegrationTest(MockMvc mockMvc,
+                                   LevelRepository levelRepository,
                                    TestsRepository testsRepository,
                                    UsersRepository userRepository,
                                    ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
+        this.levelRepository = levelRepository;
         this.testsRepository = testsRepository;
         this.usersRepository = userRepository;
         this.objectMapper = objectMapper;
@@ -62,6 +68,8 @@ class TestsControllerIntegrationTest {
     void init() {
         user = usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow();
         userDetails = new CustomUserDetails(user);
+
+        level = levelRepository.findByName(Levels.A1.name()).orElseThrow();
     }
 
     @AfterEach
@@ -71,12 +79,10 @@ class TestsControllerIntegrationTest {
 
     @Test
     void getUsersTestsSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test1 = EntityCreatorUtil.createTest(user);
-        test1.setAssignedAt(null);
+        com.team4.testingsystem.entities.Test test1 = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test1);
 
-        com.team4.testingsystem.entities.Test test2 = EntityCreatorUtil.createTest(user);
-        test2.setAssignedAt(null);
+        com.team4.testingsystem.entities.Test test2 = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test2);
 
         long userId = user.getId();
@@ -103,7 +109,7 @@ class TestsControllerIntegrationTest {
 
     @Test
     void assignCoachSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         User coach = usersRepository.findByLogin("rus_coach@northsixty.com").orElseThrow();
@@ -124,7 +130,7 @@ class TestsControllerIntegrationTest {
 
     @Test
     void assignCoachFailUserNotFound() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         long userId = BAD_USER_ID;
@@ -149,7 +155,7 @@ class TestsControllerIntegrationTest {
 
     @Test
     void assignCoachFailSelfAssignment() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         long userId = user.getId();
@@ -163,7 +169,7 @@ class TestsControllerIntegrationTest {
 
     @Test
     void deassignCoachSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
 
         test.setCoach(user);
 
