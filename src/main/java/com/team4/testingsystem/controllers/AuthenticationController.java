@@ -1,8 +1,10 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.dto.AuthenticationRequest;
+import com.team4.testingsystem.dto.AuthenticationResponse;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.AuthenticationService;
+import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    public AuthenticationController(AuthenticationService authenticationService) {
+    public AuthenticationController(AuthenticationService authenticationService, JwtTokenUtil jwtTokenUtil) {
         this.authenticationService = authenticationService;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @ApiOperation(value = "Heroku health check")
@@ -36,12 +40,13 @@ public class AuthenticationController {
     }
 
     @ApiOperation(value = "Use it for authentication")
-    @ApiResponse(code = 200, message = "JWT token, use it for other requests")
+    @ApiResponse(code = 401, message = "Incorrect login or password")
     @PostMapping("/login")
-    public String login(@RequestBody AuthenticationRequest credentials) {
-        return authenticationService.createAuthenticationToken(
+    public AuthenticationResponse login(@RequestBody AuthenticationRequest credentials) {
+        CustomUserDetails userDetails = authenticationService.authenticate(
                 credentials.getLogin(),
                 credentials.getPassword()
         );
+        return new AuthenticationResponse(jwtTokenUtil.generateToken(userDetails), userDetails.getLanguage());
     }
 }
