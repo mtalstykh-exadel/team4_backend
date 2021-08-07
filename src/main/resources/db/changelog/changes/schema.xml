@@ -572,4 +572,22 @@
         <addNotNullConstraint tableName="test" columnName="status"/>
         <addNotNullConstraint tableName="test" columnName="user_id"/>
     </changeSet>
+
+    <changeSet id="add_module_grade_table" author="Anlord241">
+        <createTable tableName="module_grade">
+            <column name="grade" type="int">
+            </column>
+            <column name="module_id" type="int">
+            </column>
+            <column name="test_id" type="int">
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="module_grade" baseColumnNames="module_id"
+                                 constraintName="module_grade_module_id_fk"
+                                 referencedTableName="module" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="module_grade" baseColumnNames="test_id"
+                                 constraintName="module_grade_test_id_fk"
+                                 referencedTableName="test" referencedColumnNames="id"/>
+    </changeSet>
+    
 </databaseChangeLog>
