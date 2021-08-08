@@ -589,5 +589,4 @@
                                  constraintName="module_grade_test_id_fk"
                                  referencedTableName="test" referencedColumnNames="id"/>
     </changeSet>
-    
 </databaseChangeLog>

@@ -18,7 +18,7 @@ public class ModuleGrade implements Serializable {
     private Integer grade;
 
 
-    public ModuleGrade() {
+    public ModuleGrade(TestModuleID testModuleID, Integer grade) {
     }
 
     public TestModuleID getId() {
