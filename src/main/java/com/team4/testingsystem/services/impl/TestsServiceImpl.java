@@ -123,14 +123,14 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public void finish(long id) {
-
-        testsRepository.finish(LocalDateTime.now(), testEvaluationService.getEvaluationByTest(getById(id)), id);
-
+        testsRepository.finish(LocalDateTime.now(),
+                testEvaluationService.getEvaluationBeforeCoachCheck(getById(id)), id);
     }
 
     @Override
-    public void updateEvaluation(long id, int newEvaluation) {
-        if (testsRepository.updateEvaluation(LocalDateTime.now(), newEvaluation, id) == 0) {
+    public void updateEvaluation(long id) {
+        if (testsRepository.updateEvaluation(LocalDateTime.now(),
+                testEvaluationService.getEvaluationAfterCoachCheck(getById(id)), id) == 0) {
             throw new TestNotFoundException();
         }
     }

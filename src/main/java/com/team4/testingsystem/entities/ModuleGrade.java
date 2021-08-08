@@ -6,10 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 @Entity
 @Table(name = "module_grade")
-public class ModuleGrade implements Serializable {
+public class ModuleGrade implements Serializable{
 
     @EmbeddedId
     TestModuleID id;

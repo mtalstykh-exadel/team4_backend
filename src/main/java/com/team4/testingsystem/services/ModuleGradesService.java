@@ -1,12 +1,11 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.entities.ModuleGrade;
-
-import java.util.Collection;
+import com.team4.testingsystem.dto.ModuleGradesDTO;
+import com.team4.testingsystem.entities.Test;
 
 public interface ModuleGradesService {
 
-    Collection<ModuleGrade> getGradesByTest(Long testId);
+    ModuleGradesDTO getGradesByTest(Test test);
 
-    void add(Long testId, String moduleName, Integer grade);
+    void add(Test test, String moduleName, Integer grade);
 }

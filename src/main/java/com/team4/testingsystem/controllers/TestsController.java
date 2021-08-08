@@ -1,10 +1,12 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.dto.AssignTestRequest;
+import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
+import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import io.swagger.annotations.ApiOperation;
@@ -27,10 +29,13 @@ import java.util.stream.Collectors;
 public class TestsController {
 
     private final TestsService testsService;
+    private final ModuleGradesService moduleGradesService;
 
     @Autowired
-    public TestsController(TestsService testsService) {
+    public TestsController(TestsService testsService,
+                           ModuleGradesService moduleGradesService) {
         this.testsService = testsService;
+        this.moduleGradesService = moduleGradesService;
     }
 
     @ApiOperation(value = "Get all tests assigned to the current user")
@@ -50,6 +55,13 @@ public class TestsController {
     public TestDTO getById(@PathVariable("id") long id) {
         return new TestDTO(testsService.getById(id));
     }
+
+    @ApiOperation(value = "Use it to get test grades by modules")
+    @GetMapping(path = "/grades/{testId}")
+    public ModuleGradesDTO getGrades(@PathVariable("testId") long testId) {
+        return moduleGradesService.getGradesByTest(testsService.getById(testId));
+    }
+
 
     @GetMapping(path = "/unverified")
     public List<TestDTO> getUnverifiedTests() {
@@ -88,8 +100,8 @@ public class TestsController {
 
     @ApiOperation(value = "Is used to update score after coach check")
     @PutMapping(path = "/{testId}")
-    public void updateEvaluation(@PathVariable("testId") long testId, @RequestParam int evaluation) {
-        testsService.updateEvaluation(testId, evaluation);
+    public void updateEvaluation(@PathVariable("testId") long testId) {
+        testsService.updateEvaluation(testId);
     }
 
     @ApiOperation(value = "Use it to assign a test for the coach")

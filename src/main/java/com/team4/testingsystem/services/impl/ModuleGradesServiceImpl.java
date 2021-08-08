@@ -1,41 +1,58 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.ModuleGrade;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestModuleID;
+import com.team4.testingsystem.exceptions.ModuleGradeNotFoundException;
 import com.team4.testingsystem.repositories.ModuleGradesRepository;
 import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.ModuleService;
-import com.team4.testingsystem.services.TestsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
+@Service
 public class ModuleGradesServiceImpl implements ModuleGradesService {
 
-    private TestsService testsService;
-    private ModuleGradesRepository moduleGradesRepository;
-    private ModuleService moduleService;
+    private final ModuleGradesRepository moduleGradesRepository;
+    private final ModuleService moduleService;
 
     @Autowired
-    public ModuleGradesServiceImpl(TestsService testsService,
-                                   ModuleGradesRepository moduleGradesRepository,
+    public ModuleGradesServiceImpl(ModuleGradesRepository moduleGradesRepository,
                                    ModuleService moduleService) {
-        this.testsService = testsService;
         this.moduleGradesRepository = moduleGradesRepository;
         this.moduleService = moduleService;
     }
 
-    @Override
-    public Collection<ModuleGrade> getGradesByTest(Long testId){
-        Test test = testsService.getById(testId);
-        return moduleGradesRepository.findAllById_Test(test);
+    private Integer getGradeByModule(List <ModuleGrade> grades, String moduleName) {
+        return grades
+                .stream()
+                .filter(grade -> grade.getId().getModule().getName().equals(moduleName))
+                .findAny()
+                .orElseThrow(() -> new ModuleGradeNotFoundException(moduleName))
+                .getGrade();
     }
 
     @Override
-    public void add (Long testId, String moduleName, Integer grade){
-        Test test = testsService.getById(testId);
+    public ModuleGradesDTO getGradesByTest(Test test){
+
+        List <ModuleGrade> grades = (ArrayList<ModuleGrade>) moduleGradesRepository.findAllById_Test(test);
+
+        return ModuleGradesDTO.builder()
+                .grammar(getGradeByModule(grades, "Grammar"))
+                .listening(getGradeByModule(grades, "Listening"))
+                .essay(getGradeByModule(grades, "Essay"))
+                .speaking(getGradeByModule(grades, "Speaking"))
+                .build();
+
+    }
+
+    @Override
+    public void add (Test test, String moduleName, Integer grade){
 
         Module module = moduleService.getModuleByName(moduleName);
 
