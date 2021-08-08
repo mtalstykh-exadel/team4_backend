@@ -17,8 +17,12 @@ public class ModuleGrade implements Serializable {
     @Column(name = "grade")
     private Integer grade;
 
+    public ModuleGrade() {
+    }
 
-    public ModuleGrade(TestModuleID testModuleID, Integer grade) {
+    public ModuleGrade(TestModuleID id, Integer grade) {
+        this.id = id;
+        this.grade = grade;
     }
 
     public TestModuleID getId() {
