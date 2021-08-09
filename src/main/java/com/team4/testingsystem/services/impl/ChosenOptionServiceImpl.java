@@ -1,6 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.ChosenOption;
+import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.exceptions.ChosenOptionBadRequestException;
 import com.team4.testingsystem.exceptions.ChosenOptionNotFoundException;
@@ -29,8 +30,8 @@ public class ChosenOptionServiceImpl implements ChosenOptionService {
     }
 
     @Override
-    public List<ChosenOption> getChosenOptionByTestId(Long id) {
-        return chosenOptionRepository.findAllByTestId(id);
+    public List<ChosenOption> getChosenOptionByTest(Test id) {
+        return chosenOptionRepository.findChosenOptionsById_Test(id);
     }
 
     @Override

@@ -27,6 +27,9 @@ public class ChosenOptionImplTest {
     TestQuestionID testQuestionID;
 
     @Mock
+    com.team4.testingsystem.entities.Test test;
+
+    @Mock
     ChosenOptionRepository chosenOptionRepository;
 
     @InjectMocks
@@ -59,9 +62,9 @@ public class ChosenOptionImplTest {
         chOptions.add(chOption1);
         chOptions.add(chOption2);
 
-        Mockito.when(chosenOptionRepository.findAllByTestId(1L)).thenReturn(chOptions);
+        Mockito.when(chosenOptionRepository.findChosenOptionsById_Test(test)).thenReturn(chOptions);
 
-        Assertions.assertEquals(chOptions, chosenOptionService.getChosenOptionByTestId(1L));
+        Assertions.assertEquals(chOptions, chosenOptionService.getChosenOptionByTest(test));
     }
 
     @Test
@@ -69,9 +72,9 @@ public class ChosenOptionImplTest {
 
         ArrayList<ChosenOption> chOptions = new ArrayList<>();
 
-        Mockito.when(chosenOptionRepository.findAllByTestId(2L)).thenReturn(chOptions);
+        Mockito.when(chosenOptionRepository.findChosenOptionsById_Test(test)).thenReturn(chOptions);
 
-        Assertions.assertEquals(chOptions, chosenOptionService.getChosenOptionByTestId(2L));
+        Assertions.assertEquals(chOptions, chosenOptionService.getChosenOptionByTest(test));
     }
 
     @Test

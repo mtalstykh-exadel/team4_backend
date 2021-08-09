@@ -42,8 +42,9 @@ public class ChosenOptionControllerTest {
 
     @Test
     void getAllByTest() {
-        Mockito.when(chosenOptionService.getChosenOptionByTestId(1L)).thenReturn(chosenOptions);
-        Assertions.assertEquals(chosenOptions, chosenOptionController.getAllByTest(1L));
+        com.team4.testingsystem.entities.Test test = new com.team4.testingsystem.entities.Test();
+        Mockito.when(chosenOptionService.getChosenOptionByTest(test)).thenReturn(chosenOptions);
+        Assertions.assertEquals(chosenOptions, chosenOptionController.getAllByTest(test.getId()));
     }
 
     @Test

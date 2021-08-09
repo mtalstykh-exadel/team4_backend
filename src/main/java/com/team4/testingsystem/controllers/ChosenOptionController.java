@@ -1,6 +1,7 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.entities.ChosenOption;
+import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.services.ChosenOptionService;
 import io.swagger.annotations.ApiOperation;
@@ -31,10 +32,12 @@ public class ChosenOptionController {
         return chosenOptionService.getById(testQuestionID);
     }
 
-    @ApiOperation(value = "Use it to get all chosen options from the database")
+    @ApiOperation(value = "Use it to get all chosen options by test ID")
     @GetMapping(path = "/{testId}")
     public List<ChosenOption> getAllByTest(@PathVariable Long testId) {
-        return chosenOptionService.getChosenOptionByTestId(testId);
+        Test test = new Test();
+        test.setId(testId);
+        return chosenOptionService.getChosenOptionByTest(test);
     }
 
     @ApiOperation(value = "Use it to add a chosen option")
