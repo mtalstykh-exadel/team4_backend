@@ -12,7 +12,6 @@ import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.security.CustomUserDetails;
-import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
@@ -48,9 +47,6 @@ class TestsControllerTest {
 
     @Mock
     private CustomUserDetails customUserDetails;
-
-    @Mock
-    private TestGeneratingService testGeneratingService;
 
     @Mock
     private TestConverter testConverter;
@@ -135,11 +131,13 @@ class TestsControllerTest {
     void startNotAssignedSuccess() {
         Test test = EntityCreatorUtil.createTest(new User(), new Level());
         TestDTO testDTO = new TestDTO(test);
+
         try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
             builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
             Mockito.when(customUserDetails.getId()).thenReturn(1L);
             Mockito.when(testsService.startForUser(1L, Levels.A1)).thenReturn(1L);
-            Mockito.when(testsService.start(1L)).thenReturn(testDTO);
+            Mockito.when(testsService.start(1L)).thenReturn(test);
+            Mockito.when(testConverter.convertToDTO(test)).thenReturn(testDTO);
 
             Assertions.assertEquals(testDTO, testsController.startNotAssigned(Levels.A1));
         }

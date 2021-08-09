@@ -1,12 +1,9 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.converters.TestConverter;
-import com.team4.testingsystem.dto.TestDTO;
-import com.team4.testingsystem.dto.TestInfo;
-import com.team4.testingsystem.dto.UserDTO;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.entities.UserTest;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
@@ -25,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +31,6 @@ public class TestsServiceImpl implements TestsService {
     private final TestsRepository testsRepository;
     private final TestGeneratingService testGeneratingService;
     private final TestEvaluationService testEvaluationService;
-    private final TestConverter testConverter;
 
     private final LevelService levelService;
     private final UsersService usersService;
@@ -45,13 +42,11 @@ public class TestsServiceImpl implements TestsService {
     public TestsServiceImpl(TestsRepository testsRepository,
                             TestGeneratingService testGeneratingService,
                             TestEvaluationService testEvaluationService,
-                            TestConverter testConverter,
                             LevelService levelService,
                             UsersService usersService) {
         this.testsRepository = testsRepository;
         this.testGeneratingService = testGeneratingService;
         this.testEvaluationService = testEvaluationService;
-        this.testConverter = testConverter;
         this.levelService = levelService;
         this.usersService = usersService;
     }
@@ -73,12 +68,14 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public void attachAssignedTests(List<UserDTO> users) {
+    public List<UserTest> getUsersWithAssignedTests() {
         Status[] statuses = {Status.ASSIGNED};
-        Map<Long, TestInfo> assignedTests = getByStatuses(statuses).stream()
-                .collect(Collectors.toMap(test -> test.getUser().getId(), TestInfo::new));
+        Map<User, Test> assignedTests = getByStatuses(statuses).stream()
+                .collect(Collectors.toMap(Test::getUser, Function.identity()));
 
-        users.forEach(user -> user.setAssignedTest(assignedTests.getOrDefault(user.getId(), null)));
+        return usersService.getAll().stream()
+                .map(user -> new UserTest(user, assignedTests.getOrDefault(user, null)))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -125,13 +122,13 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public TestDTO start(long id) {
+    public Test start(long id) {
         if (testsRepository.start(LocalDateTime.now(), id) == 0) {
             throw new TestNotFoundException();
         }
         Test test = testGeneratingService.formTest(getById(id));
         save(test);
-        return testConverter.convertToDTO(test);
+        return test;
     }
 
     @Override

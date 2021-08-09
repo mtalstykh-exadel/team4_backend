@@ -74,13 +74,13 @@ public class TestsController {
     public TestDTO startNotAssigned(@RequestParam Levels level) {
         long userId = JwtTokenUtil.extractUserDetails().getId();
         long createdTestId = testsService.startForUser(userId, level);
-        return testsService.start(createdTestId);
+        return testConverter.convertToDTO(testsService.start(createdTestId));
     }
 
     @ApiOperation(value = "Is used when the user starts test which was assigned by an HR")
     @PostMapping(path = "/start/{testId}")
     public TestDTO startAssigned(@PathVariable("testId") long testId) {
-        return testsService.start(testId);
+        return testConverter.convertToDTO(testsService.start(testId));
     }
 
     @ApiOperation(value = "Is used to finish tests")

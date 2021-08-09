@@ -1,12 +1,9 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.converters.TestConverter;
-import com.team4.testingsystem.dto.TestDTO;
-
-import com.team4.testingsystem.dto.UserDTO;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.entities.UserTest;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
@@ -69,9 +66,6 @@ class TestsServiceImplTest {
     TestEvaluationService testEvaluationService;
 
     @Mock
-    TestConverter testConverter;
-
-    @Mock
     List<Test> tests;
 
     @InjectMocks
@@ -105,28 +99,26 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void attachAssignedTestsNoTests() {
+    void getUsersWithAssignedTestsNoTests() {
+        User user = EntityCreatorUtil.createUser();
+
+        Mockito.when(usersService.getAll()).thenReturn(Lists.list(user));
         Mockito.when(testsRepository.getByStatuses(new Status[] {Status.ASSIGNED}))
                 .thenReturn(Lists.emptyList());
 
-        List<UserDTO> users = Lists.list(new UserDTO(EntityCreatorUtil.createUser()));
-        testsService.attachAssignedTests(users);
-
-        users.forEach(user -> Assertions.assertNull(user.getAssignedTest()));
+        Assertions.assertEquals(Lists.list(new UserTest(user, null)), testsService.getUsersWithAssignedTests());
     }
 
     @org.junit.jupiter.api.Test
-    void attachAssignedTestsSuccess() {
-        User newUser = EntityCreatorUtil.createUser();
-        Level level = EntityCreatorUtil.createLevel();
+    void getUsersWithAssignedTestsSuccess() {
+        User user = EntityCreatorUtil.createUser();
+        Test test = EntityCreatorUtil.createTest(user, EntityCreatorUtil.createLevel());
 
+        Mockito.when(usersService.getAll()).thenReturn(Lists.list(user));
         Mockito.when(testsRepository.getByStatuses(new Status[] {Status.ASSIGNED}))
-                .thenReturn(Lists.list(EntityCreatorUtil.createTest(newUser, level)));
+                .thenReturn(Lists.list(test));
 
-        List<UserDTO> users = Lists.list(new UserDTO(newUser));
-        testsService.attachAssignedTests(users);
-
-        users.forEach(user -> Assertions.assertNotNull(user.getAssignedTest()));
+        Assertions.assertEquals(Lists.list(new UserTest(user, test)), testsService.getUsersWithAssignedTests());
     }
 
     @org.junit.jupiter.api.Test
@@ -222,17 +214,15 @@ class TestsServiceImplTest {
         User user = EntityCreatorUtil.createUser();
         Level level = EntityCreatorUtil.createLevel();
         Test test = EntityCreatorUtil.createTest(user, level);
-        TestDTO testDTO = EntityCreatorUtil.createTestDTO(test);
 
         Mockito.when(testsRepository.start(any(), anyLong())).thenReturn(1);
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
         Mockito.when(testGeneratingService.formTest(any())).thenReturn(test);
-        Mockito.when(testConverter.convertToDTO(test)).thenReturn(testDTO);
-        TestDTO result = testsService.start(GOOD_TEST_ID);
+        Test result = testsService.start(GOOD_TEST_ID);
 
         verify(testsRepository).start(any(LocalDateTime.class), anyLong());
         Assertions.assertDoesNotThrow(() -> testsService.start(GOOD_TEST_ID));
-        Assertions.assertEquals(testDTO, result);
+        Assertions.assertEquals(test, result);
     }
 
     @org.junit.jupiter.api.Test

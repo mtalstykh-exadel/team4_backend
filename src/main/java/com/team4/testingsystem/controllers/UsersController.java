@@ -2,6 +2,7 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.dto.UserDTO;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.entities.UserTest;
 import com.team4.testingsystem.enums.Role;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
@@ -35,9 +36,9 @@ public class UsersController {
 
     @GetMapping("/employees")
     public List<UserDTO> getAllUsers() {
-        List<UserDTO> users = convertToDTO(usersService.getAll());
-        testsService.attachAssignedTests(users);
-        return users;
+        return testsService.getUsersWithAssignedTests().stream()
+                .map(UserTest::toUserDTO)
+                .collect(Collectors.toList());
     }
 
     @ApiOperation(value = "Update current user's language")
