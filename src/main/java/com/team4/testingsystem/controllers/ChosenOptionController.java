@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping(path = "/chosen_option")
 public class ChosenOptionController {
 
-    private ChosenOptionService chosenOptionService;
+    private final ChosenOptionService chosenOptionService;
 
     @Autowired
     public ChosenOptionController(ChosenOptionService chosenOptionService) {

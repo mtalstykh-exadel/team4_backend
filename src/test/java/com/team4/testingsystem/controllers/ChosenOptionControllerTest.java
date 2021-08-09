@@ -2,25 +2,24 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.entities.TestQuestionID;
-import com.team4.testingsystem.repositories.ChosenOptionRepository;
 import com.team4.testingsystem.services.ChosenOptionService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
 import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 public class ChosenOptionControllerTest {
 
     @Mock
     private ChosenOptionService chosenOptionService;
-
-    @Mock
-    private ChosenOptionRepository chosenOptionRepository;
 
     @Mock
     private ChosenOption chosenOption;
@@ -37,7 +36,6 @@ public class ChosenOptionControllerTest {
     @Test
     void getById() {
 
-        Mockito.when(chosenOptionRepository.findById(testQuestionID)).thenReturn(java.util.Optional.of(chosenOption));
         Mockito.when(chosenOptionService.getById(testQuestionID)).thenReturn(chosenOption);
         Assertions.assertEquals(chosenOption, chosenOptionController.getById(testQuestionID));
     }
@@ -45,7 +43,7 @@ public class ChosenOptionControllerTest {
     @Test
     void getAllByTest() {
         Mockito.when(chosenOptionService.getChosenOptionByTestId(1L)).thenReturn(chosenOptions);
-        Assertions.assertEquals(chosenOption, chosenOptionController.getAllByTest(1L));
+        Assertions.assertEquals(chosenOptions, chosenOptionController.getAllByTest(1L));
     }
 
     @Test

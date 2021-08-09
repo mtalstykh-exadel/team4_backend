@@ -9,8 +9,8 @@ import com.team4.testingsystem.services.ChosenOptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 
 @Service
 public class ChosenOptionServiceImpl implements ChosenOptionService {
@@ -30,7 +30,7 @@ public class ChosenOptionServiceImpl implements ChosenOptionService {
 
     @Override
     public List<ChosenOption> getChosenOptionByTestId(Long id) {
-        return chosenOptionRepository.findById(id);
+        return chosenOptionRepository.findAllByTestId(id);
     }
 
     @Override
