@@ -36,4 +36,11 @@ public class UsersServiceImpl implements UsersService {
 
         return usersRepository.findAllByRole(userRole);
     }
+
+    @Override
+    public void updateLanguage(Long userId, String language) {
+        if (usersRepository.setLanguageById(userId, language) == 0) {
+            throw new UserNotFoundException();
+        }
+    }
 }

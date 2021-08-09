@@ -1,12 +1,15 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.TestConverter;
+import com.team4.testingsystem.dto.AssignTestRequest;
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
+import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.TestGeneratingService;
@@ -23,6 +26,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,14 +62,14 @@ class TestsControllerTest {
 
     @BeforeEach
     void init() {
-        test = EntityCreatorUtil.createTest(EntityCreatorUtil.createUser());
+        test = EntityCreatorUtil.createTest(EntityCreatorUtil.createUser(), EntityCreatorUtil.createLevel());
     }
 
     @org.junit.jupiter.api.Test
     void getByIdSuccess() {
         Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
 
-        Assertions.assertEquals(new TestDTO(test), testsController.getById(GOOD_TEST_ID));
+        Assertions.assertEquals(testConverter.convertToDTO(test), testsController.getById(GOOD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
@@ -85,7 +89,8 @@ class TestsControllerTest {
 
             Mockito.when(testsService.getByUserId(1L)).thenReturn(Lists.list(test));
 
-            Assertions.assertEquals(Lists.list(new TestDTO(test)), testsController.getCurrentUserTests());
+            Assertions.assertEquals(Lists.list(testConverter.convertToDTO(test)),
+                    testsController.getCurrentUserTests());
         }
     }
 
@@ -101,7 +106,6 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void getUsersTestsFailUserNotFound() {
-
         Mockito.when(testsService.getByUserId(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
 
         Assertions.assertThrows(UserNotFoundException.class, () -> testsController.getUsersTests(BAD_USER_ID));
@@ -109,39 +113,51 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void assignSuccess() {
+        AssignTestRequest request = new AssignTestRequest(Levels.A1, LocalDateTime.now());
 
-        Mockito.when(testsService.createForUser(GOOD_USER_ID, Levels.A1)).thenReturn(1L);
+        Mockito.when(testsService.assignForUser(GOOD_USER_ID, Levels.A1, request.getDeadline()))
+                .thenReturn(1L);
 
-        Assertions.assertEquals(1L, testsController.assign(GOOD_USER_ID, Levels.A1));
-
+        Assertions.assertEquals(1L, testsController.assign(GOOD_USER_ID, request));
     }
 
     @org.junit.jupiter.api.Test
     void assignFail() {
+        AssignTestRequest request = new AssignTestRequest(Levels.A1, LocalDateTime.now());
 
-        Mockito.when(testsService.createForUser(BAD_USER_ID, Levels.A1)).thenThrow(UserNotFoundException.class);
+        Mockito.when(testsService.assignForUser(BAD_USER_ID, Levels.A1, request.getDeadline()))
+                .thenThrow(UserNotFoundException.class);
 
-        Assertions.assertThrows(UserNotFoundException.class, () -> testsController.assign(BAD_USER_ID, Levels.A1));
-
+        Assertions.assertThrows(UserNotFoundException.class, () -> testsController.assign(BAD_USER_ID, request));
     }
 
     @org.junit.jupiter.api.Test
     void startNotAssignedSuccess() {
-        Test test = EntityCreatorUtil.createTest(new User());
+        Test test = EntityCreatorUtil.createTest(new User(), new Level());
         TestDTO testDTO = new TestDTO(test);
         try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
             builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
             Mockito.when(customUserDetails.getId()).thenReturn(1L);
-            Mockito.when(testsService.createForUser(1L, Levels.A1)).thenReturn(1L);
+            Mockito.when(testsService.startForUser(1L, Levels.A1)).thenReturn(1L);
             Mockito.when(testsService.start(1L)).thenReturn(testDTO);
 
             Assertions.assertEquals(testDTO, testsController.startNotAssigned(Levels.A1));
         }
     }
+    @org.junit.jupiter.api.Test
+    void startNotAssignedFail() {
+        try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
+            builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
+            Mockito.when(customUserDetails.getId()).thenReturn(1L);
+            Mockito.when(testsService.startForUser(1L, Levels.A1)).thenThrow(TestsLimitExceededException.class);
+
+            Assertions.assertThrows(TestsLimitExceededException.class,
+                    () -> testsController.startNotAssigned(Levels.A1));
+        }
+    }
 
     @org.junit.jupiter.api.Test
     void startAssignedSuccess() {
-
         testsController.startAssigned(GOOD_TEST_ID);
 
         verify(testsService).start(GOOD_TEST_ID);
@@ -149,7 +165,6 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void startAssignedFail() {
-
         doThrow(TestNotFoundException.class).when(testsService).start(BAD_TEST_ID);
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsController.startAssigned(BAD_TEST_ID));
@@ -158,23 +173,22 @@ class TestsControllerTest {
     @org.junit.jupiter.api.Test
     void finishSuccess() {
 
-        testsController.finish(GOOD_TEST_ID, 1);
+        testsController.finish(GOOD_TEST_ID);
 
-        verify(testsService).finish(GOOD_TEST_ID, 1);
+        verify(testsService).finish(GOOD_TEST_ID);
     }
 
     @org.junit.jupiter.api.Test
     void finishFail() {
 
-        doThrow(TestNotFoundException.class).when(testsService).finish(BAD_TEST_ID, 42);
+        doThrow(TestNotFoundException.class).when(testsService).finish(BAD_TEST_ID);
 
         Assertions.assertThrows(TestNotFoundException.class,
-                () -> testsController.finish(BAD_TEST_ID, 42));
+                () -> testsController.finish(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
     void updateEvaluationSuccess() {
-
         testsController.updateEvaluation(GOOD_TEST_ID, 1);
 
         verify(testsService).updateEvaluation(GOOD_TEST_ID, 1);
@@ -182,7 +196,6 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void updateEvaluationFail() {
-
         doThrow(TestNotFoundException.class).when(testsService).updateEvaluation(BAD_TEST_ID, 42);
 
         Assertions.assertThrows(TestNotFoundException.class,

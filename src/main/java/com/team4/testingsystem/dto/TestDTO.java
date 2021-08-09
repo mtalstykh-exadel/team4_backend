@@ -10,11 +10,14 @@ import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TestDTO {
+    private Long id;
     private String level;
-    private LocalDateTime createdAt;
-    private LocalDateTime finishedAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime assignedAt;
+    private LocalDateTime completedAt;
+    private LocalDateTime verifiedAt;
     private LocalDateTime startedAt;
+    private LocalDateTime deadline;
+    private String status;
     private UserDTO coach;
     private int evaluation;
     private Map<String, List<QuestionDTO>> questions;
@@ -24,15 +27,26 @@ public class TestDTO {
     }
 
     public TestDTO(Test test) {
+        id = test.getId();
         level = test.getLevel().getName();
-        createdAt = test.getCreatedAt();
-        finishedAt = test.getFinishedAt();
-        updatedAt = test.getUpdatedAt();
+        assignedAt = test.getAssignedAt();
+        completedAt = test.getCompletedAt();
+        verifiedAt = test.getVerifiedAt();
         startedAt = test.getStartedAt();
+        deadline = test.getDeadline();
+        status = test.getStatus().name();
         evaluation = test.getEvaluation();
         if (test.getCoach() != null) {
             coach = new UserDTO(test.getCoach());
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public int getEvaluation() {
@@ -43,12 +57,12 @@ public class TestDTO {
         this.evaluation = evaluation;
     }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
+    public LocalDateTime getVerifiedAt() {
+        return verifiedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setVerifiedAt(LocalDateTime verifiedAt) {
+        this.verifiedAt = verifiedAt;
     }
 
     public LocalDateTime getStartedAt() {
@@ -83,20 +97,36 @@ public class TestDTO {
         this.level = level;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getAssignedAt() {
+        return assignedAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setAssignedAt(LocalDateTime assignedAt) {
+        this.assignedAt = assignedAt;
     }
 
-    public LocalDateTime getFinishedAt() {
-        return finishedAt;
+    public LocalDateTime getCompletedAt() {
+        return completedAt;
     }
 
-    public void setFinishedAt(LocalDateTime finishedAt) {
-        this.finishedAt = finishedAt;
+    public void setCompletedAt(LocalDateTime completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public LocalDateTime getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(LocalDateTime deadline) {
+        this.deadline = deadline;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public UserDTO getCoach() {
@@ -117,15 +147,17 @@ public class TestDTO {
         }
         TestDTO testDTO = (TestDTO) o;
         return Objects.equals(level, testDTO.level)
-               && Objects.equals(createdAt, testDTO.createdAt)
-               && Objects.equals(finishedAt, testDTO.finishedAt)
-               && Objects.equals(updatedAt, testDTO.updatedAt)
-               && Objects.equals(startedAt, testDTO.startedAt)
-               && Objects.equals(coach, testDTO.coach);
+                && Objects.equals(assignedAt, testDTO.assignedAt)
+                && Objects.equals(completedAt, testDTO.completedAt)
+                && Objects.equals(verifiedAt, testDTO.verifiedAt)
+                && Objects.equals(startedAt, testDTO.startedAt)
+                && Objects.equals(deadline, testDTO.deadline)
+                && Objects.equals(status, testDTO.status)
+                && Objects.equals(coach, testDTO.coach);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(level, createdAt, finishedAt, updatedAt, startedAt, coach);
+        return Objects.hash(level, assignedAt, completedAt, verifiedAt, startedAt, deadline, status, coach);
     }
 }

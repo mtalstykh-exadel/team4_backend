@@ -51,6 +51,7 @@ class QuestionConverterTest {
             Mockito.when(moduleService.getModuleByName(questionDTO.getModule())).thenReturn(question.getModule());
 
             Question result = questionConverter.convertToEntity(questionDTO, question.getId());
+            result.setAvailable(question.isAvailable());
             result.setId(question.getId());
             Assertions.assertEquals(question, result);
         }
@@ -69,6 +70,7 @@ class QuestionConverterTest {
             Mockito.when(moduleService.getModuleByName(questionDTO.getModule())).thenReturn(question.getModule());
 
             Question result = questionConverter.convertToEntity(questionDTO);
+            result.setAvailable(question.isAvailable());
             result.setId(question.getId());
             Assertions.assertEquals(question, result);
         }
@@ -78,7 +80,7 @@ class QuestionConverterTest {
     void convertToDTO() {
         Question question = EntityCreatorUtil.createQuestion();
         QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
-        QuestionDTO result = questionConverter.convertToDTO(question);
+        QuestionDTO result = QuestionDTO.create(question);
         Assertions.assertEquals(questionDTO, result);
     }
 }

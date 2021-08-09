@@ -2,12 +2,23 @@ package com.team4.testingsystem.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team4.testingsystem.entities.ContentFile;
+import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.entities.Module;
+import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.repositories.ContentFilesRepository;
+import com.team4.testingsystem.repositories.LevelRepository;
+import com.team4.testingsystem.repositories.ModuleRepository;
+import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,23 +49,35 @@ class TestsControllerIntegrationTest {
 
     private final MockMvc mockMvc;
 
+    private final LevelRepository levelRepository;
+    private final ModuleRepository moduleRepository;
     private final TestsRepository testsRepository;
-
     private final UsersRepository usersRepository;
+    private final ContentFilesRepository contentFilesRepository;
+    private final QuestionRepository questionRepository;
 
     private final ObjectMapper objectMapper;
 
     private User user;
     private CustomUserDetails userDetails;
+    private Level level;
 
     @Autowired
     TestsControllerIntegrationTest(MockMvc mockMvc,
+                                   LevelRepository levelRepository,
+                                   ModuleRepository moduleRepository,
                                    TestsRepository testsRepository,
                                    UsersRepository userRepository,
+                                   ContentFilesRepository contentFilesRepository,
+                                   QuestionRepository questionRepository,
                                    ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
+        this.levelRepository = levelRepository;
+        this.moduleRepository = moduleRepository;
         this.testsRepository = testsRepository;
         this.usersRepository = userRepository;
+        this.contentFilesRepository = contentFilesRepository;
+        this.questionRepository = questionRepository;
         this.objectMapper = objectMapper;
     }
 
@@ -62,22 +85,33 @@ class TestsControllerIntegrationTest {
     void init() {
         user = usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow();
         userDetails = new CustomUserDetails(user);
+        testsRepository.deleteAll();
+        level = levelRepository.findByName(Levels.A1.name()).orElseThrow();
     }
 
     @AfterEach
     void destroy() {
+        contentFilesRepository.deleteAll();
         testsRepository.deleteAll();
+        questionRepository.deleteAll();
     }
 
     @Test
     void getUsersTestsSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test1 = EntityCreatorUtil.createTest(user);
-        test1.setCreatedAt(null);
-        testsRepository.save(test1);
+        Module listeningModule = moduleRepository.findByName(Modules.LISTENING.getName()).orElseThrow();
 
-        com.team4.testingsystem.entities.Test test2 = EntityCreatorUtil.createTest(user);
-        test2.setCreatedAt(null);
-        testsRepository.save(test2);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        testsRepository.save(test);
+
+        Question question = EntityCreatorUtil.createQuestion();
+        question.setId(null);
+        question.setModule(listeningModule);
+
+        ContentFile contentFile = new ContentFile("url", Lists.list(question));
+        contentFilesRepository.save(contentFile);
+
+        test.setQuestions(Lists.list(question));
+        testsRepository.save(test);
 
         long userId = user.getId();
 
@@ -89,9 +123,11 @@ class TestsControllerIntegrationTest {
         String response = mvcResult.getResponse().getContentAsString();
         List<TestDTO> tests = objectMapper.readValue(response, new TypeReference<>() {});
 
-        Assertions.assertEquals(2, tests.size());
-        Assertions.assertTrue(tests.contains(new TestDTO(test1)));
-        Assertions.assertTrue(tests.contains(new TestDTO(test2)));
+        Assertions.assertEquals(1, tests.size());
+        Assertions.assertEquals(test.getId(), tests.get(0).getId());
+
+        contentFile.setQuestions(null);
+        contentFilesRepository.save(contentFile);
     }
 
     @Test
@@ -103,7 +139,7 @@ class TestsControllerIntegrationTest {
 
     @Test
     void assignCoachSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         User coach = usersRepository.findByLogin("rus_coach@northsixty.com").orElseThrow();
@@ -124,7 +160,7 @@ class TestsControllerIntegrationTest {
 
     @Test
     void assignCoachFailUserNotFound() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         long userId = BAD_USER_ID;
@@ -149,7 +185,7 @@ class TestsControllerIntegrationTest {
 
     @Test
     void assignCoachFailSelfAssignment() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         long userId = user.getId();
@@ -163,7 +199,7 @@ class TestsControllerIntegrationTest {
 
     @Test
     void deassignCoachSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user);
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
 
         test.setCoach(user);
 

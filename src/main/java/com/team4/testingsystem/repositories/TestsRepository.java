@@ -20,6 +20,13 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     @Query("select t from Test t where t.status in ?1")
     List<Test> getByStatuses(Status[] statuses);
 
+
+    @Query("select t from Test t"
+            + " where t.user = ?1 "
+            + "and t.assignedAt is null "
+            + "and t.startedAt >= ?2")
+    List<Test> getSelfStartedByUserAfter(User user, LocalDateTime date);
+
     @Transactional
     @Modifying
     @Query(value = "UPDATE Test t SET t.startedAt = ?1, t.status = 'STARTED' WHERE t.id = ?2")
@@ -27,12 +34,12 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.finishedAt = ?1, t.status = 'COMPLETED', t.evaluation = ?2  where t.id = ?3")
+    @Query(value = "UPDATE Test t SET t.completedAt = ?1, t.status = 'COMPLETED', t.evaluation = ?2  where t.id = ?3")
     int finish(LocalDateTime finishDate, int evaluation, Long id);
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.updatedAt = ?1, t.evaluation = ?2 where t.id = ?3")
+    @Query(value = "UPDATE Test t SET t.verifiedAt = ?1, t.evaluation = ?2 where t.id = ?3")
     int updateEvaluation(LocalDateTime updateDate, int evaluation, Long id);
 
     @Transactional

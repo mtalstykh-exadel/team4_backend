@@ -14,7 +14,6 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.enums.Status;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +43,7 @@ public class EntityCreatorUtil {
     }
 
     public static QuestionDTO createQuestionDto() {
-        return new QuestionDTO(createQuestion());
+        return QuestionDTO.create(createQuestion());
     }
 
     public static User createUser() {
@@ -84,20 +83,18 @@ public class EntityCreatorUtil {
     }
 
     public static ErrorReportDTO createErrorReportDTO(String reportBody, long questionId, long testId) {
-        return ErrorReportDTO
-                .builder()
+        return ErrorReportDTO.builder()
                 .questionId(questionId)
                 .testId(testId)
                 .reportBody(reportBody)
                 .build();
     }
 
-    public static Test createTest(User user) {
+    public static Test createTest(User user, Level level) {
         return Test.builder()
                 .user(user)
                 .status(Status.STARTED)
-                .level(createLevel())
-                .createdAt(LocalDateTime.now())
+                .level(level)
                 .build();
     }
 
@@ -111,7 +108,7 @@ public class EntityCreatorUtil {
             questions.add(question);
         }
         Map<String, List<QuestionDTO>> questionsDTO = questions.stream()
-                .map(QuestionDTO::new)
+                .map(QuestionDTO::create)
                 .collect(groupingBy(QuestionDTO::getModule));
         TestDTO testDTO = new TestDTO(test);
         testDTO.setQuestions(questionsDTO);
@@ -127,5 +124,4 @@ public class EntityCreatorUtil {
                 .isAvailable(true)
                 .build();
     }
-
 }

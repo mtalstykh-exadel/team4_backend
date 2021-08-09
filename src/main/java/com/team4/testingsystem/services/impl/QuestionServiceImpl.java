@@ -1,5 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.dto.AnswerDTO;
+import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.QuestionRepository;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -17,7 +20,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
 
     @Autowired
-    QuestionServiceImpl(QuestionRepository questionRepository) {
+    public QuestionServiceImpl(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
     }
 
@@ -31,6 +34,15 @@ public class QuestionServiceImpl implements QuestionService {
         return questionRepository.save(question);
     }
 
+    @Transactional
+    @Override
+    public Question addAnswers(Question question, List<AnswerDTO> textAnswers) {
+        List<Answer> answers = textAnswers.stream()
+                .map(answerDTO -> new Answer(answerDTO, question))
+                .collect(Collectors.toList());
+        question.setAnswers(answers);
+        return questionRepository.save(question);
+    }
 
     @Transactional
     @Override

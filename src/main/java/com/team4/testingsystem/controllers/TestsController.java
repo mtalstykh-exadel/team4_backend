@@ -1,5 +1,7 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.converters.TestConverter;
+import com.team4.testingsystem.dto.AssignTestRequest;
 import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,10 +28,12 @@ import java.util.stream.Collectors;
 public class TestsController {
 
     private final TestsService testsService;
+    private final TestConverter testConverter;
 
     @Autowired
-    public TestsController(TestsService testsService) {
+    public TestsController(TestsService testsService, TestConverter testConverter) {
         this.testsService = testsService;
+        this.testConverter = testConverter;
     }
 
     @ApiOperation(value = "Get all tests assigned to the current user")
@@ -46,7 +51,7 @@ public class TestsController {
     @ApiOperation(value = "Use it to get a single test from the database by its id")
     @GetMapping(path = "/{id}")
     public TestDTO getById(@PathVariable("id") long id) {
-        return new TestDTO(testsService.getById(id));
+        return testConverter.convertToDTO(testsService.getById(id));
     }
 
     @GetMapping(path = "/unverified")
@@ -58,17 +63,17 @@ public class TestsController {
     @ApiOperation(value = "(To be updated) Is used to assign a test for the user (HR's ability)")
     @ApiResponse(code = 200, message = "Created test's id")
     @PostMapping(path = "/assign/{userId}")
-    public long assign(@PathVariable("userId") long userId, @RequestParam Levels level) {
-        return testsService.createForUser(userId, level);
+    public long assign(@PathVariable("userId") long userId, @RequestBody AssignTestRequest request) {
+        return testsService.assignForUser(userId, request.getLevel(), request.getDeadline());
     }
 
     @ApiOperation(value =
             "(To be updated) Is used when the user wants to learn one's level by oneself (without any HRs)")
-    @ApiResponse(code = 200, message = "Started test's id")
+    @ApiResponse(code = 409, message = "You can start only 3 tests per day. If you want more, ask HR")
     @PostMapping(path = "/start")
     public TestDTO startNotAssigned(@RequestParam Levels level) {
         long userId = JwtTokenUtil.extractUserDetails().getId();
-        long createdTestId = testsService.createForUser(userId, level);
+        long createdTestId = testsService.startForUser(userId, level);
         return testsService.start(createdTestId);
     }
 
@@ -80,8 +85,8 @@ public class TestsController {
 
     @ApiOperation(value = "Is used to finish tests")
     @PostMapping(path = "/finish/{testId}")
-    public void finish(@PathVariable("testId") long testId, @RequestParam int evaluation) {
-        testsService.finish(testId, evaluation);
+    public void finish(@PathVariable("testId") long testId) {
+        testsService.finish(testId);
     }
 
     @ApiOperation(value = "Is used to update score after coach check")
@@ -105,7 +110,7 @@ public class TestsController {
 
     private List<TestDTO> convertToDTO(List<Test> tests) {
         return tests.stream()
-                .map(TestDTO::new)
+                .map(testConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 }

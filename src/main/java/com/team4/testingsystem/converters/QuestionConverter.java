@@ -35,7 +35,6 @@ public class QuestionConverter {
         Question question = questionService.getById(id);
         return Question.builder()
                 .body(getQuestionBody(question, questionDTO))
-                .isAvailable(getAvailability(question, questionDTO))
                 .creator(usersService.getUserById(JwtTokenUtil.extractUserDetails().getId()))
                 .level(getLevel(question, questionDTO))
                 .module(getModule(question, questionDTO))
@@ -45,15 +44,10 @@ public class QuestionConverter {
     public Question convertToEntity(QuestionDTO questionDTO) {
         return Question.builder()
                 .body(questionDTO.getQuestionBody())
-                .isAvailable(questionDTO.isAvailable())
                 .creator(usersService.getUserById(JwtTokenUtil.extractUserDetails().getId()))
                 .level(levelService.getLevelByName(questionDTO.getLevel()))
                 .module(moduleService.getModuleByName(questionDTO.getModule()))
                 .build();
-    }
-
-    public QuestionDTO convertToDTO(Question question) {
-        return new QuestionDTO(question);
     }
 
     private String getQuestionBody(Question question, QuestionDTO questionDTO) {
@@ -61,13 +55,6 @@ public class QuestionConverter {
             return question.getBody();
         }
         return questionDTO.getQuestionBody();
-    }
-
-    private boolean getAvailability(Question question, QuestionDTO questionDTO) {
-        if (questionDTO.isAvailable() == null) {
-            return question.isAvailable();
-        }
-        return questionDTO.isAvailable();
     }
 
     private Level getLevel(Question question, QuestionDTO questionDTO) {
