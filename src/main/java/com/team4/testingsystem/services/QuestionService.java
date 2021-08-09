@@ -23,8 +23,6 @@ public interface QuestionService {
 
     List<Question> getQuestionsByTestId(Long id);
 
-    List<Question> getQuestionsByLevelId(Long id);
-
-    List<Question> getQuestionsByModuleId(Long id);
+    List<Question> getQuestionsByLevelAndModuleName(String level, String module);
 
 }

@@ -101,17 +101,11 @@ class QuestionServiceImplTest {
     }
 
     @Test
-    void getQuestionsByLevelId(){
+    void getQuestionsByLevelAndModuleName(){
         List<Question> questions = new ArrayList<>();
-        Mockito.when(questionRepository.getQuestionsByLevelId(any())).thenReturn(questions);
-        Assertions.assertEquals(questions, questionService.getQuestionsByLevelId(any()));
+        Mockito.when(questionRepository.getQuestionsByLevelAndModuleName(any(), any())).thenReturn(questions);
+        Assertions.assertEquals(questions, questionService.getQuestionsByLevelAndModuleName(any(), any()));
     }
 
-    @Test
-    void getQuestionsByModuleId(){
-        List<Question> questions = new ArrayList<>();
-        Mockito.when(questionRepository.getQuestionsByModuleId(any())).thenReturn(questions);
-        Assertions.assertEquals(questions, questionService.getQuestionsByModuleId(any()));
-    }
 
 }

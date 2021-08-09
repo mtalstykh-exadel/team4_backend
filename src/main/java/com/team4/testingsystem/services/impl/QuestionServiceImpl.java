@@ -73,12 +73,8 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<Question> getQuestionsByLevelId(Long id) {
-        return questionRepository.getQuestionsByLevelId(id);
+    public List<Question> getQuestionsByLevelAndModuleName(String level, String module) {
+        return questionRepository.getQuestionsByLevelAndModuleName(level, module);
     }
 
-    @Override
-    public List<Question> getQuestionsByModuleId(Long id) {
-        return questionRepository.getQuestionsByModuleId(id);
-    }
 }

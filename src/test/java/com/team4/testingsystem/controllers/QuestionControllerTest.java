@@ -47,24 +47,15 @@ class QuestionControllerTest {
     }
 
     @Test
-    void getQuestionsByLevelId() {
+    void getQuestionsByLevelAndModuleName() {
         List<Question> questions = new ArrayList<>();
         questions.add(EntityCreatorUtil.createQuestion());
-        Mockito.when(questionService.getQuestionsByLevelId(any())).thenReturn(questions);
+        Mockito.when(questionService.getQuestionsByLevelAndModuleName(any(), any())).thenReturn(questions);
         Assertions.assertEquals(questions.stream()
                 .map(questionConverter::convertToDTO)
-                .collect(Collectors.toList()),questionController.getQuestionsByLevel(any()));
+                .collect(Collectors.toList()),questionController.getQuestions(any(), any()));
     }
 
-    @Test
-    void getQuestionsByModuleId() {
-        List<Question> questions = new ArrayList<>();
-        questions.add(EntityCreatorUtil.createQuestion());
-        Mockito.when(questionService.getQuestionsByModuleId(any())).thenReturn(questions);
-        Assertions.assertEquals(questions.stream()
-                .map(questionConverter::convertToDTO)
-                .collect(Collectors.toList()),questionController.getQuestionsByModule(any()));
-    }
 
     @Test
     void addQuestion() {
