@@ -28,12 +28,6 @@ class ContentFilesServiceImplTest {
     ContentFile contentFile;
 
     @Mock
-    Question question;
-
-    @Mock
-    QuestionRepository questionRepository;
-
-    @Mock
     ContentFilesRepository contentFilesRepository;
 
     @InjectMocks
@@ -64,19 +58,9 @@ class ContentFilesServiceImplTest {
 
     @Test
     void addSuccess(){
-        Mockito.when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
-
-        contentFilesService.add("https://best_listening_audios.com/",1L);
-
+        List<Question> questions = new ArrayList<>();
+        contentFilesService.add("https://best_listening_audios.com/", questions);
         verify(contentFilesRepository).save(any());
-    }
-
-    @Test
-    void addFail(){
-        Mockito.when(questionRepository.findById(42L)).thenThrow(QuestionNotFoundException.class);
-
-        Assertions.assertThrows(QuestionNotFoundException.class,
-                () -> contentFilesService.add("https://42.com/",42L));
     }
 
     @Test

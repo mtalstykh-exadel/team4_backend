@@ -3,7 +3,9 @@ package com.team4.testingsystem.controllers;
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.ResourceStorageService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,19 +15,30 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/question")
 public class QuestionController {
     private final QuestionService questionService;
+    private final ContentFilesService contentFilesService;
     private final QuestionConverter questionConverter;
+    private final ResourceStorageService storageService;
 
     @Autowired
     public QuestionController(QuestionService questionService,
-                              QuestionConverter questionConverter) {
+                              ContentFilesService contentFilesService,
+                              QuestionConverter questionConverter,
+                              ResourceStorageService storageService) {
         this.questionService = questionService;
+        this.contentFilesService = contentFilesService;
         this.questionConverter = questionConverter;
+        this.storageService = storageService;
     }
 
     @ApiOperation(value = "Get a single question from the database by it's id")
@@ -45,6 +58,14 @@ public class QuestionController {
         return questionDTO;
     }
 
+    @ApiOperation(value = "Add content file with questions")
+    @PostMapping(value = "/listening")
+    public String addListening(@RequestPart MultipartFile file, @RequestPart List<QuestionDTO> questions) {
+        String url = storageService.upload(file.getResource());
+        contentFilesService.add(url, convertToEntity(questions));
+        return url;
+    }
+
     @ApiOperation(value = "Archive the question")
     @DeleteMapping("/{id}")
     public void archiveQuestion(@PathVariable("id") Long id) {
@@ -58,5 +79,9 @@ public class QuestionController {
         Question resultQuestion = questionService
                 .updateQuestion(questionConverter.convertToEntity(questionDTO, id), id);
         return questionConverter.convertToDTO(resultQuestion);
+    }
+
+    private List<Question> convertToEntity(List<QuestionDTO> questionsDTO) {
+        return questionsDTO.stream().map(questionConverter::convertToEntity).collect(Collectors.toList());
     }
 }

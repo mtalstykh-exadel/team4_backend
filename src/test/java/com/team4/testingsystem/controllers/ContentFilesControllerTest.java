@@ -2,9 +2,7 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
-import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.services.ContentFilesService;
-import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,24 +53,6 @@ class ContentFilesControllerTest {
     }
 
     @Test
-    void addSuccess() {
-        contentFilesController.add(EntityCreatorUtil.createContentFileRequest(1L, "https://best_listening_audios.com/"));
-
-        verify(contentFilesService).add("https://best_listening_audios.com/", 1L);
-    }
-
-    @Test
-    void addFail() {
-
-        doThrow(QuestionNotFoundException.class).when(contentFilesService).add("https://42.com/", 42L);
-
-        Assertions.assertThrows(QuestionNotFoundException.class,
-                () -> contentFilesController.add(EntityCreatorUtil
-                        .createContentFileRequest(42L, "https://42.com/")));
-    }
-
-
-    @Test
     void updateUrlSuccess() {
 
         contentFilesController.updateUrl(1L, "https://best_listening_audios.com/");
@@ -86,7 +66,7 @@ class ContentFilesControllerTest {
         doThrow(FileNotFoundException.class).when(contentFilesService).updateURL(42L, "https://42.com/");
 
         Assertions.assertThrows(FileNotFoundException.class,
-                ()-> contentFilesController.updateUrl(42L, "https://42.com/"));
+                () -> contentFilesController.updateUrl(42L, "https://42.com/"));
     }
 
     @Test
@@ -102,7 +82,7 @@ class ContentFilesControllerTest {
 
         doThrow(FileNotFoundException.class).when(contentFilesService).removeById(42L);
 
-        Assertions.assertThrows(FileNotFoundException.class, ()-> contentFilesController.removeById(42L));
+        Assertions.assertThrows(FileNotFoundException.class, () -> contentFilesController.removeById(42L));
     }
 
 }
