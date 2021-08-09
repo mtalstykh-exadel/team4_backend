@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping(path = "/question")
 public class QuestionController {
@@ -32,6 +35,22 @@ public class QuestionController {
     @GetMapping("/{id}")
     public QuestionDTO getQuestion(@PathVariable("id") Long id) {
         return questionConverter.convertToDTO(questionService.getById(id));
+    }
+
+    @ApiOperation(value = "Get questions from the database by it's level id")
+    @GetMapping("/level/{levelId}")
+    public List<QuestionDTO> getQuestionsByLevel(@PathVariable("levelId") Long levelId) {
+        return questionService.getQuestionsByLevelId(levelId).stream()
+                .map(questionConverter::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @ApiOperation(value = "Get questions from the database by it's module id")
+    @GetMapping("/module/{moduleId}")
+    public List<QuestionDTO> getQuestionsByModule(@PathVariable("moduleId") Long moduleId) {
+        return questionService.getQuestionsByModuleId(moduleId).stream()
+                .map(questionConverter::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @ApiOperation(value = "Add a new question")

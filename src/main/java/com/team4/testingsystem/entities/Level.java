@@ -55,7 +55,9 @@ public class Level implements Serializable {
             return false;
         }
         Level level = (Level) o;
-        return Objects.equals(id, level.id) && Objects.equals(name, level.name);
+        return Objects.equals(id, level.id)
+                && Objects.equals(name, level.name)
+                && Objects.equals(questions, level.questions);
     }
 
     @Override

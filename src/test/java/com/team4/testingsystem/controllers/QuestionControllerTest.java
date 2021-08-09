@@ -15,14 +15,13 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
 
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith( MockitoExtension.class )
 class QuestionControllerTest {
     @Mock
     private QuestionService questionService;
@@ -47,6 +46,25 @@ class QuestionControllerTest {
         Assertions.assertEquals(questionDTO, result);
     }
 
+    @Test
+    void getQuestionsByLevelId() {
+        List<Question> questions = new ArrayList<>();
+        questions.add(EntityCreatorUtil.createQuestion());
+        Mockito.when(questionService.getQuestionsByLevelId(any())).thenReturn(questions);
+        Assertions.assertEquals(questions.stream()
+                .map(questionConverter::convertToDTO)
+                .collect(Collectors.toList()),questionController.getQuestionsByLevel(any()));
+    }
+
+    @Test
+    void getQuestionsByModuleId() {
+        List<Question> questions = new ArrayList<>();
+        questions.add(EntityCreatorUtil.createQuestion());
+        Mockito.when(questionService.getQuestionsByModuleId(any())).thenReturn(questions);
+        Assertions.assertEquals(questions.stream()
+                .map(questionConverter::convertToDTO)
+                .collect(Collectors.toList()),questionController.getQuestionsByModule(any()));
+    }
 
     @Test
     void addQuestion() {
