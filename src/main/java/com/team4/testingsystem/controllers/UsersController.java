@@ -1,7 +1,10 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.dto.TestInfo;
 import com.team4.testingsystem.dto.UserDTO;
 import com.team4.testingsystem.enums.Role;
+import com.team4.testingsystem.enums.Status;
+import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import io.swagger.annotations.ApiOperation;
@@ -17,10 +20,12 @@ import java.util.stream.Collectors;
 @RestController
 public class UsersController {
     private final UsersService usersService;
+    private final TestsService testsService;
 
     @Autowired
-    public UsersController(UsersService usersService) {
+    public UsersController(UsersService usersService, TestsService testsService) {
         this.usersService = usersService;
+        this.testsService = testsService;
     }
 
     @ApiOperation("Get list of all coaches in the system")
@@ -31,9 +36,23 @@ public class UsersController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/employees")
+    public List<UserDTO> getAllUsers() {
+        return usersService.getAll().stream()
+                .map(UserDTO::new)
+                .peek(user -> user.setAssignedTest(findAssignedTest(user)))
+                .collect(Collectors.toList());
+    }
+
     @ApiOperation(value = "Update current user's language")
     @PutMapping("/language")
     public void updateLanguage(@RequestParam String language) {
         usersService.updateLanguage(JwtTokenUtil.extractUserDetails().getId(), language);
+    }
+
+    private TestInfo findAssignedTest(UserDTO user) {
+        return testsService.getByUserIdWithStatus(user.getId(), Status.ASSIGNED)
+                .map(TestInfo::new)
+                .orElse(null);
     }
 }
