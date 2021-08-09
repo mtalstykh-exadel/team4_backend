@@ -56,19 +56,20 @@ public class TestsController {
         return new TestDTO(testsService.getById(id));
     }
 
-    @ApiOperation(value = "Use it to get test grades by modules")
+    @ApiOperation(value = "Use it to get test grades for a test by modules")
     @GetMapping(path = "/grades/{testId}")
     public ModuleGradesDTO getGrades(@PathVariable("testId") long testId) {
         return moduleGradesService.getGradesByTest(testsService.getById(testId));
     }
 
+    @ApiOperation(value = "Is used to get all unverified tests")
     @GetMapping(path = "/unverified")
     public List<TestDTO> getUnverifiedTests() {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
         return convertToDTO(testsService.getByStatuses(statuses));
     }
 
-    @ApiOperation(value = "(To be updated) Is used to assign a test for the user (HR's ability)")
+    @ApiOperation(value = "Is used to assign a test for the user (HR's ability)")
     @ApiResponse(code = 200, message = "Created test's id")
     @PostMapping(path = "/assign/{userId}")
     public long assign(@PathVariable("userId") long userId, @RequestBody AssignTestRequest request) {
@@ -76,7 +77,7 @@ public class TestsController {
     }
 
     @ApiOperation(value =
-            "(To be updated) Is used when the user wants to learn one's level by oneself (without any HRs)")
+            "Is used when the user wants to learn one's level by oneself (without any HRs)")
     @ApiResponse(code = 409, message = "You can start only 3 tests per day. If you want more, ask HR")
     @PostMapping(path = "/start")
     public TestDTO startNotAssigned(@RequestParam Levels level) {
@@ -85,7 +86,7 @@ public class TestsController {
         return testsService.start(createdTestId);
     }
 
-    @ApiOperation(value = "Is used when the user starts test which was assigned by an HR")
+    @ApiOperation(value = "Is used when the user starts the test which was assigned by an HR")
     @PostMapping(path = "/start/{testId}")
     public TestDTO startAssigned(@PathVariable("testId") long testId) {
         return testsService.start(testId);
