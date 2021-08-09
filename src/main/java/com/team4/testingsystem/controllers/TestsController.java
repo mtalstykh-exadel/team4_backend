@@ -62,7 +62,6 @@ public class TestsController {
         return moduleGradesService.getGradesByTest(testsService.getById(testId));
     }
 
-
     @GetMapping(path = "/unverified")
     public List<TestDTO> getUnverifiedTests() {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};

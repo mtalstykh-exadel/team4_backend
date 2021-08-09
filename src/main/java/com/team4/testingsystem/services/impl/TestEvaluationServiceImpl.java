@@ -2,6 +2,7 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ChosenOption;
+import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.exceptions.CoachGradeNotFoundException;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
@@ -10,6 +11,8 @@ import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.TestEvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TestEvaluationServiceImpl implements TestEvaluationService {
@@ -26,71 +29,53 @@ public class TestEvaluationServiceImpl implements TestEvaluationService {
         this.coachGradeRepository = coachGradeRepository;
     }
 
-    private void saveModuleGrade(Test test, String moduleName, Integer grade){
+    private void saveModuleGrade(Test test, String moduleName, Integer grade) {
         moduleGradesService.add(test, moduleName, grade);
     }
 
-    private int countGrammarScore(Test test) {
-        int grammarScore = (int) chosenOptionService.getChosenOptionByTest(test)
+    private int countScoreAutomaticCheck(Test test, String moduleName, List<ChosenOption> allChosenOptions) {
+        int score = (int) allChosenOptions
                 .stream()
-                .filter(chosenOption -> chosenOption.getId().getQuestion().getModule().getName().equals("Grammar"))
+                .filter(chosenOption -> chosenOption.getId().getQuestion().getModule().getName().equals(moduleName))
                 .map(ChosenOption::getAnswer)
                 .filter(Answer::isCorrect)
                 .count();
 
-        saveModuleGrade(test, "Grammar", grammarScore);
+        saveModuleGrade(test, moduleName, score);
 
-        return grammarScore;
+        return score;
     }
 
-    private int countListeningScore(Test test) {
-        int listeningScore = (int) chosenOptionService.getChosenOptionByTest(test)
+
+    private int getScoreCoachCheck(Test test, String moduleName, List<CoachGrade> allCoachGrades) {
+        int score = allCoachGrades
                 .stream()
-                .filter(chosenOption -> chosenOption.getId().getQuestion().getModule().getName().equals("Listening"))
-                .map(ChosenOption::getAnswer)
-                .filter(Answer::isCorrect)
-                .count();
-
-        saveModuleGrade(test, "Listening", listeningScore);
-
-        return listeningScore;
-    }
-
-    private int getEssayScore(Test test) {
-        int essayScore = coachGradeRepository.findAllById_Test(test)
-                .stream()
-                .filter(coachGrade -> coachGrade.getId().getQuestion().getModule().getName().equals("Essay"))
+                .filter(coachGrade -> coachGrade.getId().getQuestion().getModule().getName().equals(moduleName))
                 .findAny()
                 .orElseThrow(CoachGradeNotFoundException::new)
                 .getGrade();
 
-        saveModuleGrade(test, "Essay", essayScore);
+        saveModuleGrade(test, moduleName, score);
 
-        return essayScore;
-    }
-
-    private int getSpeakingScore(Test test) {
-        int speakingScore = coachGradeRepository.findAllById_Test(test)
-                .stream()
-                .filter(coachGrade -> coachGrade.getId().getQuestion().getModule().getName().equals("Speaking"))
-                .findAny()
-                .orElseThrow(CoachGradeNotFoundException::new)
-                .getGrade();
-
-        saveModuleGrade(test, "Speaking", speakingScore);
-
-        return speakingScore;
+        return score;
     }
 
     @Override
     public int getEvaluationBeforeCoachCheck(Test test) {
-        moduleGradesService.add(test, "Essay", 0 );
+        List<ChosenOption> allChosenOptions = chosenOptionService.getChosenOptionByTest(test);
+        moduleGradesService.add(test, "Essay", 0);
         moduleGradesService.add(test, "Speaking", 0);
-        return countGrammarScore(test) + countListeningScore(test);
+
+        return countScoreAutomaticCheck(test, "Grammar", allChosenOptions)
+                + countScoreAutomaticCheck(test, "Listening", allChosenOptions);
     }
 
     @Override
     public int getEvaluationAfterCoachCheck(Test test) {
-        return test.getEvaluation() + getEssayScore(test) + getSpeakingScore(test);
+        List<CoachGrade> allCoachGrades = (List<CoachGrade>) coachGradeRepository.findAllById_Test(test);
+
+        return test.getEvaluation()
+                + getScoreCoachCheck(test, "Essay", allCoachGrades)
+                + getScoreCoachCheck(test, "Speaking", allCoachGrades);
     }
 }

@@ -1,10 +1,11 @@
 package com.team4.testingsystem.entities;
 
+import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
-import java.io.Serializable;
-import java.util.Objects;
+
 
 @Embeddable
 public class TestModuleID implements Serializable {

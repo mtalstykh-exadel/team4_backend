@@ -2,18 +2,22 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.TestConverter;
 import com.team4.testingsystem.dto.AssignTestRequest;
+import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
+import com.team4.testingsystem.exceptions.ModuleGradeNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.security.CustomUserDetails;
+import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
+import com.team4.testingsystem.services.impl.ModuleGradesServiceImpl;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.assertj.core.util.Lists;
@@ -42,6 +46,12 @@ class TestsControllerTest {
 
     private final long GOOD_USER_ID = 11L;
     private final long BAD_USER_ID = 4242L;
+
+    @Mock
+    private ModuleGradesDTO moduleGradesDTO;
+
+    @Mock
+    private ModuleGradesService moduleGradesService;
 
     @Mock
     private TestsService testsService;
@@ -91,6 +101,30 @@ class TestsControllerTest {
 
             Assertions.assertEquals(Lists.list(new TestDTO(test)), testsController.getCurrentUserTests());
         }
+    }
+
+    @org.junit.jupiter.api.Test
+    void getGradesSuccess() {
+        Mockito.when(moduleGradesService.getGradesByTest(test)).thenReturn(moduleGradesDTO);
+        Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
+
+        Assertions.assertEquals(moduleGradesDTO, testsController.getGrades(GOOD_TEST_ID));
+    }
+
+    @org.junit.jupiter.api.Test
+    void getGradesFailTestNotFound(){
+
+        Mockito.when(testsService.getById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
+
+        Assertions.assertThrows(TestNotFoundException.class, ()-> testsController.getGrades(BAD_TEST_ID));
+    }
+
+    @org.junit.jupiter.api.Test
+    void getGradesFailModuleGradeNotFound(){
+
+        Mockito.when(testsService.getById(BAD_TEST_ID)).thenThrow(ModuleGradeNotFoundException.class);
+
+        Assertions.assertThrows(ModuleGradeNotFoundException.class, ()-> testsController.getGrades(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
@@ -188,17 +222,17 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void updateEvaluationSuccess() {
-        testsController.updateEvaluation(GOOD_TEST_ID, 1);
+        testsController.updateEvaluation(GOOD_TEST_ID);
 
-        verify(testsService).updateEvaluation(GOOD_TEST_ID, 1);
+        verify(testsService).updateEvaluation(GOOD_TEST_ID);
     }
 
     @org.junit.jupiter.api.Test
     void updateEvaluationFail() {
-        doThrow(TestNotFoundException.class).when(testsService).updateEvaluation(BAD_TEST_ID, 42);
+        doThrow(TestNotFoundException.class).when(testsService).updateEvaluation(BAD_TEST_ID);
 
         Assertions.assertThrows(TestNotFoundException.class,
-                () -> testsController.updateEvaluation(BAD_TEST_ID, 42));
+                () -> testsController.updateEvaluation(BAD_TEST_ID));
     }
 
 

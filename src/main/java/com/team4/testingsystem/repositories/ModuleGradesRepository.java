@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Collection;
 
 @Repository
-public interface ModuleGradesRepository extends CrudRepository <ModuleGrade, TestModuleID> {
+public interface ModuleGradesRepository extends CrudRepository<ModuleGrade, TestModuleID> {
 
     Collection<ModuleGrade> findAllById_Test(Test test);
 }

@@ -12,7 +12,6 @@ import com.team4.testingsystem.services.ModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,8 +27,8 @@ public class ModuleGradesServiceImpl implements ModuleGradesService {
         this.moduleService = moduleService;
     }
 
-    private Integer getGradeByModule(List <ModuleGrade> grades, String moduleName) {
-        return grades
+    private Integer getGradeByModule(List<ModuleGrade> allTestGrades, String moduleName) {
+        return allTestGrades
                 .stream()
                 .filter(grade -> grade.getId().getModule().getName().equals(moduleName))
                 .findAny()
@@ -38,21 +37,21 @@ public class ModuleGradesServiceImpl implements ModuleGradesService {
     }
 
     @Override
-    public ModuleGradesDTO getGradesByTest(Test test){
+    public ModuleGradesDTO getGradesByTest(Test test) {
 
-        List <ModuleGrade> grades = (ArrayList<ModuleGrade>) moduleGradesRepository.findAllById_Test(test);
+        List<ModuleGrade> allTestGrades = (List<ModuleGrade>) moduleGradesRepository.findAllById_Test(test);
 
         return ModuleGradesDTO.builder()
-                .grammar(getGradeByModule(grades, "Grammar"))
-                .listening(getGradeByModule(grades, "Listening"))
-                .essay(getGradeByModule(grades, "Essay"))
-                .speaking(getGradeByModule(grades, "Speaking"))
+                .grammar(getGradeByModule(allTestGrades, "Grammar"))
+                .listening(getGradeByModule(allTestGrades, "Listening"))
+                .essay(getGradeByModule(allTestGrades, "Essay"))
+                .speaking(getGradeByModule(allTestGrades, "Speaking"))
                 .build();
 
     }
 
     @Override
-    public void add (Test test, String moduleName, Integer grade){
+    public void add(Test test, String moduleName, Integer grade) {
 
         Module module = moduleService.getModuleByName(moduleName);
 
@@ -60,5 +59,4 @@ public class ModuleGradesServiceImpl implements ModuleGradesService {
 
         moduleGradesRepository.save(new ModuleGrade(testModuleID, grade));
     }
-
 }

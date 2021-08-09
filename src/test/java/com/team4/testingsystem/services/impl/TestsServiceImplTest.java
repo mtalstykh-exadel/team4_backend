@@ -225,10 +225,7 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void finishSuccess() {
-        Test test = new Test();
-        Mockito.when(testsRepository.finish(any(), anyInt(), anyLong())).thenReturn(1);
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
-        Mockito.when(testEvaluationService.getEvaluationByTest(test)).thenReturn(anyInt());
 
         testsService.finish(GOOD_TEST_ID);
 
@@ -241,7 +238,7 @@ class TestsServiceImplTest {
     void finishFail() {
         Test test = new Test();
         Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenReturn(Optional.of(test));
-        Mockito.when(testEvaluationService.getEvaluationByTest(test)).thenThrow(TestNotFoundException.class);
+        Mockito.when(testEvaluationService.getEvaluationBeforeCoachCheck(test)).thenThrow(TestNotFoundException.class);
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.finish(BAD_TEST_ID));
 
@@ -249,21 +246,21 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void updateEvaluationSuccess() {
-        Mockito.when(testsRepository.updateEvaluation(any(), anyInt(), anyLong())).thenReturn(1);
+        Mockito.when (testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
 
-        testsService.updateEvaluation(GOOD_TEST_ID, 1);
+        testsService.updateEvaluation(GOOD_TEST_ID);
 
         verify(testsRepository).updateEvaluation(any(LocalDateTime.class), anyInt(), anyLong());
 
-        Assertions.assertDoesNotThrow(() -> testsService.updateEvaluation(GOOD_TEST_ID, 1));
+        Assertions.assertDoesNotThrow(() -> testsService.updateEvaluation(GOOD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
     void updateEvaluationFail() {
-        Mockito.when(testsRepository.updateEvaluation(any(), anyInt(), anyLong())).thenReturn(0);
+        Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
 
         Assertions.assertThrows(TestNotFoundException.class,
-                () -> testsService.updateEvaluation(BAD_TEST_ID, 42));
+                () -> testsService.updateEvaluation(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test

@@ -1,16 +1,16 @@
 package com.team4.testingsystem.entities;
 
+import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.Objects;
-import java.util.function.Supplier;
+
 
 @Entity
 @Table(name = "module_grade")
-public class ModuleGrade implements Serializable{
+public class ModuleGrade implements Serializable {
 
     @EmbeddedId
     TestModuleID id;
@@ -59,4 +59,5 @@ public class ModuleGrade implements Serializable{
     public int hashCode() {
         return Objects.hash(id, grade);
     }
+
 }
