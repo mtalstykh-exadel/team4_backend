@@ -1,6 +1,8 @@
 package com.team4.testingsystem.services;
 
+import com.team4.testingsystem.security.CustomUserDetails;
+
 public interface AuthenticationService {
 
-    String createAuthenticationToken(String username, String password);
+    CustomUserDetails authenticate(String username, String password);
 }

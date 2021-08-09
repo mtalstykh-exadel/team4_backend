@@ -10,26 +10,24 @@ import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TestDTO {
+    private Long id;
     private String level;
-
     private LocalDateTime assignedAt;
     private LocalDateTime completedAt;
     private LocalDateTime verifiedAt;
     private LocalDateTime startedAt;
     private LocalDateTime deadline;
     private String status;
-
     private UserDTO coach;
     private int evaluation;
-
     private Map<String, List<QuestionDTO>> questions;
-
     private String contentFile;
 
     public TestDTO() {
     }
 
     public TestDTO(Test test) {
+        id = test.getId();
         level = test.getLevel().getName();
         assignedAt = test.getAssignedAt();
         completedAt = test.getCompletedAt();
@@ -41,6 +39,14 @@ public class TestDTO {
         if (test.getCoach() != null) {
             coach = new UserDTO(test.getCoach());
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public int getEvaluation() {

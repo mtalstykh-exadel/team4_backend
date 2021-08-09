@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 
@@ -65,7 +66,7 @@ class UsersControllerIntegrationTest {
         final List<User> coaches = usersRepository.findAllByRole(coachRole.get());
         final List<UserDTO> coachDTOs = coaches.stream().map(UserDTO::new).collect(Collectors.toList());
 
-        MvcResult mvcResult = mockMvc.perform(get("/users/coaches")
+        MvcResult mvcResult = mockMvc.perform(get("/coaches")
                 .with(user(userDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -74,5 +75,18 @@ class UsersControllerIntegrationTest {
         final List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {});
 
         Assertions.assertEquals(coachDTOs, userDTOs);
+    }
+
+    @Test
+    void updateLanguage() throws Exception {
+        mockMvc.perform(put("/language")
+                .with(user(userDetails))
+                .param("language", "eng"))
+                .andExpect(status().isOk());
+
+        Optional<User> user = usersRepository.findById(userDetails.getId());
+
+        Assertions.assertTrue(user.isPresent());
+        Assertions.assertEquals("eng", user.get().getLanguage());
     }
 }

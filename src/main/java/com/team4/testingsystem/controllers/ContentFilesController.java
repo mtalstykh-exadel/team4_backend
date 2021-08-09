@@ -1,6 +1,5 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.dto.ContentFileRequest;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.services.ContentFilesService;
 import io.swagger.annotations.ApiOperation;
@@ -8,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,12 +33,6 @@ public class ContentFilesController {
     @GetMapping(path = "/{id}")
     public ContentFile getById(@PathVariable("id") long id) {
         return contentFilesService.getById(id);
-    }
-
-    @ApiOperation(value = "Is used to add content files")
-    @PostMapping(path = "/")
-    public void add(@RequestBody ContentFileRequest cfr) {
-        contentFilesService.add(cfr.getUrl(), cfr.getQuestionId());
     }
 
     @ApiOperation(value = "Is used to change url")

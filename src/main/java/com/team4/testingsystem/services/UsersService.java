@@ -9,4 +9,6 @@ public interface UsersService {
     User getUserById(Long id);
 
     List<User> getUsersByRole(Role role);
+
+    void updateLanguage(Long userId, String language);
 }
