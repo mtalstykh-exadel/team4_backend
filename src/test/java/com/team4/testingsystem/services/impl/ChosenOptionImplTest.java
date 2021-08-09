@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import static org.mockito.Mockito.verify;
 
@@ -26,10 +27,10 @@ public class ChosenOptionImplTest {
     TestQuestionID testQuestionID;
 
     @Mock
-    ChosenOptionRepository chosenOptionRepository;
+    com.team4.testingsystem.entities.Test test;
 
     @Mock
-    com.team4.testingsystem.entities.Test test;
+    ChosenOptionRepository chosenOptionRepository;
 
     @InjectMocks
     ChosenOptionServiceImpl chosenOptionService;
@@ -61,7 +62,7 @@ public class ChosenOptionImplTest {
         chOptions.add(chOption1);
         chOptions.add(chOption2);
 
-        Mockito.when(chosenOptionRepository.findById_Test(test)).thenReturn(chOptions);
+        Mockito.when(chosenOptionRepository.findChosenOptionsById_Test(test)).thenReturn(chOptions);
 
         Assertions.assertEquals(chOptions, chosenOptionService.getChosenOptionByTest(test));
     }
@@ -71,7 +72,7 @@ public class ChosenOptionImplTest {
 
         ArrayList<ChosenOption> chOptions = new ArrayList<>();
 
-        Mockito.when(chosenOptionRepository.findById_Test(test)).thenReturn(chOptions);
+        Mockito.when(chosenOptionRepository.findChosenOptionsById_Test(test)).thenReturn(chOptions);
 
         Assertions.assertEquals(chOptions, chosenOptionService.getChosenOptionByTest(test));
     }
@@ -91,6 +92,19 @@ public class ChosenOptionImplTest {
 
         Assertions.assertThrows(ChosenOptionBadRequestException.class,
                 () -> chosenOptionService.save(chosenOption));
+    }
+
+    @Test
+    void saveAllSuccess(){
+
+        List<ChosenOption> chosenOptions = new ArrayList<>();
+        chosenOptions.add(new ChosenOption());
+        chosenOptions.add(new ChosenOption());
+        chosenOptions.add(new ChosenOption());
+
+        chosenOptionService.saveAll(chosenOptions);
+
+        verify(chosenOptionRepository).saveAll(chosenOptions);
     }
 
 }
