@@ -1,13 +1,10 @@
 package com.team4.testingsystem.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "module")
@@ -18,6 +15,9 @@ public class Module implements Serializable {
     private Long id;
     @Column(name = "module_name")
     private String name;
+
+    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
+    List<Question> questions = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -33,6 +33,10 @@ public class Module implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
     }
 
     @Override
@@ -51,4 +55,5 @@ public class Module implements Serializable {
     public int hashCode() {
         return Objects.hash(id, name);
     }
+
 }
