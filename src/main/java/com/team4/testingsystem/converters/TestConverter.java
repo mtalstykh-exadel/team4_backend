@@ -5,10 +5,9 @@ import static java.util.stream.Collectors.groupingBy;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Modules;
-import com.team4.testingsystem.exceptions.QuestionNotFoundException;
+import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,25 +32,29 @@ public class TestConverter {
 
     public TestDTO convertToDTO(Test test) {
         TestDTO testDTO = new TestDTO(test);
-        Long questionId = setQuestions(testDTO, test.getId());
-        testDTO.setContentFile(getContentFile(questionId).getUrl());
+        attachQuestions(testDTO);
+        attachContentFile(testDTO);
         return testDTO;
     }
 
-    private ContentFile getContentFile(Long id) {
-        return contentFilesService.getContentFileByQuestionId(id);
-    }
-
-    private Long setQuestions(TestDTO testDTO, Long id) {
-        List<Question> questions = questionService.getQuestionsByTestId(id);
-        questions.forEach(question -> Collections.shuffle(question.getAnswers()));
-        Map<String, List<QuestionDTO>> map = questions.stream()
-                .map(QuestionDTO::new)
+    private void attachQuestions(TestDTO testDTO) {
+        Map<String, List<QuestionDTO>> questions = questionService.getQuestionsByTestId(testDTO.getId()).stream()
+                .peek(question -> Collections.shuffle(question.getAnswers()))
+                .map(QuestionDTO::create)
                 .collect(groupingBy(QuestionDTO::getModule));
-        testDTO.setQuestions(map);
-        return questions.stream()
-                .filter(question1 -> question1.getModule().getName().equals(Modules.LISTENING.getName()))
-                .findFirst().orElseThrow(QuestionNotFoundException::new).getId();
+
+        testDTO.setQuestions(questions);
     }
 
+    private void attachContentFile(TestDTO testDTO) {
+        final String contentFileUrl = testDTO.getQuestions()
+                .getOrDefault(Modules.LISTENING.getName(), List.of()).stream()
+                .map(QuestionDTO::getId)
+                .map(contentFilesService::getContentFileByQuestionId)
+                .map(ContentFile::getUrl)
+                .findFirst()
+                .orElseThrow(ContentFileNotFoundException::new);
+
+        testDTO.setContentFile(contentFileUrl);
+    }
 }
