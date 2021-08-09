@@ -13,8 +13,18 @@ public class AnswerDTO {
     public AnswerDTO() {
     }
 
-    public AnswerDTO(Answer answer) {
+    private AnswerDTO(Answer answer) {
         this.answer = answer.getAnswerBody();
+    }
+
+    public static AnswerDTO create(Answer answer) {
+        return new AnswerDTO(answer);
+    }
+
+    public static AnswerDTO createWithCorrect(Answer answer) {
+        AnswerDTO answerDTO = new AnswerDTO(answer);
+        answerDTO.setCorrect(answer.isCorrect());
+        return answerDTO;
     }
 
     public String getAnswer() {
@@ -43,7 +53,7 @@ public class AnswerDTO {
         }
         AnswerDTO answerDTO = (AnswerDTO) o;
         return Objects.equals(answer, answerDTO.answer)
-               && Objects.equals(correct, answerDTO.correct);
+                && Objects.equals(correct, answerDTO.correct);
     }
 
     @Override

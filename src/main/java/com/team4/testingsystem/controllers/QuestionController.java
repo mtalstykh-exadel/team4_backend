@@ -44,7 +44,7 @@ public class QuestionController {
     @ApiOperation(value = "Get a single question from the database by it's id")
     @GetMapping("/{id}")
     public QuestionDTO getQuestion(@PathVariable("id") Long id) {
-        return questionConverter.convertToDTO(questionService.getById(id));
+        return QuestionDTO.createWithCorrectAnswers(questionService.getById(id));
     }
 
     @ApiOperation(value = "Add a new question")
@@ -72,13 +72,12 @@ public class QuestionController {
         questionService.archiveQuestion(id);
     }
 
-
     @ApiOperation(value = "Change the question")
     @PutMapping("/{id}")
     public QuestionDTO updateQuestion(@RequestBody QuestionDTO questionDTO, @PathVariable("id") Long id) {
         Question resultQuestion = questionService
                 .updateQuestion(questionConverter.convertToEntity(questionDTO, id), id);
-        return questionConverter.convertToDTO(resultQuestion);
+        return QuestionDTO.createWithCorrectAnswers(resultQuestion);
     }
 
     private List<Question> convertToEntity(List<QuestionDTO> questionsDTO) {

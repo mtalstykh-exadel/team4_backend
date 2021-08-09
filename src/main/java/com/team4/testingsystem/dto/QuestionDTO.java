@@ -18,13 +18,28 @@ public class QuestionDTO {
     public QuestionDTO() {
     }
 
-    public QuestionDTO(Question question) {
+    private QuestionDTO(Question question, List<AnswerDTO> answers) {
         this.questionBody = question.getBody();
         this.creator = question.getCreator().getName();
         this.level = question.getLevel().getName();
         this.module = question.getModule().getName();
-        this.answers = question.getAnswers()
-                .stream().map(AnswerDTO::new).collect(Collectors.toList());
+        this.answers = answers;
+    }
+
+    public static QuestionDTO create(Question question) {
+        List<AnswerDTO> answers = question.getAnswers().stream()
+                .map(AnswerDTO::create)
+                .collect(Collectors.toList());
+
+        return new QuestionDTO(question, answers);
+    }
+
+    public static QuestionDTO createWithCorrectAnswers(Question question) {
+        List<AnswerDTO> answers = question.getAnswers().stream()
+                .map(AnswerDTO::createWithCorrect)
+                .collect(Collectors.toList());
+
+        return new QuestionDTO(question, answers);
     }
 
     public String getCreator() {

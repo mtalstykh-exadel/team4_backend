@@ -2,6 +2,7 @@ package com.team4.testingsystem.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team4.testingsystem.converters.TestConverter;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.User;
@@ -44,6 +45,7 @@ class TestsControllerIntegrationTest {
     private final LevelRepository levelRepository;
     private final TestsRepository testsRepository;
     private final UsersRepository usersRepository;
+    private final TestConverter testConverter;
 
     private final ObjectMapper objectMapper;
 
@@ -56,11 +58,13 @@ class TestsControllerIntegrationTest {
                                    LevelRepository levelRepository,
                                    TestsRepository testsRepository,
                                    UsersRepository userRepository,
+                                   TestConverter testConverter,
                                    ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.levelRepository = levelRepository;
         this.testsRepository = testsRepository;
         this.usersRepository = userRepository;
+        this.testConverter = testConverter;
         this.objectMapper = objectMapper;
     }
 
@@ -96,8 +100,8 @@ class TestsControllerIntegrationTest {
         List<TestDTO> tests = objectMapper.readValue(response, new TypeReference<>() {});
 
         Assertions.assertEquals(2, tests.size());
-        Assertions.assertTrue(tests.contains(new TestDTO(test1)));
-        Assertions.assertTrue(tests.contains(new TestDTO(test2)));
+        Assertions.assertTrue(tests.contains(testConverter.convertToDTO(test1)));
+        Assertions.assertTrue(tests.contains(testConverter.convertToDTO(test2)));
     }
 
     @Test

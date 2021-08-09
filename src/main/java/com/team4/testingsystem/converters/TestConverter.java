@@ -46,7 +46,7 @@ public class TestConverter {
         List<Question> questions = questionService.getQuestionsByTestId(id);
         questions.forEach(question -> Collections.shuffle(question.getAnswers()));
         Map<String, List<QuestionDTO>> map = questions.stream()
-                .map(QuestionDTO::new)
+                .map(QuestionDTO::create)
                 .collect(groupingBy(QuestionDTO::getModule));
         testDTO.setQuestions(map);
         return questions.stream()
