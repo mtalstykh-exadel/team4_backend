@@ -50,10 +50,6 @@ public class QuestionConverter {
                 .build();
     }
 
-    public QuestionDTO convertToDTO(Question question) {
-        return new QuestionDTO(question);
-    }
-
     private String getQuestionBody(Question question, QuestionDTO questionDTO) {
         if (questionDTO.getQuestionBody() == null) {
             return question.getBody();

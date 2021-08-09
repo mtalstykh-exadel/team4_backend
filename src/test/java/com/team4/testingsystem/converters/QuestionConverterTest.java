@@ -80,7 +80,7 @@ class QuestionConverterTest {
     void convertToDTO() {
         Question question = EntityCreatorUtil.createQuestion();
         QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
-        QuestionDTO result = questionConverter.convertToDTO(question);
+        QuestionDTO result = QuestionDTO.create(question);
         Assertions.assertEquals(questionDTO, result);
     }
 }
