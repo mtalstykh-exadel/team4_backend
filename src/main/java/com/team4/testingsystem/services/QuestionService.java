@@ -22,4 +22,9 @@ public interface QuestionService {
     Question addAnswers(Question question, List<AnswerDTO> textAnswers);
 
     List<Question> getQuestionsByTestId(Long id);
+
+    List<Question> getQuestionsByLevelId(Long id);
+
+    List<Question> getQuestionsByModuleId(Long id);
+
 }

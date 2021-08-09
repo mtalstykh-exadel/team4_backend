@@ -37,4 +37,14 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
            + "join q.tests t "
            + "where t.id = ?1 ")
     List<Question> getQuestionsByTestId(Long id);
+
+    @Query("select q from Question q "
+           + "join q.level l "
+           + "where l.id = ?1 ")
+    List<Question> getQuestionsByLevelId(Long id);
+
+    @Query("select q from Question q "
+           + "join q.module m "
+           + "where m.id = ?1 ")
+    List<Question> getQuestionsByModuleId(Long id);
 }

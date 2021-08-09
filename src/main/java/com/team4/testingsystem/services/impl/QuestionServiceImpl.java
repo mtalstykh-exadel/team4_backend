@@ -72,4 +72,13 @@ public class QuestionServiceImpl implements QuestionService {
         return questionRepository.getQuestionsByTestId(id);
     }
 
+    @Override
+    public List<Question> getQuestionsByLevelId(Long id) {
+        return questionRepository.getQuestionsByLevelId(id);
+    }
+
+    @Override
+    public List<Question> getQuestionsByModuleId(Long id) {
+        return questionRepository.getQuestionsByModuleId(id);
+    }
 }

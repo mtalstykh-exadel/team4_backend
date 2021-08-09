@@ -1,7 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.dto.AnswerDTO;
-import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.QuestionRepository;
@@ -15,9 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -101,6 +98,20 @@ class QuestionServiceImplTest {
         Mockito.when(questionRepository
                 .getQuestionsByTestId(any())).thenReturn(questions);
         Assertions.assertEquals(questions, questionService.getQuestionsByTestId(any()));
+    }
+
+    @Test
+    void getQuestionsByLevelId(){
+        List<Question> questions = new ArrayList<>();
+        Mockito.when(questionRepository.getQuestionsByLevelId(any())).thenReturn(questions);
+        Assertions.assertEquals(questions, questionService.getQuestionsByLevelId(any()));
+    }
+
+    @Test
+    void getQuestionsByModuleId(){
+        List<Question> questions = new ArrayList<>();
+        Mockito.when(questionRepository.getQuestionsByModuleId(any())).thenReturn(questions);
+        Assertions.assertEquals(questions, questionService.getQuestionsByModuleId(any()));
     }
 
 }
