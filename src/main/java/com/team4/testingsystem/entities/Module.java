@@ -14,16 +14,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table( name = "module" )
+@Table(name = "module")
 public class Module implements Serializable {
     @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY )
-    @Column( name = "id" )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-    @Column( name = "module_name" )
+    @Column(name = "module_name")
     private String name;
 
-    @OneToMany( mappedBy = "module", cascade = CascadeType.ALL )
+    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
     List<Question> questions = new ArrayList<>();
 
     public Long getId() {
