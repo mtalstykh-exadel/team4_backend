@@ -7,6 +7,7 @@ import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnswerDTO {
+    private Long id;
     private String answer;
     private Boolean correct;
 
@@ -14,6 +15,7 @@ public class AnswerDTO {
     }
 
     private AnswerDTO(Answer answer) {
+        this.id = answer.getId();
         this.answer = answer.getAnswerBody();
     }
 
@@ -41,6 +43,14 @@ public class AnswerDTO {
 
     public void setCorrect(Boolean correct) {
         this.correct = correct;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override
