@@ -7,6 +7,7 @@ import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +47,14 @@ public class TestConverter {
     }
 
     private void attachContentFile(TestDTO testDTO) {
-        testDTO.getQuestions().getOrDefault(Modules.LISTENING.getName(), List.of()).stream()
+        final String contentFileUrl = testDTO.getQuestions()
+                .getOrDefault(Modules.LISTENING.getName(), List.of()).stream()
                 .map(QuestionDTO::getId)
                 .map(contentFilesService::getContentFileByQuestionId)
                 .map(ContentFile::getUrl)
                 .findFirst()
-                .ifPresent(testDTO::setContentFile);
+                .orElseThrow(ContentFileNotFoundException::new);
+
+        testDTO.setContentFile(contentFileUrl);
     }
 }
