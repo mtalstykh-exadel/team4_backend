@@ -6,6 +6,7 @@ import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,12 +48,12 @@ class QuestionControllerTest {
 
     @Test
     void getQuestionsByLevelAndModuleName() {
-        List<Question> questions = new ArrayList<>();
-        questions.add(EntityCreatorUtil.createQuestion());
+        List<Question> questions = Lists.list(EntityCreatorUtil.createQuestion());
         Mockito.when(questionService.getQuestionsByLevelAndModuleName(any(), any())).thenReturn(questions);
-        Assertions.assertEquals(questions.stream()
+        List<QuestionDTO> expectedQuestions = questions.stream()
                 .map(questionConverter::convertToDTO)
-                .collect(Collectors.toList()),questionController.getQuestions(any(), any()));
+                .collect(Collectors.toList());
+        Assertions.assertEquals(expectedQuestions, questionController.getQuestions(any(), any()));
     }
 
 

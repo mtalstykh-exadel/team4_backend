@@ -3,6 +3,8 @@ package com.team4.testingsystem.controllers;
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.services.QuestionService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +42,8 @@ public class QuestionController {
 
     @ApiOperation(value = "Get questions from the database by it's level and module")
     @GetMapping("/")
-    public List<QuestionDTO> getQuestions(@RequestParam("level") String level,
-                                          @RequestParam("module") String module) {
+    public List<QuestionDTO> getQuestions(@RequestParam("level") Levels level,
+                                          @RequestParam("module") Modules module) {
         return questionService.getQuestionsByLevelAndModuleName(level, module).stream()
                 .map(questionConverter::convertToDTO)
                 .collect(Collectors.toList());

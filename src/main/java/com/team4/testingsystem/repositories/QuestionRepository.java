@@ -1,6 +1,8 @@
 package com.team4.testingsystem.repositories;
 
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Modules;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -39,8 +41,8 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
     List<Question> getQuestionsByTestId(Long id);
 
     @Query("select q from Question q "
-           + "where q.level.name = ?1"
-           + "and q.module.name = ?2")
-    List<Question> getQuestionsByLevelAndModuleName(String level, String module);
+           + "where q.level = ?1"
+           + "and q.module = ?2")
+    List<Question> getQuestionsByLevelAndModuleName(Levels level, Modules module);
 
 }

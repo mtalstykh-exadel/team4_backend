@@ -3,6 +3,8 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.dto.AnswerDTO;
 import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.QuestionService;
@@ -73,7 +75,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<Question> getQuestionsByLevelAndModuleName(String level, String module) {
+    public List<Question> getQuestionsByLevelAndModuleName(Levels level, Modules module) {
         return questionRepository.getQuestionsByLevelAndModuleName(level, module);
     }
 
