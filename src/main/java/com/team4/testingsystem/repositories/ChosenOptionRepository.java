@@ -10,5 +10,6 @@ import java.util.List;
 
 @Repository
 public interface ChosenOptionRepository extends CrudRepository<ChosenOption, TestQuestionID> {
-    List<ChosenOption> findById_Test(Test test);
+
+    List<ChosenOption> findChosenOptionsById_Test(Test test);
 }
