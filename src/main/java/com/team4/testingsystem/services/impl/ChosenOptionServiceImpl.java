@@ -1,7 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.ChosenOption;
-import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.exceptions.ChosenOptionBadRequestException;
 import com.team4.testingsystem.exceptions.ChosenOptionNotFoundException;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 public class ChosenOptionServiceImpl implements ChosenOptionService {
@@ -29,14 +29,23 @@ public class ChosenOptionServiceImpl implements ChosenOptionService {
     }
 
     @Override
-    public Iterable<ChosenOption> getChosenOptionByTest(Test test) {
-        return chosenOptionRepository.findById_Test(test);
+    public List<ChosenOption> getChosenOptionByTestId(Long id) {
+        return chosenOptionRepository.findById(id);
     }
 
     @Override
     public void save(ChosenOption chosenOption) {
         try {
             chosenOptionRepository.save(chosenOption);
+        } catch (EntityNotFoundException exception) {
+            throw new ChosenOptionBadRequestException();
+        }
+    }
+
+    @Override
+    public void saveAll(List<ChosenOption> chosenOptions) {
+        try {
+            chosenOptionRepository.saveAll(chosenOptions);
         } catch (EntityNotFoundException exception) {
             throw new ChosenOptionBadRequestException();
         }
