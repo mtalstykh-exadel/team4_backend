@@ -1,9 +1,8 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.dto.TestInfo;
 import com.team4.testingsystem.dto.UserDTO;
+import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Role;
-import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -32,26 +30,25 @@ public class UsersController {
     @ApiOperation("Get list of all coaches in the system")
     @GetMapping("/coaches")
     public List<UserDTO> getCoaches() {
-        return usersService.getUsersByRole(Role.COACH).stream()
-                .map(UserDTO::new)
-                .collect(Collectors.toList());
+        return convertToDTO(usersService.getUsersByRole(Role.COACH));
     }
 
     @GetMapping("/employees")
     public List<UserDTO> getAllUsers() {
-        Status[] statuses = {Status.ASSIGNED};
-        Map<Long, TestInfo> assignedTests = testsService.getByStatuses(statuses).stream()
-                .collect(Collectors.toMap(test -> test.getUser().getId(), TestInfo::new));
-
-        return usersService.getAll().stream()
-                .map(UserDTO::new)
-                .peek(user -> user.setAssignedTest(assignedTests.getOrDefault(user.getId(), null)))
-                .collect(Collectors.toList());
+        List<UserDTO> users = convertToDTO(usersService.getAll());
+        testsService.attachAssignedTests(users);
+        return users;
     }
 
     @ApiOperation(value = "Update current user's language")
     @PutMapping("/language")
     public void updateLanguage(@RequestParam String language) {
         usersService.updateLanguage(JwtTokenUtil.extractUserDetails().getId(), language);
+    }
+
+    private List<UserDTO> convertToDTO(List<User> users) {
+        return users.stream()
+                .map(UserDTO::new)
+                .collect(Collectors.toList());
     }
 }

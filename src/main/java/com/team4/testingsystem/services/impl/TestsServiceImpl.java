@@ -2,6 +2,8 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.converters.TestConverter;
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.dto.TestInfo;
+import com.team4.testingsystem.dto.UserDTO;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
@@ -22,6 +24,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class TestsServiceImpl implements TestsService {
@@ -66,6 +70,15 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public List<Test> getByStatuses(Status[] statuses) {
         return testsRepository.getByStatuses(statuses);
+    }
+
+    @Override
+    public void attachAssignedTests(List<UserDTO> users) {
+        Status[] statuses = {Status.ASSIGNED};
+        Map<Long, TestInfo> assignedTests = getByStatuses(statuses).stream()
+                .collect(Collectors.toMap(test -> test.getUser().getId(), TestInfo::new));
+
+        users.forEach(user -> user.setAssignedTest(assignedTests.getOrDefault(user.getId(), null)));
     }
 
     @Override

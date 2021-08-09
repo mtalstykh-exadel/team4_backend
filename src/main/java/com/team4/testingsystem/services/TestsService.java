@@ -1,6 +1,7 @@
 package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.dto.UserDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
@@ -15,6 +16,8 @@ public interface TestsService {
     List<Test> getByUserId(long userId);
 
     List<Test> getByStatuses(Status[] status);
+
+    void attachAssignedTests(List<UserDTO> users);
 
     Test save(Test test);
 

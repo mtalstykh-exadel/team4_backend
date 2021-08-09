@@ -3,6 +3,7 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.converters.TestConverter;
 import com.team4.testingsystem.dto.TestDTO;
 
+import com.team4.testingsystem.dto.UserDTO;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
@@ -17,6 +18,7 @@ import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -100,6 +102,31 @@ class TestsServiceImplTest {
     void getByUserIdFailUserNotFound() {
         Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
         Assertions.assertThrows(UserNotFoundException.class, () -> testsService.getByUserId(BAD_USER_ID));
+    }
+
+    @org.junit.jupiter.api.Test
+    void attachAssignedTestsNoTests() {
+        Mockito.when(testsRepository.getByStatuses(new Status[] {Status.ASSIGNED}))
+                .thenReturn(Lists.emptyList());
+
+        List<UserDTO> users = Lists.list(new UserDTO(EntityCreatorUtil.createUser()));
+        testsService.attachAssignedTests(users);
+
+        users.forEach(user -> Assertions.assertNull(user.getAssignedTest()));
+    }
+
+    @org.junit.jupiter.api.Test
+    void attachAssignedTestsSuccess() {
+        User newUser = EntityCreatorUtil.createUser();
+        Level level = EntityCreatorUtil.createLevel();
+
+        Mockito.when(testsRepository.getByStatuses(new Status[] {Status.ASSIGNED}))
+                .thenReturn(Lists.list(EntityCreatorUtil.createTest(newUser, level)));
+
+        List<UserDTO> users = Lists.list(new UserDTO(newUser));
+        testsService.attachAssignedTests(users);
+
+        users.forEach(user -> Assertions.assertNotNull(user.getAssignedTest()));
     }
 
     @org.junit.jupiter.api.Test

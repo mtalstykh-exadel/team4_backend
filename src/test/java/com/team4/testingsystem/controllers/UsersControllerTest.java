@@ -4,7 +4,6 @@ import com.team4.testingsystem.dto.TestInfo;
 import com.team4.testingsystem.dto.UserDTO;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Role;
-import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
@@ -58,8 +57,7 @@ class UsersControllerTest {
     @Test
     void getAllUsersNoAssignedTest() {
         Mockito.when(usersService.getAll()).thenReturn(Lists.list(user));
-        Mockito.when(testsService.getByStatuses(new Status[]{Status.ASSIGNED}))
-                .thenReturn(Lists.emptyList());
+        Mockito.doNothing().when(testsService).attachAssignedTests(Lists.list(new UserDTO(user)));
 
         List<UserDTO> users = usersController.getAllUsers();
         Assertions.assertEquals(1, users.size());
@@ -69,8 +67,11 @@ class UsersControllerTest {
     @Test
     void getAllUsersSuccess() {
         Mockito.when(usersService.getAll()).thenReturn(Lists.list(user));
-        Mockito.when(testsService.getByStatuses(new Status[]{Status.ASSIGNED}))
-                .thenReturn(Lists.list(test));
+        Mockito.doAnswer(invocationOnMock -> {
+            List<UserDTO> users = invocationOnMock.getArgument(0);
+            users.forEach(user -> user.setAssignedTest(new TestInfo(test)));
+            return null;
+        }).when(testsService).attachAssignedTests(Lists.list(new UserDTO(user)));
 
         UserDTO expectedUserDTO = new UserDTO(user);
         expectedUserDTO.setAssignedTest(new TestInfo(test));
