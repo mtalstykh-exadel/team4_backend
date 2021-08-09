@@ -6,13 +6,11 @@ import com.team4.testingsystem.exceptions.FileSavingFailedException;
 import com.team4.testingsystem.services.FilesService;
 import com.team4.testingsystem.services.ResourceStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-@Profile(value = "!test")
 @Service
 public class ResourceStorageServiceImpl implements ResourceStorageService {
     private final FilesService filesService;
