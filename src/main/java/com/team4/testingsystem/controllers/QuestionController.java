@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/question")
@@ -82,8 +82,6 @@ public class QuestionController {
     }
 
     private List<Question> convertToEntity(List<QuestionDTO> questionsDTO) {
-        List<Question> questions = new ArrayList<>();
-        questionsDTO.forEach(questionDTO -> questions.add(questionConverter.convertToEntity(questionDTO)));
-        return questions;
+        return questionsDTO.stream().map(questionConverter::convertToEntity).collect(Collectors.toList());
     }
 }
