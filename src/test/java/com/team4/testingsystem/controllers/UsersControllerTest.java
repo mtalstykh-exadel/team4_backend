@@ -22,7 +22,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class UsersControllerTest {
@@ -59,8 +58,8 @@ class UsersControllerTest {
     @Test
     void getAllUsersNoAssignedTest() {
         Mockito.when(usersService.getAll()).thenReturn(Lists.list(user));
-        Mockito.when(testsService.getByUserIdWithStatus(user.getId(), Status.ASSIGNED))
-                .thenReturn(Optional.empty());
+        Mockito.when(testsService.getByStatuses(new Status[]{Status.ASSIGNED}))
+                .thenReturn(Lists.emptyList());
 
         List<UserDTO> users = usersController.getAllUsers();
         Assertions.assertEquals(1, users.size());
@@ -70,8 +69,8 @@ class UsersControllerTest {
     @Test
     void getAllUsersSuccess() {
         Mockito.when(usersService.getAll()).thenReturn(Lists.list(user));
-        Mockito.when(testsService.getByUserIdWithStatus(user.getId(), Status.ASSIGNED))
-                .thenReturn(Optional.of(test));
+        Mockito.when(testsService.getByStatuses(new Status[]{Status.ASSIGNED}))
+                .thenReturn(Lists.list(test));
 
         UserDTO expectedUserDTO = new UserDTO(user);
         expectedUserDTO.setAssignedTest(new TestInfo(test));

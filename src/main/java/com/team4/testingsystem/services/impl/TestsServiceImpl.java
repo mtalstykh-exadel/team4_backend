@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TestsServiceImpl implements TestsService {
@@ -67,12 +66,6 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public List<Test> getByStatuses(Status[] statuses) {
         return testsRepository.getByStatuses(statuses);
-    }
-
-    @Override
-    public Optional<Test> getByUserIdWithStatus(long userId, Status status) {
-        User user = usersService.getUserById(userId);
-        return testsRepository.getByUserAndStatus(user, status);
     }
 
     @Override

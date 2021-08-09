@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface TestsRepository extends CrudRepository<Test, Long> {
@@ -20,8 +19,6 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     @Query("select t from Test t where t.status in ?1")
     List<Test> getByStatuses(Status[] statuses);
-
-    Optional<Test> getByUserAndStatus(User user, Status status);
 
     @Query("select t from Test t"
             + " where t.user = ?1 "

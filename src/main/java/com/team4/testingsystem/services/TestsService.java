@@ -7,7 +7,6 @@ import com.team4.testingsystem.enums.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface TestsService {
 
@@ -16,8 +15,6 @@ public interface TestsService {
     List<Test> getByUserId(long userId);
 
     List<Test> getByStatuses(Status[] status);
-
-    Optional<Test> getByUserIdWithStatus(long userId, Status status);
 
     Test save(Test test);
 

@@ -103,32 +103,6 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void getByUserIdWithStatusUserNotFound() {
-        Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
-
-        Assertions.assertThrows(UserNotFoundException.class,
-                () -> testsService.getByUserIdWithStatus(BAD_USER_ID, Status.STARTED));
-    }
-
-    @org.junit.jupiter.api.Test
-    void getByUserIdWithStatusNotExists() {
-        Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
-        Mockito.when(testsRepository.getByUserAndStatus(user, Status.STARTED)).thenReturn(Optional.empty());
-
-        Assertions.assertTrue(testsService.getByUserIdWithStatus(GOOD_USER_ID, Status.STARTED).isEmpty());
-    }
-
-    @org.junit.jupiter.api.Test
-    void getByUserIdWithStatusSuccess() {
-        Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
-        Mockito.when(testsRepository.getByUserAndStatus(user, Status.STARTED)).thenReturn(Optional.of(test));
-
-        Optional<Test> userTest = testsService.getByUserIdWithStatus(GOOD_USER_ID, Status.STARTED);
-        Assertions.assertTrue(userTest.isPresent());
-        Assertions.assertEquals(test, userTest.get());
-    }
-
-    @org.junit.jupiter.api.Test
     void startForUserSuccess() {
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
 

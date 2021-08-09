@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -38,9 +39,13 @@ public class UsersController {
 
     @GetMapping("/employees")
     public List<UserDTO> getAllUsers() {
+        Status[] statuses = {Status.ASSIGNED};
+        Map<Long, TestInfo> assignedTests = testsService.getByStatuses(statuses).stream()
+                .collect(Collectors.toMap(test -> test.getUser().getId(), TestInfo::new));
+
         return usersService.getAll().stream()
                 .map(UserDTO::new)
-                .peek(user -> user.setAssignedTest(findAssignedTest(user)))
+                .peek(user -> user.setAssignedTest(assignedTests.getOrDefault(user.getId(), null)))
                 .collect(Collectors.toList());
     }
 
@@ -48,11 +53,5 @@ public class UsersController {
     @PutMapping("/language")
     public void updateLanguage(@RequestParam String language) {
         usersService.updateLanguage(JwtTokenUtil.extractUserDetails().getId(), language);
-    }
-
-    private TestInfo findAssignedTest(UserDTO user) {
-        return testsService.getByUserIdWithStatus(user.getId(), Status.ASSIGNED)
-                .map(TestInfo::new)
-                .orElse(null);
     }
 }
