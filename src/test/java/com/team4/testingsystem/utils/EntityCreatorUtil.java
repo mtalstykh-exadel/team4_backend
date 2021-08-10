@@ -44,7 +44,7 @@ public class EntityCreatorUtil {
     }
 
     public static QuestionDTO createQuestionDto() {
-        return new QuestionDTO(createQuestion());
+        return QuestionDTO.create(createQuestion());
     }
 
     public static User createUser() {
@@ -109,7 +109,7 @@ public class EntityCreatorUtil {
             questions.add(question);
         }
         Map<String, List<QuestionDTO>> questionsDTO = questions.stream()
-                .map(QuestionDTO::new)
+                .map(QuestionDTO::create)
                 .collect(groupingBy(QuestionDTO::getModule));
         TestDTO testDTO = new TestDTO(test);
         testDTO.setQuestions(questionsDTO);

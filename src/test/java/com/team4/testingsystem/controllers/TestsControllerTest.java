@@ -81,7 +81,7 @@ class TestsControllerTest {
     void getByIdSuccess() {
         Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
 
-        Assertions.assertEquals(new TestDTO(test), testsController.getById(GOOD_TEST_ID));
+        Assertions.assertEquals(testConverter.convertToDTO(test), testsController.getById(GOOD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
@@ -101,7 +101,8 @@ class TestsControllerTest {
 
             Mockito.when(testsService.getByUserId(1L)).thenReturn(Lists.list(test));
 
-            Assertions.assertEquals(Lists.list(new TestDTO(test)), testsController.getCurrentUserTests());
+            Assertions.assertEquals(Lists.list(testConverter.convertToDTO(test)),
+                    testsController.getCurrentUserTests());
         }
     }
 
