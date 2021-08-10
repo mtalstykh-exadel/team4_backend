@@ -42,10 +42,6 @@ public class Module implements Serializable {
         this.name = name;
     }
 
-    public List<Question> getQuestions() {
-        return questions;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -63,6 +59,10 @@ public class Module implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
     }
 
 }
