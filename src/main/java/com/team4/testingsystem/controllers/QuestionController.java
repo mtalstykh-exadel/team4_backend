@@ -68,6 +68,20 @@ public class QuestionController {
         return new ContentFileDTO(contentFile);
     }
 
+    @ApiOperation(value = "Update content file with questions or just questions for content file")
+    @PutMapping(value = "/listening/{contentFileId}")
+    public ContentFileDTO updateListening(@RequestPart(required = false) MultipartFile file,
+                                          @RequestPart List<QuestionDTO> questions,
+                                          @PathVariable("contentFileId") Long id) {
+        if (file == null) {
+            ContentFile contentFile = contentFilesService
+                    .updateQuestions(id, convertToEntity(questions));
+            return new ContentFileDTO(contentFile);
+        }
+        String url = storageService.upload(file.getResource());
+        return new ContentFileDTO(contentFilesService.update(id, url, convertToEntity(questions)));
+    }
+
     @ApiOperation(value = "Archive the question")
     @DeleteMapping("/{id}")
     public void archiveQuestion(@PathVariable("id") Long id) {
