@@ -47,6 +47,6 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
 
     @Query("select q from Question q " +
             "join q.tests t " +
-            "where t.id = ?1 and q.module = ?2")
-    Optional<Question> getQuestionByTestIdAndModule(Long testId, Modules module);
+            "where t.id = ?1 and q.module.name = ?2")
+    Optional<Question> getQuestionByTestIdAndModule(Long testId, String module);
 }

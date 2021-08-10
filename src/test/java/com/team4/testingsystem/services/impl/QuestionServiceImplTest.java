@@ -110,7 +110,7 @@ class QuestionServiceImplTest {
 
     @Test
     void getQuestionByTestIdAndModuleNotFound() {
-        Mockito.when(questionRepository.getQuestionByTestIdAndModule(1L, Modules.ESSAY))
+        Mockito.when(questionRepository.getQuestionByTestIdAndModule(1L, Modules.ESSAY.getName()))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThrows(QuestionNotFoundException.class,
@@ -119,7 +119,7 @@ class QuestionServiceImplTest {
 
     @Test
     void getQuestionByTestIdAndModuleSuccess() {
-        Mockito.when(questionRepository.getQuestionByTestIdAndModule(1L, Modules.ESSAY))
+        Mockito.when(questionRepository.getQuestionByTestIdAndModule(1L, Modules.ESSAY.getName()))
                 .thenReturn(Optional.of(question));
 
         Assertions.assertEquals(question, questionService.getQuestionByTestIdAndModule(1L, Modules.ESSAY));

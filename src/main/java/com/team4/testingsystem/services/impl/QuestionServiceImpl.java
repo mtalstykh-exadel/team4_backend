@@ -82,7 +82,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Question getQuestionByTestIdAndModule(Long testId, Modules module) {
-        return questionRepository.getQuestionByTestIdAndModule(testId, module)
+        return questionRepository.getQuestionByTestIdAndModule(testId, module.getName())
                 .orElseThrow(QuestionNotFoundException::new);
     }
 }
