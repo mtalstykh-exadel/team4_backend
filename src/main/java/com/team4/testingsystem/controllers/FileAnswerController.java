@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,10 +21,11 @@ public class FileAnswerController {
 
     @GetMapping("/essay/{testId}")
     public String downloadEssay(@PathVariable Long testId) {
-        return null;
+        return fileAnswerService.downloadEssay(testId);
     }
 
     @PostMapping("/essay{testId}")
-    public void uploadEssay(@PathVariable Long testId) {
+    public void uploadEssay(@PathVariable Long testId, @RequestBody String text) {
+        fileAnswerService.uploadEssay(testId, text);
     }
 }
