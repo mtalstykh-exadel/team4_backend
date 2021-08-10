@@ -6,6 +6,8 @@ import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
+import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,10 +30,36 @@ class ContentFilesServiceImplTest {
     ContentFile contentFile;
 
     @Mock
+    List<Question> questions;
+
+    @Mock
     ContentFilesRepository contentFilesRepository;
+
+    @Mock
+    QuestionService questionService;
 
     @InjectMocks
     ContentFilesServiceImpl contentFilesService;
+
+    @Test
+    void update() {
+        Mockito.when(contentFilesRepository.save(any())).thenReturn(contentFile);
+        ContentFile result = contentFilesService.update(EntityCreatorUtil.ID, "some url", questions);
+        verify(questionService).archiveQuestionsByContentFileId(EntityCreatorUtil.ID);
+        verify(contentFilesRepository).archiveContentFile(EntityCreatorUtil.ID);
+        Assertions.assertEquals(contentFile, result);
+    }
+
+    @Test
+    void  updateQuestions() {
+        Mockito.when(contentFilesRepository.findById(EntityCreatorUtil.ID))
+                .thenReturn(Optional.ofNullable(contentFile));
+        Mockito.when(contentFilesRepository.save(contentFile)).thenReturn(contentFile);
+        Mockito.when(contentFile.getQuestions()).thenReturn(questions);
+        ContentFile result = contentFilesService.updateQuestions(EntityCreatorUtil.ID, questions);
+        verify(questionService).archiveQuestionsByContentFileId(EntityCreatorUtil.ID);
+        Assertions.assertEquals(contentFile, result);
+    }
 
     @Test
     void getAllSuccess() {
