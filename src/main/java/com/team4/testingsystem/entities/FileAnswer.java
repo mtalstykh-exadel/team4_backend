@@ -2,41 +2,25 @@ package com.team4.testingsystem.entities;
 
 import java.io.Serializable;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "file_answer")
 public class FileAnswer implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @ManyToOne
-    @JoinColumn(name = "question_id", referencedColumnName = "id")
-    private Question question;
-
-    @ManyToOne
-    @JoinColumn(name = "test_id", referencedColumnName = "id")
-    private Test test;
+    @EmbeddedId
+    private TestQuestionID id;
 
     @Column(name = "url")
     private String url;
 
-    public FileAnswer() {
-    }
-
-    public long getId() {
+    public TestQuestionID getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(TestQuestionID id) {
         this.id = id;
     }
 
@@ -46,22 +30,6 @@ public class FileAnswer implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public Question getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(Question question) {
-        this.question = question;
-    }
-
-    public Test getTest() {
-        return test;
-    }
-
-    public void setTest(Test test) {
-        this.test = test;
     }
 
     public static Builder builder() {
@@ -75,18 +43,8 @@ public class FileAnswer implements Serializable {
             this.fileAnswer = new FileAnswer();
         }
 
-        public Builder id(long id) {
+        public Builder id(TestQuestionID id) {
             fileAnswer.id = id;
-            return this;
-        }
-
-        public Builder question(Question question) {
-            fileAnswer.question = question;
-            return this;
-        }
-
-        public Builder test(Test test) {
-            fileAnswer.test = test;
             return this;
         }
 
