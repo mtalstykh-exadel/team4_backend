@@ -4,12 +4,15 @@ import com.team4.testingsystem.entities.FileAnswer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.services.TestsService;
+import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -17,8 +20,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 class FileAnswerServiceImplTest {
@@ -127,5 +133,15 @@ class FileAnswerServiceImplTest {
 
         Assertions.assertEquals(test, captor.getValue().getTest());
         Assertions.assertEquals(question, captor.getValue().getQuestion());
+    }
+
+    @org.junit.jupiter.api.Test
+    void getSpeaking() {
+        Mockito.when(questionService
+                .getQuestionByTestIdAndModule(any(), any())).thenReturn(question);
+        Mockito.when(fileAnswerRepository
+                .findByTestAndQuestionId(any(), any())).thenReturn(Optional.of(fileAnswer));
+        Mockito.when(fileAnswerService.getUrl(any(), any())).thenReturn("some url");
+        Assertions.assertEquals("some url", fileAnswerService.getSpeaking(EntityCreatorUtil.ID));
     }
 }
