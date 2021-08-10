@@ -12,7 +12,7 @@ import javax.persistence.Table;
 public class CoachGrade implements Serializable {
 
     @EmbeddedId
-    TestQuestionID id;
+    private TestQuestionID id;
 
     @Column(name = "grade")
     private Integer grade;
