@@ -57,7 +57,7 @@ public class TestEvaluationServiceImpl implements TestEvaluationService {
 
     @Override
     public void countScoreBeforeCoachCheck(Test test) {
-        List<ChosenOption> chosenOptions = chosenOptionService.getChosenOptionByTest(test);
+        List<ChosenOption> chosenOptions = chosenOptionService.getAllByTest(test);
 
         moduleGradesService.add(test, Modules.ESSAY.getName(), 0);
         moduleGradesService.add(test, Modules.SPEAKING.getName(), 0);
