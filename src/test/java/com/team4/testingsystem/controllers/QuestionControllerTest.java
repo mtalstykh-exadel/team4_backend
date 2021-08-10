@@ -77,6 +77,13 @@ class QuestionControllerTest {
     }
 
     @Test
+    void getListening() {
+        ContentFile contentFile = new ContentFile();
+        Mockito.when(contentFilesService.getById(1L)).thenReturn(contentFile);
+        Assertions.assertEquals(new ContentFileDTO(contentFile), questionController.getListening(1L));
+    }
+
+    @Test
     void addQuestion() {
         Question question = EntityCreatorUtil.createQuestion();
         QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
