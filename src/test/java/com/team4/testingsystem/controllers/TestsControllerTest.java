@@ -16,7 +16,6 @@ import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.ModuleGradesService;
-import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
@@ -30,7 +29,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.persistence.MapKeyColumn;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +64,9 @@ class TestsControllerTest {
 
     @Mock
     private Map<String, Integer> gradesMap;
+
+    @Mock
+    private TestConverter testConverter;
 
     @InjectMocks
     private TestsController testsController;
