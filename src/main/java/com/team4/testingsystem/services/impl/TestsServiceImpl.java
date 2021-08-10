@@ -68,7 +68,7 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public List<UserTest> getUsersWithAssignedTests() {
+    public List<UserTest> getAllUsersAndAssignedTests() {
         Status[] statuses = {Status.ASSIGNED};
         Map<User, Test> assignedTests = getByStatuses(statuses).stream()
                 .collect(Collectors.toMap(Test::getUser, Function.identity()));

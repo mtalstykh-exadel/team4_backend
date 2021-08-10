@@ -35,8 +35,8 @@ public class UsersController {
     }
 
     @GetMapping("/employees")
-    public List<UserDTO> getAllUsers() {
-        return testsService.getUsersWithAssignedTests().stream()
+    public List<UserDTO> getAllUsersAndAssignedTests() {
+        return testsService.getAllUsersAndAssignedTests().stream()
                 .map(UserTest::toUserDTO)
                 .collect(Collectors.toList());
     }

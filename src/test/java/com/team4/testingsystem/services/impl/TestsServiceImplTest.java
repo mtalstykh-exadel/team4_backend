@@ -99,18 +99,18 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void getUsersWithAssignedTestsNoTests() {
+    void getAllUsersAndAssignedTestsNoTests() {
         User user = EntityCreatorUtil.createUser();
 
         Mockito.when(usersService.getAll()).thenReturn(Lists.list(user));
         Mockito.when(testsRepository.getByStatuses(new Status[] {Status.ASSIGNED}))
                 .thenReturn(Lists.emptyList());
 
-        Assertions.assertEquals(Lists.list(new UserTest(user, null)), testsService.getUsersWithAssignedTests());
+        Assertions.assertEquals(Lists.list(new UserTest(user, null)), testsService.getAllUsersAndAssignedTests());
     }
 
     @org.junit.jupiter.api.Test
-    void getUsersWithAssignedTestsSuccess() {
+    void getAllUsersAndAssignedTestsSuccess() {
         User user = EntityCreatorUtil.createUser();
         Test test = EntityCreatorUtil.createTest(user, EntityCreatorUtil.createLevel());
 
@@ -118,7 +118,7 @@ class TestsServiceImplTest {
         Mockito.when(testsRepository.getByStatuses(new Status[] {Status.ASSIGNED}))
                 .thenReturn(Lists.list(test));
 
-        Assertions.assertEquals(Lists.list(new UserTest(user, test)), testsService.getUsersWithAssignedTests());
+        Assertions.assertEquals(Lists.list(new UserTest(user, test)), testsService.getAllUsersAndAssignedTests());
     }
 
     @org.junit.jupiter.api.Test

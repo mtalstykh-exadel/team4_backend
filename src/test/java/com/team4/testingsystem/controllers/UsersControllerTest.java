@@ -56,24 +56,24 @@ class UsersControllerTest {
     }
 
     @Test
-    void getAllUsersNoAssignedTest() {
-        Mockito.when(testsService.getUsersWithAssignedTests())
+    void getAllUsersAndAssignedTestsNoAssignedTest() {
+        Mockito.when(testsService.getAllUsersAndAssignedTests())
                 .thenReturn(Lists.list(new UserTest(user, null)));
 
-        List<UserDTO> users = usersController.getAllUsers();
+        List<UserDTO> users = usersController.getAllUsersAndAssignedTests();
         Assertions.assertEquals(1, users.size());
         Assertions.assertEquals(new UserDTO(user), users.get(0));
     }
 
     @Test
-    void getAllUsersSuccess() {
-        Mockito.when(testsService.getUsersWithAssignedTests())
+    void getAllUsersAndAssignedTestsSuccess() {
+        Mockito.when(testsService.getAllUsersAndAssignedTests())
                 .thenReturn(Lists.list(new UserTest(user, test)));
 
         UserDTO expectedUserDTO = new UserDTO(user);
         expectedUserDTO.setAssignedTest(new TestInfo(test));
 
-        List<UserDTO> users = usersController.getAllUsers();
+        List<UserDTO> users = usersController.getAllUsersAndAssignedTests();
         Assertions.assertEquals(1, users.size());
         Assertions.assertEquals(expectedUserDTO, users.get(0));
     }

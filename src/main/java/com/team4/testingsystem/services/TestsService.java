@@ -16,7 +16,7 @@ public interface TestsService {
 
     List<Test> getByStatuses(Status[] status);
 
-    List<UserTest> getUsersWithAssignedTests();
+    List<UserTest> getAllUsersAndAssignedTests();
 
     Test save(Test test);
 
