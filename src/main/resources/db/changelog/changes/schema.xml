@@ -601,6 +601,12 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add_topic" author="Darina">
+        <addColumn tableName="content_file">
+            <column name="topic" type="varchar(256)"/>
+        </addColumn>
+    </changeSet>
+
     <changeSet id="add_priority" author="Anlord241">
         <addColumn tableName="test">
             <column name="priority" type="text"/>
