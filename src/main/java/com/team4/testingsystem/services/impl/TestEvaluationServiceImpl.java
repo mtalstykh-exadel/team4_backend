@@ -49,10 +49,9 @@ public class TestEvaluationServiceImpl implements TestEvaluationService {
 
     }
 
-
     private void saveScoreCoachCheck(Test test, Modules module, Map<String, Integer> gradeMap) {
         int score = Optional.ofNullable(gradeMap.get(module.getName()))
-                .orElseThrow(() -> new CoachGradeNotFoundException());
+                .orElseThrow(CoachGradeNotFoundException::new);
         saveModuleGrade(test, module.getName(), score);
     }
 

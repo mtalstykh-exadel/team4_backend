@@ -175,11 +175,13 @@ class TestsControllerTest {
     void startNotAssignedSuccess() {
         Test test = EntityCreatorUtil.createTest(new User(), new Level());
         TestDTO testDTO = new TestDTO(test);
+
         try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
             builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
             Mockito.when(customUserDetails.getId()).thenReturn(1L);
             Mockito.when(testsService.startForUser(1L, Levels.A1)).thenReturn(1L);
-            Mockito.when(testsService.start(1L)).thenReturn(testDTO);
+            Mockito.when(testsService.start(1L)).thenReturn(test);
+            Mockito.when(testConverter.convertToDTO(test)).thenReturn(testDTO);
 
             Assertions.assertEquals(testDTO, testsController.startNotAssigned(Levels.A1));
         }
