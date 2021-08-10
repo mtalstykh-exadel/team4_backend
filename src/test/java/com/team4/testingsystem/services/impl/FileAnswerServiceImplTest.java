@@ -4,12 +4,15 @@ import com.team4.testingsystem.entities.FileAnswer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.services.TestsService;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -17,7 +20,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.InputStreamResource;
 
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,6 +34,9 @@ class FileAnswerServiceImplTest {
 
     @Mock
     private QuestionService questionService;
+
+    @Mock
+    private ResourceStorageService resourceStorageService;
 
     @Mock
     private FileAnswerRepository fileAnswerRepository;
@@ -47,6 +56,7 @@ class FileAnswerServiceImplTest {
     private static final Long TEST_ID = 1L;
     private static final Long QUESTION_ID = 2L;
     private static final String URL = "url";
+    private static final String ESSAY_TEXT = "essay text example";
 
     @org.junit.jupiter.api.Test
     void getUrlNotFound() {
@@ -127,5 +137,41 @@ class FileAnswerServiceImplTest {
 
         Assertions.assertEquals(test, captor.getValue().getTest());
         Assertions.assertEquals(question, captor.getValue().getQuestion());
+    }
+
+    @org.junit.jupiter.api.Test
+    void downloadEssayQuestionNotFound() {
+        Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY))
+                .thenThrow(QuestionNotFoundException.class);
+
+        Assertions.assertThrows(QuestionNotFoundException.class,
+                () -> fileAnswerService.downloadEssay(TEST_ID));
+    }
+
+    @org.junit.jupiter.api.Test
+    void downloadEssayFileAnswerNotFound() {
+        Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY))
+                .thenReturn(question);
+        Mockito.when(question.getId()).thenReturn(QUESTION_ID);
+        Mockito.when(fileAnswerRepository.findByTestAndQuestionId(TEST_ID, QUESTION_ID))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThrows(FileAnswerNotFoundException.class,
+                () -> fileAnswerService.downloadEssay(TEST_ID));
+    }
+
+    @org.junit.jupiter.api.Test
+    void downloadEssaySuccess() {
+        Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY))
+                .thenReturn(question);
+        Mockito.when(question.getId()).thenReturn(QUESTION_ID);
+        Mockito.when(fileAnswerRepository.findByTestAndQuestionId(TEST_ID, QUESTION_ID))
+                .thenReturn(Optional.of(fileAnswer));
+        Mockito.when(fileAnswer.getUrl()).thenReturn(URL);
+
+        InputStream inputStream = IOUtils.toInputStream(ESSAY_TEXT, StandardCharsets.UTF_8);
+        Mockito.when(resourceStorageService.load(URL)).thenReturn(new InputStreamResource(inputStream));
+
+        Assertions.assertEquals(ESSAY_TEXT, fileAnswerService.downloadEssay(TEST_ID));
     }
 }

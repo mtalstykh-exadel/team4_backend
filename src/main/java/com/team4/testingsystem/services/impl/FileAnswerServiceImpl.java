@@ -4,27 +4,37 @@ import com.team4.testingsystem.entities.FileAnswer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
+import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.services.FileAnswerService;
 import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.services.TestsService;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class FileAnswerServiceImpl implements FileAnswerService {
     private final FileAnswerRepository fileAnswerRepository;
     private final QuestionService questionService;
     private final TestsService testsService;
+    private final ResourceStorageService resourceStorageService;
 
     @Autowired
     public FileAnswerServiceImpl(FileAnswerRepository fileAnswerRepository,
                                  QuestionService questionService,
-                                 TestsService testsService) {
+                                 TestsService testsService,
+                                 ResourceStorageService resourceStorageService) {
         this.fileAnswerRepository = fileAnswerRepository;
         this.questionService = questionService;
         this.testsService = testsService;
+        this.resourceStorageService = resourceStorageService;
     }
 
     @Override
@@ -50,8 +60,13 @@ public class FileAnswerServiceImpl implements FileAnswerService {
 
     @Override
     public String downloadEssay(Long testId) {
-        Test test = testsService.getById(testId);
-        return null;
+        Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
+        String url = getUrl(testId, question.getId());
+        try {
+            return IOUtils.toString(resourceStorageService.load(url).getInputStream(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new FileLoadingFailedException();
+        }
     }
 
     private TestQuestionID createId(Long testId, Long questionId) {
