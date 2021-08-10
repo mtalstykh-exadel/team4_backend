@@ -40,11 +40,11 @@ public class TestEvaluationServiceImpl implements TestEvaluationService {
     private void saveScoreAutomaticCheck(Test test, Modules module, List<ChosenOption> allChosenOptions) {
         int score = (int) allChosenOptions
                 .stream()
-                .filter(chosenOption -> chosenOption.getId().getQuestion().getModule().equals(module))
+                .filter(chosenOption ->
+                        chosenOption.getId().getQuestion().getModule().getName().equals(module.getName()))
                 .map(ChosenOption::getAnswer)
                 .filter(Answer::isCorrect)
                 .count();
-
         saveModuleGrade(test, module.getName(), score);
 
     }
