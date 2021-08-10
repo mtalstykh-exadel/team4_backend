@@ -17,6 +17,7 @@ import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
+import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -51,7 +52,6 @@ class CoachGradeControllerIntegrationTest {
     private final CoachGradeRepository gradeRepository;
     private final AnswerRepository answerRepository;
     private final ContentFilesRepository contentFilesRepository;
-
     private final ObjectMapper objectMapper;
 
     private User user;

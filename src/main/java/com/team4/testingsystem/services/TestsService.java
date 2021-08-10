@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface TestsService {
 
-    Iterable<Test> getAll();
-
     Test getById(long id);
 
     List<Test> getByUserId(long userId);
@@ -26,7 +24,7 @@ public interface TestsService {
 
     TestDTO start(long id);
 
-    void finish(long id, int evaluation);
+    void finish(long id);
 
     void updateEvaluation(long id, int newEvaluation);
 

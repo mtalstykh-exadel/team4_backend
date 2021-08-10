@@ -39,8 +39,12 @@ public class ContentFile implements Serializable {
     public ContentFile() {
     }
 
-    public ContentFile(String url, Question question) {
-        this.questions.add(question);
+    public ContentFile(String url) {
+        this.url = url;
+    }
+
+    public ContentFile(String url, List<Question> questions) {
+        this.questions = questions;
         this.url = url;
     }
 

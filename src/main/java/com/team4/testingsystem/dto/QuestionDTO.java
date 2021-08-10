@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuestionDTO {
+    private Long id;
     private String questionBody;
     private String creator;
     private String level;
@@ -18,13 +19,37 @@ public class QuestionDTO {
     public QuestionDTO() {
     }
 
-    public QuestionDTO(Question question) {
+    private QuestionDTO(Question question, List<AnswerDTO> answers) {
+        this.id = question.getId();
         this.questionBody = question.getBody();
         this.creator = question.getCreator().getName();
         this.level = question.getLevel().getName();
         this.module = question.getModule().getName();
-        this.answers = question.getAnswers()
-                .stream().map(AnswerDTO::new).collect(Collectors.toList());
+        this.answers = answers;
+    }
+
+    public static QuestionDTO create(Question question) {
+        List<AnswerDTO> answers = question.getAnswers().stream()
+                .map(AnswerDTO::create)
+                .collect(Collectors.toList());
+
+        return new QuestionDTO(question, answers);
+    }
+
+    public static QuestionDTO createWithCorrectAnswers(Question question) {
+        List<AnswerDTO> answers = question.getAnswers().stream()
+                .map(AnswerDTO::createWithCorrect)
+                .collect(Collectors.toList());
+
+        return new QuestionDTO(question, answers);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCreator() {

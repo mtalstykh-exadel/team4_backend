@@ -51,10 +51,10 @@ class TestConverterTest {
         }
 
         TestDTO testDTO = EntityCreatorUtil.createTestDTO(test);
-        Mockito.when(questionService
-                .getQuestionsByTestId(any())).thenReturn(questions);
-        Mockito.when(contentFilesService
-                .getContentFileByQuestionId(any())).thenReturn(new ContentFile());
+        Mockito.when(questionService.getQuestionsByTestId(any())).thenReturn(questions);
+        Mockito.when(contentFilesService.getContentFileByQuestionId(any()))
+                .thenReturn(new ContentFile("url"));
+
         Assertions.assertEquals(testDTO, testConverter.convertToDTO(test));
     }
 }

@@ -6,11 +6,11 @@ public class ErrorResponse {
 
     private String message;
 
-    private String date;
+    private String currentDate;
 
     public ErrorResponse(String message) {
         this.message = message;
-        this.date = LocalDateTime.now().toString();
+        this.currentDate = LocalDateTime.now().toString();
     }
 
     public String getMessage() {
@@ -22,10 +22,10 @@ public class ErrorResponse {
     }
 
     public String getDate() {
-        return date;
+        return currentDate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDate(String currentDate) {
+        this.currentDate = currentDate;
     }
 }

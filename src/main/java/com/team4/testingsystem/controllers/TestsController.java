@@ -1,5 +1,6 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.converters.TestConverter;
 import com.team4.testingsystem.dto.AssignTestRequest;
 import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Test;
@@ -27,10 +28,12 @@ import java.util.stream.Collectors;
 public class TestsController {
 
     private final TestsService testsService;
+    private final TestConverter testConverter;
 
     @Autowired
-    public TestsController(TestsService testsService) {
+    public TestsController(TestsService testsService, TestConverter testConverter) {
         this.testsService = testsService;
+        this.testConverter = testConverter;
     }
 
     @ApiOperation(value = "Get all tests assigned to the current user")
@@ -48,7 +51,7 @@ public class TestsController {
     @ApiOperation(value = "Use it to get a single test from the database by its id")
     @GetMapping(path = "/{id}")
     public TestDTO getById(@PathVariable("id") long id) {
-        return new TestDTO(testsService.getById(id));
+        return testConverter.convertToDTO(testsService.getById(id));
     }
 
     @GetMapping(path = "/unverified")
@@ -66,7 +69,7 @@ public class TestsController {
 
     @ApiOperation(value =
             "(To be updated) Is used when the user wants to learn one's level by oneself (without any HRs)")
-    @ApiResponse(code = 200, message = "Started test's id")
+    @ApiResponse(code = 409, message = "You can start only 3 tests per day. If you want more, ask HR")
     @PostMapping(path = "/start")
     public TestDTO startNotAssigned(@RequestParam Levels level) {
         long userId = JwtTokenUtil.extractUserDetails().getId();
@@ -82,8 +85,8 @@ public class TestsController {
 
     @ApiOperation(value = "Is used to finish tests")
     @PostMapping(path = "/finish/{testId}")
-    public void finish(@PathVariable("testId") long testId, @RequestParam int evaluation) {
-        testsService.finish(testId, evaluation);
+    public void finish(@PathVariable("testId") long testId) {
+        testsService.finish(testId);
     }
 
     @ApiOperation(value = "Is used to update score after coach check")
@@ -107,7 +110,7 @@ public class TestsController {
 
     private List<TestDTO> convertToDTO(List<Test> tests) {
         return tests.stream()
-                .map(TestDTO::new)
+                .map(testConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 }

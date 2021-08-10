@@ -9,12 +9,15 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
+import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.LevelService;
+import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,28 +28,29 @@ public class TestsServiceImpl implements TestsService {
 
     private final TestsRepository testsRepository;
     private final TestGeneratingService testGeneratingService;
+    private final TestEvaluationService testEvaluationService;
     private final TestConverter testConverter;
+
     private final LevelService levelService;
     private final UsersService usersService;
+
+    @Value("${tests-limit:3}")
+    private int testsLimit;
 
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
                             TestGeneratingService testGeneratingService,
+                            TestEvaluationService testEvaluationService,
                             TestConverter testConverter,
                             LevelService levelService,
                             UsersService usersService) {
         this.testsRepository = testsRepository;
         this.testGeneratingService = testGeneratingService;
+        this.testEvaluationService = testEvaluationService;
         this.testConverter = testConverter;
         this.levelService = levelService;
         this.usersService = usersService;
     }
-
-    @Override
-    public Iterable<Test> getAll() {
-        return testsRepository.findAll();
-    }
-
 
     @Override
     public Test getById(long id) {
@@ -71,6 +75,13 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public long startForUser(long userId, Levels levelName) {
+        User user = usersService.getUserById(userId);
+        List<Test> selfStarted = testsRepository.getSelfStartedByUserAfter(user, LocalDateTime.now().minusDays(1));
+
+        if (selfStarted.size() >= testsLimit) {
+            throw new TestsLimitExceededException(selfStarted.get(0).getStartedAt().plusDays(1).toString());
+        }
+
         Test test = createForUser(userId, levelName)
                 .startedAt(LocalDateTime.now())
                 .status(Status.STARTED)
@@ -111,10 +122,10 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public void finish(long id, int evaluation) {
-        if (testsRepository.finish(LocalDateTime.now(), evaluation, id) == 0) {
-            throw new TestNotFoundException();
-        }
+    public void finish(long id) {
+
+        testsRepository.finish(LocalDateTime.now(), testEvaluationService.getEvaluationByTest(getById(id)), id);
+
     }
 
     @Override
