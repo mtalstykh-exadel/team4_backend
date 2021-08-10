@@ -74,9 +74,9 @@ public class QuestionController {
 
     @ApiOperation(value = "Add content file with questions")
     @PostMapping(value = "/listening")
-    public ContentFileDTO addListening(@RequestPart MultipartFile file, @RequestPart List<QuestionDTO> questions) {
-        String url = storageService.upload(file.getResource());
-        ContentFile contentFile = contentFilesService.add(url, convertToEntity(questions));
+    public ContentFileDTO addListening(@RequestPart MultipartFile file,
+                                       @RequestPart List<QuestionDTO> questions) {
+        ContentFile contentFile = contentFilesService.add(file.getResource(), convertToEntity(questions));
         return new ContentFileDTO(contentFile);
     }
 
@@ -85,13 +85,9 @@ public class QuestionController {
     public ContentFileDTO updateListening(@RequestPart(required = false) MultipartFile file,
                                           @RequestPart List<QuestionDTO> questions,
                                           @PathVariable("contentFileId") Long id) {
-        if (file == null) {
-            ContentFile contentFile = contentFilesService
-                    .updateQuestions(id, convertToEntity(questions));
-            return new ContentFileDTO(contentFile);
-        }
-        String url = storageService.upload(file.getResource());
-        return new ContentFileDTO(contentFilesService.update(id, url, convertToEntity(questions)));
+        ContentFile contentFile = contentFilesService
+                .update(file, id, convertToEntity(questions));
+        return new ContentFileDTO(contentFile);
     }
 
     @ApiOperation(value = "Archive the question")

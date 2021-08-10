@@ -2,6 +2,8 @@ package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
+import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -11,11 +13,9 @@ public interface ContentFilesService {
 
     ContentFile getById(long id);
 
-    ContentFile add(String url, List<Question> questions);
+    ContentFile add(Resource file, List<Question> questions);
 
-    ContentFile update(Long id, String url, List<Question> questions);
-
-    ContentFile updateQuestions(Long id, List<Question> questions);
+    ContentFile update(MultipartFile file, Long id, List<Question> questions);
 
     void updateURL(Long id, String newUrl);
 

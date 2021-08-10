@@ -43,6 +43,9 @@ class QuestionControllerTest {
     private Resource resource;
 
     @Mock
+    private ContentFile contentFile;
+
+    @Mock
     private ResourceStorageService storageService;
 
     @Mock
@@ -113,8 +116,6 @@ class QuestionControllerTest {
 
     @Test
     void addListening() {
-        ContentFile contentFile = new ContentFile();
-        Mockito.when(storageService.upload(any())).thenReturn("some url");
         Mockito.when(multipartFile.getResource()).thenReturn(resource);
         Mockito.when(contentFilesService.add(any(), any())).thenReturn(contentFile);
         Assertions.assertEquals(new ContentFileDTO(contentFile),
@@ -123,20 +124,9 @@ class QuestionControllerTest {
 
     @Test
     void updateListeningWithFile() {
-        ContentFile contentFile = new ContentFile();
-        Mockito.when(storageService.upload(any())).thenReturn("some url");
-        Mockito.when(multipartFile.getResource()).thenReturn(resource);
         Mockito.when(contentFilesService.update(any(), any(), any())).thenReturn(contentFile);
-        Assertions.assertEquals(new ContentFileDTO(contentFile),
-                questionController.updateListening(multipartFile, new ArrayList<>(), EntityCreatorUtil.ID));
-    }
-
-    @Test
-    void updateListeningWithoutFile() {
-        ContentFile contentFile = new ContentFile();
-        Mockito.when(contentFilesService
-                .updateQuestions(any(), any())).thenReturn(contentFile);
-        Assertions.assertEquals(new ContentFileDTO(contentFile),
-                questionController.updateListening(null, new ArrayList<>(), EntityCreatorUtil.ID));
+        ContentFileDTO result = questionController
+                .updateListening(multipartFile, new ArrayList<>(), EntityCreatorUtil.ID);
+        Assertions.assertEquals(new ContentFileDTO(contentFile), result);
     }
 }

@@ -6,8 +6,11 @@ import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.ResourceStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,12 +18,15 @@ import java.util.List;
 public class ContentFilesServiceImpl implements ContentFilesService {
     private final QuestionService questionService;
     private final ContentFilesRepository contentFilesRepository;
+    private final ResourceStorageService storageService;
 
     @Autowired
     public ContentFilesServiceImpl(QuestionService questionService,
-                                   ContentFilesRepository contentFilesRepository) {
+                                   ContentFilesRepository contentFilesRepository,
+                                   ResourceStorageService storageService) {
         this.questionService = questionService;
         this.contentFilesRepository = contentFilesRepository;
+        this.storageService = storageService;
     }
 
     @Override
@@ -34,24 +40,24 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     }
 
     @Override
-    public ContentFile add(String url, List<Question> questions) {
+    public ContentFile add(Resource file, List<Question> questions) {
+        String url = storageService.upload(file);
         return contentFilesRepository.save(new ContentFile(url, questions));
     }
 
+
     @Override
-    public ContentFile update(Long id, String url, List<Question> questions) {
+    public ContentFile update(MultipartFile file, Long id, List<Question> questions) {
+        if (file == null) {
+            questionService.archiveQuestionsByContentFileId(id);
+            ContentFile contentFile = contentFilesRepository
+                    .findById(id).orElseThrow(FileNotFoundException::new);
+            contentFile.getQuestions().addAll(questions);
+            return contentFilesRepository.save(contentFile);
+        }
         contentFilesRepository.archiveContentFile(id);
         questionService.archiveQuestionsByContentFileId(id);
-        return contentFilesRepository.save(new ContentFile(url, questions));
-    }
-
-    @Override
-    public ContentFile updateQuestions(Long id, List<Question> questions) {
-        questionService.archiveQuestionsByContentFileId(id);
-        ContentFile contentFile = contentFilesRepository
-                .findById(id).orElseThrow(FileNotFoundException::new);
-        contentFile.getQuestions().addAll(questions);
-        return contentFilesRepository.save(contentFile);
+        return add(file.getResource(), questions);
     }
 
     @Override
