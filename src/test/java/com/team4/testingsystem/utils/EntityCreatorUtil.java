@@ -13,6 +13,7 @@ import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.entities.UserRole;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 
 import java.util.ArrayList;
@@ -95,6 +96,7 @@ public class EntityCreatorUtil {
         return Test.builder()
                 .user(user)
                 .status(Status.STARTED)
+                .priority(Priority.LOW)
                 .level(level)
                 .build();
     }
