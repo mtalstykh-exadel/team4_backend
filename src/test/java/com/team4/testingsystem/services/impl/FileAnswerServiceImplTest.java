@@ -1,15 +1,18 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.dto.FileAnswerRequest;
 import com.team4.testingsystem.entities.FileAnswer;
 import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.exceptions.FileNotFoundException;
+import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
+import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
-import com.team4.testingsystem.repositories.QuestionRepository;
+import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.TestsService;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -21,7 +24,10 @@ import java.util.Optional;
 class FileAnswerServiceImplTest {
 
     @Mock
-    private QuestionRepository questionRepository;
+    private TestsService testsService;
+
+    @Mock
+    private QuestionService questionService;
 
     @Mock
     private FileAnswerRepository fileAnswerRepository;
@@ -30,74 +36,96 @@ class FileAnswerServiceImplTest {
     private FileAnswer fileAnswer;
 
     @Mock
+    private Test test;
+
+    @Mock
     private Question question;
 
     @InjectMocks
     private FileAnswerServiceImpl fileAnswerService;
 
-    @Test
-    void getByIdSuccess() {
-        Mockito.when(fileAnswerRepository.findById(fileAnswer.getId())).thenReturn(Optional.of(fileAnswer));
-        Assertions.assertEquals(fileAnswer, fileAnswerService.getById(fileAnswer.getId()));
+    private static final Long TEST_ID = 1L;
+    private static final Long QUESTION_ID = 2L;
+    private static final String URL = "url";
+
+    @org.junit.jupiter.api.Test
+    void getUrlNotFound() {
+        Mockito.when(fileAnswerRepository.findByTestAndQuestionId(TEST_ID, QUESTION_ID))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThrows(FileAnswerNotFoundException.class,
+                () -> fileAnswerService.getUrl(TEST_ID, QUESTION_ID));
     }
 
-    @Test
-    void getByIdFail() {
-        Mockito.when(fileAnswerRepository.findById(5L)).thenThrow(new FileNotFoundException());
-        Assertions.assertThrows(FileNotFoundException.class, () -> fileAnswerService.getById(5L));
+    @org.junit.jupiter.api.Test
+    void getUrlSuccess() {
+        Mockito.when(fileAnswerRepository.findByTestAndQuestionId(TEST_ID, QUESTION_ID))
+                .thenReturn(Optional.of(fileAnswer));
+        Mockito.when(fileAnswer.getUrl()).thenReturn(URL);
 
+        Assertions.assertEquals(URL, fileAnswerService.getUrl(TEST_ID, QUESTION_ID));
     }
 
-    @Test
-    void createSuccess() {
-        FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(1L).build();
-        Mockito.when(questionRepository.findById(1L)).thenReturn(Optional.of(question));
-        Assertions.assertDoesNotThrow(() -> fileAnswerService.create(fileAnswerRequest));
+    @org.junit.jupiter.api.Test
+    void saveTestNotFound() {
+        Mockito.when(testsService.getById(TEST_ID)).thenThrow(TestNotFoundException.class);
+
+        Assertions.assertThrows(TestNotFoundException.class,
+                () -> fileAnswerService.save(TEST_ID, QUESTION_ID, URL));
     }
 
-    @Test
-    void createFail() {
-        FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(1L).build();
-        Mockito.when(questionRepository.findById(1L)).thenThrow(QuestionNotFoundException.class);
-        Assertions.assertThrows(QuestionNotFoundException.class, () -> fileAnswerService.create(fileAnswerRequest));
+    @org.junit.jupiter.api.Test
+    void saveQuestionNotFound() {
+        Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
+        Mockito.when(questionService.getById(QUESTION_ID)).thenThrow(QuestionNotFoundException.class);
+
+        Assertions.assertThrows(QuestionNotFoundException.class,
+                () -> fileAnswerService.save(TEST_ID, QUESTION_ID, URL));
     }
 
-    @Test
-    void updateSuccess() {
-        FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(10L).build();
-        Mockito.when(fileAnswerRepository.findById(1L)).thenReturn(Optional.of(fileAnswer));
-        Mockito.when(questionRepository.findById(10L)).thenReturn(Optional.of(question));
-        Assertions.assertDoesNotThrow(() -> fileAnswerService.update(1L, fileAnswerRequest));
-        Mockito.verify(fileAnswerRepository).save(Mockito.any());
+    @org.junit.jupiter.api.Test
+    void saveQuestionSuccess() {
+        Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
+        Mockito.when(questionService.getById(QUESTION_ID)).thenReturn(question);
+
+        fileAnswerService.save(TEST_ID, QUESTION_ID, URL);
+
+        ArgumentCaptor<FileAnswer> captor = ArgumentCaptor.forClass(FileAnswer.class);
+        Mockito.verify(fileAnswerRepository).save(captor.capture());
+
+        Assertions.assertEquals(test, captor.getValue().getId().getTest());
+        Assertions.assertEquals(question, captor.getValue().getId().getQuestion());
+        Assertions.assertEquals(URL, captor.getValue().getUrl());
     }
 
-    @Test
-    void updateNotFoundInFileAnswerRepository() {
-        FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(10L).build();
-        Mockito.when(fileAnswerRepository.findById(1L)).thenThrow(FileNotFoundException.class);
-        Assertions.assertThrows(FileNotFoundException.class, () -> fileAnswerService.update(1L, fileAnswerRequest));
-        Mockito.verify(fileAnswerRepository, Mockito.times(0)).save(Mockito.any());
+    @org.junit.jupiter.api.Test
+    void removeTestNotFound() {
+        Mockito.when(testsService.getById(TEST_ID)).thenThrow(TestNotFoundException.class);
+
+        Assertions.assertThrows(TestNotFoundException.class,
+                () -> fileAnswerService.remove(TEST_ID, QUESTION_ID));
     }
 
-    @Test
-    void updateNotFoundInQuestionRepository() {
-        FileAnswerRequest fileAnswerRequest = FileAnswerRequest.builder().url("").questionId(10L).build();
-        Mockito.when(fileAnswerRepository.findById(1L)).thenReturn(Optional.of(fileAnswer));
-        Mockito.when(questionRepository.findById(10L)).thenThrow(QuestionNotFoundException.class);
-        Assertions.assertThrows(QuestionNotFoundException.class, () -> fileAnswerService.update(1L, fileAnswerRequest));
-        Mockito.verify(fileAnswerRepository, Mockito.times(0)).save(Mockito.any());
+    @org.junit.jupiter.api.Test
+    void removeQuestionNotFound() {
+        Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
+        Mockito.when(questionService.getById(QUESTION_ID)).thenThrow(QuestionNotFoundException.class);
+
+        Assertions.assertThrows(QuestionNotFoundException.class,
+                () -> fileAnswerService.remove(TEST_ID, QUESTION_ID));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     void removeSuccess() {
-        Mockito.when(fileAnswerRepository.existsById(fileAnswer.getId())).thenReturn(true);
-        Assertions.assertDoesNotThrow(() -> fileAnswerService.removeById(fileAnswer.getId()));
-        Mockito.verify(fileAnswerRepository).deleteById(fileAnswer.getId());
-    }
+        Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
+        Mockito.when(questionService.getById(QUESTION_ID)).thenReturn(question);
 
-    @Test
-    void removeFail() {
-        Mockito.when(fileAnswerRepository.existsById(fileAnswer.getId())).thenReturn(false);
-        Assertions.assertThrows(FileNotFoundException.class, () -> fileAnswerService.removeById(fileAnswer.getId()));
+        fileAnswerService.remove(TEST_ID, QUESTION_ID);
+
+        ArgumentCaptor<TestQuestionID> captor = ArgumentCaptor.forClass(TestQuestionID.class);
+        Mockito.verify(fileAnswerRepository).deleteById(captor.capture());
+
+        Assertions.assertEquals(test, captor.getValue().getTest());
+        Assertions.assertEquals(question, captor.getValue().getQuestion());
     }
 }

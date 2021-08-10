@@ -607,4 +607,8 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="remove_id_from_file_answer" author="Darina">
+        <dropColumn tableName="file_answer" columnName="id"/>
+    </changeSet>
+
 </databaseChangeLog>

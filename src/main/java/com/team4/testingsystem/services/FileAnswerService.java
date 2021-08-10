@@ -1,14 +1,9 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.dto.FileAnswerRequest;
-import com.team4.testingsystem.entities.FileAnswer;
-
 public interface FileAnswerService {
-    FileAnswer getById(long id);
+    String getUrl(Long testId, Long questionId);
 
-    void create(FileAnswerRequest fileAnswerRequest);
+    void save(Long testId, Long questionId, String url);
 
-    void update(long id, FileAnswerRequest fileAnswerRequest);
-
-    void removeById(long id);
+    void remove(Long testId, Long questionId);
 }
