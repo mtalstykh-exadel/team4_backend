@@ -1,7 +1,5 @@
 package com.team4.testingsystem.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name = "file_answer")
 public class FileAnswer implements Serializable {
@@ -21,10 +18,13 @@ public class FileAnswer implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "question_id", nullable = false, referencedColumnName = "id")
+    @JoinColumn(name = "question_id", referencedColumnName = "id")
     private Question question;
+
+    @ManyToOne
+    @JoinColumn(name = "test_id", referencedColumnName = "id")
+    private Test test;
 
     @Column(name = "url")
     private String url;
@@ -56,6 +56,14 @@ public class FileAnswer implements Serializable {
         this.question = question;
     }
 
+    public Test getTest() {
+        return test;
+    }
+
+    public void setTest(Test test) {
+        this.test = test;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -74,6 +82,11 @@ public class FileAnswer implements Serializable {
 
         public Builder question(Question question) {
             fileAnswer.question = question;
+            return this;
+        }
+
+        public Builder test(Test test) {
+            fileAnswer.test = test;
             return this;
         }
 
