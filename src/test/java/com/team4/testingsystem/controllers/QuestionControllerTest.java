@@ -2,22 +2,25 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.QuestionDTO;
+import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.repositories.AnswerRepository;
+import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -31,6 +34,18 @@ class QuestionControllerTest {
     private QuestionConverter questionConverter;
 
     @Mock
+    private MultipartFile multipartFile;
+
+    @Mock
+    private Resource resource;
+
+    @Mock
+    private ResourceStorageService storageService;
+
+    @Mock
+    private ContentFilesService contentFilesService;
+
+    @Mock
     private AnswerRepository answerRepository;
 
     @InjectMocks
@@ -41,12 +56,16 @@ class QuestionControllerTest {
         Question question = EntityCreatorUtil.createQuestion();
         QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
         Mockito.when(questionService.getById(question.getId())).thenReturn(question);
-        Mockito.when(questionConverter.convertToDTO(question)).thenReturn(questionDTO);
-        QuestionDTO result = questionController.getQuestion(question.getId());
 
-        Assertions.assertEquals(questionDTO, result);
+        try (MockedStatic<QuestionDTO> mockQuestionDTO = Mockito.mockStatic(QuestionDTO.class)) {
+            mockQuestionDTO.when(() -> QuestionDTO.createWithCorrectAnswers(question))
+                    .thenReturn(questionDTO);
+
+            QuestionDTO result = questionController.getQuestion(question.getId());
+
+            Assertions.assertEquals(questionDTO, result);
+        }
     }
-
 
     @Test
     void addQuestion() {
@@ -73,9 +92,22 @@ class QuestionControllerTest {
         question.setBody(questionDTO.getQuestionBody());
         Mockito.when(questionConverter.convertToEntity(questionDTO, question.getId())).thenReturn(question);
         Mockito.when(questionService.updateQuestion(question, question.getId())).thenReturn(question);
-        Mockito.when(questionConverter.convertToDTO(question)).thenReturn(questionDTO);
 
-        QuestionDTO modifiedQuestionDTO = questionController.updateQuestion(questionDTO, question.getId());
-        Assertions.assertEquals(questionDTO, modifiedQuestionDTO);
+        try (MockedStatic<QuestionDTO> mockQuestionDTO = Mockito.mockStatic(QuestionDTO.class)) {
+            mockQuestionDTO.when(() -> QuestionDTO.createWithCorrectAnswers(question))
+                    .thenReturn(questionDTO);
+
+            QuestionDTO modifiedQuestionDTO = questionController.updateQuestion(questionDTO, question.getId());
+            Assertions.assertEquals(questionDTO, modifiedQuestionDTO);
+        }
+    }
+
+    @Test
+    void addListening() {
+        ContentFile contentFile = new ContentFile();
+        Mockito.when(storageService.upload(any())).thenReturn("some url");
+        Mockito.when(multipartFile.getResource()).thenReturn(resource);
+        Mockito.when(contentFilesService.add(any(), any())).thenReturn(contentFile);
+        Assertions.assertEquals("some url", questionController.addListening(multipartFile, new ArrayList<>()));
     }
 }

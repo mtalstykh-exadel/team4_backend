@@ -1,6 +1,9 @@
 package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.ContentFile;
+import com.team4.testingsystem.entities.Question;
+
+import java.util.List;
 
 public interface ContentFilesService {
 
@@ -8,7 +11,7 @@ public interface ContentFilesService {
 
     ContentFile getById(long id);
 
-    void add(String url, Long questionId);
+    ContentFile add(String ulr, List<Question> questions);
 
     void updateURL(Long id, String newUrl);
 

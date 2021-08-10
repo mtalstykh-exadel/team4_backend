@@ -71,4 +71,22 @@ class UsersServiceImplTest {
 
         Assertions.assertEquals(Lists.list(user), usersService.getUsersByRole(Role.USER));
     }
+
+    @Test
+    void getAllSuccess() {
+        Mockito.when(usersRepository.findAll()).thenReturn(Lists.list(user));
+        Assertions.assertEquals(Lists.list(user), usersService.getAll());
+    }
+
+    @Test
+    void updateLanguageUserNotFound() {
+        Mockito.when(usersRepository.setLanguageById(1L, "rus")).thenReturn(0);
+        Assertions.assertThrows(UserNotFoundException.class, () -> usersService.updateLanguage(1L, "rus"));
+    }
+
+    @Test
+    void updateLanguageSuccess() {
+        Mockito.when(usersRepository.setLanguageById(1L, "rus")).thenReturn(1);
+        Assertions.assertDoesNotThrow(() -> usersService.updateLanguage(1L, "rus"));
+    }
 }

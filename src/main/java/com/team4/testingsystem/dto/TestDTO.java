@@ -10,26 +10,23 @@ import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TestDTO {
+    private Long id;
     private String level;
-
     private LocalDateTime assignedAt;
     private LocalDateTime completedAt;
     private LocalDateTime verifiedAt;
     private LocalDateTime startedAt;
     private LocalDateTime deadline;
     private String status;
-
     private UserDTO coach;
-    private int evaluation;
-
     private Map<String, List<QuestionDTO>> questions;
-
-    private String contentFile;
+    private ContentFileDTO contentFile;
 
     public TestDTO() {
     }
 
     public TestDTO(Test test) {
+        id = test.getId();
         level = test.getLevel().getName();
         assignedAt = test.getAssignedAt();
         completedAt = test.getCompletedAt();
@@ -37,18 +34,17 @@ public class TestDTO {
         startedAt = test.getStartedAt();
         deadline = test.getDeadline();
         status = test.getStatus().name();
-        evaluation = test.getEvaluation();
         if (test.getCoach() != null) {
             coach = new UserDTO(test.getCoach());
         }
     }
 
-    public int getEvaluation() {
-        return evaluation;
+    public Long getId() {
+        return id;
     }
 
-    public void setEvaluation(int evaluation) {
-        this.evaluation = evaluation;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDateTime getVerifiedAt() {
@@ -75,11 +71,11 @@ public class TestDTO {
         this.questions = questions;
     }
 
-    public String getContentFile() {
+    public ContentFileDTO getContentFile() {
         return contentFile;
     }
 
-    public void setContentFile(String contentFile) {
+    public void setContentFile(ContentFileDTO contentFile) {
         this.contentFile = contentFile;
     }
 

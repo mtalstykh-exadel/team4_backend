@@ -24,9 +24,6 @@ class AuthenticationServiceImplTest {
     @Mock
     private CustomUserDetailsService userDetailsService;
 
-    @Mock
-    private JwtTokenUtil jwtTokenUtil;
-
     @InjectMocks
     private AuthenticationServiceImpl authenticationService;
 
@@ -35,7 +32,6 @@ class AuthenticationServiceImplTest {
 
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
-    private static final String JWT_TOKEN = "jwt_token";
 
     private UsernamePasswordAuthenticationToken token;
 
@@ -49,18 +45,14 @@ class AuthenticationServiceImplTest {
         Mockito.when(authenticationManager.authenticate(token)).thenThrow(new BadCredentialsException(""));
 
         Assertions.assertThrows(IncorrectCredentialsException.class,
-                () -> authenticationService.createAuthenticationToken(USERNAME, PASSWORD));
+                () -> authenticationService.authenticate(USERNAME, PASSWORD));
     }
 
     @Test
     void correctToken() {
         Mockito.when(authenticationManager.authenticate(token)).thenReturn(token);
         Mockito.when(userDetailsService.loadUserByUsername(USERNAME)).thenReturn(userDetails);
-        Mockito.when(jwtTokenUtil.generateToken(userDetails)).thenReturn(JWT_TOKEN);
 
-        String jwtToken = authenticationService.createAuthenticationToken(USERNAME, PASSWORD);
-
-        Assertions.assertFalse(jwtToken.isEmpty());
-        Assertions.assertEquals(JWT_TOKEN, jwtToken);
+        Assertions.assertEquals(userDetails, authenticationService.authenticate(USERNAME, PASSWORD));
     }
 }

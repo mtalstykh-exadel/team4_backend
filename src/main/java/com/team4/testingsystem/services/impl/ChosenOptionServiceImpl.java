@@ -30,14 +30,23 @@ public class ChosenOptionServiceImpl implements ChosenOptionService {
     }
 
     @Override
-    public List<ChosenOption> getChosenOptionByTest(Test test) {
-        return chosenOptionRepository.findById_Test(test);
+    public List<ChosenOption> getChosenOptionByTest(Test id) {
+        return chosenOptionRepository.findChosenOptionsById_Test(id);
     }
 
     @Override
     public void save(ChosenOption chosenOption) {
         try {
             chosenOptionRepository.save(chosenOption);
+        } catch (EntityNotFoundException exception) {
+            throw new ChosenOptionBadRequestException();
+        }
+    }
+
+    @Override
+    public void saveAll(List<ChosenOption> chosenOptions) {
+        try {
+            chosenOptionRepository.saveAll(chosenOptions);
         } catch (EntityNotFoundException exception) {
             throw new ChosenOptionBadRequestException();
         }

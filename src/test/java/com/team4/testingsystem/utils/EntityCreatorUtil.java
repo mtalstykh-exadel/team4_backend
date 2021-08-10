@@ -1,7 +1,8 @@
 package com.team4.testingsystem.utils;
 
-import com.team4.testingsystem.dto.ContentFileRequest;
+import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.dto.ErrorReportDTO;
+import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Level;
@@ -43,7 +44,7 @@ public class EntityCreatorUtil {
     }
 
     public static QuestionDTO createQuestionDto() {
-        return new QuestionDTO(createQuestion());
+        return QuestionDTO.create(createQuestion());
     }
 
     public static User createUser() {
@@ -75,9 +76,9 @@ public class EntityCreatorUtil {
         return level;
     }
 
-    public static ContentFileRequest createContentFileRequest(Long questionId, String url) {
-        ContentFileRequest cfr = new ContentFileRequest();
-        cfr.setQuestionId(questionId);
+    public static ContentFileDTO createContentFileRequest(Long questionId, String url) {
+        ContentFileDTO cfr = new ContentFileDTO();
+        cfr.setId(questionId);
         cfr.setUrl(url);
         return cfr;
     }
@@ -108,11 +109,20 @@ public class EntityCreatorUtil {
             questions.add(question);
         }
         Map<String, List<QuestionDTO>> questionsDTO = questions.stream()
-                .map(QuestionDTO::new)
+                .map(QuestionDTO::create)
                 .collect(groupingBy(QuestionDTO::getModule));
         TestDTO testDTO = new TestDTO(test);
         testDTO.setQuestions(questionsDTO);
         return testDTO;
+    }
+
+    public static ModuleGradesDTO createModuleGradesDTO(){
+        return ModuleGradesDTO.builder()
+                .grammar(1)
+                .listening(2)
+                .essay(3)
+                .speaking(4)
+                .build();
     }
 
     public static Question createQuestion(User user) {

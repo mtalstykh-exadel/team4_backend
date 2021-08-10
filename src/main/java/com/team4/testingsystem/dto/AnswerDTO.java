@@ -7,14 +7,26 @@ import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnswerDTO {
+    private Long id;
     private String answer;
     private Boolean correct;
 
     public AnswerDTO() {
     }
 
-    public AnswerDTO(Answer answer) {
+    private AnswerDTO(Answer answer) {
+        this.id = answer.getId();
         this.answer = answer.getAnswerBody();
+    }
+
+    public static AnswerDTO create(Answer answer) {
+        return new AnswerDTO(answer);
+    }
+
+    public static AnswerDTO createWithCorrect(Answer answer) {
+        AnswerDTO answerDTO = new AnswerDTO(answer);
+        answerDTO.setCorrect(answer.isCorrect());
+        return answerDTO;
     }
 
     public String getAnswer() {
@@ -33,6 +45,14 @@ public class AnswerDTO {
         this.correct = correct;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -43,7 +63,7 @@ public class AnswerDTO {
         }
         AnswerDTO answerDTO = (AnswerDTO) o;
         return Objects.equals(answer, answerDTO.answer)
-               && Objects.equals(correct, answerDTO.correct);
+                && Objects.equals(correct, answerDTO.correct);
     }
 
     @Override

@@ -36,12 +36,38 @@ public class ContentFile implements Serializable {
     @Column(name = "url")
     private String url;
 
+    @Column(name = "topic")
+    private String topic;
+
+    @Column(name = "is_available")
+    private boolean available;
+
     public ContentFile() {
     }
 
-    public ContentFile(String url, Question question) {
-        this.questions.add(question);
+    public ContentFile(String url) {
         this.url = url;
+    }
+
+    public ContentFile(String url, List<Question> questions) {
+        this.questions = questions;
+        this.url = url;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
     public Long getId() {

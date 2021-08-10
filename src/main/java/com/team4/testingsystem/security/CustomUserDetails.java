@@ -15,6 +15,7 @@ public class CustomUserDetails implements UserDetails {
     private final String password;
     private final String roleName;
     private final String avatar;
+    private final String language;
 
     private final Collection<SimpleGrantedAuthority> roles;
 
@@ -25,6 +26,7 @@ public class CustomUserDetails implements UserDetails {
         this.password = user.getPassword();
         this.roleName = user.getRole().getRoleName();
         this.avatar = user.getAvatar();
+        this.language = user.getLanguage();
         this.roles = Collections.singletonList(new SimpleGrantedAuthority(this.roleName));
     }
 
@@ -77,5 +79,9 @@ public class CustomUserDetails implements UserDetails {
 
     public String getAvatar() {
         return avatar;
+    }
+
+    public String getLanguage() {
+        return language;
     }
 }
