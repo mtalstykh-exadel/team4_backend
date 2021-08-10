@@ -5,10 +5,13 @@ import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.entities.Answer;
+import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.entities.UserRole;
 import com.team4.testingsystem.enums.Levels;
@@ -116,7 +119,7 @@ public class EntityCreatorUtil {
         return testDTO;
     }
 
-    public static ModuleGradesDTO createModuleGradesDTO(){
+    public static ModuleGradesDTO createModuleGradesDTO() {
         return ModuleGradesDTO.builder()
                 .grammar(1)
                 .listening(2)
@@ -133,5 +136,23 @@ public class EntityCreatorUtil {
                 .creator(user)
                 .isAvailable(true)
                 .build();
+    }
+
+    public static Answer createAnswer() {
+        return Answer.builder()
+                .id(7L)
+                .answerBody("answer body")
+                .question(createQuestion())
+                .isCorrect(false)
+                .build();
+    }
+
+    public static ChosenOption createChosenOption() {
+        Answer answer = createAnswer();
+        Question question = answer.getQuestion();
+        Test test = createTest(question.getCreator(), question.getLevel());
+        test.setId(8L);
+
+        return new ChosenOption(new TestQuestionID(test, question), answer);
     }
 }
