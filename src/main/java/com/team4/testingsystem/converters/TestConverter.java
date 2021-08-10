@@ -2,6 +2,7 @@ package com.team4.testingsystem.converters;
 
 import static java.util.stream.Collectors.groupingBy;
 
+import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.ContentFile;
@@ -47,14 +48,13 @@ public class TestConverter {
     }
 
     private void attachContentFile(TestDTO testDTO) {
-        final String contentFileUrl = testDTO.getQuestions()
+        final ContentFile contentFile = testDTO.getQuestions()
                 .getOrDefault(Modules.LISTENING.getName(), List.of()).stream()
                 .map(QuestionDTO::getId)
                 .map(contentFilesService::getContentFileByQuestionId)
-                .map(ContentFile::getUrl)
                 .findFirst()
                 .orElseThrow(ContentFileNotFoundException::new);
 
-        testDTO.setContentFile(contentFileUrl);
+        testDTO.setContentFile(new ContentFileDTO(contentFile));
     }
 }

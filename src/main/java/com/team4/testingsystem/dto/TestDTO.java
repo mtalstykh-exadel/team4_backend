@@ -20,7 +20,7 @@ public class TestDTO {
     private String status;
     private UserDTO coach;
     private Map<String, List<QuestionDTO>> questions;
-    private String contentFile;
+    private ContentFileDTO contentFile;
 
     public TestDTO() {
     }
@@ -71,11 +71,11 @@ public class TestDTO {
         this.questions = questions;
     }
 
-    public String getContentFile() {
+    public ContentFileDTO getContentFile() {
         return contentFile;
     }
 
-    public void setContentFile(String contentFile) {
+    public void setContentFile(ContentFileDTO contentFile) {
         this.contentFile = contentFile;
     }
 
