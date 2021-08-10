@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -80,7 +79,7 @@ class TestEvaluationServiceImplTest {
     @Test
     public void countScoreBeforeCoachCheckSuccess() {
 
-        Mockito.when(chosenOptionService.getChosenOptionByTest(test)).thenReturn(chosenOptionList);
+        Mockito.when(chosenOptionService.getAllByTest(test)).thenReturn(chosenOptionList);
         Mockito.when(chosenOptionList.stream()).thenReturn(streamChosenOption);
         Mockito.when(streamChosenOption.filter(any())).thenReturn(streamChosenOption);
         Mockito.when(streamChosenOption.map(any())).thenAnswer(invocation -> streamAnswer);

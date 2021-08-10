@@ -1,14 +1,15 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.QuestionConverter;
+import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,12 +21,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
 
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith( MockitoExtension.class )
 class QuestionControllerTest {
     @Mock
     private QuestionService questionService;
@@ -45,9 +48,6 @@ class QuestionControllerTest {
     @Mock
     private ContentFilesService contentFilesService;
 
-    @Mock
-    private AnswerRepository answerRepository;
-
     @InjectMocks
     private QuestionController questionController;
 
@@ -58,13 +58,22 @@ class QuestionControllerTest {
         Mockito.when(questionService.getById(question.getId())).thenReturn(question);
 
         try (MockedStatic<QuestionDTO> mockQuestionDTO = Mockito.mockStatic(QuestionDTO.class)) {
-            mockQuestionDTO.when(() -> QuestionDTO.createWithCorrectAnswers(question))
-                    .thenReturn(questionDTO);
+            mockQuestionDTO.when(() -> QuestionDTO.createWithCorrectAnswers(question)).thenReturn(questionDTO);
 
             QuestionDTO result = questionController.getQuestion(question.getId());
 
             Assertions.assertEquals(questionDTO, result);
         }
+    }
+
+    @Test
+    void getQuestionsByLevelAndModuleName() {
+        List<Question> questions = Lists.list(EntityCreatorUtil.createQuestion());
+        Mockito.when(questionService.getQuestionsByLevelAndModuleName(any(), any())).thenReturn(questions);
+        List<QuestionDTO> expectedQuestions = questions.stream()
+                .map(QuestionDTO::create)
+                .collect(Collectors.toList());
+        Assertions.assertEquals(expectedQuestions, questionController.getQuestions(any(), any()));
     }
 
     @Test
@@ -108,6 +117,7 @@ class QuestionControllerTest {
         Mockito.when(storageService.upload(any())).thenReturn("some url");
         Mockito.when(multipartFile.getResource()).thenReturn(resource);
         Mockito.when(contentFilesService.add(any(), any())).thenReturn(contentFile);
-        Assertions.assertEquals("some url", questionController.addListening(multipartFile, new ArrayList<>()));
+        Assertions.assertEquals(new ContentFileDTO(contentFile),
+                questionController.addListening(multipartFile, new ArrayList<>()));
     }
 }

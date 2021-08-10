@@ -1,19 +1,21 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.converters.ChosenOptionConverter;
+import com.team4.testingsystem.dto.ChosenOptionDTO;
 import com.team4.testingsystem.entities.ChosenOption;
-import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.services.ChosenOptionService;
+import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class ChosenOptionControllerTest {
@@ -22,40 +24,56 @@ public class ChosenOptionControllerTest {
     private ChosenOptionService chosenOptionService;
 
     @Mock
-    private ChosenOption chosenOption;
-
-    @Mock
-    TestQuestionID testQuestionID;
-
-    @Mock
-    private List<ChosenOption> chosenOptions;
+    private ChosenOptionConverter converter;
 
     @InjectMocks
     private ChosenOptionController chosenOptionController;
 
+    private static final Long TEST_ID = 1L;
+    private static final Long QUESTION_ID = 2L;
+
+    private ChosenOption chosenOption;
+
+    @BeforeEach
+    void init() {
+        chosenOption = EntityCreatorUtil.createChosenOption();
+    }
+
     @Test
     void getById() {
+        Mockito.when(chosenOptionService.getByTestAndQuestionId(TEST_ID, QUESTION_ID))
+                .thenReturn(chosenOption);
 
-        Mockito.when(chosenOptionService.getById(testQuestionID)).thenReturn(chosenOption);
-        Assertions.assertEquals(chosenOption, chosenOptionController.getById(testQuestionID));
+        Assertions.assertEquals(new ChosenOptionDTO(chosenOption),
+                chosenOptionController.getById(TEST_ID, QUESTION_ID));
     }
 
     @Test
     void getAllByTest() {
-        com.team4.testingsystem.entities.Test test = new com.team4.testingsystem.entities.Test();
-        Mockito.when(chosenOptionService.getChosenOptionByTest(test)).thenReturn(chosenOptions);
-        Assertions.assertEquals(chosenOptions, chosenOptionController.getAllByTest(test.getId()));
+        com.team4.testingsystem.entities.Test test = chosenOption.getId().getTest();
+
+        Mockito.when(chosenOptionService.getAllByTest(ArgumentMatchers.argThat(t -> t.getId().equals(test.getId()))))
+                .thenReturn(List.of(chosenOption));
+
+        Assertions.assertEquals(List.of(new ChosenOptionDTO(chosenOption)),
+                chosenOptionController.getAllByTest(test.getId()));
     }
 
     @Test
     void save() {
-        chosenOptionController.save(chosenOption);
-        verify(chosenOptionService).save(chosenOption);
+        ChosenOptionDTO chosenOptionDTO = new ChosenOptionDTO(chosenOption);
+        Mockito.when(converter.convertToEntity(chosenOptionDTO)).thenReturn(chosenOption);
+
+        chosenOptionController.save(chosenOptionDTO);
+        Mockito.verify(chosenOptionService).save(chosenOption);
     }
 
     @Test
     void saveAll() {
-        chosenOptionController.saveAll(chosenOptions);
-        verify(chosenOptionService).saveAll(chosenOptions);
+        ChosenOptionDTO chosenOptionDTO = new ChosenOptionDTO(chosenOption);
+        Mockito.when(converter.convertToEntity(chosenOptionDTO)).thenReturn(chosenOption);
+
+        chosenOptionController.saveAll(List.of(chosenOptionDTO));
+        Mockito.verify(chosenOptionService).saveAll(List.of(chosenOption));
     }
 }
