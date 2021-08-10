@@ -1,6 +1,7 @@
 package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.dto.AnswerDTO;
+import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import org.springframework.data.domain.Pageable;
 
@@ -22,4 +23,6 @@ public interface QuestionService {
     Question addAnswers(Question question, List<AnswerDTO> textAnswers);
 
     List<Question> getQuestionsByTestId(Long id);
+
+    void archiveQuestionsByContentFileId(Long id);
 }

@@ -13,6 +13,8 @@ public interface ContentFilesService {
 
     ContentFile add(String ulr, List<Question> questions);
 
+    ContentFile updateQuestions(Long id, List<Question> questions);
+
     void updateURL(Long id, String newUrl);
 
     void removeById(Long id);

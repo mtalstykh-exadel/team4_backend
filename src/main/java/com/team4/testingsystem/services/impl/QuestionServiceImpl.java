@@ -2,8 +2,11 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.dto.AnswerDTO;
 import com.team4.testingsystem.entities.Answer;
+import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
+import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +21,13 @@ import java.util.stream.Collectors;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final ContentFilesRepository contentFilesRepository;
 
     @Autowired
-    QuestionServiceImpl(QuestionRepository questionRepository) {
+    QuestionServiceImpl(QuestionRepository questionRepository,
+                        ContentFilesRepository contentFilesRepository) {
         this.questionRepository = questionRepository;
+        this.contentFilesRepository = contentFilesRepository;
     }
 
     @Override
@@ -72,4 +78,11 @@ public class QuestionServiceImpl implements QuestionService {
         return questionRepository.getQuestionsByTestId(id);
     }
 
+    @Transactional
+    @Override
+    public void archiveQuestionsByContentFileId(Long id) {
+        ContentFile contentFile = contentFilesRepository.findById(id)
+                .orElseThrow(FileNotFoundException::new);
+        contentFile.getQuestions().forEach(question -> archiveQuestion(question.getId()));
+    }
 }

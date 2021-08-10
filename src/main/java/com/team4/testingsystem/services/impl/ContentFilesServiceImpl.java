@@ -4,7 +4,9 @@ import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
+import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.ContentFilesService;
+import com.team4.testingsystem.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +14,13 @@ import java.util.List;
 
 @Service
 public class ContentFilesServiceImpl implements ContentFilesService {
-
+    private final QuestionService questionService;
     private final ContentFilesRepository contentFilesRepository;
 
     @Autowired
-    public ContentFilesServiceImpl(ContentFilesRepository contentFilesRepository) {
+    public ContentFilesServiceImpl(QuestionService questionService,
+                                   ContentFilesRepository contentFilesRepository) {
+        this.questionService = questionService;
         this.contentFilesRepository = contentFilesRepository;
     }
 
@@ -33,6 +37,15 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     @Override
     public ContentFile add(String url, List<Question> questions) {
         return contentFilesRepository.save(new ContentFile(url, questions));
+    }
+
+    @Override
+    public  ContentFile updateQuestions(Long id, List<Question> questions){
+        questionService.archiveQuestionsByContentFileId(id);
+        ContentFile contentFile = contentFilesRepository.findById(id)
+                .orElseThrow(FileNotFoundException::new);
+        questions.forEach(question->contentFile.getQuestions().add(question));
+        return contentFilesRepository.save(contentFile);
     }
 
     @Override
