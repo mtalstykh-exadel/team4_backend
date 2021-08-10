@@ -33,17 +33,14 @@ public class QuestionController {
     private final QuestionService questionService;
     private final ContentFilesService contentFilesService;
     private final QuestionConverter questionConverter;
-    private final ResourceStorageService storageService;
 
     @Autowired
     public QuestionController(QuestionService questionService,
                               ContentFilesService contentFilesService,
-                              QuestionConverter questionConverter,
-                              ResourceStorageService storageService) {
+                              QuestionConverter questionConverter) {
         this.questionService = questionService;
         this.contentFilesService = contentFilesService;
         this.questionConverter = questionConverter;
-        this.storageService = storageService;
     }
 
     @ApiOperation(value = "Get a single question from the database by it's id")
