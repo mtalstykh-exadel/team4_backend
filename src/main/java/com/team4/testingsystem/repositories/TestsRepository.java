@@ -33,7 +33,7 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.assignedAt = null  WHERE t.id = ?1")
+    @Query(value = "UPDATE Test t SET t.assignedAt = null, t.deadline = null  WHERE t.id = ?1")
     int deassign(Long id);
 
     @Transactional
