@@ -1,15 +1,19 @@
 package com.team4.testingsystem.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.testingsystem.entities.User;
 
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
     private Long id;
     private String name;
     private String login;
     private String roleName;
     private String avatar;
+
+    private TestInfo assignedTest;
 
     public UserDTO() {
     }
@@ -62,6 +66,14 @@ public class UserDTO {
         this.avatar = avatar;
     }
 
+    public TestInfo getAssignedTest() {
+        return assignedTest;
+    }
+
+    public void setAssignedTest(TestInfo assignedTest) {
+        this.assignedTest = assignedTest;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -75,11 +87,12 @@ public class UserDTO {
                 && Objects.equals(name, userDTO.name)
                 && Objects.equals(login, userDTO.login)
                 && Objects.equals(roleName, userDTO.roleName)
-                && Objects.equals(avatar, userDTO.avatar);
+                && Objects.equals(avatar, userDTO.avatar)
+                && Objects.equals(assignedTest, userDTO.assignedTest);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, login, roleName, avatar);
+        return Objects.hash(id, name, login, roleName, avatar, assignedTest);
     }
 }

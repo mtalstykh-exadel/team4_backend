@@ -15,6 +15,8 @@ public interface UsersRepository extends CrudRepository<User, Long> {
 
     List<User> findAllByRole(UserRole role);
 
+    List<User> findAll();
+
     @Transactional
     @Modifying
     @Query(value = "UPDATE User user SET user.language = ?2 WHERE user.id = ?1")

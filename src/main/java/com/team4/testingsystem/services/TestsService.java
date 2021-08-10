@@ -1,7 +1,7 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.entities.UserTest;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
 
@@ -16,17 +16,19 @@ public interface TestsService {
 
     List<Test> getByStatuses(Status[] status);
 
+    List<UserTest> getAllUsersAndAssignedTests();
+
     Test save(Test test);
 
     long startForUser(long userId, Levels level);
 
     long assignForUser(long userId, Levels level, LocalDateTime deadline);
 
-    TestDTO start(long id);
+    Test start(long id);
 
     void finish(long id);
 
-    void updateEvaluation(long id, int newEvaluation);
+    void update(long id);
 
     void removeById(long id);
 
