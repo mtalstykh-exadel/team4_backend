@@ -5,6 +5,8 @@ import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
+import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
@@ -76,6 +78,11 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<Question> getQuestionsByTestId(Long id) {
         return questionRepository.getQuestionsByTestId(id);
+    }
+
+    @Override
+    public List<Question> getQuestionsByLevelAndModuleName(Levels level, Modules module) {
+        return questionRepository.getQuestionsByLevelAndModuleName(level, module);
     }
 
     @Transactional
