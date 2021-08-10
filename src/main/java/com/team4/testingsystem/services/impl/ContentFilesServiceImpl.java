@@ -40,11 +40,18 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     }
 
     @Override
-    public  ContentFile updateQuestions(Long id, List<Question> questions){
+    public ContentFile update(Long id, String url, List<Question> questions) {
+        contentFilesRepository.archiveContentFile(id);
         questionService.archiveQuestionsByContentFileId(id);
-        ContentFile contentFile = contentFilesRepository.findById(id)
-                .orElseThrow(FileNotFoundException::new);
-        questions.forEach(question->contentFile.getQuestions().add(question));
+        return contentFilesRepository.save(new ContentFile(url, questions));
+    }
+
+    @Override
+    public ContentFile updateQuestions(Long id, List<Question> questions) {
+        questionService.archiveQuestionsByContentFileId(id);
+        ContentFile contentFile = contentFilesRepository
+                .findById(id).orElseThrow(FileNotFoundException::new);
+        contentFile.getQuestions().addAll(questions);
         return contentFilesRepository.save(contentFile);
     }
 

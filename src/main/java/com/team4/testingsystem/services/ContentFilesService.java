@@ -11,7 +11,9 @@ public interface ContentFilesService {
 
     ContentFile getById(long id);
 
-    ContentFile add(String ulr, List<Question> questions);
+    ContentFile add(String url, List<Question> questions);
+
+    ContentFile update(Long id, String url, List<Question> questions);
 
     ContentFile updateQuestions(Long id, List<Question> questions);
 
