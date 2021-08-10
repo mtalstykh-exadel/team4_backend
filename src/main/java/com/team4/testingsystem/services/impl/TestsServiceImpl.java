@@ -113,6 +113,16 @@ public class TestsServiceImpl implements TestsService {
         return test.getId();
     }
 
+    @Override
+    public void deassign(long id) {
+        Test test = getById(id);
+        if (test.getStartedAt() == null) {
+            testsRepository.removeById(id);
+        } else {
+            testsRepository.deassign(id);
+        }
+    }
+
     private Test.Builder createForUser(long userId, Levels levelName) {
         Level level = levelService.getLevelByName(levelName.name());
         User user = usersService.getUserById(userId);
@@ -142,18 +152,6 @@ public class TestsServiceImpl implements TestsService {
         testEvaluationService.updateScoreAfterCoachCheck(getById(id));
         testsRepository.updateEvaluation(LocalDateTime.now(), id);
     }
-
-
-    @Override
-    public void deassign(long id) {
-        Test test = getById(id);
-        if (test.getStartedAt() == null) {
-            testsRepository.deassign(id);
-        } else {
-            testsRepository.removeById(id);
-        }
-    }
-
 
     @Override
     public void assignCoach(long id, long coachId) {
