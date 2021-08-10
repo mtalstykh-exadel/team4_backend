@@ -55,7 +55,7 @@ public class QuestionController {
         if (questionDTO.getAnswers() != null) {
             questionService.addAnswers(question, questionDTO.getAnswers());
         }
-        return questionDTO;
+        return QuestionDTO.createWithCorrectAnswers(question);
     }
 
     @ApiOperation(value = "Add content file with questions")
