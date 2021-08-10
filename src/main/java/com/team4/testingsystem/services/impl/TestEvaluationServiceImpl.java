@@ -4,6 +4,7 @@ import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.CoachGradeNotFoundException;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.services.ChosenOptionService;
@@ -13,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TestEvaluationServiceImpl implements TestEvaluationService {
@@ -33,49 +37,46 @@ public class TestEvaluationServiceImpl implements TestEvaluationService {
         moduleGradesService.add(test, moduleName, grade);
     }
 
-    private int countScoreAutomaticCheck(Test test, String moduleName, List<ChosenOption> allChosenOptions) {
+    private void saveScoreAutomaticCheck(Test test, Modules module, List<ChosenOption> allChosenOptions) {
         int score = (int) allChosenOptions
                 .stream()
-                .filter(chosenOption -> chosenOption.getId().getQuestion().getModule().getName().equals(moduleName))
+                .filter(chosenOption -> chosenOption.getId().getQuestion().getModule().equals(module))
                 .map(ChosenOption::getAnswer)
                 .filter(Answer::isCorrect)
                 .count();
 
-        saveModuleGrade(test, moduleName, score);
+        saveModuleGrade(test, module.getName(), score);
 
-        return score;
     }
 
 
-    private int getScoreCoachCheck(Test test, String moduleName, List<CoachGrade> allCoachGrades) {
-        int score = allCoachGrades
-                .stream()
-                .filter(coachGrade -> coachGrade.getId().getQuestion().getModule().getName().equals(moduleName))
-                .findAny()
-                .orElseThrow(CoachGradeNotFoundException::new)
-                .getGrade();
-
-        saveModuleGrade(test, moduleName, score);
-
-        return score;
+    private void saveScoreCoachCheck(Test test, Modules module, Map<String, Integer> gradeMap) {
+        int score = Optional.ofNullable(gradeMap.get(module.getName()))
+                .orElseThrow(() -> new CoachGradeNotFoundException());
+        saveModuleGrade(test, module.getName(), score);
     }
 
     @Override
-    public int getEvaluationBeforeCoachCheck(Test test) {
-        List<ChosenOption> allChosenOptions = chosenOptionService.getChosenOptionByTest(test);
-        moduleGradesService.add(test, "Essay", 0);
-        moduleGradesService.add(test, "Speaking", 0);
+    public void countScoreBeforeCoachCheck(Test test) {
+        List<ChosenOption> chosenOptions = chosenOptionService.getChosenOptionByTest(test);
 
-        return countScoreAutomaticCheck(test, "Grammar", allChosenOptions)
-                + countScoreAutomaticCheck(test, "Listening", allChosenOptions);
+        moduleGradesService.add(test, Modules.ESSAY.getName(), 0);
+        moduleGradesService.add(test, Modules.SPEAKING.getName(), 0);
+
+        saveScoreAutomaticCheck(test, Modules.GRAMMAR, chosenOptions);
+        saveScoreAutomaticCheck(test, Modules.LISTENING, chosenOptions);
     }
 
     @Override
-    public int getEvaluationAfterCoachCheck(Test test) {
+    public void updateScoreAfterCoachCheck(Test test) {
         List<CoachGrade> allCoachGrades = (List<CoachGrade>) coachGradeRepository.findAllById_Test(test);
 
-        return test.getEvaluation()
-                + getScoreCoachCheck(test, "Essay", allCoachGrades)
-                + getScoreCoachCheck(test, "Speaking", allCoachGrades);
+        Map<String, Integer> gradeMap = allCoachGrades
+                .stream()
+                .collect(Collectors.toMap(coachGrade -> coachGrade.getId().getQuestion().getModule().getName(),
+                        CoachGrade::getGrade));
+
+        saveScoreCoachCheck(test, Modules.ESSAY, gradeMap);
+        saveScoreCoachCheck(test, Modules.SPEAKING, gradeMap);
     }
 }

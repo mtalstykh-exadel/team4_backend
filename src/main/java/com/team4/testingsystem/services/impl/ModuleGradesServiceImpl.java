@@ -1,10 +1,10 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.ModuleGrade;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestModuleID;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.ModuleGradeNotFoundException;
 import com.team4.testingsystem.repositories.ModuleGradesRepository;
 import com.team4.testingsystem.services.ModuleGradesService;
@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ModuleGradesServiceImpl implements ModuleGradesService {
@@ -27,27 +30,19 @@ public class ModuleGradesServiceImpl implements ModuleGradesService {
         this.moduleService = moduleService;
     }
 
-    private Integer getGradeByModule(List<ModuleGrade> allTestGrades, String moduleName) {
-        return allTestGrades
-                .stream()
-                .filter(grade -> grade.getId().getModule().getName().equals(moduleName))
-                .findAny()
-                .orElseThrow(() -> new ModuleGradeNotFoundException(moduleName))
-                .getGrade();
+    @Override
+    public Integer getGradeByModule(Map<String, Integer> gradeMap, Modules module) {
+        return Optional.ofNullable(gradeMap.get(module.getName()))
+                .orElseThrow(() -> new ModuleGradeNotFoundException(module.getName()));
     }
 
     @Override
-    public ModuleGradesDTO getGradesByTest(Test test) {
-
-        List<ModuleGrade> allTestGrades = (List<ModuleGrade>) moduleGradesRepository.findAllById_Test(test);
-
-        return ModuleGradesDTO.builder()
-                .grammar(getGradeByModule(allTestGrades, "Grammar"))
-                .listening(getGradeByModule(allTestGrades, "Listening"))
-                .essay(getGradeByModule(allTestGrades, "Essay"))
-                .speaking(getGradeByModule(allTestGrades, "Speaking"))
-                .build();
-
+    public Map<String, Integer> getGradesByTest(Test test) {
+        List<ModuleGrade> grades = (List<ModuleGrade>) moduleGradesRepository.findAllById_Test(test);
+        return grades
+                .stream()
+                .collect(Collectors.toMap(moduleGrade -> moduleGrade.getId().getModule().getName(),
+                        ModuleGrade::getGrade));
     }
 
     @Override

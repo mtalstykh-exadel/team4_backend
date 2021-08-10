@@ -1,5 +1,6 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.converters.GradesConverter;
 import com.team4.testingsystem.dto.AssignTestRequest;
 import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.TestDTO;
@@ -30,12 +31,15 @@ public class TestsController {
 
     private final TestsService testsService;
     private final ModuleGradesService moduleGradesService;
+    private final GradesConverter gradesConverter;
 
     @Autowired
     public TestsController(TestsService testsService,
-                           ModuleGradesService moduleGradesService) {
+                           ModuleGradesService moduleGradesService,
+                           GradesConverter gradesConverter) {
         this.testsService = testsService;
         this.moduleGradesService = moduleGradesService;
+        this.gradesConverter = gradesConverter;
     }
 
     @ApiOperation(value = "Get all tests assigned to the current user")
@@ -59,7 +63,8 @@ public class TestsController {
     @ApiOperation(value = "Use it to get test grades for a test by modules")
     @GetMapping(path = "/grades/{testId}")
     public ModuleGradesDTO getGrades(@PathVariable("testId") long testId) {
-        return moduleGradesService.getGradesByTest(testsService.getById(testId));
+        return gradesConverter.convertListOfGradesToDTO(moduleGradesService
+                .getGradesByTest(testsService.getById(testId)));
     }
 
     @ApiOperation(value = "Is used to get all unverified tests")
@@ -100,8 +105,8 @@ public class TestsController {
 
     @ApiOperation(value = "Is used to update score after coach check")
     @PutMapping(path = "/{testId}")
-    public void updateEvaluation(@PathVariable("testId") long testId) {
-        testsService.updateEvaluation(testId);
+    public void update(@PathVariable("testId") long testId) {
+        testsService.update(testId);
     }
 
     @ApiOperation(value = "Use it to assign a test for the coach")

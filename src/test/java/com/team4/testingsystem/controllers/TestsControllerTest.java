@@ -1,5 +1,6 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.converters.GradesConverter;
 import com.team4.testingsystem.converters.TestConverter;
 import com.team4.testingsystem.dto.AssignTestRequest;
 import com.team4.testingsystem.dto.ModuleGradesDTO;
@@ -17,7 +18,6 @@ import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
-import com.team4.testingsystem.services.impl.ModuleGradesServiceImpl;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.assertj.core.util.Lists;
@@ -30,9 +30,11 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.MapKeyColumn;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -60,10 +62,10 @@ class TestsControllerTest {
     private CustomUserDetails customUserDetails;
 
     @Mock
-    private TestGeneratingService testGeneratingService;
+    private GradesConverter gradesConverter;
 
     @Mock
-    private TestConverter testConverter;
+    private Map<String, Integer> gradesMap;
 
     @InjectMocks
     private TestsController testsController;
@@ -105,8 +107,11 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void getGradesSuccess() {
-        Mockito.when(moduleGradesService.getGradesByTest(test)).thenReturn(moduleGradesDTO);
         Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
+
+        Mockito.when(moduleGradesService.getGradesByTest(test)).thenReturn(gradesMap);
+
+        Mockito.when(gradesConverter.convertListOfGradesToDTO(gradesMap)).thenReturn(moduleGradesDTO);
 
         Assertions.assertEquals(moduleGradesDTO, testsController.getGrades(GOOD_TEST_ID));
     }
@@ -222,17 +227,17 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void updateEvaluationSuccess() {
-        testsController.updateEvaluation(GOOD_TEST_ID);
+        testsController.update(GOOD_TEST_ID);
 
-        verify(testsService).updateEvaluation(GOOD_TEST_ID);
+        verify(testsService).update(GOOD_TEST_ID);
     }
 
     @org.junit.jupiter.api.Test
     void updateEvaluationFail() {
-        doThrow(TestNotFoundException.class).when(testsService).updateEvaluation(BAD_TEST_ID);
+        doThrow(TestNotFoundException.class).when(testsService).update(BAD_TEST_ID);
 
         Assertions.assertThrows(TestNotFoundException.class,
-                () -> testsController.updateEvaluation(BAD_TEST_ID));
+                () -> testsController.update(BAD_TEST_ID));
     }
 
 

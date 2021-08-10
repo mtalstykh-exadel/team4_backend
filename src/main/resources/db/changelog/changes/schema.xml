@@ -589,4 +589,10 @@
                                  constraintName="module_grade_test_id_fk"
                                  referencedTableName="test" referencedColumnNames="id"/>
     </changeSet>
+
+    <changeSet id="remove_test_evaluation" author="Anlord241">
+        <dropColumn tableName="test"
+                    columnName="evaluation"/>
+    </changeSet>
+
 </databaseChangeLog>

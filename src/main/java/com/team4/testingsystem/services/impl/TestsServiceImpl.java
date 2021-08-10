@@ -123,14 +123,14 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public void finish(long id) {
-        testsRepository.finish(LocalDateTime.now(),
-                testEvaluationService.getEvaluationBeforeCoachCheck(getById(id)), id);
+        testEvaluationService.countScoreBeforeCoachCheck(getById(id));
+        testsRepository.finish(LocalDateTime.now(), id);
     }
 
     @Override
-    public void updateEvaluation(long id) {
-        testsRepository.updateEvaluation(LocalDateTime.now(),
-                testEvaluationService.getEvaluationAfterCoachCheck(getById(id)), id);
+    public void update(long id) {
+        testEvaluationService.updateScoreAfterCoachCheck(getById(id));
+        testsRepository.updateEvaluation(LocalDateTime.now(), id);
     }
 
     @Override

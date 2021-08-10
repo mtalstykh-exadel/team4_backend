@@ -60,8 +60,6 @@ public class Test implements Serializable {
     @Column(name = "status")
     private Status status;
 
-    @Column(name = "evaluation")
-    private int evaluation;
 
     @ManyToOne
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
@@ -107,9 +105,6 @@ public class Test implements Serializable {
         return status;
     }
 
-    public int getEvaluation() {
-        return evaluation;
-    }
 
     public User getCoach() {
         return coach;
@@ -163,9 +158,6 @@ public class Test implements Serializable {
         this.level = level;
     }
 
-    public void setEvaluation(int evaluation) {
-        this.evaluation = evaluation;
-    }
 
     public void setCoach(User coach) {
         this.coach = coach;
@@ -218,10 +210,6 @@ public class Test implements Serializable {
             return this;
         }
 
-        public Builder evaluation(int evaluation) {
-            test.evaluation = evaluation;
-            return this;
-        }
 
         public Builder coach(User coach) {
             test.coach = coach;
@@ -257,7 +245,6 @@ public class Test implements Serializable {
                 && Objects.equals(completedAt, test.completedAt)
                 && Objects.equals(deadline, test.deadline)
                 && Objects.equals(status, test.status)
-                && Objects.equals(evaluation, test.evaluation)
                 && Objects.equals(coach, test.coach)
                 && Objects.equals(questions, test.questions);
     }
@@ -266,6 +253,6 @@ public class Test implements Serializable {
     public int hashCode() {
         return Objects.hash(id, user, level,
                 assignedAt, verifiedAt, startedAt, completedAt, deadline,
-                status, evaluation, coach, questions);
+                status, coach, questions);
     }
 }

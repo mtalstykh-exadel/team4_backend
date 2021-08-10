@@ -19,7 +19,6 @@ public class TestDTO {
     private LocalDateTime deadline;
     private String status;
     private UserDTO coach;
-    private int evaluation;
     private Map<String, List<QuestionDTO>> questions;
     private String contentFile;
 
@@ -35,7 +34,6 @@ public class TestDTO {
         startedAt = test.getStartedAt();
         deadline = test.getDeadline();
         status = test.getStatus().name();
-        evaluation = test.getEvaluation();
         if (test.getCoach() != null) {
             coach = new UserDTO(test.getCoach());
         }
@@ -47,14 +45,6 @@ public class TestDTO {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public int getEvaluation() {
-        return evaluation;
-    }
-
-    public void setEvaluation(int evaluation) {
-        this.evaluation = evaluation;
     }
 
     public LocalDateTime getVerifiedAt() {

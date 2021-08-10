@@ -4,6 +4,7 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.entities.CoachGrade;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.CoachGradeNotFoundException;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.services.ChosenOptionService;
@@ -17,6 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -26,6 +28,19 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class TestEvaluationServiceImplTest {
+
+    private final int ESSAY_SCORE_BEFORE_COACH_CHECK = 0;
+
+    private final int SPEAKING_SCORE_BEFORE_COACH_CHECK = 0;
+
+    private final int GRAMMAR_SCORE = 10;
+
+    private final int LISTENING_SCORE = 10;
+
+    private final int ESSAY_SCORE = 8;
+
+    private final int SPEAKING_SCORE = 9;
+
     @Mock
     private ChosenOptionService chosenOptionService;
 
@@ -57,10 +72,13 @@ class TestEvaluationServiceImplTest {
     private CoachGrade coachGrade;
 
     @Mock
+    private Map<String, Integer> gradeMap;
+
+    @Mock
     private com.team4.testingsystem.entities.Test test;
 
     @Test
-    public void getEvaluationBeforeCoachCheckSuccess() {
+    public void countScoreBeforeCoachCheckSuccess() {
 
         Mockito.when(chosenOptionService.getChosenOptionByTest(test)).thenReturn(chosenOptionList);
         Mockito.when(chosenOptionList.stream()).thenReturn(streamChosenOption);
@@ -69,56 +87,51 @@ class TestEvaluationServiceImplTest {
         Mockito.when(streamAnswer.filter(any())).thenReturn(streamAnswer);
         Mockito.when(streamAnswer.count()).thenReturn(10L);
 
-        int evaluation = testEvaluationService.getEvaluationBeforeCoachCheck(test);
+        testEvaluationService.countScoreBeforeCoachCheck(test);
 
-        verify(moduleGradesService).add(test, "Essay", 0);
+        verify(moduleGradesService).add(test, Modules.ESSAY.getName(), ESSAY_SCORE_BEFORE_COACH_CHECK);
 
-        verify(moduleGradesService).add(test, "Speaking", 0);
+        verify(moduleGradesService).add(test, Modules.SPEAKING.getName(), SPEAKING_SCORE_BEFORE_COACH_CHECK);
 
-        verify(moduleGradesService).add(test, "Grammar", 10);
+        verify(moduleGradesService).add(test, Modules.GRAMMAR.getName(), GRAMMAR_SCORE);
 
-        verify(moduleGradesService).add(test, "Listening", 10);
+        verify(moduleGradesService).add(test, Modules.LISTENING.getName(), LISTENING_SCORE);
 
-        Assertions.assertEquals(20, evaluation);
     }
     @Test
-    public void getEvaluationAfterCoachCheckSuccess() {
-        Mockito.when(test.getEvaluation()).thenReturn(20);
+    public void updateScoreAfterCoachCheckSuccess() {
 
         Mockito.when(coachGradeRepository.findAllById_Test(test)).thenReturn(coachGrades);
 
         Mockito.when(coachGrades.stream()).thenReturn(streamCoachGrade);
 
-        Mockito.when(streamCoachGrade.filter(any())).thenReturn(streamCoachGrade);
+        Mockito.when(streamCoachGrade.collect(any())).thenReturn(gradeMap);
 
-        Mockito.when(streamCoachGrade.findAny()).thenReturn(Optional.of(coachGrade));
+        Mockito.when(gradeMap.get(Modules.ESSAY.getName())).thenReturn(ESSAY_SCORE);
 
-        Mockito.when(coachGrade.getGrade()).thenReturn(10);
+        Mockito.when(gradeMap.get(Modules.SPEAKING.getName())).thenReturn(SPEAKING_SCORE);
 
-        int evaluation = testEvaluationService.getEvaluationAfterCoachCheck(test);
+        testEvaluationService.updateScoreAfterCoachCheck(test);
 
-        verify(moduleGradesService).add(test, "Essay", 10);
+        verify(moduleGradesService).add(test, Modules.ESSAY.getName(), ESSAY_SCORE);
 
-        verify(moduleGradesService).add(test, "Speaking", 10);
-
-        Assertions.assertEquals(40, evaluation);
+        verify(moduleGradesService).add(test, Modules.SPEAKING.getName(), SPEAKING_SCORE);
     }
 
     @Test
     public void getEvaluationAfterCoachCheckFail() {
-        Mockito.when(test.getEvaluation()).thenReturn(20);
 
         Mockito.when(coachGradeRepository.findAllById_Test(test)).thenReturn(coachGrades);
 
         Mockito.when(coachGrades.stream()).thenReturn(streamCoachGrade);
 
-        Mockito.when(streamCoachGrade.filter(any())).thenReturn(streamCoachGrade);
+        Mockito.when(streamCoachGrade.collect(any())).thenReturn(gradeMap);
 
-        Mockito.when(streamCoachGrade.findAny()).thenReturn(Optional.empty());
+        Mockito.when(gradeMap.get(Modules.ESSAY.getName())).thenReturn(null);
 
         Assertions.assertThrows(CoachGradeNotFoundException.class,
-                ()->testEvaluationService.getEvaluationAfterCoachCheck(test));
-
+                ()->testEvaluationService.updateScoreAfterCoachCheck(test));
     }
+
 }
 

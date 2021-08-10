@@ -24,7 +24,6 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,6 +32,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -229,16 +229,16 @@ class TestsServiceImplTest {
 
         testsService.finish(GOOD_TEST_ID);
 
-        verify(testsRepository).finish(any(LocalDateTime.class), anyInt(), anyLong());
+        verify(testEvaluationService).countScoreBeforeCoachCheck(test);
+
+        verify(testsRepository).finish(any(LocalDateTime.class), anyLong());
 
         Assertions.assertDoesNotThrow(() -> testsService.finish(GOOD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
     void finishFail() {
-        Test test = new Test();
-        Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenReturn(Optional.of(test));
-        Mockito.when(testEvaluationService.getEvaluationBeforeCoachCheck(test)).thenThrow(TestNotFoundException.class);
+        Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.finish(BAD_TEST_ID));
 
@@ -246,13 +246,15 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void updateEvaluationSuccess() {
-        Mockito.when (testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
 
-        testsService.updateEvaluation(GOOD_TEST_ID);
+        testsService.update(GOOD_TEST_ID);
 
-        verify(testsRepository).updateEvaluation(any(LocalDateTime.class), anyInt(), anyLong());
+        verify(testsRepository).updateEvaluation(any(LocalDateTime.class), anyLong());
 
-        Assertions.assertDoesNotThrow(() -> testsService.updateEvaluation(GOOD_TEST_ID));
+        verify(testEvaluationService).updateScoreAfterCoachCheck(test);
+
+        Assertions.assertDoesNotThrow(() -> testsService.update(GOOD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
@@ -260,7 +262,7 @@ class TestsServiceImplTest {
         Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
 
         Assertions.assertThrows(TestNotFoundException.class,
-                () -> testsService.updateEvaluation(BAD_TEST_ID));
+                () -> testsService.update(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test

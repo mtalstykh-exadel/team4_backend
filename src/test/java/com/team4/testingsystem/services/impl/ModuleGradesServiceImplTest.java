@@ -3,6 +3,7 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.ModuleGrade;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.ModuleGradeNotFoundException;
 import com.team4.testingsystem.exceptions.ModuleNotFoundException;
 import com.team4.testingsystem.repositories.ModuleGradesRepository;
@@ -17,6 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -26,6 +28,8 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class ModuleGradesServiceImplTest {
+
+    final int GRAMMAR_SCORE = 1;
 
     @InjectMocks
     private ModuleGradesServiceImpl moduleGradesService;
@@ -49,7 +53,7 @@ public class ModuleGradesServiceImplTest {
     private ModuleGrade moduleGrade;
 
     @Mock
-    private ModuleGradesDTO moduleGradesDTO;
+    private Map<String, Integer> gradesMap;
 
     @Mock
     private Module module;
@@ -57,58 +61,38 @@ public class ModuleGradesServiceImplTest {
     @Mock
     private ModuleService moduleService;
 
+
+    @Test
+    void getGradeByModuleSuccess(){
+        Mockito.when(gradesMap.get(Modules.GRAMMAR.getName())).thenReturn(GRAMMAR_SCORE);
+
+        Assertions.assertEquals(GRAMMAR_SCORE, moduleGradesService.getGradeByModule(gradesMap, Modules.GRAMMAR));
+    }
+
+    @Test
+    void getGradeByModuleFail() {
+        Mockito.when(gradesMap.get(Modules.LISTENING.getName())).thenReturn(null);
+        Assertions.assertThrows(ModuleGradeNotFoundException.class,
+                ()->moduleGradesService.getGradeByModule(gradesMap, Modules.LISTENING));
+    }
+
     @Test
     void getGradesByTestSuccess() {
         Mockito.when(moduleGradesRepository.findAllById_Test(test)).thenReturn(moduleGradeList);
 
-        try (MockedStatic<ModuleGradesDTO> builderMockedStatic = Mockito.mockStatic(ModuleGradesDTO.class)) {
-            builderMockedStatic.when(ModuleGradesDTO::builder).thenReturn(builder);
+        Mockito.when(moduleGradeList.stream()).thenReturn(stream);
 
-            Mockito.when(moduleGradeList.stream()).thenReturn(stream);
+        Mockito.when(stream.collect(any())).thenReturn(gradesMap);
 
-            Mockito.when(stream.filter(any())).thenReturn(stream);
+        Assertions.assertEquals(gradesMap, moduleGradesService.getGradesByTest(test));
 
-            Mockito.when(stream.findAny()).thenReturn(Optional.of(moduleGrade));
-
-            Mockito.when(moduleGrade.getGrade()).thenReturn(10);
-
-            Mockito.when(builder.grammar(10)).thenReturn(builder);
-
-            Mockito.when(builder.listening(10)).thenReturn(builder);
-
-            Mockito.when(builder.essay(10)).thenReturn(builder);
-
-            Mockito.when(builder.speaking(10)).thenReturn(builder);
-
-            Mockito.when(builder.build()).thenReturn(moduleGradesDTO);
-
-            Assertions.assertEquals(moduleGradesDTO, moduleGradesService.getGradesByTest(test));
-
-        }
-    }
-
-    @Test
-    void getGradesByTestFail() {
-        Mockito.when(moduleGradesRepository.findAllById_Test(test)).thenReturn(moduleGradeList);
-
-        try (MockedStatic<ModuleGradesDTO> builderMockedStatic = Mockito.mockStatic(ModuleGradesDTO.class)) {
-            builderMockedStatic.when(ModuleGradesDTO::builder).thenReturn(builder);
-
-            Mockito.when(moduleGradeList.stream()).thenReturn(stream);
-
-            Mockito.when(stream.filter(any())).thenReturn(stream);
-
-            Mockito.when(stream.findAny()).thenReturn(Optional.empty());
-        }
-
-        Assertions.assertThrows(ModuleGradeNotFoundException.class, () -> moduleGradesService.getGradesByTest(test));
     }
 
     @Test
     void addSuccess() {
         Mockito.when(moduleService.getModuleByName(anyString())).thenReturn(module);
 
-        moduleGradesService.add(test, "name", 1);
+        moduleGradesService.add(test, Modules.GRAMMAR.getName(), 1);
         verify(moduleGradesRepository).save(any(ModuleGrade.class));
     }
 
