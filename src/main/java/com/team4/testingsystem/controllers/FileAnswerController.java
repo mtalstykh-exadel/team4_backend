@@ -24,7 +24,7 @@ public class FileAnswerController {
         return fileAnswerService.downloadEssay(testId);
     }
 
-    @PostMapping("/essay{testId}")
+    @PostMapping("/essay/{testId}")
     public void uploadEssay(@PathVariable Long testId, @RequestBody String text) {
         fileAnswerService.uploadEssay(testId, text);
     }
