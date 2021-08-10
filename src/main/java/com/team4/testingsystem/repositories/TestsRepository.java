@@ -33,13 +33,13 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.completedAt = ?1, t.status = 'COMPLETED', t.evaluation = ?2  where t.id = ?3")
-    int finish(LocalDateTime finishDate, int evaluation, Long id);
+    @Query(value = "UPDATE Test t SET t.completedAt = ?1, t.status = 'COMPLETED' where t.id = ?2")
+    int finish(LocalDateTime finishDate, Long id);
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.verifiedAt = ?1, t.evaluation = ?2 where t.id = ?3")
-    int updateEvaluation(LocalDateTime updateDate, int evaluation, Long id);
+    @Query(value = "UPDATE Test t SET t.verifiedAt = ?1 where t.id = ?2")
+    int updateEvaluation(LocalDateTime updateDate, Long id);
 
     @Transactional
     @Modifying

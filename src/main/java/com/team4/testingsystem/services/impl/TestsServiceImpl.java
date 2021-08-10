@@ -133,14 +133,14 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public void finish(long id) {
-        testsRepository.finish(LocalDateTime.now(), testEvaluationService.getEvaluationByTest(getById(id)), id);
+        testEvaluationService.countScoreBeforeCoachCheck(getById(id));
+        testsRepository.finish(LocalDateTime.now(), id);
     }
 
     @Override
-    public void updateEvaluation(long id, int newEvaluation) {
-        if (testsRepository.updateEvaluation(LocalDateTime.now(), newEvaluation, id) == 0) {
-            throw new TestNotFoundException();
-        }
+    public void update(long id) {
+        testEvaluationService.updateScoreAfterCoachCheck(getById(id));
+        testsRepository.updateEvaluation(LocalDateTime.now(), id);
     }
 
     @Override

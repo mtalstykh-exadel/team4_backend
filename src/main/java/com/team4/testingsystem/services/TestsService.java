@@ -28,7 +28,7 @@ public interface TestsService {
 
     void finish(long id);
 
-    void updateEvaluation(long id, int newEvaluation);
+    void update(long id);
 
     void removeById(long id);
 
