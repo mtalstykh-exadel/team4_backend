@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -143,9 +144,18 @@ public class TestsServiceImpl implements TestsService {
         testsRepository.updateEvaluation(LocalDateTime.now(), id);
     }
 
+
     @Override
-    public void removeById(long id) {
-        if (testsRepository.removeById(id) == 0) {
+    public void deassign(long id){
+        Test test = getById(id);
+        Optional.ofNullable(test.getStartedAt())
+                .ifPresentOrElse(testsRepository.removeById(id),
+                        testsRepository.deassign(id));
+    }
+
+    @Override
+    public void deassign(long id){
+        if (testsRepository.removeById(id)==0){
             throw new TestNotFoundException();
         }
     }

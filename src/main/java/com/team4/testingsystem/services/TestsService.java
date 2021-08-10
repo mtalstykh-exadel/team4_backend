@@ -23,8 +23,8 @@ public interface TestsService {
     long startForUser(long userId, Levels level);
 
     long assignForUser(long userId, Levels level, LocalDateTime deadline);
-
     Test start(long id);
+    void deassign(long id);
 
     void finish(long id);
 
