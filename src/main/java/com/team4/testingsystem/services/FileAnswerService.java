@@ -6,4 +6,6 @@ public interface FileAnswerService {
     void save(Long testId, Long questionId, String url);
 
     void remove(Long testId, Long questionId);
+
+    String downloadEssay(Long testId);
 }

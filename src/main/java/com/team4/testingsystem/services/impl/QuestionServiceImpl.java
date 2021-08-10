@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,4 +80,9 @@ public class QuestionServiceImpl implements QuestionService {
         return questionRepository.getQuestionsByLevelAndModuleName(level, module);
     }
 
+    @Override
+    public Question getQuestionByTestIdAndModule(Long testId, Modules module) {
+        return questionRepository.getQuestionByTestIdAndModule(testId, module)
+                .orElseThrow(QuestionNotFoundException::new);
+    }
 }

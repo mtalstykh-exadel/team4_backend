@@ -48,6 +48,12 @@ public class FileAnswerServiceImpl implements FileAnswerService {
         fileAnswerRepository.deleteById(createId(testId, questionId));
     }
 
+    @Override
+    public String downloadEssay(Long testId) {
+        Test test = testsService.getById(testId);
+        return null;
+    }
+
     private TestQuestionID createId(Long testId, Long questionId) {
         Test test = testsService.getById(testId);
         Question question = questionService.getById(questionId);
