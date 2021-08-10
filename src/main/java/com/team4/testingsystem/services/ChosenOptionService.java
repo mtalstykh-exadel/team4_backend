@@ -13,4 +13,6 @@ public interface ChosenOptionService {
     List<ChosenOption> getChosenOptionByTest(Test test);
 
     void save(ChosenOption chosenOption);
+
+    void saveAll(List<ChosenOption> chosenOptions);
 }
