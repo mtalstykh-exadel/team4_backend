@@ -33,6 +33,11 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     @Transactional
     @Modifying
+    @Query(value = "UPDATE Test t SET t.assignedAt = null  WHERE t.id = ?1")
+    int deassign(Long id);
+
+    @Transactional
+    @Modifying
     @Query(value = "UPDATE Test t SET t.completedAt = ?1, t.status = 'COMPLETED' where t.id = ?2")
     int finish(LocalDateTime finishDate, Long id);
 

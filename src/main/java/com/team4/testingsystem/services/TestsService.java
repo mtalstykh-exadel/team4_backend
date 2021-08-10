@@ -30,8 +30,6 @@ public interface TestsService {
 
     void update(long id);
 
-    void removeById(long id);
-
     void assignCoach(long id, long coachId);
 
     void deassignCoach(long id);
