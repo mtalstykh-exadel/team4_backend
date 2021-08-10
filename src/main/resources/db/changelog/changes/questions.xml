@@ -7586,5 +7586,68 @@
             <where>creator_user_id = (select u.id from language_testing.user as u where u.user_login = 'rus_hr@northsixty.com')</where>
         </update>
     </changeSet>
+
+    <changeSet id="add_topics" author="Darina">
+        <update tableName="content_file">
+            <column name="topic" value="Theatre"/>
+            <where>id = (select cf.id from language_testing.content_file as cf where cf.url = 'listening-A1-02.mp3')
+            </where>
+        </update>
+        <update tableName="content_file">
+            <column name="topic" value="Favorite class"/>
+            <where>id = (select cf.id from language_testing.content_file as cf where cf.url = 'listening-A1-05.mp3')
+            </where>
+        </update>
+        <update tableName="content_file">
+            <column name="topic" value="Angry"/>
+            <where>id = (select cf.id from language_testing.content_file as cf where cf.url = 'listening-A2-24.mp3')
+            </where>
+        </update>
+        <update tableName="content_file">
+            <column name="topic" value="Tough times"/>
+            <where>id = (select cf.id from language_testing.content_file as cf where cf.url = 'listening-A2-28.mp3')
+            </where>
+        </update>
+        <update tableName="content_file">
+            <column name="topic" value="Asking for a date"/>
+            <where>id = (select cf.id from language_testing.content_file as cf where cf.url = 'listening-B1-16.mp3')
+            </where>
+        </update>
+        <update tableName="content_file">
+            <column name="topic" value="After birth"/>
+            <where>id = (select cf.id from language_testing.content_file as cf where cf.url = 'listening-B1-12.mp3')
+            </where>
+        </update>
+        <update tableName="content_file">
+            <column name="topic" value="Registering for Class"/>
+            <where>id = (select cf.id from language_testing.content_file as cf where cf.url = 'listening-B2-05.mp3')
+            </where>
+        </update>
+        <update tableName="content_file">
+            <column name="topic" value="Working out"/>
+            <where>id = (select cf.id from language_testing.content_file as cf where cf.url = 'listening-B2-03.mp3')
+            </where>
+        </update>
+        <update tableName="content_file">
+            <column name="topic" value="First date"/>
+            <where>id = (select cf.id from language_testing.content_file as cf where cf.url = 'listening-C1-10.mp3')
+            </where>
+        </update>
+        <update tableName="content_file">
+            <column name="topic" value="Honeymoon planning"/>
+            <where>id = (select cf.id from language_testing.content_file as cf where cf.url = 'listening-C1-11.mp3')
+            </where>
+        </update>
+        <update tableName="content_file">
+            <column name="topic" value="Talking about guys"/>
+            <where>id = (select cf.id from language_testing.content_file as cf where cf.url = 'listening-C2-23.mp3')
+            </where>
+        </update>
+        <update tableName="content_file">
+            <column name="topic" value="Life after breaking up"/>
+            <where>id = (select cf.id from language_testing.content_file as cf where cf.url = 'listening-C2-27.mp3')
+            </where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
 

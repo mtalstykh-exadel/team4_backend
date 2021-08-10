@@ -24,7 +24,7 @@ public interface ContentFilesRepository extends CrudRepository<ContentFile, Long
                    + "join language_testing.question_content_file as qcf on cf.id = qcf.content_file_id "
                    + "join language_testing.question as q on qcf.question_id = q.id "
                    + "join language_testing.level as l on l.id = q.level_id "
-                   + "where l.level_name = ?1 "
+                   + "where l.level_name = ?1 and cf.is_available = true "
                    + "order by RANDOM() limit 1; ", nativeQuery = true)
     ContentFile getRandomFiles(String level);
 
