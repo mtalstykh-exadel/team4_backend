@@ -77,6 +77,9 @@ public class QuestionController {
     public QuestionDTO updateQuestion(@RequestBody QuestionDTO questionDTO, @PathVariable("id") Long id) {
         Question resultQuestion = questionService
                 .updateQuestion(questionConverter.convertToEntity(questionDTO, id), id);
+        if (questionDTO.getAnswers() != null) {
+            questionService.addAnswers(resultQuestion, questionDTO.getAnswers());
+        }
         return QuestionDTO.createWithCorrectAnswers(resultQuestion);
     }
 

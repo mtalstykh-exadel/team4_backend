@@ -29,6 +29,9 @@ public class QuestionDTO {
     }
 
     public static QuestionDTO create(Question question) {
+        if (question.getAnswers() == null) {
+            return new QuestionDTO(question, null);
+        }
         List<AnswerDTO> answers = question.getAnswers().stream()
                 .map(AnswerDTO::create)
                 .collect(Collectors.toList());
@@ -37,6 +40,9 @@ public class QuestionDTO {
     }
 
     public static QuestionDTO createWithCorrectAnswers(Question question) {
+        if (question.getAnswers() == null) {
+            return new QuestionDTO(question, null);
+        }
         List<AnswerDTO> answers = question.getAnswers().stream()
                 .map(AnswerDTO::createWithCorrect)
                 .collect(Collectors.toList());
@@ -102,10 +108,10 @@ public class QuestionDTO {
         }
         QuestionDTO that = (QuestionDTO) o;
         return Objects.equals(questionBody, that.questionBody)
-               && Objects.equals(creator, that.creator)
-               && Objects.equals(level, that.level)
-               && Objects.equals(module, that.module)
-               && Objects.equals(answers, that.answers);
+                && Objects.equals(creator, that.creator)
+                && Objects.equals(level, that.level)
+                && Objects.equals(module, that.module)
+                && Objects.equals(answers, that.answers);
     }
 
     @Override
