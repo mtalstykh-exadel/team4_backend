@@ -1,7 +1,9 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.QuestionConverter;
+import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
+import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
@@ -60,10 +62,10 @@ public class QuestionController {
 
     @ApiOperation(value = "Add content file with questions")
     @PostMapping(value = "/listening")
-    public String addListening(@RequestPart MultipartFile file, @RequestPart List<QuestionDTO> questions) {
+    public ContentFileDTO addListening(@RequestPart MultipartFile file, @RequestPart List<QuestionDTO> questions) {
         String url = storageService.upload(file.getResource());
-        contentFilesService.add(url, convertToEntity(questions));
-        return url;
+        ContentFile contentFile = contentFilesService.add(url, convertToEntity(questions));
+        return new ContentFileDTO(contentFile);
     }
 
     @ApiOperation(value = "Archive the question")
