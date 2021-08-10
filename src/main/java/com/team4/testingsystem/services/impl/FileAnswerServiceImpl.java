@@ -14,9 +14,11 @@ import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.services.TestsService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 @Service
@@ -67,6 +69,21 @@ public class FileAnswerServiceImpl implements FileAnswerService {
         } catch (IOException e) {
             throw new FileLoadingFailedException();
         }
+    }
+
+    @Override
+    public void uploadEssay(Long testId, String text) {
+        Test test = testsService.getById(testId);
+        Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
+
+        InputStream inputStream = IOUtils.toInputStream(text, StandardCharsets.UTF_8);
+        String url = resourceStorageService.upload(new InputStreamResource(inputStream));
+
+        FileAnswer fileAnswer = FileAnswer.builder()
+                .id(new TestQuestionID(test, question))
+                .url(url)
+                .build();
+        fileAnswerRepository.save(fileAnswer);
     }
 
     private TestQuestionID createId(Long testId, Long questionId) {

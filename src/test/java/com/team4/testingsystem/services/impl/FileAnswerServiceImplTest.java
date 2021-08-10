@@ -6,6 +6,8 @@ import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
+import com.team4.testingsystem.exceptions.FileLoadingFailedException;
+import com.team4.testingsystem.exceptions.FileSavingFailedException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
@@ -161,6 +163,21 @@ class FileAnswerServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
+    void downloadEssayLoadingError() {
+        Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY))
+                .thenReturn(question);
+        Mockito.when(question.getId()).thenReturn(QUESTION_ID);
+        Mockito.when(fileAnswerRepository.findByTestAndQuestionId(TEST_ID, QUESTION_ID))
+                .thenReturn(Optional.of(fileAnswer));
+        Mockito.when(fileAnswer.getUrl()).thenReturn(URL);
+
+        Mockito.when(resourceStorageService.load(URL)).thenThrow(FileLoadingFailedException.class);
+
+        Assertions.assertThrows(FileLoadingFailedException.class,
+                () -> fileAnswerService.downloadEssay(TEST_ID));
+    }
+
+    @org.junit.jupiter.api.Test
     void downloadEssaySuccess() {
         Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY))
                 .thenReturn(question);
@@ -173,5 +190,50 @@ class FileAnswerServiceImplTest {
         Mockito.when(resourceStorageService.load(URL)).thenReturn(new InputStreamResource(inputStream));
 
         Assertions.assertEquals(ESSAY_TEXT, fileAnswerService.downloadEssay(TEST_ID));
+    }
+
+    @org.junit.jupiter.api.Test
+    void uploadEssayTestNotFound() {
+        Mockito.when(testsService.getById(TEST_ID)).thenThrow(TestNotFoundException.class);
+
+        Assertions.assertThrows(TestNotFoundException.class,
+                () -> fileAnswerService.uploadEssay(TEST_ID, ESSAY_TEXT));
+    }
+
+    @org.junit.jupiter.api.Test
+    void uploadEssayQuestionNotFound() {
+        Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
+        Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY))
+                .thenThrow(QuestionNotFoundException.class);
+
+        Assertions.assertThrows(QuestionNotFoundException.class,
+                () -> fileAnswerService.uploadEssay(TEST_ID, ESSAY_TEXT));
+    }
+
+    @org.junit.jupiter.api.Test
+    void uploadEssaySavingError() {
+        Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
+        Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY)).thenReturn(question);
+        Mockito.when(resourceStorageService.upload(Mockito.any()))
+                .thenThrow(FileSavingFailedException.class);
+
+        Assertions.assertThrows(FileSavingFailedException.class,
+                () -> fileAnswerService.uploadEssay(TEST_ID, ESSAY_TEXT));
+    }
+
+    @org.junit.jupiter.api.Test
+    void uploadEssaySuccess() {
+        Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
+        Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY)).thenReturn(question);
+        Mockito.when(resourceStorageService.upload(Mockito.any())).thenReturn(URL);
+
+        fileAnswerService.uploadEssay(TEST_ID, ESSAY_TEXT);
+
+        ArgumentCaptor<FileAnswer> captor = ArgumentCaptor.forClass(FileAnswer.class);
+        Mockito.verify(fileAnswerRepository).save(captor.capture());
+
+        Assertions.assertEquals(test, captor.getValue().getId().getTest());
+        Assertions.assertEquals(question, captor.getValue().getId().getQuestion());
+        Assertions.assertEquals(URL, captor.getValue().getUrl());
     }
 }

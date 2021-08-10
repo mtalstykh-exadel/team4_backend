@@ -8,4 +8,6 @@ public interface FileAnswerService {
     void remove(Long testId, Long questionId);
 
     String downloadEssay(Long testId);
+
+    void uploadEssay(Long testId, String text);
 }
