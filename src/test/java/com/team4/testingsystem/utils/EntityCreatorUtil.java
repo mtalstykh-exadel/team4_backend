@@ -1,6 +1,6 @@
 package com.team4.testingsystem.utils;
 
-import com.team4.testingsystem.dto.ContentFileRequest;
+import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
@@ -76,9 +76,9 @@ public class EntityCreatorUtil {
         return level;
     }
 
-    public static ContentFileRequest createContentFileRequest(Long questionId, String url) {
-        ContentFileRequest cfr = new ContentFileRequest();
-        cfr.setQuestionId(questionId);
+    public static ContentFileDTO createContentFileRequest(Long questionId, String url) {
+        ContentFileDTO cfr = new ContentFileDTO();
+        cfr.setId(questionId);
         cfr.setUrl(url);
         return cfr;
     }

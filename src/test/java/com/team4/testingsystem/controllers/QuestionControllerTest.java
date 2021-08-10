@@ -1,10 +1,10 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.QuestionConverter;
+import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
@@ -47,9 +47,6 @@ class QuestionControllerTest {
 
     @Mock
     private ContentFilesService contentFilesService;
-
-    @Mock
-    private AnswerRepository answerRepository;
 
     @InjectMocks
     private QuestionController questionController;
@@ -120,6 +117,7 @@ class QuestionControllerTest {
         Mockito.when(storageService.upload(any())).thenReturn("some url");
         Mockito.when(multipartFile.getResource()).thenReturn(resource);
         Mockito.when(contentFilesService.add(any(), any())).thenReturn(contentFile);
-        Assertions.assertEquals("some url", questionController.addListening(multipartFile, new ArrayList<>()));
+        Assertions.assertEquals(new ContentFileDTO(contentFile),
+                questionController.addListening(multipartFile, new ArrayList<>()));
     }
 }
