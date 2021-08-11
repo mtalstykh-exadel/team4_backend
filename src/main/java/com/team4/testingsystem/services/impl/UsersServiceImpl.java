@@ -43,6 +43,11 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+    public List<User> getByNameLike(String nameLike) {
+        return usersRepository.findAllByNameContainsIgnoreCase(nameLike);
+    }
+
+    @Override
     public void updateLanguage(Long userId, String language) {
         if (usersRepository.setLanguageById(userId, language) == 0) {
             throw new UserNotFoundException();

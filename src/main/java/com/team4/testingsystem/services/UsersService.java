@@ -12,5 +12,7 @@ public interface UsersService {
 
     List<User> getAll();
 
+    List<User> getByNameLike(String nameLike);
+
     void updateLanguage(Long userId, String language);
 }

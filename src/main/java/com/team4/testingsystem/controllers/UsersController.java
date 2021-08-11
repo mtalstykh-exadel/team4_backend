@@ -34,11 +34,18 @@ public class UsersController {
         return convertToDTO(usersService.getUsersByRole(Role.COACH));
     }
 
+    @ApiOperation("Get all users and their assigned tests (if exist)")
     @GetMapping("/employees")
     public List<UserDTO> getAllUsersAndAssignedTests() {
         return testsService.getAllUsersAndAssignedTests().stream()
                 .map(UserTest::toUserDTO)
                 .collect(Collectors.toList());
+    }
+
+    @ApiOperation("Get users by name substring (ignoring case)")
+    @GetMapping("/users")
+    public List<UserDTO> getAllUsersByNameLike(@RequestParam String nameLike) {
+        return convertToDTO(usersService.getByNameLike(nameLike));
     }
 
     @ApiOperation(value = "Update current user's language")
