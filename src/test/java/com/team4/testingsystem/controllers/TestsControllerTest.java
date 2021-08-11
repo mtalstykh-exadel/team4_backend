@@ -120,19 +120,19 @@ class TestsControllerTest {
     }
 
     @org.junit.jupiter.api.Test
-    void getGradesFailTestNotFound(){
+    void getGradesFailTestNotFound() {
 
         Mockito.when(testsService.getById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
 
-        Assertions.assertThrows(TestNotFoundException.class, ()-> testsController.getGrades(BAD_TEST_ID));
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsController.getGrades(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
-    void getGradesFailModuleGradeNotFound(){
+    void getGradesFailModuleGradeNotFound() {
 
         Mockito.when(testsService.getById(BAD_TEST_ID)).thenThrow(ModuleGradeNotFoundException.class);
 
-        Assertions.assertThrows(ModuleGradeNotFoundException.class, ()-> testsController.getGrades(BAD_TEST_ID));
+        Assertions.assertThrows(ModuleGradeNotFoundException.class, () -> testsController.getGrades(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
@@ -170,6 +170,20 @@ class TestsControllerTest {
                 .thenThrow(UserNotFoundException.class);
 
         Assertions.assertThrows(UserNotFoundException.class, () -> testsController.assign(BAD_USER_ID, request));
+    }
+
+    @org.junit.jupiter.api.Test
+    void deassignSuccess() {
+        testsController.deassign(GOOD_TEST_ID);
+
+        verify(testsService).deassign(GOOD_TEST_ID);
+    }
+
+    @org.junit.jupiter.api.Test
+    void deassignFail() {
+        doThrow(TestNotFoundException.class).when(testsService).deassign(BAD_TEST_ID);
+
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsController.deassign(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test

@@ -215,6 +215,37 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
+    void deassignSuccessTestWasStarted(){
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+
+        Mockito.when(test.getStartedAt()).thenReturn(LocalDateTime.now());
+
+        testsService.deassign(GOOD_TEST_ID);
+
+        verify(testsRepository).deassign(GOOD_TEST_ID);
+    }
+
+
+    @org.junit.jupiter.api.Test
+    void deassignSuccessTestWasNotStarted(){
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+
+        Mockito.when(test.getStartedAt()).thenReturn(null);
+
+        testsService.deassign(GOOD_TEST_ID);
+
+        verify(testsRepository).removeById(GOOD_TEST_ID);
+    }
+
+
+    @org.junit.jupiter.api.Test
+    void deassignFail(){
+        Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
+
+        Assertions.assertThrows(TestNotFoundException.class, ()->testsService.deassign(BAD_TEST_ID));
+    }
+
+    @org.junit.jupiter.api.Test
     void startSuccess() {
         User user = EntityCreatorUtil.createUser();
         Level level = EntityCreatorUtil.createLevel();
@@ -278,23 +309,6 @@ class TestsServiceImplTest {
                 () -> testsService.update(BAD_TEST_ID));
     }
 
-    @org.junit.jupiter.api.Test
-    void removeSuccess() {
-        Mockito.when(testsRepository.removeById(GOOD_TEST_ID)).thenReturn(1);
-
-        testsService.removeById(GOOD_TEST_ID);
-
-        verify(testsRepository).removeById(GOOD_TEST_ID);
-
-        Assertions.assertDoesNotThrow(() -> testsService.removeById(GOOD_TEST_ID));
-    }
-
-    @org.junit.jupiter.api.Test
-    void removeFail() {
-        Mockito.when(testsRepository.removeById(BAD_TEST_ID)).thenReturn(0);
-
-        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.removeById(BAD_TEST_ID));
-    }
 
     @org.junit.jupiter.api.Test
     void saveSuccess() {
