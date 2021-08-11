@@ -78,7 +78,7 @@ public class TestsController {
         return convertToDTO(testsService.getByStatuses(statuses));
     }
 
-    @ApiOperation(value = "Is used to get time left")
+    @ApiOperation(value = "Is used to get time left (in seconds)")
     @GetMapping(path = "/time/{testId}")
     public long getTimeLeft(@PathVariable("testId") long testId){
         return testsService.getTimeLeft(testId);
