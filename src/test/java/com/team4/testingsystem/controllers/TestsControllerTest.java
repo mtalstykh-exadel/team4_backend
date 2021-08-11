@@ -109,6 +109,21 @@ class TestsControllerTest {
     }
 
     @org.junit.jupiter.api.Test
+    void getTimeLeftSuccess(){
+        Mockito.when(testsService.getTimeLeft(GOOD_TEST_ID)).thenReturn(60L);
+
+        Assertions.assertEquals(60L, testsController.getTimeLeft(GOOD_TEST_ID));
+    }
+
+    @org.junit.jupiter.api.Test
+    void getTimeLeftFail(){
+        Mockito.when(testsService.getTimeLeft(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
+
+        Assertions.assertThrows(TestNotFoundException.class,
+                ()-> testsController.getTimeLeft(BAD_TEST_ID));
+    }
+
+    @org.junit.jupiter.api.Test
     void getGradesSuccess() {
         Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
 

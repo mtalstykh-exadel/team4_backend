@@ -2,6 +2,7 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.entities.UserTest;
 import com.team4.testingsystem.enums.Levels;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -28,6 +30,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -69,6 +73,9 @@ class TestsServiceImplTest {
 
     @Mock
     List<Test> tests;
+
+    @Mock
+    Timer timer;
 
     @InjectMocks
     TestsServiceImpl testsService;
@@ -121,6 +128,22 @@ class TestsServiceImplTest {
                 .thenReturn(Lists.list(test));
 
         Assertions.assertEquals(Lists.list(new UserTest(user, test)), testsService.getAllUsersAndAssignedTests());
+    }
+
+    @org.junit.jupiter.api.Test
+    void getTimeLeftSuccess(){
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+
+        Mockito.when(test.getStartedAt()).thenReturn(LocalDateTime.now().minusMinutes(41));
+
+        Assertions.assertEquals(0, testsService.getTimeLeft(GOOD_TEST_ID));
+    }
+
+    @org.junit.jupiter.api.Test
+    void getTimeLeftFail() {
+        Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(TestNotFoundException.class, ()->testsService.getTimeLeft(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
@@ -254,11 +277,12 @@ class TestsServiceImplTest {
         Mockito.when(testsRepository.start(any(), anyLong())).thenReturn(1);
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
         Mockito.when(testGeneratingService.formTest(any())).thenReturn(test);
-        Test result = testsService.start(GOOD_TEST_ID);
 
-        verify(testsRepository).start(any(LocalDateTime.class), anyLong());
-        Assertions.assertDoesNotThrow(() -> testsService.start(GOOD_TEST_ID));
-        Assertions.assertEquals(test, result);
+            Test result = testsService.start(GOOD_TEST_ID);
+            verify(testsRepository).start(any(LocalDateTime.class), anyLong());
+            Assertions.assertDoesNotThrow(() -> testsService.start(GOOD_TEST_ID));
+            Assertions.assertEquals(test, result);
+
     }
 
     @org.junit.jupiter.api.Test

@@ -159,7 +159,9 @@ public class TestsServiceImpl implements TestsService {
             throw new TestNotFoundException();
         }
         Test test = testGeneratingService.formTest(getById(id));
+
         save(test);
+
         setTimer(id);
         return test;
     }
@@ -170,10 +172,9 @@ public class TestsServiceImpl implements TestsService {
                 finish(id);
             }
         };
-        
-        Timer timer = new Timer(String.valueOf(id));
 
-        long delay = 240000;
+        Timer timer = new Timer(String.valueOf(id));
+        long delay = 2400000;
         timer.schedule(task, delay);
     }
 
