@@ -1,11 +1,14 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.exceptions.FileSavingFailedException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.services.AnswerService;
+import io.swagger.annotations.ApiOperation;
+import liquibase.pro.packaged.U;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +16,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
+
+import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 class AnswerControllerTest {
@@ -20,11 +29,16 @@ class AnswerControllerTest {
     @Mock
     private AnswerService answerService;
 
+    @Mock
+    private MultipartFile file;
+
+
     @InjectMocks
     private AnswerController answerController;
 
     private static final Long TEST_ID = 1L;
     private static final String ESSAY_TEXT = "text";
+    private static final String URL = "some url";
 
     @Test
     void downloadEssayQuestionNotFound() {
@@ -88,5 +102,49 @@ class AnswerControllerTest {
     void uploadEssaySuccess() {
         answerController.uploadEssay(TEST_ID, ESSAY_TEXT);
         Mockito.verify(answerService).uploadEssay(TEST_ID, ESSAY_TEXT);
+    }
+
+    @Test
+    void uploadSpeakingSuccess() {
+        Mockito.when(answerService.uploadSpeaking(any(), any(), any())).thenReturn(URL);
+        Assertions.assertEquals(URL, answerController.uploadSpeaking(file, TEST_ID));
+    }
+
+    @Test
+    void uploadSpeakingSavingError() {
+        Mockito.doThrow(FileSavingFailedException.class)
+                .when(answerService).uploadSpeaking(file, TEST_ID, Modules.SPEAKING);
+        Assertions.assertThrows(FileSavingFailedException.class,
+                () -> answerController.uploadSpeaking(file, TEST_ID));
+    }
+
+    @Test
+    void uploadSpeakingQuestionNotFound() {
+        Mockito.doThrow(QuestionNotFoundException.class)
+                .when(answerService).uploadSpeaking(file, TEST_ID, Modules.SPEAKING);
+        Assertions.assertThrows(QuestionNotFoundException.class,
+                () -> answerController.uploadSpeaking(file, TEST_ID));
+    }
+
+    @Test
+    void downloadSpeaking() {
+        Mockito.when(answerService.downloadSpeaking(any())).thenReturn(URL);
+        Assertions.assertEquals(URL, answerController.downloadSpeaking(TEST_ID));
+    }
+
+    @Test
+    void downloadSpeakingQuestionNotFound() {
+        Mockito.doThrow(QuestionNotFoundException.class)
+                .when(answerService).downloadSpeaking(TEST_ID);
+        Assertions.assertThrows(QuestionNotFoundException.class,
+                () -> answerController.downloadSpeaking(TEST_ID));
+    }
+
+    @Test
+    void downloadSpeakingFileNotFound() {
+        Mockito.doThrow(FileAnswerNotFoundException.class)
+                .when(answerService).downloadSpeaking(TEST_ID);
+        Assertions.assertThrows(FileAnswerNotFoundException.class,
+                () -> answerController.downloadSpeaking(TEST_ID));
     }
 }

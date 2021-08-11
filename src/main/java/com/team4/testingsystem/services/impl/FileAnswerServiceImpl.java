@@ -16,6 +16,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,17 +27,17 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     private final FileAnswerRepository fileAnswerRepository;
     private final QuestionService questionService;
     private final TestsService testsService;
-    private final ResourceStorageService resourceStorageService;
+    private final ResourceStorageService storageService;
 
     @Autowired
     public FileAnswerServiceImpl(FileAnswerRepository fileAnswerRepository,
                                  QuestionService questionService,
                                  TestsService testsService,
-                                 ResourceStorageService resourceStorageService) {
+                                 ResourceStorageService storageService) {
         this.fileAnswerRepository = fileAnswerRepository;
         this.questionService = questionService;
         this.testsService = testsService;
-        this.resourceStorageService = resourceStorageService;
+        this.storageService = storageService;
     }
 
     @Override
@@ -47,12 +48,25 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     }
 
     @Override
-    public void save(Long testId, Long questionId, String url) {
+    public FileAnswer uploadSpeaking(MultipartFile file, Long testId, Modules module) {
+        String url = storageService.upload(file.getResource());
+        Question question = questionService.getQuestionByTestIdAndModule(testId, module);
+        return save(testId, question.getId(), url);
+    }
+
+    @Override
+    public String downloadSpeaking(Long testId) {
+        Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.SPEAKING);
+        return getUrl(testId, question.getId());
+    }
+
+    @Override
+    public FileAnswer save(Long testId, Long questionId, String url) {
         FileAnswer fileAnswer = FileAnswer.builder()
                 .id(createId(testId, questionId))
                 .url(url)
                 .build();
-        fileAnswerRepository.save(fileAnswer);
+        return fileAnswerRepository.save(fileAnswer);
     }
 
     @Override
@@ -65,7 +79,7 @@ public class FileAnswerServiceImpl implements FileAnswerService {
         Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
         String url = getUrl(testId, question.getId());
         try {
-            return IOUtils.toString(resourceStorageService.load(url).getInputStream(), StandardCharsets.UTF_8);
+            return IOUtils.toString(storageService.load(url).getInputStream(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new FileLoadingFailedException();
         }
@@ -77,8 +91,7 @@ public class FileAnswerServiceImpl implements FileAnswerService {
         Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
 
         InputStream inputStream = IOUtils.toInputStream(text, StandardCharsets.UTF_8);
-        String url = resourceStorageService.upload(new InputStreamResource(inputStream));
-
+        String url = storageService.upload(new InputStreamResource(inputStream));
         FileAnswer fileAnswer = FileAnswer.builder()
                 .id(new TestQuestionID(test, question))
                 .url(url)
