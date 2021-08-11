@@ -1,8 +1,10 @@
 package com.team4.testingsystem.dto;
 
 import com.team4.testingsystem.entities.ContentFile;
+import com.team4.testingsystem.entities.Question;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 public class ContentFileDTO implements Serializable {
@@ -10,6 +12,7 @@ public class ContentFileDTO implements Serializable {
     private Long id;
     private String url;
     private String topic;
+    private List<Question> questions;
 
     public ContentFileDTO() {
     }
@@ -18,6 +21,7 @@ public class ContentFileDTO implements Serializable {
         id = contentFile.getId();
         url = contentFile.getUrl();
         topic = contentFile.getTopic();
+        questions = contentFile.getQuestions();
     }
 
 
@@ -45,6 +49,10 @@ public class ContentFileDTO implements Serializable {
         this.id = id;
     }
 
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -56,11 +64,12 @@ public class ContentFileDTO implements Serializable {
         ContentFileDTO that = (ContentFileDTO) o;
         return Objects.equals(id, that.id)
                && Objects.equals(url, that.url)
-               && Objects.equals(topic, that.topic);
+               && Objects.equals(topic, that.topic)
+               && Objects.equals(questions,that.questions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, url, topic);
+        return Objects.hash(id, url, topic, questions);
     }
 }
