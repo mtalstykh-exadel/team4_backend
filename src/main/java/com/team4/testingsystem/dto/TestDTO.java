@@ -17,6 +17,7 @@ public class TestDTO {
     private LocalDateTime verifiedAt;
     private LocalDateTime startedAt;
     private LocalDateTime deadline;
+    private String priority;
     private String status;
     private UserDTO coach;
     private Map<String, List<QuestionDTO>> questions;
@@ -33,6 +34,7 @@ public class TestDTO {
         verifiedAt = test.getVerifiedAt();
         startedAt = test.getStartedAt();
         deadline = test.getDeadline();
+        priority = test.getPriority().getName();
         status = test.getStatus().name();
         if (test.getCoach() != null) {
             coach = new UserDTO(test.getCoach());
@@ -111,6 +113,14 @@ public class TestDTO {
         this.deadline = deadline;
     }
 
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -142,12 +152,13 @@ public class TestDTO {
                 && Objects.equals(verifiedAt, testDTO.verifiedAt)
                 && Objects.equals(startedAt, testDTO.startedAt)
                 && Objects.equals(deadline, testDTO.deadline)
+                && Objects.equals(priority, testDTO.priority)
                 && Objects.equals(status, testDTO.status)
                 && Objects.equals(coach, testDTO.coach);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(level, assignedAt, completedAt, verifiedAt, startedAt, deadline, status, coach);
+        return Objects.hash(level, assignedAt, completedAt, verifiedAt, startedAt, deadline, priority, status, coach);
     }
 }

@@ -1,6 +1,7 @@
 package com.team4.testingsystem.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 
 import java.io.Serializable;
@@ -53,6 +54,10 @@ public class Test implements Serializable {
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "priority")
+    private Priority priority;
+
     @Column(name = "deadline")
     private LocalDateTime deadline;
 
@@ -97,6 +102,10 @@ public class Test implements Serializable {
         return completedAt;
     }
 
+    public Priority getPriority() {
+        return priority;
+    }
+
     public LocalDateTime getDeadline() {
         return deadline;
     }
@@ -104,7 +113,6 @@ public class Test implements Serializable {
     public Status getStatus() {
         return status;
     }
-
 
     public User getCoach() {
         return coach;
@@ -136,6 +144,10 @@ public class Test implements Serializable {
 
     public void setDeadline(LocalDateTime deadline) {
         this.deadline = deadline;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 
     public void setStatus(Status status) {
@@ -209,6 +221,11 @@ public class Test implements Serializable {
             return this;
         }
 
+        public Builder priority(Priority priority) {
+            test.priority = priority;
+            return this;
+        }
+
         public Builder status(Status status) {
             test.status = status;
             return this;
@@ -248,6 +265,7 @@ public class Test implements Serializable {
                 && Objects.equals(startedAt, test.startedAt)
                 && Objects.equals(completedAt, test.completedAt)
                 && Objects.equals(deadline, test.deadline)
+                && Objects.equals(priority, test.priority)
                 && Objects.equals(status, test.status)
                 && Objects.equals(coach, test.coach)
                 && Objects.equals(questions, test.questions);
@@ -256,7 +274,7 @@ public class Test implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, user, level,
-                assignedAt, verifiedAt, startedAt, completedAt, deadline,
+                assignedAt, verifiedAt, startedAt, completedAt, deadline, priority,
                 status, coach, questions);
     }
 }
