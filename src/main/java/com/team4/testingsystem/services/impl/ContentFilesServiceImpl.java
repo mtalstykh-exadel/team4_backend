@@ -8,8 +8,8 @@ import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -40,12 +40,12 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     }
 
     @Override
-    public ContentFile add(Resource file, List<Question> questions) {
-        String url = storageService.upload(file);
+    public ContentFile add(MultipartFile file, List<Question> questions) {
+        String url = storageService.upload(file.getResource());
         return contentFilesRepository.save(new ContentFile(url, questions));
     }
 
-
+    @Transactional
     @Override
     public ContentFile update(MultipartFile file, Long id, List<Question> questions) {
         if (file == null) {
@@ -57,7 +57,7 @@ public class ContentFilesServiceImpl implements ContentFilesService {
         }
         contentFilesRepository.archiveContentFile(id);
         questionService.archiveQuestionsByContentFileId(id);
-        return add(file.getResource(), questions);
+        return add(file, questions);
     }
 
     @Override

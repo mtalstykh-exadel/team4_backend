@@ -13,7 +13,7 @@ public interface ContentFilesService {
 
     ContentFile getById(long id);
 
-    ContentFile add(Resource file, List<Question> questions);
+    ContentFile add(MultipartFile file, List<Question> questions);
 
     ContentFile update(MultipartFile file, Long id, List<Question> questions);
 

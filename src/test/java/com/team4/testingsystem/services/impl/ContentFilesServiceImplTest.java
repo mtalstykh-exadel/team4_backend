@@ -3,13 +3,10 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
-import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
-import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
-import javassist.bytecode.analysis.MultiType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,9 +29,6 @@ class ContentFilesServiceImplTest {
 
     @Mock
     MultipartFile file;
-
-    @Mock
-    Resource resource;
 
     @Mock
     ContentFile contentFile;
@@ -90,8 +84,8 @@ class ContentFilesServiceImplTest {
     void addSuccess() {
         List<Question> questions = new ArrayList<>();
 
-        Mockito.when(storageService.upload(resource)).thenReturn("some url");
-        contentFilesService.add(resource, questions);
+        Mockito.when(storageService.upload(file.getResource())).thenReturn("some url");
+        contentFilesService.add(file, questions);
         verify(contentFilesRepository).save(any());
     }
 

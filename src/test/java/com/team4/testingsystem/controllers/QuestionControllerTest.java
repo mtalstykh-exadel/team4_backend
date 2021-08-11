@@ -116,7 +116,6 @@ class QuestionControllerTest {
 
     @Test
     void addListening() {
-        Mockito.when(multipartFile.getResource()).thenReturn(resource);
         Mockito.when(contentFilesService.add(any(), any())).thenReturn(contentFile);
         Assertions.assertEquals(new ContentFileDTO(contentFile),
                 questionController.addListening(multipartFile, new ArrayList<>()));

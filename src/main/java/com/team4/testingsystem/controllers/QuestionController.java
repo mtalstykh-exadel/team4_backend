@@ -72,7 +72,7 @@ public class QuestionController {
     @PostMapping(value = "/listening")
     public ContentFileDTO addListening(@RequestPart MultipartFile file,
                                        @RequestPart List<QuestionDTO> questions) {
-        ContentFile contentFile = contentFilesService.add(file.getResource(), convertToEntity(questions));
+        ContentFile contentFile = contentFilesService.add(file, convertToEntity(questions));
         return new ContentFileDTO(contentFile);
     }
 

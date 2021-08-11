@@ -12,9 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface QuestionRepository extends CrudRepository<Question, Long> {
-    Optional<Question> findById(Long id);
-
-    Question save(Question question);
 
     @Modifying
     @Query(value = "update Question q set q.isAvailable = false where q.id = ?1")
@@ -39,12 +36,12 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
     List<Question> getQuestionsByTestId(Long id);
 
     @Query("select q from Question q "
-            + "where q.level.name = ?1 "
-            + "and q.module.name = ?2 ")
+           + "where q.level.name = ?1 "
+           + "and q.module.name = ?2 ")
     List<Question> getQuestionsByLevelAndModuleName(String level, String module);
 
     @Query("select q from Question q "
-            + "join q.tests t "
-            + "where t.id = ?1 and q.module.name = ?2 ")
+           + "join q.tests t "
+           + "where t.id = ?1 and q.module.name = ?2 ")
     Optional<Question> getQuestionByTestIdAndModule(Long testId, String moduleName);
 }
