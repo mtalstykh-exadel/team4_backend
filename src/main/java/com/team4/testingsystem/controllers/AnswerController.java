@@ -1,22 +1,32 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.services.AnswerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/answer")
 public class AnswerController {
 
-    @GetMapping("/essay")
-    public String downloadEssay(@RequestParam Long testId) {
-        return "";
+    private final AnswerService answerService;
+
+    @Autowired
+    public AnswerController(AnswerService answerService) {
+        this.answerService = answerService;
     }
 
-    @PostMapping("/essay")
-    public void uploadEssay(@RequestParam Long testId, @RequestBody String text) {
+    @GetMapping("/essay/{testId}")
+    public String downloadEssay(@PathVariable Long testId) {
+        return answerService.downloadEssay(testId);
+    }
+
+    @PostMapping("/essay/{testId}")
+    public void uploadEssay(@PathVariable Long testId, @RequestBody String text) {
+        answerService.uploadEssay(testId, text);
     }
 }
