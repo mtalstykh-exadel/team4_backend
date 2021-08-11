@@ -4,13 +4,23 @@ import com.team4.testingsystem.entities.FileAnswer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
+import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.services.FileAnswerService;
 import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.services.TestsService;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class FileAnswerServiceImpl implements FileAnswerService {
@@ -38,10 +48,16 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     }
 
     @Override
-    public FileAnswer addFileAnswer(MultipartFile file, Long testId, Modules module) {
+    public FileAnswer uploadSpeaking(MultipartFile file, Long testId, Modules module) {
         String url = storageService.upload(file.getResource());
         Question question = questionService.getQuestionByTestIdAndModule(testId, module);
         return save(testId, question.getId(), url);
+    }
+
+    @Override
+    public String downloadSpeaking(Long testId) {
+        Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.SPEAKING);
+        return getUrl(testId, question.getId());
     }
 
     @Override
@@ -63,7 +79,7 @@ public class FileAnswerServiceImpl implements FileAnswerService {
         Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
         String url = getUrl(testId, question.getId());
         try {
-            return IOUtils.toString(resourceStorageService.load(url).getInputStream(), StandardCharsets.UTF_8);
+            return IOUtils.toString(storageService.load(url).getInputStream(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new FileLoadingFailedException();
         }
@@ -75,20 +91,12 @@ public class FileAnswerServiceImpl implements FileAnswerService {
         Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
 
         InputStream inputStream = IOUtils.toInputStream(text, StandardCharsets.UTF_8);
-        String url = resourceStorageService.upload(new InputStreamResource(inputStream));
-
+        String url = storageService.upload(new InputStreamResource(inputStream));
         FileAnswer fileAnswer = FileAnswer.builder()
                 .id(new TestQuestionID(test, question))
                 .url(url)
                 .build();
         fileAnswerRepository.save(fileAnswer);
-    }
-
-    @Override
-    public String getSpeaking(Long testId) {
-        Question question = questionService
-                .getQuestionByTestIdAndModule(testId, Modules.SPEAKING);
-        return getUrl(testId, question.getId());
     }
 
     private TestQuestionID createId(Long testId, Long questionId) {

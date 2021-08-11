@@ -1,12 +1,14 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Answer;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.AnswerNotFoundException;
 import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.services.AnswerService;
 import com.team4.testingsystem.services.FileAnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class AnswerServiceImpl implements AnswerService {
@@ -33,5 +35,15 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public void uploadEssay(Long testId, String text) {
         fileAnswerService.uploadEssay(testId, text);
+    }
+
+    @Override
+    public String downloadSpeaking(Long testId) {
+        return fileAnswerService.downloadSpeaking(testId);
+    }
+
+    @Override
+    public String uploadSpeaking(MultipartFile file, Long testId, Modules module) {
+        return fileAnswerService.uploadSpeaking(file, testId, module).getUrl();
     }
 }

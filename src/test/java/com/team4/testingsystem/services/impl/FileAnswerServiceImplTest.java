@@ -4,12 +4,18 @@ import com.team4.testingsystem.entities.FileAnswer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
+import com.team4.testingsystem.exceptions.FileLoadingFailedException;
+import com.team4.testingsystem.exceptions.FileSavingFailedException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.services.TestsService;
+import com.team4.testingsystem.utils.EntityCreatorUtil;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -17,6 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.InputStreamResource;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -144,7 +151,7 @@ class FileAnswerServiceImplTest {
         Mockito.when(fileAnswerRepository
                 .findByTestAndQuestionId(any(), any())).thenReturn(Optional.of(fileAnswer));
         Mockito.when(fileAnswerService.getUrl(any(), any())).thenReturn("some url");
-        Assertions.assertEquals("some url", fileAnswerService.getSpeaking(EntityCreatorUtil.ID));
+        Assertions.assertEquals("some url", fileAnswerService.downloadSpeaking(EntityCreatorUtil.ID));
     }
 
     @org.junit.jupiter.api.Test

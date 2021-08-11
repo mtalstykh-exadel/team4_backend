@@ -7,7 +7,9 @@ import org.springframework.web.multipart.MultipartFile;
 public interface FileAnswerService {
     String getUrl(Long testId, Long questionId);
 
-    FileAnswer addFileAnswer(MultipartFile file, Long testId, Modules module);
+    FileAnswer uploadSpeaking(MultipartFile file, Long testId, Modules module);
+
+    String downloadSpeaking(Long testId);
 
     FileAnswer save(Long testId, Long questionId, String url);
 
@@ -17,5 +19,4 @@ public interface FileAnswerService {
 
     void uploadEssay(Long testId, String text);
 
-    String getSpeaking(Long testId);
 }
