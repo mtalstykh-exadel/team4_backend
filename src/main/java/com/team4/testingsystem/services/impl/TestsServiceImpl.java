@@ -20,10 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -166,7 +164,7 @@ public class TestsServiceImpl implements TestsService {
         return test;
     }
 
-    private void setTimer(long id){
+    private void setTimer(long id) {
         TimerTask task = new TimerTask() {
             public void run() {
                 finish(id);

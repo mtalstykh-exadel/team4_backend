@@ -80,7 +80,7 @@ public class TestsController {
 
     @ApiOperation(value = "Is used to get time left (in seconds)")
     @GetMapping(path = "/time/{testId}")
-    public long getTimeLeft(@PathVariable("testId") long testId){
+    public long getTimeLeft(@PathVariable("testId") long testId) {
         return testsService.getTimeLeft(testId);
     }
 
