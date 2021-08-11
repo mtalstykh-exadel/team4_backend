@@ -17,7 +17,7 @@ public interface UsersRepository extends CrudRepository<User, Long> {
 
     List<User> findAll();
 
-    List<User> findAllByNameContainsIgnoreCase(String nameLike);
+    List<User> findAllByNameContainsIgnoreCase(String nameSubstring);
 
     @Transactional
     @Modifying

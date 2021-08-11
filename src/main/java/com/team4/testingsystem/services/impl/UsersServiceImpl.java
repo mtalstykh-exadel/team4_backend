@@ -43,8 +43,8 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public List<User> getByNameLike(String nameLike) {
-        return usersRepository.findAllByNameContainsIgnoreCase(nameLike);
+    public List<User> getByNameLike(String nameSubstring) {
+        return usersRepository.findAllByNameContainsIgnoreCase(nameSubstring);
     }
 
     @Override

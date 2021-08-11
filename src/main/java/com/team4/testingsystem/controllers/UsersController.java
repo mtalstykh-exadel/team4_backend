@@ -44,8 +44,8 @@ public class UsersController {
 
     @ApiOperation("Get users by name substring (ignoring case)")
     @GetMapping("/users")
-    public List<UserDTO> getAllUsersByNameLike(@RequestParam String nameLike) {
-        return convertToDTO(usersService.getByNameLike(nameLike));
+    public List<UserDTO> getAllUsersByNameLike(@RequestParam String name) {
+        return convertToDTO(usersService.getByNameLike(name));
     }
 
     @ApiOperation(value = "Update current user's language")
