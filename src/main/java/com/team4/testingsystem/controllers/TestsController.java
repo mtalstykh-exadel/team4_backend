@@ -82,7 +82,7 @@ public class TestsController {
     @ApiResponse(code = 200, message = "Created test's id")
     @PostMapping(path = "/assign/{userId}")
     public long assign(@PathVariable("userId") long userId, @RequestBody AssignTestRequest request) {
-        return testsService.assignForUser(userId, request.getLevel(), request.getDeadline());
+        return testsService.assignForUser(userId, request.getLevel(), request.getDeadline(), request.getPriority());
     }
 
     @ApiOperation(value = "Is used when to deassign tests (HR)")

@@ -4,16 +4,13 @@ import com.team4.testingsystem.entities.FileAnswer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
-import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.services.FileAnswerService;
 import com.team4.testingsystem.services.QuestionService;
-import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.services.TestsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileAnswerServiceImpl implements FileAnswerService {
@@ -63,7 +60,28 @@ public class FileAnswerServiceImpl implements FileAnswerService {
 
     @Override
     public String downloadEssay(Long testId) {
-        return null;
+        Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
+        String url = getUrl(testId, question.getId());
+        try {
+            return IOUtils.toString(resourceStorageService.load(url).getInputStream(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new FileLoadingFailedException();
+        }
+    }
+
+    @Override
+    public void uploadEssay(Long testId, String text) {
+        Test test = testsService.getById(testId);
+        Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
+
+        InputStream inputStream = IOUtils.toInputStream(text, StandardCharsets.UTF_8);
+        String url = resourceStorageService.upload(new InputStreamResource(inputStream));
+
+        FileAnswer fileAnswer = FileAnswer.builder()
+                .id(new TestQuestionID(test, question))
+                .url(url)
+                .build();
+        fileAnswerRepository.save(fileAnswer);
     }
 
     @Override

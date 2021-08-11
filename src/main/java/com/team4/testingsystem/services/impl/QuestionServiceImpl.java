@@ -76,7 +76,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<Question> getQuestionsByLevelAndModuleName(Levels level, Modules module) {
-        return questionRepository.getQuestionsByLevelAndModuleName(level, module);
+        return questionRepository.getQuestionsByLevelAndModuleName(level.name(), module.getName());
     }
 
     @Override

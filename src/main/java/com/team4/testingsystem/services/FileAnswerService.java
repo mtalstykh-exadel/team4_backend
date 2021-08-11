@@ -15,5 +15,7 @@ public interface FileAnswerService {
 
     String downloadEssay(Long testId);
 
+    void uploadEssay(Long testId, String text);
+
     String getSpeaking(Long testId);
 }

@@ -2,6 +2,7 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.dto.AnswerDTO;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.QuestionRepository;
@@ -104,8 +105,10 @@ class QuestionServiceImplTest {
     @Test
     void getQuestionsByLevelAndModuleName() {
         List<Question> questions = new ArrayList<>();
-        Mockito.when(questionRepository.getQuestionsByLevelAndModuleName(any(), any())).thenReturn(questions);
-        Assertions.assertEquals(questions, questionService.getQuestionsByLevelAndModuleName(any(), any()));
+        Mockito.when(questionRepository.getQuestionsByLevelAndModuleName(Levels.A1.name(), Modules.ESSAY.getName()))
+                .thenReturn(questions);
+        Assertions.assertEquals(questions,
+                questionService.getQuestionsByLevelAndModuleName(Levels.A1, Modules.ESSAY));
     }
 
     @Test
