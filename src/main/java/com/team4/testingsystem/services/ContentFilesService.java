@@ -2,7 +2,6 @@ package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
-import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
