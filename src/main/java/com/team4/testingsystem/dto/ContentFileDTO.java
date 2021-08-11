@@ -1,18 +1,18 @@
 package com.team4.testingsystem.dto;
 
 import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.Question;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ContentFileDTO implements Serializable {
 
     private Long id;
     private String url;
     private String topic;
-    private List<Question> questions;
+    private List<QuestionDTO> questions;
 
     public ContentFileDTO() {
     }
@@ -21,7 +21,9 @@ public class ContentFileDTO implements Serializable {
         id = contentFile.getId();
         url = contentFile.getUrl();
         topic = contentFile.getTopic();
-        questions = contentFile.getQuestions();
+        questions = contentFile.getQuestions().stream()
+                .map(QuestionDTO::create)
+                .collect(Collectors.toList());
     }
 
 
@@ -47,10 +49,6 @@ public class ContentFileDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public List<Question> getQuestions() {
-        return questions;
     }
 
     @Override
