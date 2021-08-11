@@ -1,10 +1,11 @@
 package com.team4.testingsystem.converters;
 
+import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.dto.ReportedQuestionDTO;
 import com.team4.testingsystem.dto.TestVerificationDTO;
-import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.services.AnswerService;
 import com.team4.testingsystem.services.ErrorReportsService;
@@ -31,17 +32,35 @@ public class TestVerificationConverter {
                 .map(ReportedQuestionDTO::new)
                 .collect(Collectors.toList());
 
-        Question essayQuestion = test.getQuestions().stream()
-                .filter(question -> question.getModule().getName().equals(Modules.ESSAY.getName()))
-                .findFirst()
-                .orElseThrow(QuestionNotFoundException::new);
+        String essayText;
+        try {
+            essayText = answerService.downloadEssay(test.getId());
+        } catch (FileAnswerNotFoundException e) {
+            essayText = null;
+        }
 
-        Question listeningQuestion = test.getQuestions().stream()
-                .filter(question -> question.getModule().getName().equals(Modules.LISTENING.getName()))
-                .findFirst()
-                .orElseThrow(QuestionNotFoundException::new);
+        String speakingUrl;
+        try {
+            speakingUrl = answerService.downloadSpeaking(test.getId());
+        } catch (FileAnswerNotFoundException e) {
+            speakingUrl = null;
+        }
 
         return TestVerificationDTO.builder()
+                .testId(test.getId())
+                .reportedQuestions(reportedQuestions)
+                .essayQuestion(extractQuestionDTO(test, Modules.ESSAY))
+                .essayText(essayText)
+                .speakingQuestion(extractQuestionDTO(test, Modules.SPEAKING))
+                .speakingUrl(speakingUrl)
                 .build();
+    }
+
+    private QuestionDTO extractQuestionDTO(Test test, Modules module) {
+        return test.getQuestions().stream()
+                .filter(question -> question.getModule().getName().equals(module.getName()))
+                .findFirst()
+                .map(QuestionDTO::create)
+                .orElseThrow(QuestionNotFoundException::new);
     }
 }

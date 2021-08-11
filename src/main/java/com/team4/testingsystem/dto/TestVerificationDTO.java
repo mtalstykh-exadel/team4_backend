@@ -2,6 +2,7 @@ package com.team4.testingsystem.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 public class TestVerificationDTO implements Serializable {
     private Long testId;
@@ -103,5 +104,27 @@ public class TestVerificationDTO implements Serializable {
         public TestVerificationDTO build() {
             return dto;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TestVerificationDTO that = (TestVerificationDTO) o;
+        return Objects.equals(testId, that.testId)
+                && Objects.equals(reportedQuestions, that.reportedQuestions)
+                && Objects.equals(essayQuestion, that.essayQuestion)
+                && Objects.equals(essayText, that.essayText)
+                && Objects.equals(speakingQuestion, that.speakingQuestion)
+                && Objects.equals(speakingUrl, that.speakingUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(testId, reportedQuestions, essayQuestion, essayText, speakingQuestion, speakingUrl);
     }
 }
