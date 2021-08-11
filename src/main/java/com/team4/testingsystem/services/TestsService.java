@@ -3,6 +3,7 @@ package com.team4.testingsystem.services;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.UserTest;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 
 import java.time.LocalDateTime;
@@ -22,15 +23,15 @@ public interface TestsService {
 
     long startForUser(long userId, Levels level);
 
-    long assignForUser(long userId, Levels level, LocalDateTime deadline);
+    long assignForUser(long userId, Levels level, LocalDateTime deadline, Priority priority);
 
     Test start(long id);
+
+    void deassign(long id);
 
     void finish(long id);
 
     void update(long id);
-
-    void removeById(long id);
 
     void assignCoach(long id, long coachId);
 

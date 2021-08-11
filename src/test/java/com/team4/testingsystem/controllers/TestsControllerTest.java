@@ -9,6 +9,7 @@ import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.ModuleGradeNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
@@ -119,19 +120,19 @@ class TestsControllerTest {
     }
 
     @org.junit.jupiter.api.Test
-    void getGradesFailTestNotFound(){
+    void getGradesFailTestNotFound() {
 
         Mockito.when(testsService.getById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
 
-        Assertions.assertThrows(TestNotFoundException.class, ()-> testsController.getGrades(BAD_TEST_ID));
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsController.getGrades(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
-    void getGradesFailModuleGradeNotFound(){
+    void getGradesFailModuleGradeNotFound() {
 
         Mockito.when(testsService.getById(BAD_TEST_ID)).thenThrow(ModuleGradeNotFoundException.class);
 
-        Assertions.assertThrows(ModuleGradeNotFoundException.class, ()-> testsController.getGrades(BAD_TEST_ID));
+        Assertions.assertThrows(ModuleGradeNotFoundException.class, () -> testsController.getGrades(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
@@ -153,9 +154,9 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void assignSuccess() {
-        AssignTestRequest request = new AssignTestRequest(Levels.A1, LocalDateTime.now());
+        AssignTestRequest request = new AssignTestRequest(Levels.A1, LocalDateTime.now(), Priority.MEDIUM);
 
-        Mockito.when(testsService.assignForUser(GOOD_USER_ID, Levels.A1, request.getDeadline()))
+        Mockito.when(testsService.assignForUser(GOOD_USER_ID, Levels.A1, request.getDeadline(), Priority.MEDIUM))
                 .thenReturn(1L);
 
         Assertions.assertEquals(1L, testsController.assign(GOOD_USER_ID, request));
@@ -163,12 +164,26 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void assignFail() {
-        AssignTestRequest request = new AssignTestRequest(Levels.A1, LocalDateTime.now());
+        AssignTestRequest request = new AssignTestRequest(Levels.A1, LocalDateTime.now(), Priority.LOW);
 
-        Mockito.when(testsService.assignForUser(BAD_USER_ID, Levels.A1, request.getDeadline()))
+        Mockito.when(testsService.assignForUser(BAD_USER_ID, Levels.A1, request.getDeadline(),  Priority.LOW))
                 .thenThrow(UserNotFoundException.class);
 
         Assertions.assertThrows(UserNotFoundException.class, () -> testsController.assign(BAD_USER_ID, request));
+    }
+
+    @org.junit.jupiter.api.Test
+    void deassignSuccess() {
+        testsController.deassign(GOOD_TEST_ID);
+
+        verify(testsService).deassign(GOOD_TEST_ID);
+    }
+
+    @org.junit.jupiter.api.Test
+    void deassignFail() {
+        doThrow(TestNotFoundException.class).when(testsService).deassign(BAD_TEST_ID);
+
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsController.deassign(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test

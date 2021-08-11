@@ -2,13 +2,10 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.dto.AnswerDTO;
 import com.team4.testingsystem.entities.Answer;
-import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
-import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
-import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +79,13 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<Question> getQuestionsByLevelAndModuleName(Levels level, Modules module) {
-        return questionRepository.getQuestionsByLevelAndModuleName(level, module);
+        return questionRepository.getQuestionsByLevelAndModuleName(level.name(), module.getName());
+    }
+
+    @Override
+    public Question getQuestionByTestIdAndModule(Long testId, Modules module) {
+        return questionRepository.getQuestionByTestIdAndModule(testId, module.getName())
+                .orElseThrow(QuestionNotFoundException::new);
     }
 
     @Transactional

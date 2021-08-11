@@ -5,6 +5,7 @@ import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.entities.UserTest;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
@@ -95,6 +96,7 @@ public class TestsServiceImpl implements TestsService {
         Test test = createForUser(userId, levelName)
                 .startedAt(LocalDateTime.now())
                 .status(Status.STARTED)
+                .priority(Priority.LOW)
                 .build();
 
         testsRepository.save(test);
@@ -102,15 +104,26 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public long assignForUser(long userId, Levels levelName, LocalDateTime deadline) {
+    public long assignForUser(long userId, Levels levelName, LocalDateTime deadline, Priority priority) {
         Test test = createForUser(userId, levelName)
                 .assignedAt(LocalDateTime.now())
                 .deadline(deadline)
                 .status(Status.ASSIGNED)
+                .priority(priority)
                 .build();
 
         testsRepository.save(test);
         return test.getId();
+    }
+
+    @Override
+    public void deassign(long id) {
+        Test test = getById(id);
+        if (test.getStartedAt() == null) {
+            testsRepository.removeById(id);
+        } else {
+            testsRepository.deassign(id);
+        }
     }
 
     private Test.Builder createForUser(long userId, Levels levelName) {
@@ -141,13 +154,6 @@ public class TestsServiceImpl implements TestsService {
     public void update(long id) {
         testEvaluationService.updateScoreAfterCoachCheck(getById(id));
         testsRepository.updateEvaluation(LocalDateTime.now(), id);
-    }
-
-    @Override
-    public void removeById(long id) {
-        if (testsRepository.removeById(id) == 0) {
-            throw new TestNotFoundException();
-        }
     }
 
     @Override

@@ -82,7 +82,13 @@ public class TestsController {
     @ApiResponse(code = 200, message = "Created test's id")
     @PostMapping(path = "/assign/{userId}")
     public long assign(@PathVariable("userId") long userId, @RequestBody AssignTestRequest request) {
-        return testsService.assignForUser(userId, request.getLevel(), request.getDeadline());
+        return testsService.assignForUser(userId, request.getLevel(), request.getDeadline(), request.getPriority());
+    }
+
+    @ApiOperation(value = "Is used when to deassign tests (HR)")
+    @PostMapping(path = "/deassign/{testId}")
+    public void deassign(@PathVariable("testId") long testId) {
+        testsService.deassign(testId);
     }
 
     @ApiOperation(value =
@@ -94,6 +100,7 @@ public class TestsController {
         long createdTestId = testsService.startForUser(userId, level);
         return testConverter.convertToDTO(testsService.start(createdTestId));
     }
+
 
     @ApiOperation(value = "Is used when the user starts the test which was assigned by an HR")
     @PostMapping(path = "/start/{testId}")

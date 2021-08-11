@@ -9,6 +9,7 @@ import java.util.Objects;
 public class TestInfo implements Serializable {
     private String level;
     private LocalDateTime deadline;
+    private String priority;
 
     public TestInfo() {
     }
@@ -16,6 +17,7 @@ public class TestInfo implements Serializable {
     public TestInfo(Test test) {
         this.level = test.getLevel().getName();
         this.deadline = test.getDeadline();
+        this.priority = test.getPriority().getName();
     }
 
     public String getLevel() {
@@ -34,6 +36,14 @@ public class TestInfo implements Serializable {
         this.deadline = deadline;
     }
 
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -44,11 +54,12 @@ public class TestInfo implements Serializable {
         }
         TestInfo testInfo = (TestInfo) o;
         return Objects.equals(level, testInfo.level)
-                && Objects.equals(deadline, testInfo.deadline);
+                && Objects.equals(deadline, testInfo.deadline)
+                && Objects.equals(priority, testInfo.priority);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(level, deadline);
+        return Objects.hash(level, deadline, priority);
     }
 }

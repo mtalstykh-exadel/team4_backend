@@ -1,12 +1,8 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.dto.AnswerDTO;
-import com.team4.testingsystem.entities.Answer;
-import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
-import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
@@ -119,11 +115,28 @@ class QuestionServiceImplTest {
     }
 
     @Test
-    void getQuestionsByLevelAndModuleName(){
+    void getQuestionsByLevelAndModuleName() {
         List<Question> questions = new ArrayList<>();
-        Mockito.when(questionRepository.getQuestionsByLevelAndModuleName(any(), any())).thenReturn(questions);
-        Assertions.assertEquals(questions, questionService.getQuestionsByLevelAndModuleName(any(), any()));
+        Mockito.when(questionRepository.getQuestionsByLevelAndModuleName(Levels.A1.name(), Modules.ESSAY.getName()))
+                .thenReturn(questions);
+        Assertions.assertEquals(questions,
+                questionService.getQuestionsByLevelAndModuleName(Levels.A1, Modules.ESSAY));
     }
 
+    @Test
+    void getQuestionByTestIdAndModuleNotFound() {
+        Mockito.when(questionRepository.getQuestionByTestIdAndModule(1L, Modules.ESSAY.getName()))
+                .thenReturn(Optional.empty());
 
+        Assertions.assertThrows(QuestionNotFoundException.class,
+                () -> questionService.getQuestionByTestIdAndModule(1L, Modules.ESSAY));
+    }
+
+    @Test
+    void getQuestionByTestIdAndModuleSuccess() {
+        Mockito.when(questionRepository.getQuestionByTestIdAndModule(1L, Modules.ESSAY.getName()))
+                .thenReturn(Optional.of(question));
+
+        Assertions.assertEquals(question, questionService.getQuestionByTestIdAndModule(1L, Modules.ESSAY));
+    }
 }
