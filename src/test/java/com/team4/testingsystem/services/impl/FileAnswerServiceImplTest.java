@@ -15,6 +15,7 @@ import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
+import liquibase.pro.packaged.U;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -54,6 +56,9 @@ class FileAnswerServiceImplTest {
 
     @Mock
     private Question question;
+
+    @Mock
+    MultipartFile file;
 
     @InjectMocks
     private FileAnswerServiceImpl fileAnswerService;
@@ -145,13 +150,29 @@ class FileAnswerServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void getSpeaking() {
+    void downloadSpeakingSuccess() {
         Mockito.when(questionService
                 .getQuestionByTestIdAndModule(any(), any())).thenReturn(question);
         Mockito.when(fileAnswerRepository
                 .findByTestAndQuestionId(any(), any())).thenReturn(Optional.of(fileAnswer));
-        Mockito.when(fileAnswerService.getUrl(any(), any())).thenReturn("some url");
-        Assertions.assertEquals("some url", fileAnswerService.downloadSpeaking(EntityCreatorUtil.ID));
+        Mockito.when(fileAnswerService.getUrl(any(), any())).thenReturn(URL);
+        Assertions.assertEquals(URL, fileAnswerService.downloadSpeaking(EntityCreatorUtil.ID));
+    }
+
+    @org.junit.jupiter.api.Test
+    void downloadSpeakingQuestionNotFound() {
+        Mockito.doThrow(QuestionNotFoundException.class)
+                .when(questionService).getQuestionByTestIdAndModule(TEST_ID, Modules.SPEAKING);
+        Assertions.assertThrows(QuestionNotFoundException.class,
+                () -> fileAnswerService.downloadSpeaking(TEST_ID));
+    }
+
+    @org.junit.jupiter.api.Test
+    void downloadSpeakingFileAnswerNotFound() {
+        Mockito.doThrow(FileAnswerNotFoundException.class)
+                .when(questionService).getQuestionByTestIdAndModule(TEST_ID, Modules.SPEAKING);
+        Assertions.assertThrows(FileAnswerNotFoundException.class,
+                () -> fileAnswerService.downloadSpeaking(TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
