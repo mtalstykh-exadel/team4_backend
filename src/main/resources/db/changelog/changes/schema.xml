@@ -607,6 +607,10 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="remove_id_from_file_answer" author="Darina">
+        <dropColumn tableName="file_answer" columnName="id"/>
+    </changeSet>
+
     <changeSet id="add_priority" author="Anlord241">
         <addColumn tableName="test">
             <column name="priority" type="text"/>
