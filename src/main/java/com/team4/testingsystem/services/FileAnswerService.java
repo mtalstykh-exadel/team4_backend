@@ -1,14 +1,22 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.dto.FileAnswerRequest;
 import com.team4.testingsystem.entities.FileAnswer;
+import com.team4.testingsystem.enums.Modules;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface FileAnswerService {
-    FileAnswer getById(long id);
+    String getUrl(Long testId, Long questionId);
 
-    void create(FileAnswerRequest fileAnswerRequest);
+    FileAnswer uploadSpeaking(MultipartFile file, Long testId, Modules module);
 
-    void update(long id, FileAnswerRequest fileAnswerRequest);
+    String downloadSpeaking(Long testId);
 
-    void removeById(long id);
+    FileAnswer save(Long testId, Long questionId, String url);
+
+    void remove(Long testId, Long questionId);
+
+    String downloadEssay(Long testId);
+
+    void uploadEssay(Long testId, String text);
+
 }
