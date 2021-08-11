@@ -85,6 +85,12 @@ public class TestsController {
         return testsService.assignForUser(userId, request.getLevel(), request.getDeadline(), request.getPriority());
     }
 
+    @ApiOperation(value = "Is used when to deassign tests (HR)")
+    @PostMapping(path = "/deassign/{testId}")
+    public void deassign(@PathVariable("testId") long testId) {
+        testsService.deassign(testId);
+    }
+
     @ApiOperation(value =
             "Is used when the user wants to learn one's level by oneself (without any HRs)")
     @ApiResponse(code = 409, message = "You can start only 3 tests per day. If you want more, ask HR")
@@ -94,6 +100,7 @@ public class TestsController {
         long createdTestId = testsService.startForUser(userId, level);
         return testConverter.convertToDTO(testsService.start(createdTestId));
     }
+
 
     @ApiOperation(value = "Is used when the user starts the test which was assigned by an HR")
     @PostMapping(path = "/start/{testId}")

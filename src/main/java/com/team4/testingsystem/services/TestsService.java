@@ -27,11 +27,11 @@ public interface TestsService {
 
     Test start(long id);
 
+    void deassign(long id);
+
     void finish(long id);
 
     void update(long id);
-
-    void removeById(long id);
 
     void assignCoach(long id, long coachId);
 
