@@ -47,6 +47,12 @@ public class EntityCreatorUtil {
                 .build();
     }
 
+    public static Question createQuestion(Modules module) {
+        Question question = createQuestion();
+        question.getModule().setName(module.getName());
+        return question;
+    }
+
     public static QuestionDTO createQuestionDto() {
         return QuestionDTO.create(createQuestion());
     }
