@@ -612,5 +612,10 @@
             <column name="priority" type="text"/>
         </addColumn>
     </changeSet>
-    
+
+    <changeSet author="add-default-priority" id="addNotNullConstraint-example">
+        <addNotNullConstraint tableName="test"
+                              columnName="priority"
+                              defaultNullValue="LOW"/>
+    </changeSet>
 </databaseChangeLog>
