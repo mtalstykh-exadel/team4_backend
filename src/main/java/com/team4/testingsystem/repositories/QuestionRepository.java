@@ -41,12 +41,12 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
     List<Question> getQuestionsByTestId(Long id);
 
     @Query("select q from Question q "
-            + "where q.level = ?1"
-            + "and q.module = ?2")
-    List<Question> getQuestionsByLevelAndModuleName(Levels level, Modules module);
+            + "where q.level.name = ?1 "
+            + "and q.module.name = ?2 ")
+    List<Question> getQuestionsByLevelAndModuleName(String level, String module);
 
     @Query("select q from Question q "
             + "join q.tests t "
-            + "where t.id = ?1 and q.module.name = ?2")
+            + "where t.id = ?1 and q.module.name = ?2 ")
     Optional<Question> getQuestionByTestIdAndModule(Long testId, String moduleName);
 }

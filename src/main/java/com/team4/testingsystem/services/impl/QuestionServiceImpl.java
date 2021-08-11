@@ -76,12 +76,12 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<Question> getQuestionsByLevelAndModuleName(Levels level, Modules module) {
-        return questionRepository.getQuestionsByLevelAndModuleName(level, module);
+        return questionRepository.getQuestionsByLevelAndModuleName(level.name(), module.getName());
     }
 
     @Override
     public Question getQuestionByTestIdAndModule(Long testId, Modules module) {
-        return questionRepository.getQuestionByTestIdAndModule(testId, module.name())
+        return questionRepository.getQuestionByTestIdAndModule(testId, module.getName())
                 .orElseThrow(QuestionNotFoundException::new);
     }
 }
