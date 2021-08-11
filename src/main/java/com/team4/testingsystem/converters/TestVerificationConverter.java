@@ -48,6 +48,7 @@ public class TestVerificationConverter {
 
         return TestVerificationDTO.builder()
                 .testId(test.getId())
+                .testLevel(test.getLevel().getName())
                 .reportedQuestions(reportedQuestions)
                 .essayQuestion(extractQuestionDTO(test, Modules.ESSAY))
                 .essayText(essayText)

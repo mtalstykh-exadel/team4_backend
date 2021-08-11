@@ -1,7 +1,6 @@
 package com.team4.testingsystem.dto;
 
 import com.team4.testingsystem.entities.ErrorReport;
-import com.team4.testingsystem.entities.Question;
 
 import java.io.Serializable;
 import java.util.Objects;

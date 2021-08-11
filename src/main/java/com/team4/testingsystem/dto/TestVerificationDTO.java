@@ -1,11 +1,15 @@
 package com.team4.testingsystem.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TestVerificationDTO implements Serializable {
     private Long testId;
+    private String testLevel;
     private List<ReportedQuestionDTO> reportedQuestions;
     private QuestionDTO essayQuestion;
     private String essayText;
@@ -18,6 +22,14 @@ public class TestVerificationDTO implements Serializable {
 
     public void setTestId(Long testId) {
         this.testId = testId;
+    }
+
+    public String getTestLevel() {
+        return testLevel;
+    }
+
+    public void setTestLevel(String testLevel) {
+        this.testLevel = testLevel;
     }
 
     public List<ReportedQuestionDTO> getReportedQuestions() {
@@ -76,6 +88,11 @@ public class TestVerificationDTO implements Serializable {
             return this;
         }
 
+        public Builder testLevel(String testLevel) {
+            dto.testLevel = testLevel;
+            return this;
+        }
+
         public Builder reportedQuestions(List<ReportedQuestionDTO> reportedQuestions) {
             dto.reportedQuestions = reportedQuestions;
             return this;
@@ -116,6 +133,7 @@ public class TestVerificationDTO implements Serializable {
         }
         TestVerificationDTO that = (TestVerificationDTO) o;
         return Objects.equals(testId, that.testId)
+                && Objects.equals(testLevel, that.testLevel)
                 && Objects.equals(reportedQuestions, that.reportedQuestions)
                 && Objects.equals(essayQuestion, that.essayQuestion)
                 && Objects.equals(essayText, that.essayText)
@@ -125,6 +143,7 @@ public class TestVerificationDTO implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(testId, reportedQuestions, essayQuestion, essayText, speakingQuestion, speakingUrl);
+        return Objects.hash(testId, testLevel, reportedQuestions,
+                essayQuestion, essayText, speakingQuestion, speakingUrl);
     }
 }

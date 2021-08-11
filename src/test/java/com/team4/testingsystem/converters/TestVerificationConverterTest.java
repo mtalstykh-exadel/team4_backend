@@ -4,6 +4,7 @@ import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.dto.ReportedQuestionDTO;
 import com.team4.testingsystem.dto.TestVerificationDTO;
 import com.team4.testingsystem.entities.ErrorReport;
+import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
@@ -41,13 +42,15 @@ class TestVerificationConverterTest {
     private static final String ERROR_REPORT_BODY = "error here!!!";
 
     private Test test;
+    private Level level;
     private Question essayQuestion;
     private Question speakingQuestion;
     private ErrorReport errorReport;
 
     @BeforeEach
     void init() {
-        test = EntityCreatorUtil.createTest(EntityCreatorUtil.createUser(), EntityCreatorUtil.createLevel());
+        level = EntityCreatorUtil.createLevel();
+        test = EntityCreatorUtil.createTest(EntityCreatorUtil.createUser(), level);
         test.setId(TEST_ID);
 
         essayQuestion = EntityCreatorUtil.createQuestion(Modules.ESSAY);
@@ -69,6 +72,8 @@ class TestVerificationConverterTest {
 
         TestVerificationDTO dto = converter.convertToVerificationDTO(test);
 
+        Assertions.assertEquals(TEST_ID, dto.getTestId());
+        Assertions.assertEquals(level.getName(), dto.getTestLevel());
         Assertions.assertTrue(dto.getReportedQuestions().isEmpty());
         Assertions.assertEquals(QuestionDTO.create(essayQuestion), dto.getEssayQuestion());
         Assertions.assertEquals(ESSAY_TEXT, dto.getEssayText());
@@ -84,6 +89,8 @@ class TestVerificationConverterTest {
 
         TestVerificationDTO dto = converter.convertToVerificationDTO(test);
 
+        Assertions.assertEquals(TEST_ID, dto.getTestId());
+        Assertions.assertEquals(level.getName(), dto.getTestLevel());
         Assertions.assertEquals(1, dto.getReportedQuestions().size());
         Assertions.assertEquals(new ReportedQuestionDTO(errorReport), dto.getReportedQuestions().get(0));
         Assertions.assertEquals(QuestionDTO.create(essayQuestion), dto.getEssayQuestion());
@@ -100,6 +107,8 @@ class TestVerificationConverterTest {
 
         TestVerificationDTO dto = converter.convertToVerificationDTO(test);
 
+        Assertions.assertEquals(TEST_ID, dto.getTestId());
+        Assertions.assertEquals(level.getName(), dto.getTestLevel());
         Assertions.assertEquals(1, dto.getReportedQuestions().size());
         Assertions.assertEquals(new ReportedQuestionDTO(errorReport), dto.getReportedQuestions().get(0));
         Assertions.assertEquals(QuestionDTO.create(essayQuestion), dto.getEssayQuestion());
@@ -116,6 +125,8 @@ class TestVerificationConverterTest {
 
         TestVerificationDTO dto = converter.convertToVerificationDTO(test);
 
+        Assertions.assertEquals(TEST_ID, dto.getTestId());
+        Assertions.assertEquals(level.getName(), dto.getTestLevel());
         Assertions.assertEquals(1, dto.getReportedQuestions().size());
         Assertions.assertEquals(new ReportedQuestionDTO(errorReport), dto.getReportedQuestions().get(0));
         Assertions.assertEquals(QuestionDTO.create(essayQuestion), dto.getEssayQuestion());
