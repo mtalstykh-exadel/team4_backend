@@ -20,9 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -104,6 +109,19 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
+    public long getTimeLeft(long testId) {
+        Test test = getById(testId);
+        long timeLeft = test.getStartedAt().plusMinutes(40).toEpochSecond(ZoneOffset.UTC)
+                - LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+
+        if (timeLeft < 0) {
+            timeLeft = 0;
+        }
+        return timeLeft;
+    }
+
+
+    @Override
     public long assignForUser(long userId, Levels levelName, LocalDateTime deadline, Priority priority) {
         Test test = createForUser(userId, levelName)
                 .assignedAt(LocalDateTime.now())
@@ -136,12 +154,27 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public Test start(long id) {
+
         if (testsRepository.start(LocalDateTime.now(), id) == 0) {
             throw new TestNotFoundException();
         }
         Test test = testGeneratingService.formTest(getById(id));
         save(test);
+        setTimer(id);
         return test;
+    }
+
+    private void setTimer(long id){
+        TimerTask task = new TimerTask() {
+            public void run() {
+                finish(id);
+            }
+        };
+        
+        Timer timer = new Timer(String.valueOf(id));
+
+        long delay = 240000;
+        timer.schedule(task, delay);
     }
 
     @Override
