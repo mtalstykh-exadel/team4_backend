@@ -3,6 +3,7 @@ package com.team4.testingsystem.converters;
 import static java.util.stream.Collectors.groupingBy;
 
 import com.team4.testingsystem.dto.ContentFileDTO;
+import com.team4.testingsystem.dto.ListeningTopicRequest;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.ContentFile;
@@ -55,6 +56,6 @@ public class TestConverter {
                 .findFirst()
                 .orElseThrow(ContentFileNotFoundException::new);
 
-        testDTO.setContentFile(new ContentFileDTO(contentFile));
+        testDTO.setContentFile(new ListeningTopicRequest(contentFile));
     }
 }

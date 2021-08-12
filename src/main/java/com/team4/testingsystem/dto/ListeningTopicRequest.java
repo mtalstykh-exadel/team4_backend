@@ -1,21 +1,23 @@
-package com.team4.testingsystem.entities;
+package com.team4.testingsystem.dto;
 
-import com.team4.testingsystem.dto.QuestionDTO;
+import com.team4.testingsystem.entities.ContentFile;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
 public class ListeningTopicRequest implements Serializable {
+    private Long id;
+    private String url;
     private String topic;
-    private List<QuestionDTO> questions;
 
     public ListeningTopicRequest() {
     }
 
-    public ListeningTopicRequest(String topic, List<QuestionDTO> questions) {
-        this.topic = topic;
-        this.questions = questions;
+    public ListeningTopicRequest(ContentFile contentFile) {
+        id = contentFile.getId();
+        url = contentFile.getUrl();
+        topic = contentFile.getTopic();
     }
 
     public String getTopic() {
@@ -26,12 +28,20 @@ public class ListeningTopicRequest implements Serializable {
         this.topic = topic;
     }
 
-    public List<QuestionDTO> getQuestions() {
-        return questions;
+    public Long getId() {
+        return id;
     }
 
-    public void setQuestions(List<QuestionDTO> questions) {
-        this.questions = questions;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override
@@ -43,12 +53,11 @@ public class ListeningTopicRequest implements Serializable {
             return false;
         }
         ListeningTopicRequest that = (ListeningTopicRequest) o;
-        return Objects.equals(topic, that.topic)
-                && Objects.equals(questions, that.questions);
+        return Objects.equals(id, that.id) && Objects.equals(url, that.url) && Objects.equals(topic, that.topic);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(topic, questions);
+        return Objects.hash(id, url, topic);
     }
 }

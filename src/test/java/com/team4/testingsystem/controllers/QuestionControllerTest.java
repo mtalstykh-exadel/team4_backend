@@ -4,7 +4,7 @@ import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.ListeningTopicRequest;
+import com.team4.testingsystem.dto.ListeningTopicRequest;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
@@ -120,7 +120,9 @@ class QuestionControllerTest {
     void addListening() {
         Mockito.when(contentFilesService.add(multipartFile, TOPIC, List.of())).thenReturn(contentFile);
 
-        ListeningTopicRequest request = new ListeningTopicRequest(TOPIC, List.of());
+        ContentFileDTO request = new ContentFileDTO();
+        request.setTopic(TOPIC);
+        request.setQuestions(List.of());
         Assertions.assertEquals(new ContentFileDTO(contentFile),
                 questionController.addListening(multipartFile, request));
     }
@@ -129,7 +131,9 @@ class QuestionControllerTest {
     void updateListeningWithFile() {
         Mockito.when(contentFilesService.update(multipartFile, ID, TOPIC, List.of())).thenReturn(contentFile);
 
-        ListeningTopicRequest request = new ListeningTopicRequest(TOPIC, List.of());
+        ContentFileDTO request = new ContentFileDTO();
+        request.setTopic(TOPIC);
+        request.setQuestions(List.of());
         ContentFileDTO result = questionController.updateListening(multipartFile, ID, request);
 
         Assertions.assertEquals(new ContentFileDTO(contentFile), result);
