@@ -1,6 +1,5 @@
 package com.team4.testingsystem.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.testingsystem.entities.Question;
 
 import java.io.Serializable;
@@ -8,7 +7,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuestionDTO implements Serializable {
     private Long id;
     private String questionBody;

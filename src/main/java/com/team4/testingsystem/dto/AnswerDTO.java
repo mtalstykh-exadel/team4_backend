@@ -1,12 +1,10 @@
 package com.team4.testingsystem.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.testingsystem.entities.Answer;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AnswerDTO implements Serializable {
     private Long id;
     private String answer;
@@ -64,7 +62,7 @@ public class AnswerDTO implements Serializable {
         }
         AnswerDTO answerDTO = (AnswerDTO) o;
         return Objects.equals(answer, answerDTO.answer)
-                && Objects.equals(correct, answerDTO.correct);
+               && Objects.equals(correct, answerDTO.correct);
     }
 
     @Override
