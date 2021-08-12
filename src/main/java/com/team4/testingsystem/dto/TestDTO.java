@@ -20,7 +20,7 @@ public class TestDTO implements Serializable {
     private String status;
     private UserDTO coach;
     private Map<String, List<QuestionDTO>> questions;
-    private ListeningTopicRequest contentFile;
+    private ListeningTopicDTO contentFile;
 
     public TestDTO() {
     }
@@ -96,11 +96,11 @@ public class TestDTO implements Serializable {
         this.deadline = deadline;
     }
 
-    public ListeningTopicRequest getContentFile() {
+    public ListeningTopicDTO getContentFile() {
         return contentFile;
     }
 
-    public void setContentFile(ListeningTopicRequest contentFile) {
+    public void setContentFile(ListeningTopicDTO contentFile) {
         this.contentFile = contentFile;
     }
 

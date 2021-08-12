@@ -5,15 +5,15 @@ import com.team4.testingsystem.entities.ContentFile;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class ListeningTopicRequest implements Serializable {
+public class ListeningTopicDTO implements Serializable {
     private Long id;
     private String url;
     private String topic;
 
-    public ListeningTopicRequest() {
+    public ListeningTopicDTO() {
     }
 
-    public ListeningTopicRequest(ContentFile contentFile) {
+    public ListeningTopicDTO(ContentFile contentFile) {
         id = contentFile.getId();
         url = contentFile.getUrl();
         topic = contentFile.getTopic();
@@ -51,7 +51,7 @@ public class ListeningTopicRequest implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ListeningTopicRequest that = (ListeningTopicRequest) o;
+        ListeningTopicDTO that = (ListeningTopicDTO) o;
         return Objects.equals(id, that.id) && Objects.equals(url, that.url) && Objects.equals(topic, that.topic);
     }
 
