@@ -57,6 +57,12 @@ public class QuestionController {
                 .collect(Collectors.toList());
     }
 
+    @ApiOperation(value = "Get content file with questions by it's id")
+    @GetMapping("/listening/{contentFileId}")
+    public ContentFileDTO getListening(@PathVariable("contentFileId") Long contentFileId) {
+        return new ContentFileDTO(contentFilesService.getById(contentFileId));
+    }
+
     @ApiOperation(value = "Add a new question")
     @PostMapping("/")
     public QuestionDTO addQuestion(@RequestBody QuestionDTO questionDTO) {
