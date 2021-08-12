@@ -1,6 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.dto.AnswerDTO;
+import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
@@ -89,6 +90,14 @@ public class QuestionServiceImpl implements QuestionService {
     public Question getQuestionByTestIdAndModule(Long testId, Modules module) {
         return questionRepository.getQuestionByTestIdAndModule(testId, module.getName())
                 .orElseThrow(QuestionNotFoundException::new);
+    }
+
+    @Override
+    public List<ContentFile> getListening(Levels level) {
+        if (level == null) {
+            return contentFilesRepository.findAll();
+        }
+        return contentFilesRepository.getContentFiles(level.name());
     }
 
     @Transactional
