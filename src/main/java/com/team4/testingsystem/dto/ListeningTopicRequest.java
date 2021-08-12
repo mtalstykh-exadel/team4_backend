@@ -3,7 +3,6 @@ package com.team4.testingsystem.dto;
 import com.team4.testingsystem.entities.ContentFile;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 
 public class ListeningTopicRequest implements Serializable {

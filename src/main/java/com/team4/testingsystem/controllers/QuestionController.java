@@ -2,9 +2,9 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.ContentFileDTO;
+import com.team4.testingsystem.dto.ListeningTopicRequest;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.dto.ListeningTopicRequest;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
@@ -56,12 +56,6 @@ public class QuestionController {
         return questionService.getQuestionsByLevelAndModuleName(level, module).stream()
                 .map(QuestionDTO::create)
                 .collect(Collectors.toList());
-    }
-
-    @ApiOperation(value = "Get all listening from the database")
-    @GetMapping("/listening")
-    public List<ListeningTopicRequest> getListening(@RequestParam(value = "level", required = false) Levels level) {
-        return convertToDTO(questionService.getListening(level));
     }
 
     @ApiOperation(value = "Get content file with questions by it's id")
