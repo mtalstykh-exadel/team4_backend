@@ -2,9 +2,10 @@ package com.team4.testingsystem.dto;
 
 import com.team4.testingsystem.entities.Answer;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class AnswerDTO {
+public class AnswerDTO implements Serializable {
     private Long id;
     private String answer;
     private Boolean correct;

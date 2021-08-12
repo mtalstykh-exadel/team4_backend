@@ -4,8 +4,9 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Priority;
 
 import java.time.Instant;
+import java.io.Serializable;
 
-public class AssignTestRequest {
+public class AssignTestRequest implements Serializable {
     private Levels level;
     private Instant deadline;
     private Priority priority;

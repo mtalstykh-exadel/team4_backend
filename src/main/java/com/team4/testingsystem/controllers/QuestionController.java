@@ -9,7 +9,6 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
-import com.team4.testingsystem.services.ResourceStorageService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,17 +32,14 @@ public class QuestionController {
     private final QuestionService questionService;
     private final ContentFilesService contentFilesService;
     private final QuestionConverter questionConverter;
-    private final ResourceStorageService storageService;
 
     @Autowired
     public QuestionController(QuestionService questionService,
                               ContentFilesService contentFilesService,
-                              QuestionConverter questionConverter,
-                              ResourceStorageService storageService) {
+                              QuestionConverter questionConverter) {
         this.questionService = questionService;
         this.contentFilesService = contentFilesService;
         this.questionConverter = questionConverter;
-        this.storageService = storageService;
     }
 
     @ApiOperation(value = "Get a single question from the database by it's id")
@@ -61,6 +57,12 @@ public class QuestionController {
                 .collect(Collectors.toList());
     }
 
+    @ApiOperation(value = "Get content file with questions by it's id")
+    @GetMapping("/listening/{contentFileId}")
+    public ContentFileDTO getListening(@PathVariable("contentFileId") Long contentFileId) {
+        return new ContentFileDTO(contentFilesService.getById(contentFileId));
+    }
+
     @ApiOperation(value = "Add a new question")
     @PostMapping("/")
     public QuestionDTO addQuestion(@RequestBody QuestionDTO questionDTO) {
@@ -74,9 +76,19 @@ public class QuestionController {
 
     @ApiOperation(value = "Add content file with questions")
     @PostMapping(value = "/listening")
-    public ContentFileDTO addListening(@RequestPart MultipartFile file, @RequestPart List<QuestionDTO> questions) {
-        String url = storageService.upload(file.getResource());
-        ContentFile contentFile = contentFilesService.add(url, convertToEntity(questions));
+    public ContentFileDTO addListening(@RequestPart MultipartFile file,
+                                       @RequestPart List<QuestionDTO> questions) {
+        ContentFile contentFile = contentFilesService.add(file, convertToEntity(questions));
+        return new ContentFileDTO(contentFile);
+    }
+
+    @ApiOperation(value = "Update content file with questions or just questions for content file")
+    @PutMapping(value = "/listening/{contentFileId}")
+    public ContentFileDTO updateListening(@RequestPart(required = false) MultipartFile file,
+                                          @RequestPart List<QuestionDTO> questions,
+                                          @PathVariable("contentFileId") Long id) {
+        ContentFile contentFile = contentFilesService
+                .update(file, id, convertToEntity(questions));
         return new ContentFileDTO(contentFile);
     }
 

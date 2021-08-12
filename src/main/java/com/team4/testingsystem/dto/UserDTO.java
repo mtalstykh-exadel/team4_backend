@@ -2,9 +2,10 @@ package com.team4.testingsystem.dto;
 
 import com.team4.testingsystem.entities.User;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class UserDTO {
+public class UserDTO implements Serializable {
     private Long id;
     private String name;
     private String login;

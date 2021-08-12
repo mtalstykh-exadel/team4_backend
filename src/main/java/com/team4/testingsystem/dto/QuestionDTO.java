@@ -2,11 +2,12 @@ package com.team4.testingsystem.dto;
 
 import com.team4.testingsystem.entities.Question;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class QuestionDTO {
+public class QuestionDTO implements Serializable {
     private Long id;
     private String questionBody;
     private String creator;

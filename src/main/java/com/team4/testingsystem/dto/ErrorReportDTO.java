@@ -13,7 +13,7 @@ public class ErrorReportDTO implements Serializable {
 
     private long testId;
 
-    public ErrorReportDTO(){
+    public ErrorReportDTO() {
     }
 
     public ErrorReportDTO(ErrorReport errorReport) {

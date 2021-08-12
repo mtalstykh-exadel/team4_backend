@@ -2,12 +2,13 @@ package com.team4.testingsystem.dto;
 
 import com.team4.testingsystem.entities.Test;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class TestDTO {
+public class TestDTO implements Serializable {
     private Long id;
     private String level;
     private Instant assignedAt;
@@ -38,8 +39,6 @@ public class TestDTO {
             coach = new UserDTO(test.getCoach());
         }
     }
-
-
 
     public Long getId() {
         return id;

@@ -79,6 +79,13 @@ class UsersControllerTest {
     }
 
     @Test
+    void getAllUsersByNameLikeSuccess() {
+        Mockito.when(usersService.getByNameLike("name")).thenReturn(Lists.list(user));
+
+        Assertions.assertEquals(Lists.list(new UserDTO(user)), usersController.getAllUsersByNameLike("name"));
+    }
+
+    @Test
     void updateLanguageSuccess() {
         CustomUserDetails userDetails = Mockito.mock(CustomUserDetails.class);
         Mockito.when(userDetails.getId()).thenReturn(1L);
