@@ -153,9 +153,8 @@ public class TestsServiceImpl implements TestsService {
         }
         Test test = testGeneratingService.formTest(getById(id));
 
-        test.setFinishTime(Instant.now().plusSeconds(30));
+        test.setFinishTime(Instant.now().plusSeconds(40 * 60));
         save(test);
-
         createTimer(test);
         return test;
     }
