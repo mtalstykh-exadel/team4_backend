@@ -12,6 +12,7 @@ import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,12 +46,14 @@ public class QuestionController {
 
     @ApiOperation(value = "Get a single question from the database by it's id")
     @GetMapping("/{id}")
+    @Secured("ROLE_COACH")
     public QuestionDTO getQuestion(@PathVariable("id") Long id) {
         return QuestionDTO.createWithCorrectAnswers(questionService.getById(id));
     }
 
     @ApiOperation(value = "Get questions from the database by it's level and module")
     @GetMapping("/")
+    @Secured("ROLE_COACH")
     public List<QuestionDTO> getQuestions(@RequestParam("level") Levels level,
                                           @RequestParam("module") Modules module) {
         return questionService.getQuestionsByLevelAndModuleName(level, module).stream()
@@ -60,12 +63,14 @@ public class QuestionController {
 
     @ApiOperation(value = "Get content file with questions by it's id")
     @GetMapping("/listening/{contentFileId}")
+    @Secured("ROLE_COACH")
     public ContentFileDTO getListening(@PathVariable("contentFileId") Long contentFileId) {
         return new ContentFileDTO(contentFilesService.getById(contentFileId));
     }
 
     @ApiOperation(value = "Add a new question")
     @PostMapping("/")
+    @Secured("ROLE_COACH")
     public QuestionDTO addQuestion(@RequestBody QuestionDTO questionDTO) {
         Question question = questionService
                 .createQuestion(questionConverter.convertToEntity(questionDTO));
@@ -77,6 +82,7 @@ public class QuestionController {
 
     @ApiOperation(value = "Add content file with questions")
     @PostMapping(value = "/listening")
+    @Secured("ROLE_COACH")
     public ContentFileDTO addListening(@RequestPart MultipartFile file,
                                        @RequestPart ListeningTopicRequest data) {
         ContentFile contentFile = contentFilesService
@@ -86,6 +92,7 @@ public class QuestionController {
 
     @ApiOperation(value = "Update content file with questions or just questions for content file")
     @PutMapping(value = "/listening/{contentFileId}")
+    @Secured("ROLE_COACH")
     public ContentFileDTO updateListening(@RequestPart(required = false) MultipartFile file,
                                           @PathVariable("contentFileId") Long id,
                                           @RequestPart ListeningTopicRequest data) {
@@ -96,12 +103,14 @@ public class QuestionController {
 
     @ApiOperation(value = "Archive the question")
     @DeleteMapping("/{id}")
+    @Secured("ROLE_COACH")
     public void archiveQuestion(@PathVariable("id") Long id) {
         questionService.archiveQuestion(id);
     }
 
     @ApiOperation(value = "Change the question")
     @PutMapping("/{id}")
+    @Secured("ROLE_COACH")
     public QuestionDTO updateQuestion(@RequestBody QuestionDTO questionDTO, @PathVariable("id") Long id) {
         Question resultQuestion = questionService
                 .updateQuestion(questionConverter.convertToEntity(questionDTO, id), id);
