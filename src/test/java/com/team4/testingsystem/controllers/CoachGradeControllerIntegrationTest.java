@@ -17,7 +17,6 @@ import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
-import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -55,7 +54,7 @@ class CoachGradeControllerIntegrationTest {
     private final ObjectMapper objectMapper;
 
     private User user;
-    private CustomUserDetails userDetails;
+    private CustomUserDetails coachDetails;
     private Level level;
 
     @Autowired
@@ -82,8 +81,8 @@ class CoachGradeControllerIntegrationTest {
     @BeforeEach
     void init() {
         answerRepository.deleteAll();
-        user = usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow();
-        userDetails = new CustomUserDetails(user);
+        user = usersRepository.findByLogin("rus_coach@northsixty.com").orElseThrow();
+        coachDetails = new CustomUserDetails(user);
         level = levelRepository.findByName(Levels.A1.name()).orElseThrow();
     }
 
@@ -99,7 +98,7 @@ class CoachGradeControllerIntegrationTest {
     @Test
     void getGradesTestNotFound() throws Exception {
         mockMvc.perform(get("/grades/101")
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isNotFound());
     }
 
@@ -109,7 +108,7 @@ class CoachGradeControllerIntegrationTest {
         testsRepository.save(test);
 
         MvcResult mvcResult = mockMvc.perform(get("/grades/{testId}", test.getId())
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -133,7 +132,7 @@ class CoachGradeControllerIntegrationTest {
         gradeRepository.save(grade);
 
         MvcResult mvcResult = mockMvc.perform(get("/grades/{testId}", test.getId())
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -166,7 +165,7 @@ class CoachGradeControllerIntegrationTest {
         gradeRepository.save(grade2);
 
         MvcResult mvcResult = mockMvc.perform(get("/grades/{testId}", test.getId())
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -189,7 +188,7 @@ class CoachGradeControllerIntegrationTest {
         mockMvc.perform(post("/grades/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(gradeDTO))
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isNotFound());
     }
 
@@ -207,7 +206,7 @@ class CoachGradeControllerIntegrationTest {
         mockMvc.perform(post("/grades/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(gradeDTO))
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isNotFound());
     }
 
@@ -230,7 +229,7 @@ class CoachGradeControllerIntegrationTest {
         mockMvc.perform(post("/grades/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(gradeDTO))
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isOk());
 
         Optional<CoachGrade> grade = gradeRepository.findById(testQuestionID);
@@ -261,7 +260,7 @@ class CoachGradeControllerIntegrationTest {
         mockMvc.perform(post("/grades/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(gradeDTO))
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isOk());
 
         Optional<CoachGrade> savedGrade = gradeRepository.findById(testQuestionID);
