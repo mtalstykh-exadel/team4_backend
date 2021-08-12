@@ -26,7 +26,6 @@ public class ContentFileDTO implements Serializable {
                 .collect(Collectors.toList());
     }
 
-
     public String getTopic() {
         return topic;
     }
@@ -49,6 +48,14 @@ public class ContentFileDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public List<QuestionDTO> getQuestions() {
+        return this.questions;
+    }
+
+    public void setQuestions(List<QuestionDTO> questions) {
+        this.questions = questions;
     }
 
     @Override

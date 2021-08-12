@@ -3,13 +3,14 @@ package com.team4.testingsystem.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.testingsystem.entities.Test;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TestDTO {
+public class TestDTO implements Serializable {
     private Long id;
     private String level;
     private LocalDateTime assignedAt;
