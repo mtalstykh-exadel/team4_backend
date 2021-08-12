@@ -76,7 +76,7 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "Get all topics (or get by level)")
-    @PostMapping(value = "/listening")
+    @GetMapping(value = "/listening")
     public List<ListeningTopicDTO> getListeningTopics(@RequestParam(required = false) Levels level) {
         return convertToDTO(questionService.getListening(level));
     }

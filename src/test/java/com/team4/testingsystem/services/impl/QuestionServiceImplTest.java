@@ -28,16 +28,19 @@ import static org.mockito.Mockito.verify;
 class QuestionServiceImplTest {
 
     @Mock
-    Question question;
+    private Question question;
 
     @Mock
-    ContentFile contentFile;
+    private ContentFile contentFile;
+
+    @Mock
+    private  List<ContentFile> contentFiles;
 
     @Mock
     private QuestionRepository questionRepository;
 
     @Mock
-    ContentFilesRepository contentFilesRepository;
+    private ContentFilesRepository contentFilesRepository;
 
     @InjectMocks
     private QuestionServiceImpl questionService;
@@ -142,5 +145,18 @@ class QuestionServiceImplTest {
                 .thenReturn(Optional.of(question));
 
         Assertions.assertEquals(question, questionService.getQuestionByTestIdAndModule(1L, Modules.ESSAY));
+    }
+
+    @Test
+    void getListening(){
+        Mockito.when(contentFilesRepository.findAll()).thenReturn(contentFiles);
+        Assertions.assertEquals(contentFiles, questionService.getListening(null));
+    }
+
+    @Test
+    void getListeningByLevel(){
+        Mockito.when(contentFilesRepository.getContentFiles(Levels.A1.name()))
+                .thenReturn(contentFiles);
+        Assertions.assertEquals(contentFiles, questionService.getListening(Levels.A1));
     }
 }
