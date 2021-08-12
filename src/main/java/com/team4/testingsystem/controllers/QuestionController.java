@@ -2,7 +2,6 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.ContentFileDTO;
-import com.team4.testingsystem.dto.ListeningTopicRequest;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
@@ -114,9 +113,4 @@ public class QuestionController {
     private List<Question> convertToEntity(List<QuestionDTO> questionsDTO) {
         return questionsDTO.stream().map(questionConverter::convertToEntity).collect(Collectors.toList());
     }
-
-    private List<ListeningTopicRequest> convertToDTO(List<ContentFile> contentFiles) {
-        return contentFiles.stream().map(ListeningTopicRequest::new).collect(Collectors.toList());
-    }
-
 }
