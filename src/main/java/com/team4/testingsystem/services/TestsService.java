@@ -18,6 +18,8 @@ public interface TestsService {
 
     List<UserTest> getAllUsersAndAssignedTests();
 
+    List<Test> getTestsByUserIdAndLevel(long userId, Levels level);
+
     Test save(Test test);
 
     long startForUser(long userId, Levels level);

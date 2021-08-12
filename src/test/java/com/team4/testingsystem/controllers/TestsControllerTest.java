@@ -152,6 +152,24 @@ class TestsControllerTest {
     }
 
     @org.junit.jupiter.api.Test
+    void getUserTestsByLevelSuccess(){
+        List<Test> tests = new ArrayList<>();
+
+        Mockito.when(testsService.getTestsByUserIdAndLevel(GOOD_USER_ID, Levels.A1)).thenReturn(tests);
+
+        Assertions.assertEquals(Lists.emptyList(), testsController.getUserTestsByLevel(GOOD_USER_ID, Levels.A1));
+    }
+
+    @org.junit.jupiter.api.Test
+    void getUserTestsByLevelNotFound(){
+        Mockito.when(testsService.getTestsByUserIdAndLevel(BAD_USER_ID, Levels.A1))
+                .thenThrow(UserNotFoundException.class);
+
+        Assertions.assertThrows(UserNotFoundException.class,
+                ()->testsController.getUserTestsByLevel(BAD_USER_ID, Levels.A1));
+    }
+
+    @org.junit.jupiter.api.Test
     void assignSuccess() {
         AssignTestRequest request = new AssignTestRequest(Levels.A1, LocalDateTime.now());
 

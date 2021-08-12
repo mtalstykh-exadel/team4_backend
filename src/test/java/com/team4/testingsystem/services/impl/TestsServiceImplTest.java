@@ -15,6 +15,7 @@ import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
+import liquibase.pro.packaged.U;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,8 +26,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -120,6 +123,26 @@ class TestsServiceImplTest {
                 .thenReturn(Lists.list(test));
 
         Assertions.assertEquals(Lists.list(new UserTest(user, test)), testsService.getAllUsersAndAssignedTests());
+    }
+
+    @org.junit.jupiter.api.Test
+    void getTestsByUserIdAndLevelSuccess() {
+        User user = new User();
+        List<Test> tests = new ArrayList<>();
+
+        Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
+        Mockito.when(testsRepository.getAllByUser(user)).thenReturn(tests);
+
+        Assertions.assertEquals(tests.stream().
+                filter(test -> test.getLevel().getName().equals(Levels.A1.name()))
+                .collect(Collectors.toList()), testsService.getTestsByUserIdAndLevel(GOOD_USER_ID, Levels.A1));
+    }
+
+    @org.junit.jupiter.api.Test
+    void getTestsByUserIdAndLevelNotFound() {
+        Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
+
+        Assertions.assertThrows(UserNotFoundException.class, ()->testsService.getTestsByUserIdAndLevel(BAD_USER_ID, Levels.A1));
     }
 
     @org.junit.jupiter.api.Test

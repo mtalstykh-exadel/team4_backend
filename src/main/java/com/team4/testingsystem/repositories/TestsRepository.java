@@ -15,6 +15,7 @@ import java.util.List;
 @Repository
 public interface TestsRepository extends CrudRepository<Test, Long> {
 
+    @Query("select t from Test t where t.user = ?1")
     List<Test> getAllByUser(User user);
 
     @Query("select t from Test t where t.status in ?1")

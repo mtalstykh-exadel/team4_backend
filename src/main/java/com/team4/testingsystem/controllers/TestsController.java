@@ -58,6 +58,12 @@ public class TestsController {
         return convertToDTO(testsService.getByUserId(userId));
     }
 
+    @ApiOperation(value = "Get all tests by level assigned to the user")
+    @GetMapping(path = "/history")
+    public List<TestDTO> getUserTestsByLevel(@RequestParam long userId, @RequestParam Levels level) {
+        return convertToDTO(testsService.getTestsByUserIdAndLevel(userId, level));
+    }
+
     @ApiOperation(value = "Use it to get a single test from the database by its id")
     @GetMapping(path = "/{id}")
     public TestDTO getById(@PathVariable("id") long id) {

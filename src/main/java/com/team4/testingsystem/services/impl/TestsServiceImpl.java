@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
@@ -75,6 +76,13 @@ public class TestsServiceImpl implements TestsService {
 
         return usersService.getAll().stream()
                 .map(user -> new UserTest(user, assignedTests.getOrDefault(user, null)))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Test> getTestsByUserIdAndLevel(long userId, Levels level){
+        return testsRepository.getAllByUser(usersService.getUserById(userId)).stream()
+                .filter(test -> test.getLevel().getName().equals(level.name()))
                 .collect(Collectors.toList());
     }
 
