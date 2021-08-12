@@ -624,7 +624,7 @@
 
     <changeSet id="add_coach_commentary" author="Anlord241">
         <addColumn tableName="coach_grade">
-            <column name="commentary" type="text"/>
+            <column name="comment" type="text"/>
         </addColumn>
     </changeSet>
 
