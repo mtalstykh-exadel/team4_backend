@@ -12,8 +12,9 @@ public class TimerConfiguration {
     public TimerConfiguration(TestsService testsService) {
         this.testsService = testsService;
     }
+
     @Bean
-    public void recoverTimers(){
+    public void recoverTimers() {
         testsService.startAllTimers();
     }
 }

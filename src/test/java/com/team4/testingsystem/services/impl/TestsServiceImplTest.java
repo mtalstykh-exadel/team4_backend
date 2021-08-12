@@ -252,8 +252,6 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void startSuccess() {
-        User user = EntityCreatorUtil.createUser();
-        Level level = EntityCreatorUtil.createLevel();
 
         Mockito.when(testsRepository.start(any(), anyLong())).thenReturn(1);
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
