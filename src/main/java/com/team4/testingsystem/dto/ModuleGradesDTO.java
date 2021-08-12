@@ -1,8 +1,9 @@
 package com.team4.testingsystem.dto;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class ModuleGradesDTO {
+public class ModuleGradesDTO implements Serializable {
 
     private int grammar;
 
