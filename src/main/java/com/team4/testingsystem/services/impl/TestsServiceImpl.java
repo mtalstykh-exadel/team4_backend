@@ -20,6 +20,8 @@ import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -170,7 +172,7 @@ public class TestsServiceImpl implements TestsService {
         long testId = test.getId();
         TimerTask task = new TimerTask() {
             public void run() {
-                finish(testId);
+                finish(testId, test.getFinishTime());
                 timerRepository.deleteById(databaseTimer.getId());
             }
         };
@@ -180,22 +182,22 @@ public class TestsServiceImpl implements TestsService {
                 - Instant.now().toEpochMilli();
 
         if (delay <= 0) {
-            finish(testId);
+            finish(testId, test.getFinishTime());
             timerRepository.deleteById(databaseTimer.getId());
         } else {
             timer.schedule(task, delay);
         }
     }
 
-    @Override
-    public void startAllTimers() {
+    @EventListener(ApplicationReadyEvent.class)
+    private void startAllTimers() {
         timerRepository.findAll().forEach(this::startTimer);
     }
 
     @Override
-    public void finish(long id) {
+    public void finish(long id, Instant finishDate) {
         testEvaluationService.countScoreBeforeCoachCheck(getById(id));
-        testsRepository.finish(Instant.now(), id);
+        testsRepository.finish(finishDate, id);
     }
 
     @Override

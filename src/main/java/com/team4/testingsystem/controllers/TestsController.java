@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -122,7 +123,7 @@ public class TestsController {
     @ApiOperation(value = "Is used to finish tests")
     @PostMapping(path = "/finish/{testId}")
     public void finish(@PathVariable("testId") long testId) {
-        testsService.finish(testId);
+        testsService.finish(testId, Instant.now());
     }
 
     @ApiOperation(value = "Is used to update score after coach check")

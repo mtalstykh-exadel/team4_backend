@@ -29,9 +29,7 @@ public interface TestsService {
 
     void deassign(long id);
 
-    void startAllTimers();
-
-    void finish(long id);
+    void finish(long id, Instant finishDate);
 
     void update(long id);
 

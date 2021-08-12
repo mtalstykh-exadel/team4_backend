@@ -29,7 +29,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -274,11 +273,6 @@ class TestsServiceImplTest {
         }
     }
 
-    @org.junit.jupiter.api.Test
-    void startAllTimers(){
-        testsService.startAllTimers();
-        verify(timerRepository).findAll();
-    }
 
     @org.junit.jupiter.api.Test
     void startFail() {
@@ -291,20 +285,20 @@ class TestsServiceImplTest {
     void finishSuccess() {
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
 
-        testsService.finish(GOOD_TEST_ID);
+        testsService.finish(GOOD_TEST_ID, Instant.now());
 
         verify(testEvaluationService).countScoreBeforeCoachCheck(test);
 
         verify(testsRepository).finish(any(Instant.class), anyLong());
 
-        Assertions.assertDoesNotThrow(() -> testsService.finish(GOOD_TEST_ID));
+        Assertions.assertDoesNotThrow(() -> testsService.finish(GOOD_TEST_ID, Instant.now()));
     }
 
     @org.junit.jupiter.api.Test
     void finishFail() {
         Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
 
-        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.finish(BAD_TEST_ID));
+        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.finish(BAD_TEST_ID, Instant.now()));
     }
 
     @org.junit.jupiter.api.Test
