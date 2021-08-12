@@ -3,12 +3,14 @@ package com.team4.testingsystem.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,6 +28,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "test")
+@Getter
+@Setter
+@EqualsAndHashCode
 public class Test implements Serializable {
 
     @Id
@@ -78,82 +83,6 @@ public class Test implements Serializable {
     )
     List<Question> questions = new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public LocalDateTime getAssignedAt() {
-        return assignedAt;
-    }
-
-    public LocalDateTime getVerifiedAt() {
-        return verifiedAt;
-    }
-
-    public LocalDateTime getStartedAt() {
-        return startedAt;
-    }
-
-    public LocalDateTime getCompletedAt() {
-        return completedAt;
-    }
-
-    public Priority getPriority() {
-        return priority;
-    }
-
-    public LocalDateTime getDeadline() {
-        return deadline;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public User getCoach() {
-        return coach;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setAssignedAt(LocalDateTime createdAt) {
-        this.assignedAt = createdAt;
-    }
-
-    public void setVerifiedAt(LocalDateTime updatedAt) {
-        this.verifiedAt = updatedAt;
-    }
-
-    public void setStartedAt(LocalDateTime startedAt) {
-        this.startedAt = startedAt;
-    }
-
-    public void setCompletedAt(LocalDateTime finishedAt) {
-        this.completedAt = finishedAt;
-    }
-
-    public void setDeadline(LocalDateTime deadline) {
-        this.deadline = deadline;
-    }
-
-    public void setPriority(Priority priority) {
-        this.priority = priority;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
     public List<Question> getQuestions() {
         return questions;
     }
@@ -164,19 +93,6 @@ public class Test implements Serializable {
 
     public void setQuestion(Question question) {
         this.questions.add(question);
-    }
-
-    public Level getLevel() {
-        return level;
-    }
-
-    public void setLevel(Level level) {
-        this.level = level;
-    }
-
-
-    public void setCoach(User coach) {
-        this.coach = coach;
     }
 
     public static Builder builder() {
@@ -247,34 +163,4 @@ public class Test implements Serializable {
         }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Test test = (Test) o;
-        return Objects.equals(id, test.id)
-                && Objects.equals(user, test.user)
-                && Objects.equals(level, test.level)
-                && Objects.equals(assignedAt, test.assignedAt)
-                && Objects.equals(verifiedAt, test.verifiedAt)
-                && Objects.equals(startedAt, test.startedAt)
-                && Objects.equals(completedAt, test.completedAt)
-                && Objects.equals(deadline, test.deadline)
-                && Objects.equals(priority, test.priority)
-                && Objects.equals(status, test.status)
-                && Objects.equals(coach, test.coach)
-                && Objects.equals(questions, test.questions);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, user, level,
-                assignedAt, verifiedAt, startedAt, completedAt, deadline, priority,
-                status, coach, questions);
-    }
 }

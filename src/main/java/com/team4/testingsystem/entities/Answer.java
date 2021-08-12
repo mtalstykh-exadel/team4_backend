@@ -1,6 +1,9 @@
 package com.team4.testingsystem.entities;
 
 import com.team4.testingsystem.dto.AnswerDTO;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -16,6 +19,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "answer")
+@NoArgsConstructor
+@Getter
+@Setter
 public class Answer implements Serializable {
 
     @Id
@@ -33,9 +39,6 @@ public class Answer implements Serializable {
     @Column(name = "is_correct")
     private boolean isCorrect;
 
-    public Answer() {
-    }
-
     public Answer(AnswerDTO answerDTO) {
         this.answerBody = answerDTO.getAnswer();
         this.isCorrect = answerDTO.getCorrect();
@@ -45,38 +48,6 @@ public class Answer implements Serializable {
         this.answerBody = answerDTO.getAnswer();
         this.isCorrect = answerDTO.getCorrect();
         this.question = question;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getAnswerBody() {
-        return answerBody;
-    }
-
-    public void setAnswerBody(String answerBody) {
-        this.answerBody = answerBody;
-    }
-
-    public Question getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(Question question) {
-        this.question = question;
-    }
-
-    public boolean isCorrect() {
-        return isCorrect;
-    }
-
-    public void setCorrect(boolean correct) {
-        isCorrect = correct;
     }
 
     public static Builder builder() {

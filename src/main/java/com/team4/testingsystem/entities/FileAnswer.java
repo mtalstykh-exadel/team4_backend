@@ -1,5 +1,8 @@
 package com.team4.testingsystem.entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -8,6 +11,8 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "file_answer")
+@Getter
+@Setter
 public class FileAnswer implements Serializable {
 
     @EmbeddedId
@@ -18,18 +23,6 @@ public class FileAnswer implements Serializable {
 
     public TestQuestionID getId() {
         return id;
-    }
-
-    public void setId(TestQuestionID id) {
-        this.id = id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public static Builder builder() {
