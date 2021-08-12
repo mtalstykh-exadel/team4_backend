@@ -282,6 +282,13 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
+    void startAllTimersSuccess() {
+        testsService.startAllTimers();
+
+        verify(timerRepository).findAll();
+    }
+
+    @org.junit.jupiter.api.Test
     void finishSuccess() {
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
 

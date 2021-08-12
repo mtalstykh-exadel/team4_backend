@@ -190,7 +190,7 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    private void startAllTimers() {
+    public void startAllTimers() {
         timerRepository.findAll().forEach(this::startTimer);
     }
 
