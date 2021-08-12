@@ -20,7 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -87,14 +88,15 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public long startForUser(long userId, Levels levelName) {
         User user = usersService.getUserById(userId);
-        List<Test> selfStarted = testsRepository.getSelfStartedByUserAfter(user, LocalDateTime.now().minusDays(1));
+        List<Test> selfStarted = testsRepository
+                .getSelfStartedByUserAfter(user, Instant.now().minus(1, ChronoUnit.DAYS));
 
         if (selfStarted.size() >= testsLimit) {
-            throw new TestsLimitExceededException(selfStarted.get(0).getStartedAt().plusDays(1).toString());
+            throw new TestsLimitExceededException(selfStarted.get(0)
+                    .getStartedAt().plus(1, ChronoUnit.DAYS).toString());
         }
-
         Test test = createForUser(userId, levelName)
-                .startedAt(LocalDateTime.now())
+                .startedAt(Instant.now())
                 .status(Status.STARTED)
                 .priority(Priority.LOW)
                 .build();
@@ -104,9 +106,9 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public long assignForUser(long userId, Levels levelName, LocalDateTime deadline, Priority priority) {
+    public long assignForUser(long userId, Levels levelName, Instant deadline, Priority priority) {
         Test test = createForUser(userId, levelName)
-                .assignedAt(LocalDateTime.now())
+                .assignedAt(Instant.now())
                 .deadline(deadline)
                 .status(Status.ASSIGNED)
                 .priority(priority)
@@ -136,7 +138,7 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public Test start(long id) {
-        if (testsRepository.start(LocalDateTime.now(), id) == 0) {
+        if (testsRepository.start(Instant.now(), id) == 0) {
             throw new TestNotFoundException();
         }
         Test test = testGeneratingService.formTest(getById(id));
@@ -147,13 +149,13 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public void finish(long id) {
         testEvaluationService.countScoreBeforeCoachCheck(getById(id));
-        testsRepository.finish(LocalDateTime.now(), id);
+        testsRepository.finish(Instant.now(), id);
     }
 
     @Override
     public void update(long id) {
         testEvaluationService.updateScoreAfterCoachCheck(getById(id));
-        testsRepository.updateEvaluation(LocalDateTime.now(), id);
+        testsRepository.updateEvaluation(Instant.now(), id);
     }
 
     @Override

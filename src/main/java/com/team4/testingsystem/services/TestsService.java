@@ -6,7 +6,7 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 public interface TestsService {
@@ -23,7 +23,7 @@ public interface TestsService {
 
     long startForUser(long userId, Levels level);
 
-    long assignForUser(long userId, Levels level, LocalDateTime deadline, Priority priority);
+    long assignForUser(long userId, Levels level, Instant deadline, Priority priority);
 
     Test start(long id);
 

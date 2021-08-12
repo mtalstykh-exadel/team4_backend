@@ -25,6 +25,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -169,7 +170,7 @@ class TestsServiceImplTest {
 
         Mockito.when(tests.get(0)).thenReturn(test);
 
-        Mockito.when(test.getStartedAt()).thenReturn(LocalDateTime.now());
+        Mockito.when(test.getStartedAt()).thenReturn(Instant.now());
 
         Assertions.assertThrows(
                 TestsLimitExceededException.class, () -> testsService.startForUser(GOOD_USER_ID, Levels.A1));
@@ -178,7 +179,7 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void assignFail() {
         Level level = EntityCreatorUtil.createLevel();
-        LocalDateTime deadline = LocalDateTime.now();
+        Instant deadline = Instant.now();
 
         Mockito.when(levelService.getLevelByName(level.getName())).thenReturn(level);
         Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
@@ -190,7 +191,7 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void assignForUserSuccess() {
         Level level = EntityCreatorUtil.createLevel();
-        LocalDateTime deadline = LocalDateTime.now();
+        Instant deadline = Instant.now();
 
         Mockito.when(levelService.getLevelByName(level.getName())).thenReturn(level);
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
@@ -218,7 +219,7 @@ class TestsServiceImplTest {
     void deassignSuccessTestWasStarted(){
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
 
-        Mockito.when(test.getStartedAt()).thenReturn(LocalDateTime.now());
+        Mockito.when(test.getStartedAt()).thenReturn(Instant.now());
 
         testsService.deassign(GOOD_TEST_ID);
 
@@ -256,7 +257,7 @@ class TestsServiceImplTest {
         Mockito.when(testGeneratingService.formTest(any())).thenReturn(test);
         Test result = testsService.start(GOOD_TEST_ID);
 
-        verify(testsRepository).start(any(LocalDateTime.class), anyLong());
+        verify(testsRepository).start(any(Instant.class), anyLong());
         Assertions.assertDoesNotThrow(() -> testsService.start(GOOD_TEST_ID));
         Assertions.assertEquals(test, result);
     }
@@ -276,7 +277,7 @@ class TestsServiceImplTest {
 
         verify(testEvaluationService).countScoreBeforeCoachCheck(test);
 
-        verify(testsRepository).finish(any(LocalDateTime.class), anyLong());
+        verify(testsRepository).finish(any(Instant.class), anyLong());
 
         Assertions.assertDoesNotThrow(() -> testsService.finish(GOOD_TEST_ID));
     }
@@ -294,7 +295,7 @@ class TestsServiceImplTest {
 
         testsService.update(GOOD_TEST_ID);
 
-        verify(testsRepository).updateEvaluation(any(LocalDateTime.class), anyLong());
+        verify(testsRepository).updateEvaluation(any(Instant.class), anyLong());
 
         verify(testEvaluationService).updateScoreAfterCoachCheck(test);
 
