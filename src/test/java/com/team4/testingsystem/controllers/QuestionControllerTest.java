@@ -4,10 +4,10 @@ import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.ContentFile;
+import com.team4.testingsystem.entities.ListeningTopicRequest;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
-import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
@@ -18,17 +18,15 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
 
 
-@ExtendWith( MockitoExtension.class )
+@ExtendWith(MockitoExtension.class)
 class QuestionControllerTest {
     @Mock
     private QuestionService questionService;
@@ -40,19 +38,16 @@ class QuestionControllerTest {
     private MultipartFile multipartFile;
 
     @Mock
-    private Resource resource;
-
-    @Mock
     private ContentFile contentFile;
-
-    @Mock
-    private ResourceStorageService storageService;
 
     @Mock
     private ContentFilesService contentFilesService;
 
     @InjectMocks
     private QuestionController questionController;
+
+    private static final Long ID = 1L;
+    private static final String TOPIC = "topic";
 
     @Test
     void getQuestion() {
@@ -123,16 +118,20 @@ class QuestionControllerTest {
 
     @Test
     void addListening() {
-        Mockito.when(contentFilesService.add(any(), any())).thenReturn(contentFile);
+        Mockito.when(contentFilesService.add(multipartFile, TOPIC, List.of())).thenReturn(contentFile);
+
+        ListeningTopicRequest request = new ListeningTopicRequest(TOPIC, List.of());
         Assertions.assertEquals(new ContentFileDTO(contentFile),
-                questionController.addListening(multipartFile, new ArrayList<>()));
+                questionController.addListening(multipartFile, request));
     }
 
     @Test
     void updateListeningWithFile() {
-        Mockito.when(contentFilesService.update(any(), any(), any())).thenReturn(contentFile);
-        ContentFileDTO result = questionController
-                .updateListening(multipartFile, new ArrayList<>(), EntityCreatorUtil.ID);
+        Mockito.when(contentFilesService.update(multipartFile, ID, TOPIC, List.of())).thenReturn(contentFile);
+
+        ListeningTopicRequest request = new ListeningTopicRequest(TOPIC, List.of());
+        ContentFileDTO result = questionController.updateListening(multipartFile, ID, request);
+
         Assertions.assertEquals(new ContentFileDTO(contentFile), result);
     }
 }
