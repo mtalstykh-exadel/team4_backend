@@ -2,6 +2,7 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.entities.Timer;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.entities.UserTest;
 import com.team4.testingsystem.enums.Levels;
@@ -11,6 +12,7 @@ import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.repositories.TestsRepository;
+import com.team4.testingsystem.repositories.TimerRepository;
 import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.TestGeneratingService;
@@ -24,7 +26,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -39,20 +40,26 @@ public class TestsServiceImpl implements TestsService {
     private final LevelService levelService;
     private final UsersService usersService;
 
+    private final TimerRepository timerRepository;
+
     @Value("${tests-limit:3}")
     private int testsLimit;
+
+
 
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
                             TestGeneratingService testGeneratingService,
                             TestEvaluationService testEvaluationService,
                             LevelService levelService,
-                            UsersService usersService) {
+                            UsersService usersService,
+                            TimerRepository timerRepository) {
         this.testsRepository = testsRepository;
         this.testGeneratingService = testGeneratingService;
         this.testEvaluationService = testEvaluationService;
         this.levelService = levelService;
         this.usersService = usersService;
+        this.timerRepository = timerRepository;
     }
 
     @Override
@@ -107,19 +114,6 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public long getTimeLeft(long testId) {
-        Test test = getById(testId);
-        long timeLeft = test.getStartedAt().plusMinutes(40).toEpochSecond(ZoneOffset.UTC)
-                - LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
-
-        if (timeLeft < 0) {
-            timeLeft = 0;
-        }
-        return timeLeft;
-    }
-
-
-    @Override
     public long assignForUser(long userId, Levels levelName, LocalDateTime deadline, Priority priority) {
         Test test = createForUser(userId, levelName)
                 .assignedAt(LocalDateTime.now())
@@ -158,22 +152,43 @@ public class TestsServiceImpl implements TestsService {
         }
         Test test = testGeneratingService.formTest(getById(id));
 
+        test.setFinishTime(LocalDateTime.now().plusSeconds(30));
         save(test);
 
-        setTimer(id);
+        createTimer(test);
         return test;
     }
 
-    private void setTimer(long id) {
+    private void createTimer(Test test) {
+        Timer timer = new Timer(test);
+        timerRepository.save(timer);
+        startTimer(timer);
+    }
+
+    private void startTimer(Timer databaseTimer) {
+        Test test = databaseTimer.getTest();
+        long testId = test.getId();
         TimerTask task = new TimerTask() {
             public void run() {
-                finish(id);
+                finish(testId);
+                timerRepository.deleteById(databaseTimer.getId());
             }
         };
 
-        Timer timer = new Timer(String.valueOf(id));
-        long delay = 2400000;
-        timer.schedule(task, delay);
+        java.util.Timer timer = new java.util.Timer(String.valueOf(testId));
+        long delay = test.getFinishTime().toEpochSecond(ZoneOffset.UTC) * 1000
+                - LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) * 1000;
+        if (delay <= 0) {
+            finish(testId);
+            timerRepository.deleteById(databaseTimer.getId());
+        } else {
+            timer.schedule(task, delay);
+        }
+    }
+
+    @Override
+    public void startAllTimers() {
+        timerRepository.findAll().forEach(this::startTimer);
     }
 
     @Override

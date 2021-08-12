@@ -17,6 +17,7 @@ public class TestDTO implements Serializable {
     private LocalDateTime completedAt;
     private LocalDateTime verifiedAt;
     private LocalDateTime startedAt;
+    private LocalDateTime finishTime;
     private LocalDateTime deadline;
     private String priority;
     private String status;
@@ -34,6 +35,7 @@ public class TestDTO implements Serializable {
         completedAt = test.getCompletedAt();
         verifiedAt = test.getVerifiedAt();
         startedAt = test.getStartedAt();
+        finishTime = test.getFinishTime();
         deadline = test.getDeadline();
         priority = test.getPriority().getName();
         status = test.getStatus().name();
@@ -64,6 +66,14 @@ public class TestDTO implements Serializable {
 
     public void setStartedAt(LocalDateTime startedAt) {
         this.startedAt = startedAt;
+    }
+
+    public LocalDateTime getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(LocalDateTime finishTime) {
+        this.finishTime = finishTime;
     }
 
     public Map<String, List<QuestionDTO>> getQuestions() {
@@ -152,6 +162,7 @@ public class TestDTO implements Serializable {
                 && Objects.equals(completedAt, testDTO.completedAt)
                 && Objects.equals(verifiedAt, testDTO.verifiedAt)
                 && Objects.equals(startedAt, testDTO.startedAt)
+                && Objects.equals(finishTime, testDTO.finishTime)
                 && Objects.equals(deadline, testDTO.deadline)
                 && Objects.equals(priority, testDTO.priority)
                 && Objects.equals(status, testDTO.status)
@@ -160,6 +171,7 @@ public class TestDTO implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(level, assignedAt, completedAt, verifiedAt, startedAt, deadline, priority, status, coach);
+        return Objects.hash(level, assignedAt, completedAt, verifiedAt, startedAt, deadline, finishTime,
+                priority, status, coach);
     }
 }

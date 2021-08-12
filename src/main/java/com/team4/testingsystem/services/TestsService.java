@@ -21,8 +21,6 @@ public interface TestsService {
 
     Test save(Test test);
 
-    long getTimeLeft(long testId);
-
     long startForUser(long userId, Levels level);
 
     long assignForUser(long userId, Levels level, LocalDateTime deadline, Priority priority);
@@ -30,6 +28,8 @@ public interface TestsService {
     Test start(long id);
 
     void deassign(long id);
+
+    void startAllTimers();
 
     void finish(long id);
 

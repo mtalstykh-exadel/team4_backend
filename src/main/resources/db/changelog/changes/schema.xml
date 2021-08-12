@@ -610,6 +610,7 @@
     <changeSet id="remove_id_from_file_answer" author="Darina">
         <dropColumn tableName="file_answer" columnName="id"/>
     </changeSet>
+
     <changeSet id="add_priority" author="Anlord241">
         <addColumn tableName="test">
             <column name="priority" type="text"/>
@@ -621,4 +622,25 @@
                               columnName="priority"
                               defaultNullValue="LOW"/>
     </changeSet>
+
+    <changeSet id="add_timer_table" author="Anlord241">
+        <createTable tableName="timer">
+            <column name="id" type="int" autoIncrement="true">
+            <constraints primaryKey="true"/>
+            </column>
+            <column name="test_id" type="int">
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="timer" baseColumnNames="test_id"
+                                 constraintName="timer_test_id_fk"
+                                 referencedTableName="test" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="add_finish_time" author="Anlord241">
+        <addColumn tableName="test">
+            <column name="finish_time" type="datetime"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
