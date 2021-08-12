@@ -1,8 +1,9 @@
 package com.team4.testingsystem.dto;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class ErrorResponse {
+public class ErrorResponse implements Serializable {
 
     private String message;
 

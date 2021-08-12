@@ -129,6 +129,51 @@ class UsersControllerIntegrationTest {
     }
 
     @Test
+    void getAllUsersByNameLikeExactName() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/users")
+                .with(user(userDetails))
+                .param("name", "Russian User"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = mvcResult.getResponse().getContentAsString();
+        List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {});
+
+        Assertions.assertEquals(1, userDTOs.size());
+        Assertions.assertEquals("Russian User", userDTOs.get(0).getName());
+    }
+
+    @Test
+    void getAllUsersByNameLikeSubstring() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/users")
+                .with(user(userDetails))
+                .param("name", "an U"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = mvcResult.getResponse().getContentAsString();
+        List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {});
+
+        Assertions.assertEquals(1, userDTOs.size());
+        Assertions.assertEquals("Russian User", userDTOs.get(0).getName());
+    }
+
+    @Test
+    void getAllUsersByNameLikeSubstringIgnoreCase() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/users")
+                .with(user(userDetails))
+                .param("name", "An u"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = mvcResult.getResponse().getContentAsString();
+        List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {});
+
+        Assertions.assertEquals(1, userDTOs.size());
+        Assertions.assertEquals("Russian User", userDTOs.get(0).getName());
+    }
+
+    @Test
     void updateLanguage() throws Exception {
         mockMvc.perform(put("/language")
                 .with(user(userDetails))

@@ -3,9 +3,10 @@ package com.team4.testingsystem.dto;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Priority;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class AssignTestRequest {
+public class AssignTestRequest implements Serializable {
     private Levels level;
     private LocalDateTime deadline;
     private Priority priority;

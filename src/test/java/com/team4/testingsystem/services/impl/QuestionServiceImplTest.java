@@ -1,10 +1,12 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.dto.AnswerDTO;
+import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
+import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
@@ -29,7 +31,13 @@ class QuestionServiceImplTest {
     Question question;
 
     @Mock
+    ContentFile contentFile;
+
+    @Mock
     private QuestionRepository questionRepository;
+
+    @Mock
+    ContentFilesRepository contentFilesRepository;
 
     @InjectMocks
     private QuestionServiceImpl questionService;
@@ -100,6 +108,14 @@ class QuestionServiceImplTest {
         Mockito.when(questionRepository
                 .getQuestionsByTestId(any())).thenReturn(questions);
         Assertions.assertEquals(questions, questionService.getQuestionsByTestId(any()));
+    }
+
+    @Test
+    void archiveQuestionsByContentFileId() {
+        Mockito.when(contentFilesRepository.findById(EntityCreatorUtil.ID))
+                .thenReturn(Optional.ofNullable(contentFile));
+        questionService.archiveQuestionsByContentFileId(EntityCreatorUtil.ID);
+        verify(contentFilesRepository).findById(EntityCreatorUtil.ID);
     }
 
     @Test
