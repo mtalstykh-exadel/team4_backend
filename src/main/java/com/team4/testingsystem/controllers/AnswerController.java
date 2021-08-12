@@ -32,8 +32,8 @@ public class AnswerController {
 
     @ApiOperation(value = "Upload essay text")
     @PostMapping("/essay/{testId}")
-    public void uploadEssay(@PathVariable Long testId, @RequestBody String text) {
-        answerService.uploadEssay(testId, text);
+    public String uploadEssay(@PathVariable Long testId, @RequestBody String text) {
+        return answerService.uploadEssay(testId, text);
     }
 
     @ApiOperation("Upload an answer file for the speaking module")
