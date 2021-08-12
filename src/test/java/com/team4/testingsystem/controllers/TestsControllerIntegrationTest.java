@@ -107,7 +107,7 @@ class TestsControllerIntegrationTest {
         question.setId(null);
         question.setModule(listeningModule);
 
-        ContentFile contentFile = new ContentFile("url", Lists.list(question));
+        ContentFile contentFile = new ContentFile("url", "topic", Lists.list(question));
         contentFilesRepository.save(contentFile);
 
         test.setQuestions(Lists.list(question));

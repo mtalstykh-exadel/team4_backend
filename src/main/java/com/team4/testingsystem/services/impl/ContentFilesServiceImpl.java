@@ -40,14 +40,14 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     }
 
     @Override
-    public ContentFile add(MultipartFile file, List<Question> questions) {
+    public ContentFile add(MultipartFile file, String topic, List<Question> questions) {
         String url = storageService.upload(file.getResource());
-        return contentFilesRepository.save(new ContentFile(url, questions));
+        return contentFilesRepository.save(new ContentFile(url, topic, questions));
     }
 
     @Transactional
     @Override
-    public ContentFile update(MultipartFile file, Long id, List<Question> questions) {
+    public ContentFile update(MultipartFile file, Long id, String topic, List<Question> questions) {
         if (file == null) {
             questionService.archiveQuestionsByContentFileId(id);
             ContentFile contentFile = contentFilesRepository
@@ -57,7 +57,7 @@ public class ContentFilesServiceImpl implements ContentFilesService {
         }
         contentFilesRepository.archiveContentFile(id);
         questionService.archiveQuestionsByContentFileId(id);
-        return add(file, questions);
+        return add(file, topic, questions);
     }
 
     @Override
