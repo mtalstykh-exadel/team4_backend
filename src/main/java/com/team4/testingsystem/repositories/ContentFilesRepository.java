@@ -32,4 +32,8 @@ public interface ContentFilesRepository extends CrudRepository<ContentFile, Long
            + "join cf.questions q "
            + "where q.id = ?1")
     ContentFile getContentFileByQuestionId(Long id);
+
+    @Modifying
+    @Query(value = "update ContentFile cf set cf.available = false where cf.id = ?1")
+    void archiveContentFile(Long id);
 }

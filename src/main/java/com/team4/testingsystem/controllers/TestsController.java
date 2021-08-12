@@ -2,9 +2,11 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.GradesConverter;
 import com.team4.testingsystem.converters.TestConverter;
+import com.team4.testingsystem.converters.TestVerificationConverter;
 import com.team4.testingsystem.dto.AssignTestRequest;
 import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.dto.TestVerificationDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
@@ -34,16 +36,19 @@ public class TestsController {
     private final ModuleGradesService moduleGradesService;
     private final GradesConverter gradesConverter;
     private final TestConverter testConverter;
+    private final TestVerificationConverter verificationConverter;
 
     @Autowired
     public TestsController(TestsService testsService,
                            ModuleGradesService moduleGradesService,
                            GradesConverter gradesConverter,
-                           TestConverter testConverter) {
+                           TestConverter testConverter,
+                           TestVerificationConverter verificationConverter) {
         this.testsService = testsService;
         this.moduleGradesService = moduleGradesService;
         this.gradesConverter = gradesConverter;
         this.testConverter = testConverter;
+        this.verificationConverter = verificationConverter;
     }
 
     @ApiOperation(value = "Get all tests assigned to the current user")
@@ -64,6 +69,12 @@ public class TestsController {
         return testConverter.convertToDTO(testsService.getById(id));
     }
 
+    @ApiOperation(value = "Get test for coach verification")
+    @GetMapping(path = "/verify/{testId}")
+    public TestVerificationDTO getTestForVerification(@PathVariable long testId) {
+        return verificationConverter.convertToVerificationDTO(testsService.getById(testId));
+    }
+
     @ApiOperation(value = "Use it to get test grades for a test by modules")
     @GetMapping(path = "/grades/{testId}")
     public ModuleGradesDTO getGrades(@PathVariable("testId") long testId) {
@@ -82,7 +93,13 @@ public class TestsController {
     @ApiResponse(code = 200, message = "Created test's id")
     @PostMapping(path = "/assign/{userId}")
     public long assign(@PathVariable("userId") long userId, @RequestBody AssignTestRequest request) {
-        return testsService.assignForUser(userId, request.getLevel(), request.getDeadline());
+        return testsService.assignForUser(userId, request.getLevel(), request.getDeadline(), request.getPriority());
+    }
+
+    @ApiOperation(value = "Is used when to deassign tests (HR)")
+    @PostMapping(path = "/deassign/{testId}")
+    public void deassign(@PathVariable("testId") long testId) {
+        testsService.deassign(testId);
     }
 
     @ApiOperation(value =
@@ -94,6 +111,7 @@ public class TestsController {
         long createdTestId = testsService.startForUser(userId, level);
         return testConverter.convertToDTO(testsService.start(createdTestId));
     }
+
 
     @ApiOperation(value = "Is used when the user starts the test which was assigned by an HR")
     @PostMapping(path = "/start/{testId}")

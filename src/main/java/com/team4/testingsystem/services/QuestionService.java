@@ -27,4 +27,7 @@ public interface QuestionService {
 
     List<Question> getQuestionsByLevelAndModuleName(Levels level, Modules module);
 
+    void archiveQuestionsByContentFileId(Long id);
+
+    Question getQuestionByTestIdAndModule(Long testId, Modules module);
 }

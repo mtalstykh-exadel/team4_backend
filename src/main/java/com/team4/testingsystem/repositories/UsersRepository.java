@@ -17,6 +17,8 @@ public interface UsersRepository extends CrudRepository<User, Long> {
 
     List<User> findAll();
 
+    List<User> findAllByNameContainsIgnoreCase(String nameSubstring);
+
     @Transactional
     @Modifying
     @Query(value = "UPDATE User user SET user.language = ?2 WHERE user.id = ?1")

@@ -2,15 +2,14 @@ package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.entities.TestQuestionID;
 
 import java.util.List;
 
 public interface ChosenOptionService {
 
-    ChosenOption getById(TestQuestionID testQuestionID);
+    ChosenOption getByTestAndQuestionId(Long testId, Long questionId);
 
-    List<ChosenOption> getChosenOptionByTest(Test test);
+    List<ChosenOption> getAllByTest(Test test);
 
     void save(ChosenOption chosenOption);
 

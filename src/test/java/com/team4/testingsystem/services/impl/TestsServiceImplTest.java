@@ -5,6 +5,7 @@ import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.entities.UserTest;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
@@ -140,6 +141,7 @@ class TestsServiceImplTest {
             Mockito.when(builder.user(any())).thenReturn(builder);
             Mockito.when(builder.startedAt(any())).thenReturn(builder);
             Mockito.when(builder.status(any())).thenReturn(builder);
+            Mockito.when(builder.priority(Priority.LOW)).thenReturn(builder);
             Mockito.when(builder.level(any())).thenReturn(builder);
             Mockito.when(builder.build()).thenReturn(test);
 
@@ -174,7 +176,7 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void assignWhenAssignFail() {
+    void assignFail() {
         Level level = EntityCreatorUtil.createLevel();
         LocalDateTime deadline = LocalDateTime.now();
 
@@ -182,7 +184,7 @@ class TestsServiceImplTest {
         Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
 
         Assertions.assertThrows(UserNotFoundException.class,
-                () -> testsService.assignForUser(BAD_USER_ID, Levels.A1, deadline));
+                () -> testsService.assignForUser(BAD_USER_ID, Levels.A1, deadline, Priority.LOW));
     }
 
     @org.junit.jupiter.api.Test
@@ -201,13 +203,46 @@ class TestsServiceImplTest {
             Mockito.when(builder.assignedAt(any())).thenReturn(builder);
             Mockito.when(builder.deadline(deadline)).thenReturn(builder);
             Mockito.when(builder.status(any())).thenReturn(builder);
+            Mockito.when(builder.priority(any())).thenReturn(builder);
             Mockito.when(builder.level(any())).thenReturn(builder);
             Mockito.when(builder.build()).thenReturn(test);
 
             Mockito.when(test.getId()).thenReturn(1L);
 
-            Assertions.assertEquals(1L, testsService.assignForUser(GOOD_USER_ID, Levels.A1, deadline));
+            Assertions.assertEquals(1L,
+                    testsService.assignForUser(GOOD_USER_ID, Levels.A1, deadline, Priority.HIGH));
         }
+    }
+
+    @org.junit.jupiter.api.Test
+    void deassignSuccessTestWasStarted(){
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+
+        Mockito.when(test.getStartedAt()).thenReturn(LocalDateTime.now());
+
+        testsService.deassign(GOOD_TEST_ID);
+
+        verify(testsRepository).deassign(GOOD_TEST_ID);
+    }
+
+
+    @org.junit.jupiter.api.Test
+    void deassignSuccessTestWasNotStarted(){
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+
+        Mockito.when(test.getStartedAt()).thenReturn(null);
+
+        testsService.deassign(GOOD_TEST_ID);
+
+        verify(testsRepository).removeById(GOOD_TEST_ID);
+    }
+
+
+    @org.junit.jupiter.api.Test
+    void deassignFail(){
+        Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
+
+        Assertions.assertThrows(TestNotFoundException.class, ()->testsService.deassign(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
@@ -274,23 +309,6 @@ class TestsServiceImplTest {
                 () -> testsService.update(BAD_TEST_ID));
     }
 
-    @org.junit.jupiter.api.Test
-    void removeSuccess() {
-        Mockito.when(testsRepository.removeById(GOOD_TEST_ID)).thenReturn(1);
-
-        testsService.removeById(GOOD_TEST_ID);
-
-        verify(testsRepository).removeById(GOOD_TEST_ID);
-
-        Assertions.assertDoesNotThrow(() -> testsService.removeById(GOOD_TEST_ID));
-    }
-
-    @org.junit.jupiter.api.Test
-    void removeFail() {
-        Mockito.when(testsRepository.removeById(BAD_TEST_ID)).thenReturn(0);
-
-        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.removeById(BAD_TEST_ID));
-    }
 
     @org.junit.jupiter.api.Test
     void saveSuccess() {

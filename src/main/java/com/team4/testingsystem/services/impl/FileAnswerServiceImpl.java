@@ -1,56 +1,107 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.dto.FileAnswerRequest;
 import com.team4.testingsystem.entities.FileAnswer;
-import com.team4.testingsystem.exceptions.FileNotFoundException;
-import com.team4.testingsystem.exceptions.QuestionNotFoundException;
+import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
+import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
-import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.FileAnswerService;
+import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.ResourceStorageService;
+import com.team4.testingsystem.services.TestsService;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class FileAnswerServiceImpl implements FileAnswerService {
     private final FileAnswerRepository fileAnswerRepository;
-    private final QuestionRepository questionRepository;
+    private final QuestionService questionService;
+    private final TestsService testsService;
+    private final ResourceStorageService storageService;
 
     @Autowired
-    public FileAnswerServiceImpl(FileAnswerRepository fileAnswerRepository, QuestionRepository questionRepository) {
+    public FileAnswerServiceImpl(FileAnswerRepository fileAnswerRepository,
+                                 QuestionService questionService,
+                                 TestsService testsService,
+                                 ResourceStorageService storageService) {
         this.fileAnswerRepository = fileAnswerRepository;
-        this.questionRepository = questionRepository;
+        this.questionService = questionService;
+        this.testsService = testsService;
+        this.storageService = storageService;
     }
 
-    public void create(FileAnswerRequest fileAnswerRequest) {
+    @Override
+    public String getUrl(Long testId, Long questionId) {
+        FileAnswer fileAnswer = fileAnswerRepository.findByTestAndQuestionId(testId, questionId)
+                .orElseThrow(FileAnswerNotFoundException::new);
+        return fileAnswer.getUrl();
+    }
+
+    @Override
+    public FileAnswer uploadSpeaking(MultipartFile file, Long testId, Modules module) {
+        String url = storageService.upload(file.getResource());
+        Question question = questionService.getQuestionByTestIdAndModule(testId, module);
+        return save(testId, question.getId(), url);
+    }
+
+    @Override
+    public String downloadSpeaking(Long testId) {
+        Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.SPEAKING);
+        return getUrl(testId, question.getId());
+    }
+
+    @Override
+    public FileAnswer save(Long testId, Long questionId, String url) {
         FileAnswer fileAnswer = FileAnswer.builder()
-                .url(fileAnswerRequest.getUrl())
-                .question(questionRepository.findById(fileAnswerRequest.getQuestionId())
-                        .orElseThrow(QuestionNotFoundException::new))
+                .id(createId(testId, questionId))
+                .url(url)
                 .build();
-        fileAnswerRepository.save(fileAnswer);
+        return fileAnswerRepository.save(fileAnswer);
     }
 
-    public FileAnswer getById(long id) {
-        return fileAnswerRepository.findById(id)
-                .orElseThrow(FileNotFoundException::new);
+    @Override
+    public void remove(Long testId, Long questionId) {
+        fileAnswerRepository.deleteById(createId(testId, questionId));
     }
 
-    public void update(long id, FileAnswerRequest fileAnswerRequest) {
-        FileAnswer fileAnswer = FileAnswer.builder()
-                .id(fileAnswerRepository.findById(id)
-                        .orElseThrow(FileNotFoundException::new)
-                        .getId())
-                .url(fileAnswerRequest.getUrl())
-                .question(questionRepository.findById(fileAnswerRequest.getQuestionId())
-                        .orElseThrow(QuestionNotFoundException::new))
-                .build();
-        fileAnswerRepository.save(fileAnswer);
-    }
-
-    public void removeById(long id) {
-        if (!fileAnswerRepository.existsById(id)) {
-            throw new FileNotFoundException();
+    @Override
+    public String downloadEssay(Long testId) {
+        Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
+        String url = getUrl(testId, question.getId());
+        try {
+            return IOUtils.toString(storageService.load(url).getInputStream(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new FileLoadingFailedException();
         }
-        fileAnswerRepository.deleteById(id);
+    }
+
+    @Override
+    public void uploadEssay(Long testId, String text) {
+        Test test = testsService.getById(testId);
+        Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
+
+        InputStream inputStream = IOUtils.toInputStream(text, StandardCharsets.UTF_8);
+        String url = storageService.upload(new InputStreamResource(inputStream));
+        FileAnswer fileAnswer = FileAnswer.builder()
+                .id(new TestQuestionID(test, question))
+                .url(url)
+                .build();
+        fileAnswerRepository.save(fileAnswer);
+    }
+
+    private TestQuestionID createId(Long testId, Long questionId) {
+        Test test = testsService.getById(testId);
+        Question question = questionService.getById(questionId);
+        return new TestQuestionID(test, question);
     }
 }
