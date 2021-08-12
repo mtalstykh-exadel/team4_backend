@@ -4,6 +4,7 @@ import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.ContentFile;
+import com.team4.testingsystem.entities.ListeningTopicRequest;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
@@ -77,18 +78,19 @@ public class QuestionController {
     @ApiOperation(value = "Add content file with questions")
     @PostMapping(value = "/listening")
     public ContentFileDTO addListening(@RequestPart MultipartFile file,
-                                       @RequestPart List<QuestionDTO> questions) {
-        ContentFile contentFile = contentFilesService.add(file, convertToEntity(questions));
+                                       @RequestPart ListeningTopicRequest data) {
+        ContentFile contentFile = contentFilesService
+                .add(file, data.getTopic(), convertToEntity(data.getQuestions()));
         return new ContentFileDTO(contentFile);
     }
 
     @ApiOperation(value = "Update content file with questions or just questions for content file")
     @PutMapping(value = "/listening/{contentFileId}")
     public ContentFileDTO updateListening(@RequestPart(required = false) MultipartFile file,
-                                          @RequestPart List<QuestionDTO> questions,
-                                          @PathVariable("contentFileId") Long id) {
+                                          @PathVariable("contentFileId") Long id,
+                                          @RequestPart ListeningTopicRequest data) {
         ContentFile contentFile = contentFilesService
-                .update(file, id, convertToEntity(questions));
+                .update(file, id, data.getTopic(), convertToEntity(data.getQuestions()));
         return new ContentFileDTO(contentFile);
     }
 

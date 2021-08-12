@@ -12,9 +12,9 @@ public interface ContentFilesService {
 
     ContentFile getById(long id);
 
-    ContentFile add(MultipartFile file, List<Question> questions);
+    ContentFile add(MultipartFile file, String topic, List<Question> questions);
 
-    ContentFile update(MultipartFile file, Long id, List<Question> questions);
+    ContentFile update(MultipartFile file, Long id, String topic, List<Question> questions);
 
     void updateURL(Long id, String newUrl);
 

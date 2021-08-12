@@ -3,13 +3,13 @@ package com.team4.testingsystem.dto;
 import com.team4.testingsystem.entities.Test;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Objects;
 
 public class TestInfo implements Serializable {
     private Long testId;
     private String level;
-    private LocalDateTime deadline;
+    private Instant deadline;
     private String priority;
 
     public TestInfo() {
@@ -38,11 +38,11 @@ public class TestInfo implements Serializable {
         this.level = level;
     }
 
-    public LocalDateTime getDeadline() {
+    public Instant getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDateTime deadline) {
+    public void setDeadline(Instant deadline) {
         this.deadline = deadline;
     }
 
