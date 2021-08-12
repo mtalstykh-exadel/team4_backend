@@ -35,7 +35,7 @@ public class CoachGradeServiceImpl implements CoachGradeService {
     }
 
     @Override
-    public void add(Long testId, Long questionId, Integer grade) {
+    public void add(Long testId, Long questionId, Integer grade, String comment) {
 
         Test test = testsService.getById(testId);
 
@@ -43,7 +43,7 @@ public class CoachGradeServiceImpl implements CoachGradeService {
 
         TestQuestionID testQuestionID = new TestQuestionID(test, question);
 
-        gradeRepository.save(new CoachGrade(testQuestionID, grade));
+        gradeRepository.save(new CoachGrade(testQuestionID, grade, comment));
 
     }
 

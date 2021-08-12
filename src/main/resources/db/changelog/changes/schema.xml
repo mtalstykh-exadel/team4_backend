@@ -626,6 +626,10 @@
         <addColumn tableName="coach_grade">
             <column name="comment" type="text"/>
         </addColumn>
+
+        <addColumn tableName="module_grade">
+            <column name="coach_comment" type="text"/>
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

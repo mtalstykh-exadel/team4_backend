@@ -9,6 +9,7 @@ public class CoachGradeDTO implements Serializable {
     private Long testId;
     private Long questionId;
     private Integer grade;
+    private String comment;
 
     public CoachGradeDTO() {
     }
@@ -17,6 +18,7 @@ public class CoachGradeDTO implements Serializable {
         this.testId = coachGrade.getId().getTest().getId();
         this.questionId = coachGrade.getId().getQuestion().getId();
         this.grade = coachGrade.getGrade();
+        this.comment = coachGrade.getComment();
     }
 
     public Long getTestId() {
@@ -41,6 +43,14 @@ public class CoachGradeDTO implements Serializable {
 
     public void setGrade(Integer grade) {
         this.grade = grade;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public static Builder builder() {
@@ -69,6 +79,11 @@ public class CoachGradeDTO implements Serializable {
             return this;
         }
 
+        public Builder comment(String comment) {
+            gradeDTO.setComment(comment);
+            return this;
+        }
+
         public CoachGradeDTO build() {
             return gradeDTO;
         }
@@ -85,11 +100,12 @@ public class CoachGradeDTO implements Serializable {
         CoachGradeDTO that = (CoachGradeDTO) o;
         return Objects.equals(testId, that.testId)
                 && Objects.equals(questionId, that.questionId)
-                && Objects.equals(grade, that.grade);
+                && Objects.equals(grade, that.grade)
+                && Objects.equals(comment, that.comment);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(testId, questionId, grade);
+        return Objects.hash(testId, questionId, grade, comment);
     }
 }
