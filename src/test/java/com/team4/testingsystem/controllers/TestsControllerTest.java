@@ -30,6 +30,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,7 +155,7 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void assignSuccess() {
-        AssignTestRequest request = new AssignTestRequest(Levels.A1, LocalDateTime.now(), Priority.MEDIUM);
+        AssignTestRequest request = new AssignTestRequest(Levels.A1, Instant.now(), Priority.MEDIUM);
 
         Mockito.when(testsService.assignForUser(GOOD_USER_ID, Levels.A1, request.getDeadline(), Priority.MEDIUM))
                 .thenReturn(1L);
@@ -164,7 +165,7 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void assignFail() {
-        AssignTestRequest request = new AssignTestRequest(Levels.A1, LocalDateTime.now(), Priority.LOW);
+        AssignTestRequest request = new AssignTestRequest(Levels.A1, Instant.now(), Priority.LOW);
 
         Mockito.when(testsService.assignForUser(BAD_USER_ID, Levels.A1, request.getDeadline(),  Priority.LOW))
                 .thenThrow(UserNotFoundException.class);

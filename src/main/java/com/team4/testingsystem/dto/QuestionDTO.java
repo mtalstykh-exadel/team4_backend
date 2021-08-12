@@ -1,13 +1,11 @@
 package com.team4.testingsystem.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.testingsystem.entities.Question;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuestionDTO {
     private Long id;
     private String questionBody;

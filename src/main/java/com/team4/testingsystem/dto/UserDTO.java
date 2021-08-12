@@ -1,11 +1,9 @@
 package com.team4.testingsystem.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.testingsystem.entities.User;
 
 import java.util.Objects;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
     private Long id;
     private String name;
