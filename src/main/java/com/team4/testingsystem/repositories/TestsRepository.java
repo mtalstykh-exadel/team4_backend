@@ -26,8 +26,8 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
             + "and t.startedAt >= ?2")
     List<Test> getSelfStartedByUserAfter(User user, Instant date);
 
-    @Query("select t from Test t where t.coach.id = ?1 and t.status = ?2")
-    List<Test> getAllByAssignedCoachAndStatus(Long coachId, Status status);
+    @Query("select t from Test t where t.coach.id = ?1 and t.status in ?2")
+    List<Test> getAllByAssignedCoachAndStatuses(Long coachId, Status[] status);
 
     @Transactional
     @Modifying

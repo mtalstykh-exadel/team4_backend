@@ -71,7 +71,8 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public List<Test> getAllUnverifiedTestsByCoach(long coachId) {
-        return testsRepository.getAllByAssignedCoachAndStatus(coachId, Status.COMPLETED);
+        Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
+        return testsRepository.getAllByAssignedCoachAndStatuses(coachId, statuses);
     }
 
     @Override
