@@ -2,6 +2,7 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.ContentFileDTO;
+import com.team4.testingsystem.dto.ListeningTopicDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
@@ -74,6 +75,12 @@ public class QuestionController {
         return QuestionDTO.createWithCorrectAnswers(question);
     }
 
+    @ApiOperation(value = "Get all topics (or get by level)")
+    @GetMapping(value = "/listening")
+    public List<ListeningTopicDTO> getListeningTopics(@RequestParam(required = false) Levels level) {
+        return convertToDTO(questionService.getListening(level));
+    }
+
     @ApiOperation(value = "Add content file with questions")
     @PostMapping(value = "/listening")
     public ContentFileDTO addListening(@RequestPart MultipartFile file,
@@ -112,5 +119,9 @@ public class QuestionController {
 
     private List<Question> convertToEntity(List<QuestionDTO> questionsDTO) {
         return questionsDTO.stream().map(questionConverter::convertToEntity).collect(Collectors.toList());
+    }
+
+    private List<ListeningTopicDTO> convertToDTO(List<ContentFile> contentFiles) {
+        return contentFiles.stream().map(ListeningTopicDTO::new).collect(Collectors.toList());
     }
 }
