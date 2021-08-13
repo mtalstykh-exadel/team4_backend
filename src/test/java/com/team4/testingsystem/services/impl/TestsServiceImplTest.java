@@ -292,6 +292,8 @@ class TestsServiceImplTest {
     void finishSuccess() {
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
 
+        Mockito.when(test.getStatus()).thenReturn(Status.STARTED);
+
         testsService.finish(GOOD_TEST_ID, Instant.now());
 
         verify(testEvaluationService).countScoreBeforeCoachCheck(test);
