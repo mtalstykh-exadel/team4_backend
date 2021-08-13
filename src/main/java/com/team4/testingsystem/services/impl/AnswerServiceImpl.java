@@ -33,8 +33,8 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public void uploadEssay(Long testId, String text) {
-        fileAnswerService.uploadEssay(testId, text);
+    public String uploadEssay(Long testId, String text) {
+        return fileAnswerService.uploadEssay(testId, text).getUrl();
     }
 
     @Override
