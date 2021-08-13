@@ -178,6 +178,21 @@ class TestsControllerTest {
     }
 
     @org.junit.jupiter.api.Test
+    void getUnverifiedTestsForCurrentCoachSuccess() {
+        TestDTO testDTO = new TestDTO();
+
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
+            Mockito.when(customUserDetails.getId()).thenReturn(GOOD_USER_ID);
+            Mockito.when(testsService.getAllUnverifiedTestsByCoach(GOOD_USER_ID))
+                    .thenReturn(Lists.list(test));
+            Mockito.when(testConverter.convertToDTO(test)).thenReturn(testDTO);
+
+            Assertions.assertEquals(Lists.list(testDTO), testsController.getUnverifiedTestsForCurrentCoach());
+        }
+    }
+
+    @org.junit.jupiter.api.Test
     void assignSuccess() {
         AssignTestRequest request = new AssignTestRequest(Levels.A1, Instant.now(), Priority.MEDIUM);
 
