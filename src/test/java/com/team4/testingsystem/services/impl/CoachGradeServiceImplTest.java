@@ -68,7 +68,7 @@ class CoachGradeServiceImplTest {
         Mockito.when(questionService.getById(questionId)).thenReturn(question);
 
 
-        gradeService.add(testId, questionId, grade);
+        gradeService.add(testId, questionId, grade, "Comment");
 
         Mockito.verify(gradeRepository).save(any());
 
@@ -79,7 +79,7 @@ class CoachGradeServiceImplTest {
         Mockito.when(testsService.getById(testId)).thenThrow(TestNotFoundException.class);
 
         Assertions.assertThrows(TestNotFoundException.class,
-                () -> gradeService.add(testId, questionId, grade));
+                () -> gradeService.add(testId, questionId, grade, null));
     }
 
     @Test
@@ -88,7 +88,7 @@ class CoachGradeServiceImplTest {
         Mockito.when(questionService.getById(questionId)).thenThrow(QuestionNotFoundException.class);
 
         Assertions.assertThrows(QuestionNotFoundException.class,
-                () -> gradeService.add(testId, questionId, grade));
+                () -> gradeService.add(testId, questionId, grade, null));
     }
 
 

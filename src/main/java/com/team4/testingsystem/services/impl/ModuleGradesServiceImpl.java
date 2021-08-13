@@ -32,14 +32,14 @@ public class ModuleGradesServiceImpl implements ModuleGradesService {
 
     @Override
     public Integer getGradeByModule(Map<String, ModuleGrade> gradeMap, Modules module) {
-        ModuleGrade moduleGrade =  Optional.ofNullable(gradeMap.get(module.getName()))
+        ModuleGrade moduleGrade = Optional.ofNullable(gradeMap.get(module.getName()))
                 .orElseThrow(() -> new ModuleGradeNotFoundException(module.getName()));
         return moduleGrade.getGrade();
     }
 
     @Override
     public String getCoachCommentByModule(Map<String, ModuleGrade> gradeMap, Modules module) {
-        ModuleGrade moduleGrade =  Optional.ofNullable(gradeMap.get(module.getName()))
+        ModuleGrade moduleGrade = Optional.ofNullable(gradeMap.get(module.getName()))
                 .orElseThrow(() -> new ModuleGradeNotFoundException(module.getName()));
         return moduleGrade.getCoachComment();
     }
@@ -50,8 +50,7 @@ public class ModuleGradesServiceImpl implements ModuleGradesService {
         List<ModuleGrade> grades = (List<ModuleGrade>) moduleGradesRepository.findAllById_Test(test);
         return grades
                 .stream()
-                .collect(Collectors.toMap(moduleGrade -> moduleGrade.getId().getModule().getName(),
-                       grade->grade));
+                .collect(Collectors.toMap(moduleGrade -> moduleGrade.getId().getModule().getName(), grade -> grade));
     }
 
     @Override

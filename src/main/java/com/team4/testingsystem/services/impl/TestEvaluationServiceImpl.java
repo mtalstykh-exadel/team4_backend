@@ -72,9 +72,10 @@ public class TestEvaluationServiceImpl implements TestEvaluationService {
         List<CoachGrade> allCoachGrades = (List<CoachGrade>) coachGradeRepository.findAllById_Test(test);
 
         Map<String, CoachGrade> gradeMap = allCoachGrades
-                .stream()
-                .collect(Collectors.toMap(coachGrade -> coachGrade.getId().getQuestion().getModule().getName(),
-                        coachGrade->coachGrade));
+            .stream()
+            .collect(Collectors.toMap(
+                coachGrade -> coachGrade.getId().getQuestion().getModule().getName(),
+                coachGrade -> coachGrade));
 
         saveScoreCoachCheck(test, Modules.ESSAY, gradeMap);
         saveScoreCoachCheck(test, Modules.SPEAKING, gradeMap);
