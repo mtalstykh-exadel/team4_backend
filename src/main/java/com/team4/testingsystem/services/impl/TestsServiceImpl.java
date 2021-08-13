@@ -70,6 +70,11 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
+    public List<Test> getAllUnverifiedTestsByCoach(long coachId) {
+        return testsRepository.getAllByAssignedCoachAndStatus(coachId, Status.COMPLETED);
+    }
+
+    @Override
     public List<UserTest> getAllUsersAndAssignedTests() {
         Status[] statuses = {Status.ASSIGNED};
         Map<User, Test> assignedTests = getByStatuses(statuses).stream()

@@ -125,6 +125,14 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
+    void getAllUnverifiedTestsByCoachSuccess() {
+        Mockito.when(testsRepository.getAllByAssignedCoachAndStatus(GOOD_USER_ID, Status.COMPLETED))
+                .thenReturn(Lists.list(test));
+
+        Assertions.assertEquals(Lists.list(test), testsService.getAllUnverifiedTestsByCoach(GOOD_USER_ID));
+    }
+
+    @org.junit.jupiter.api.Test
     void startForUserSuccess() {
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
 

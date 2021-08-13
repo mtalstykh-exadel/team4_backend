@@ -93,6 +93,14 @@ public class TestsController {
         return convertToDTO(testsService.getByStatuses(statuses));
     }
 
+    @ApiOperation(value = "Is used to get all unverified tests, assigned to current coach")
+    @GetMapping(path = "/unverified_assigned")
+    @Secured("ROLE_COACH")
+    public List<TestDTO> getUnverifiedTestsForCurrentCoach() {
+        Long coachId = JwtTokenUtil.extractUserDetails().getId();
+        return convertToDTO(testsService.getAllUnverifiedTestsByCoach(coachId));
+    }
+
     @ApiOperation(value = "Is used to assign a test for the user (HR's ability)")
     @ApiResponse(code = 200, message = "Created test's id")
     @PostMapping(path = "/assign/{userId}")
