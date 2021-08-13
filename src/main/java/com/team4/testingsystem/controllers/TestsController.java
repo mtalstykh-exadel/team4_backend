@@ -52,16 +52,14 @@ public class TestsController {
         return convertToDTO(testsService.getByUserId(JwtTokenUtil.extractUserDetails().getId()));
     }
 
-    @ApiOperation(value = "Get all tests assigned to the user")
+    @ApiOperation(value = "Get all tests assigned to the user by by the optional parameter level")
     @GetMapping(path = "/history/{userId}")
-    public List<TestDTO> getUsersTests(@PathVariable("userId") long userId) {
+    public List<TestDTO> getUsersTests(@PathVariable("userId") long userId,
+                                       @RequestParam(required = false) Levels level) {
+        if (level != null) {
+            return convertToDTO(testsService.getTestsByUserIdAndLevel(userId, level));
+        }
         return convertToDTO(testsService.getByUserId(userId));
-    }
-
-    @ApiOperation(value = "Get all tests by level assigned to the user")
-    @GetMapping(path = "/history")
-    public List<TestDTO> getUserTestsByLevel(@RequestParam long userId, @RequestParam Levels level) {
-        return convertToDTO(testsService.getTestsByUserIdAndLevel(userId, level));
     }
 
     @ApiOperation(value = "Use it to get a single test from the database by its id")
