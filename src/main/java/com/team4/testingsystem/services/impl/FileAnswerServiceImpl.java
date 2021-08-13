@@ -86,7 +86,7 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     }
 
     @Override
-    public void uploadEssay(Long testId, String text) {
+    public FileAnswer uploadEssay(Long testId, String text) {
         Test test = testsService.getById(testId);
         Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
 
@@ -96,7 +96,7 @@ public class FileAnswerServiceImpl implements FileAnswerService {
                 .id(new TestQuestionID(test, question))
                 .url(url)
                 .build();
-        fileAnswerRepository.save(fileAnswer);
+        return fileAnswerRepository.save(fileAnswer);
     }
 
     private TestQuestionID createId(Long testId, Long questionId) {

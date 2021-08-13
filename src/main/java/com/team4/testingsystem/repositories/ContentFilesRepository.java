@@ -7,6 +7,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface ContentFilesRepository extends CrudRepository<ContentFile, Long> {
 
@@ -36,4 +38,11 @@ public interface ContentFilesRepository extends CrudRepository<ContentFile, Long
     @Modifying
     @Query(value = "update ContentFile cf set cf.available = false where cf.id = ?1")
     void archiveContentFile(Long id);
+
+    List<ContentFile> findAll();
+
+    @Query("select distinct cf from ContentFile cf "
+           + "join cf.questions q "
+           + "where q.level.name = ?1 ")
+    List<ContentFile> getContentFiles(String level);
 }

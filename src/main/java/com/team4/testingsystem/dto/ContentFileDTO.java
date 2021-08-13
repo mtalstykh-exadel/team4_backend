@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ContentFileDTO implements Serializable {
-
     private Long id;
     private String url;
     private String topic;

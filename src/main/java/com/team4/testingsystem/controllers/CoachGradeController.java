@@ -37,7 +37,10 @@ public class CoachGradeController {
     @ApiOperation(value = "Use it to add or update grading for a single question of the test")
     @PostMapping("/")
     public void add(@RequestBody CoachGradeDTO gradeDTO) {
-        gradeService.add(gradeDTO.getTestId(), gradeDTO.getQuestionId(), gradeDTO.getGrade());
+        gradeService.add(gradeDTO.getTestId(),
+                gradeDTO.getQuestionId(),
+                gradeDTO.getGrade(),
+                gradeDTO.getComment());
     }
 
 }

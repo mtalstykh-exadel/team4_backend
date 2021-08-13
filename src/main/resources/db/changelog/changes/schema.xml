@@ -623,6 +623,7 @@
                               defaultNullValue="LOW"/>
     </changeSet>
 
+<<<<<<< HEAD
     <changeSet id="add_timer_table" author="Anlord241">
         <createTable tableName="timer">
             <column name="id" type="int" autoIncrement="true">
@@ -640,6 +641,16 @@
     <changeSet id="add_finish_time" author="Anlord241">
         <addColumn tableName="test">
             <column name="finish_time" type="datetime"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_coach_commentary" author="Anlord241">
+        <addColumn tableName="coach_grade">
+            <column name="comment" type="text"/>
+        </addColumn>
+
+        <addColumn tableName="module_grade">
+            <column name="coach_comment" type="text"/>
         </addColumn>
     </changeSet>
 

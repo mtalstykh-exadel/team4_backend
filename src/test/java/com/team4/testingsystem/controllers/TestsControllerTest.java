@@ -8,6 +8,7 @@ import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.dto.TestVerificationDTO;
 import com.team4.testingsystem.entities.Level;
+import com.team4.testingsystem.entities.ModuleGrade;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
@@ -33,7 +34,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +68,7 @@ class TestsControllerTest {
     private GradesConverter gradesConverter;
 
     @Mock
-    private Map<String, Integer> gradesMap;
+    private Map<String, ModuleGrade> gradesMap;
 
     @Mock
     private TestConverter testConverter;
