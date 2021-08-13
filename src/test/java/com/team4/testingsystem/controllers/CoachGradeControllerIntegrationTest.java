@@ -54,8 +54,12 @@ class CoachGradeControllerIntegrationTest {
     private final ObjectMapper objectMapper;
 
     private User user;
-    private CustomUserDetails coachDetails;
     private Level level;
+
+    private CustomUserDetails userDetails;
+    private CustomUserDetails hrDetails;
+    private CustomUserDetails coachDetails;
+    private CustomUserDetails adminDetails;
 
     @Autowired
     CoachGradeControllerIntegrationTest(MockMvc mockMvc,
@@ -81,8 +85,13 @@ class CoachGradeControllerIntegrationTest {
     @BeforeEach
     void init() {
         answerRepository.deleteAll();
+
         user = usersRepository.findByLogin("rus_coach@northsixty.com").orElseThrow();
+        userDetails = new CustomUserDetails(usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow());
+        hrDetails = new CustomUserDetails(usersRepository.findByLogin("rus_hr@northsixty.com").orElseThrow());
         coachDetails = new CustomUserDetails(user);
+        adminDetails = new CustomUserDetails(usersRepository.findByLogin("rus_admin@northsixty.com").orElseThrow());
+
         level = levelRepository.findByName(Levels.A1.name()).orElseThrow();
     }
 
@@ -178,6 +187,27 @@ class CoachGradeControllerIntegrationTest {
     }
 
     @Test
+    void getGradesUser() throws Exception {
+        mockMvc.perform(get("/grades/1")
+                .with(user(userDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getGradesHr() throws Exception {
+        mockMvc.perform(get("/grades/1")
+                .with(user(hrDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getGradesAdmin() throws Exception {
+        mockMvc.perform(get("/grades/1")
+                .with(user(adminDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void addGradeTestNotFound() throws Exception {
         CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
                 .testId(200L)
@@ -237,6 +267,32 @@ class CoachGradeControllerIntegrationTest {
         Assertions.assertEquals(gradeDTO.getGrade(), grade.get().getGrade());
     }
 
+    @Test
+    void addGradeUser() throws Exception {
+        mockMvc.perform(post("/grades/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}")
+                .with(user(userDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void addGradeHr() throws Exception {
+        mockMvc.perform(post("/grades/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}")
+                .with(user(hrDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void addGradeAdmin() throws Exception {
+        mockMvc.perform(post("/grades/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}")
+                .with(user(adminDetails)))
+                .andExpect(status().isForbidden());
+    }
 
     @Test
     void updateGradeSuccess() throws Exception {

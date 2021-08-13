@@ -50,6 +50,7 @@ class UsersControllerIntegrationTest {
 
     private CustomUserDetails userDetails;
     private CustomUserDetails hrDetails;
+    private CustomUserDetails coachDetails;
     private CustomUserDetails adminDetails;
 
     @Autowired
@@ -71,6 +72,7 @@ class UsersControllerIntegrationTest {
     void init() {
         userDetails = new CustomUserDetails(usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow());
         hrDetails = new CustomUserDetails(usersRepository.findByLogin("rus_hr@northsixty.com").orElseThrow());
+        coachDetails = new CustomUserDetails(usersRepository.findByLogin("rus_coach@northsixty.com").orElseThrow());
         adminDetails = new CustomUserDetails(usersRepository.findByLogin("rus_admin@northsixty.com").orElseThrow());
     }
 
@@ -96,6 +98,27 @@ class UsersControllerIntegrationTest {
         final List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {});
 
         Assertions.assertEquals(coachDTOs, userDTOs);
+    }
+
+    @Test
+    void getCoachesUser() throws Exception {
+        mockMvc.perform(get("/coaches")
+                .with(user(userDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getCoachesHr() throws Exception {
+        mockMvc.perform(get("/coaches")
+                .with(user(hrDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getCoachesCoach() throws Exception {
+        mockMvc.perform(get("/coaches")
+                .with(user(coachDetails)))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -129,6 +152,27 @@ class UsersControllerIntegrationTest {
         final List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {});
 
         userDTOs.forEach(user -> Assertions.assertNotNull(user.getAssignedTest()));
+    }
+
+    @Test
+    void getAllUsersAssignedUser() throws Exception {
+        mockMvc.perform(get("/employees")
+                .with(user(userDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getAllUsersAssignedCoach() throws Exception {
+        mockMvc.perform(get("/employees")
+                .with(user(coachDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getAllUsersAssignedAdmin() throws Exception {
+        mockMvc.perform(get("/employees")
+                .with(user(adminDetails)))
+                .andExpect(status().isForbidden());
     }
 
     @Test

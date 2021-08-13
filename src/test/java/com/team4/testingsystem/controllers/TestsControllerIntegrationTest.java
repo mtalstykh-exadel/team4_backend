@@ -61,7 +61,9 @@ class TestsControllerIntegrationTest {
     private User user;
     private Level level;
 
+    private CustomUserDetails userDetails;
     private CustomUserDetails hrDetails;
+    private CustomUserDetails coachDetails;
     private CustomUserDetails adminDetails;
     
     @Autowired
@@ -86,7 +88,9 @@ class TestsControllerIntegrationTest {
     @BeforeEach
     void init() {
         user = usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow();
+        userDetails = new CustomUserDetails(user);
         hrDetails = new CustomUserDetails(usersRepository.findByLogin("rus_hr@northsixty.com").orElseThrow());
+        coachDetails = new CustomUserDetails(usersRepository.findByLogin("rus_coach@northsixty.com").orElseThrow());
         adminDetails = new CustomUserDetails(usersRepository.findByLogin("rus_admin@northsixty.com").orElseThrow());
 
         testsRepository.deleteAll();
@@ -139,6 +143,27 @@ class TestsControllerIntegrationTest {
         mockMvc.perform(get("/tests/history/{userId}", BAD_USER_ID)
                 .with(user(hrDetails)))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getUsersTestsUser() throws Exception {
+        mockMvc.perform(get("/tests/history/{userId}", BAD_USER_ID)
+                .with(user(userDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getUsersTestsCoach() throws Exception {
+        mockMvc.perform(get("/tests/history/{userId}", BAD_USER_ID)
+                .with(user(coachDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getUsersTestsAdmin() throws Exception {
+        mockMvc.perform(get("/tests/history/{userId}", BAD_USER_ID)
+                .with(user(adminDetails)))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -202,6 +227,30 @@ class TestsControllerIntegrationTest {
     }
 
     @Test
+    void assignCoachUser() throws Exception {
+        mockMvc.perform(post("/tests/assign_coach/{testId}", BAD_TEST_ID)
+                .param("coachId", String.valueOf(BAD_USER_ID))
+                .with(user(userDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void assignCoachHr() throws Exception {
+        mockMvc.perform(post("/tests/assign_coach/{testId}", BAD_TEST_ID)
+                .param("coachId", String.valueOf(BAD_USER_ID))
+                .with(user(hrDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void assignCoachCoach() throws Exception {
+        mockMvc.perform(post("/tests/assign_coach/{testId}", BAD_TEST_ID)
+                .param("coachId", String.valueOf(BAD_USER_ID))
+                .with(user(coachDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void deassignCoachSuccess() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
 
@@ -225,5 +274,26 @@ class TestsControllerIntegrationTest {
         mockMvc.perform(post("/tests/deassign_coach/{testId}", BAD_TEST_ID)
                 .with(user(adminDetails)))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deassignCoachUser() throws Exception {
+        mockMvc.perform(post("/tests/deassign_coach/{testId}", BAD_TEST_ID)
+                .with(user(userDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void deassignCoachHr() throws Exception {
+        mockMvc.perform(post("/tests/deassign_coach/{testId}", BAD_TEST_ID)
+                .with(user(hrDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void deassignCoachCoach() throws Exception {
+        mockMvc.perform(post("/tests/deassign_coach/{testId}", BAD_TEST_ID)
+                .with(user(coachDetails)))
+                .andExpect(status().isForbidden());
     }
 }
