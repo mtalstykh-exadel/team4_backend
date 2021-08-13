@@ -622,7 +622,7 @@
                               columnName="priority"
                               defaultNullValue="LOW"/>
     </changeSet>
-    
+
     <changeSet id="add_timer_table" author="Anlord241">
         <createTable tableName="timer">
             <column name="id" type="int" autoIncrement="true">

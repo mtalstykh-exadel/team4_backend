@@ -48,7 +48,6 @@ public class TestsServiceImpl implements TestsService {
     private int testsLimit;
 
 
-
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
                             TestGeneratingService testGeneratingService,
@@ -84,11 +83,11 @@ public class TestsServiceImpl implements TestsService {
     public List<UserTest> getAllUsersAndAssignedTests() {
         Status[] statuses = {Status.ASSIGNED};
         Map<User, Test> assignedTests = getByStatuses(statuses).stream()
-                .collect(Collectors.toMap(Test::getUser, Function.identity()));
+            .collect(Collectors.toMap(Test::getUser, Function.identity()));
 
         return usersService.getAll().stream()
-                .map(user -> new UserTest(user, assignedTests.getOrDefault(user, null)))
-                .collect(Collectors.toList());
+            .map(user -> new UserTest(user, assignedTests.getOrDefault(user, null)))
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -100,17 +99,17 @@ public class TestsServiceImpl implements TestsService {
     public long startForUser(long userId, Levels levelName) {
         User user = usersService.getUserById(userId);
         List<Test> selfStarted = testsRepository
-                .getSelfStartedByUserAfter(user, Instant.now().minus(1, ChronoUnit.DAYS));
+            .getSelfStartedByUserAfter(user, Instant.now().minus(1, ChronoUnit.DAYS));
 
         if (selfStarted.size() >= testsLimit) {
             throw new TestsLimitExceededException(selfStarted.get(0)
-                    .getStartedAt().plus(1, ChronoUnit.DAYS).toString());
+                .getStartedAt().plus(1, ChronoUnit.DAYS).toString());
         }
         Test test = createForUser(userId, levelName)
-                .startedAt(Instant.now())
-                .status(Status.STARTED)
-                .priority(Priority.LOW)
-                .build();
+            .startedAt(Instant.now())
+            .status(Status.STARTED)
+            .priority(Priority.LOW)
+            .build();
 
         testsRepository.save(test);
         return test.getId();
@@ -119,11 +118,11 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public long assignForUser(long userId, Levels levelName, Instant deadline, Priority priority) {
         Test test = createForUser(userId, levelName)
-                .assignedAt(Instant.now())
-                .deadline(deadline)
-                .status(Status.ASSIGNED)
-                .priority(priority)
-                .build();
+            .assignedAt(Instant.now())
+            .deadline(deadline)
+            .status(Status.ASSIGNED)
+            .priority(priority)
+            .build();
 
         testsRepository.save(test);
         return test.getId();
@@ -143,8 +142,8 @@ public class TestsServiceImpl implements TestsService {
         Level level = levelService.getLevelByName(levelName.name());
         User user = usersService.getUserById(userId);
         return Test.builder()
-                .user(user)
-                .level(level);
+            .user(user)
+            .level(level);
     }
 
     @Override
@@ -155,7 +154,7 @@ public class TestsServiceImpl implements TestsService {
         }
         Test test = testGeneratingService.formTest(getById(id));
 
-        test.setFinishTime(Instant.now().plusSeconds(42 * 60));
+        test.setFinishTime(Instant.now().plus(40L, ChronoUnit.SECONDS));
         save(test);
         createTimer(test);
         return test;
@@ -173,17 +172,15 @@ public class TestsServiceImpl implements TestsService {
         TimerTask task = new TimerTask() {
             public void run() {
                 finish(testId, test.getFinishTime());
-                timerRepository.deleteById(databaseTimer.getId());
             }
         };
 
         java.util.Timer timer = new java.util.Timer(String.valueOf(testId));
-        long delay = test.getFinishTime().toEpochMilli()
-                - Instant.now().toEpochMilli();
-
+        long delay = test.getFinishTime().plus(2L, ChronoUnit.MINUTES).toEpochMilli()
+            - Instant.now().toEpochMilli();
         if (delay <= 0) {
             finish(testId, test.getFinishTime());
-            timerRepository.deleteById(databaseTimer.getId());
+            timer.cancel();
         } else {
             timer.schedule(task, delay);
         }
@@ -196,8 +193,12 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public void finish(long id, Instant finishDate) {
-        testEvaluationService.countScoreBeforeCoachCheck(getById(id));
-        testsRepository.finish(finishDate, id);
+        Test test = getById(id);
+        if (test.getStatus().name().equals(Status.STARTED.name())) {
+            timerRepository.deleteByTestId(id);
+            testEvaluationService.countScoreBeforeCoachCheck(test);
+            testsRepository.finish(finishDate, id);
+        }
     }
 
     @Override
