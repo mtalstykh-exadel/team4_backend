@@ -63,8 +63,9 @@ class AnswerServiceImplTest {
 
     @Test
     void uploadEssay() {
-        answerService.uploadEssay(TEST_ID, ESSAY_TEXT);
-        Mockito.verify(fileAnswerService).uploadEssay(TEST_ID, ESSAY_TEXT);
+        Mockito.when(fileAnswerService.uploadEssay(TEST_ID, ESSAY_TEXT)).thenReturn(fileAnswer);
+        Mockito.when(fileAnswer.getUrl()).thenReturn(URL);
+        Assertions.assertEquals(URL, answerService.uploadEssay(TEST_ID, ESSAY_TEXT));
    }
 
     @Test

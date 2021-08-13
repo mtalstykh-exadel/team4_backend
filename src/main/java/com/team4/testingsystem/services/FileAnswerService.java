@@ -17,6 +17,6 @@ public interface FileAnswerService {
 
     String downloadEssay(Long testId);
 
-    void uploadEssay(Long testId, String text);
+    FileAnswer uploadEssay(Long testId, String text);
 
 }
