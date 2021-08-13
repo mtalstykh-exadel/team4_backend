@@ -5,6 +5,7 @@ import com.team4.testingsystem.services.CoachGradeService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ public class CoachGradeController {
     @ApiOperation(value = "Get all coach's grades for the test")
     @ApiResponse(code = 404, message = "Test not found")
     @GetMapping("/{testId}")
+    @Secured("ROLE_COACH")
     public List<CoachGradeDTO> getGrades(@PathVariable Long testId) {
         return gradeService.getGradesByTest(testId).stream()
                 .map(CoachGradeDTO::new)
@@ -36,11 +38,11 @@ public class CoachGradeController {
 
     @ApiOperation(value = "Use it to add or update grading for a single question of the test")
     @PostMapping("/")
+    @Secured("ROLE_COACH")
     public void add(@RequestBody CoachGradeDTO gradeDTO) {
         gradeService.add(gradeDTO.getTestId(),
                 gradeDTO.getQuestionId(),
                 gradeDTO.getGrade(),
                 gradeDTO.getComment());
     }
-
 }
