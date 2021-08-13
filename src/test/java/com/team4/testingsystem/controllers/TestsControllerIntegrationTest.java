@@ -10,6 +10,7 @@ import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.LevelRepository;
 import com.team4.testingsystem.repositories.ModuleRepository;
@@ -59,13 +60,14 @@ class TestsControllerIntegrationTest {
     private final ObjectMapper objectMapper;
 
     private User user;
+    private User coach;
     private Level level;
 
     private CustomUserDetails userDetails;
     private CustomUserDetails hrDetails;
     private CustomUserDetails coachDetails;
     private CustomUserDetails adminDetails;
-    
+
     @Autowired
     TestsControllerIntegrationTest(MockMvc mockMvc,
                                    LevelRepository levelRepository,
@@ -90,7 +92,8 @@ class TestsControllerIntegrationTest {
         user = usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow();
         userDetails = new CustomUserDetails(user);
         hrDetails = new CustomUserDetails(usersRepository.findByLogin("rus_hr@northsixty.com").orElseThrow());
-        coachDetails = new CustomUserDetails(usersRepository.findByLogin("rus_coach@northsixty.com").orElseThrow());
+        coach = usersRepository.findByLogin("rus_coach@northsixty.com").orElseThrow();
+        coachDetails = new CustomUserDetails(coach);
         adminDetails = new CustomUserDetails(usersRepository.findByLogin("rus_admin@northsixty.com").orElseThrow());
 
         testsRepository.deleteAll();
@@ -162,6 +165,61 @@ class TestsControllerIntegrationTest {
     @Test
     void getUsersTestsAdmin() throws Exception {
         mockMvc.perform(get("/tests/history/{userId}", BAD_USER_ID)
+                .with(user(adminDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getUnverifiedTestsForCurrentCoachSuccess() throws Exception {
+        Module listeningModule = moduleRepository.findByName(Modules.LISTENING.getName()).orElseThrow();
+
+        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        test.setCoach(coach);
+        test.setStatus(Status.COMPLETED);
+        testsRepository.save(test);
+
+        Question question = EntityCreatorUtil.createQuestion();
+        question.setId(null);
+        question.setModule(listeningModule);
+
+        ContentFile contentFile = new ContentFile("url", "topic", Lists.list(question));
+        contentFilesRepository.save(contentFile);
+
+        test.setQuestions(Lists.list(question));
+        testsRepository.save(test);
+
+        MvcResult mvcResult = mockMvc.perform(get("/tests/unverified_assigned")
+                .with(user(coachDetails)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String response = mvcResult.getResponse().getContentAsString();
+        List<TestDTO> testDTOs = objectMapper.readValue(response, new TypeReference<>() {});
+
+        Assertions.assertEquals(1, testDTOs.size());
+        Assertions.assertEquals(test.getId(), testDTOs.get(0).getId());
+
+        contentFile.setQuestions(null);
+        contentFilesRepository.save(contentFile);
+    }
+
+    @Test
+    void getUnverifiedTestsForCurrentCoachUser() throws Exception {
+        mockMvc.perform(get("/tests/unverified_assigned")
+                .with(user(userDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getUnverifiedTestsForCurrentCoachHr() throws Exception {
+        mockMvc.perform(get("/tests/unverified_assigned")
+                .with(user(hrDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getUnverifiedTestsForCurrentCoachAdmin() throws Exception {
+        mockMvc.perform(get("/tests/unverified_assigned")
                 .with(user(adminDetails)))
                 .andExpect(status().isForbidden());
     }
