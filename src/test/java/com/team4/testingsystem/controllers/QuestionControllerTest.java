@@ -2,10 +2,11 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.ContentFileDTO;
+import com.team4.testingsystem.dto.ListeningTopicDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.ListeningTopicRequest;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
@@ -20,10 +21,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -120,7 +123,9 @@ class QuestionControllerTest {
     void addListening() {
         Mockito.when(contentFilesService.add(multipartFile, TOPIC, List.of())).thenReturn(contentFile);
 
-        ListeningTopicRequest request = new ListeningTopicRequest(TOPIC, List.of());
+        ContentFileDTO request = new ContentFileDTO();
+        request.setTopic(TOPIC);
+        request.setQuestions(List.of());
         Assertions.assertEquals(new ContentFileDTO(contentFile),
                 questionController.addListening(multipartFile, request));
     }
@@ -129,9 +134,23 @@ class QuestionControllerTest {
     void updateListeningWithFile() {
         Mockito.when(contentFilesService.update(multipartFile, ID, TOPIC, List.of())).thenReturn(contentFile);
 
-        ListeningTopicRequest request = new ListeningTopicRequest(TOPIC, List.of());
+        ContentFileDTO request = new ContentFileDTO();
+        request.setTopic(TOPIC);
+        request.setQuestions(List.of());
         ContentFileDTO result = questionController.updateListening(multipartFile, ID, request);
 
         Assertions.assertEquals(new ContentFileDTO(contentFile), result);
+    }
+
+    @Test
+    void getListeningTopics(){
+        questionController.getListeningTopics(null);
+        verify(questionService).getListening(null);
+    }
+
+    @Test
+    void getListeningTopicsByLevel(){
+        questionController.getListeningTopics(Levels.A1);
+        verify(questionService).getListening(Levels.A1);
     }
 }

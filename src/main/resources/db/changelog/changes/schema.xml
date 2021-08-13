@@ -621,4 +621,15 @@
                               columnName="priority"
                               defaultNullValue="LOW"/>
     </changeSet>
+
+    <changeSet id="add_coach_commentary" author="Anlord241">
+        <addColumn tableName="coach_grade">
+            <column name="comment" type="text"/>
+        </addColumn>
+
+        <addColumn tableName="module_grade">
+            <column name="coach_comment" type="text"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

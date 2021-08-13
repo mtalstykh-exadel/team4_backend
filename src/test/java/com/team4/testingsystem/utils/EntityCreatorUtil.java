@@ -133,6 +133,8 @@ public class EntityCreatorUtil {
                 .listening(2)
                 .essay(3)
                 .speaking(4)
+                .essayComment("Cool essay")
+                .speakingComment("Cool speaking")
                 .build();
     }
 

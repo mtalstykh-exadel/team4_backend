@@ -7,6 +7,6 @@ import java.util.Collection;
 public interface CoachGradeService {
     Collection<CoachGrade> getGradesByTest(Long testId);
 
-    void add(Long testId, Long questionId, Integer grade);
+    void add(Long testId, Long questionId, Integer grade, String comment);
 
 }

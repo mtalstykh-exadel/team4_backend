@@ -91,6 +91,14 @@ public class QuestionServiceImpl implements QuestionService {
                 .orElseThrow(QuestionNotFoundException::new);
     }
 
+    @Override
+    public List<ContentFile> getListening(Levels level) {
+        if (level == null) {
+            return contentFilesRepository.findAll();
+        }
+        return contentFilesRepository.getContentFiles(level.name());
+    }
+
     @Transactional
     @Override
     public void archiveQuestionsByContentFileId(Long id) {

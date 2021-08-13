@@ -137,7 +137,7 @@ class CoachGradeControllerIntegrationTest {
 
         TestQuestionID testQuestionID = new TestQuestionID(test, question);
 
-        CoachGrade grade = new CoachGrade(testQuestionID, 8);
+        CoachGrade grade = new CoachGrade(testQuestionID, 8, "Comment");
         gradeRepository.save(grade);
 
         MvcResult mvcResult = mockMvc.perform(get("/grades/{testId}", test.getId())
@@ -167,10 +167,10 @@ class CoachGradeControllerIntegrationTest {
 
         TestQuestionID testQuestionID2 = new TestQuestionID(test, question2);
 
-        CoachGrade grade = new CoachGrade(testQuestionID1, 8);
+        CoachGrade grade = new CoachGrade(testQuestionID1, 8, "Comment1");
         gradeRepository.save(grade);
 
-        CoachGrade grade2 = new CoachGrade(testQuestionID2, 7);
+        CoachGrade grade2 = new CoachGrade(testQuestionID2, 7, "Comment2");
         gradeRepository.save(grade2);
 
         MvcResult mvcResult = mockMvc.perform(get("/grades/{testId}", test.getId())
@@ -254,6 +254,7 @@ class CoachGradeControllerIntegrationTest {
                 .testId(test.getId())
                 .questionId(question.getId())
                 .grade(10)
+                .comment("Comment")
                 .build();
 
         mockMvc.perform(post("/grades/")
@@ -265,6 +266,7 @@ class CoachGradeControllerIntegrationTest {
         Optional<CoachGrade> grade = gradeRepository.findById(testQuestionID);
         Assertions.assertTrue(grade.isPresent());
         Assertions.assertEquals(gradeDTO.getGrade(), grade.get().getGrade());
+        Assertions.assertEquals(gradeDTO.getComment(), grade.get().getComment());
     }
 
     @Test
@@ -306,11 +308,12 @@ class CoachGradeControllerIntegrationTest {
                 .testId(test.getId())
                 .questionId(question.getId())
                 .grade(10)
+                .comment("Comment2")
                 .build();
 
         TestQuestionID testQuestionID = new TestQuestionID(test, question);
 
-        CoachGrade grade = new CoachGrade(testQuestionID, 2);
+        CoachGrade grade = new CoachGrade(testQuestionID, 2, "Comment1");
         gradeRepository.save(grade);
 
         mockMvc.perform(post("/grades/")
@@ -322,5 +325,6 @@ class CoachGradeControllerIntegrationTest {
         Optional<CoachGrade> savedGrade = gradeRepository.findById(testQuestionID);
         Assertions.assertTrue(savedGrade.isPresent());
         Assertions.assertEquals(10, savedGrade.get().getGrade());
+        Assertions.assertEquals("Comment2", savedGrade.get().getComment());
     }
 }

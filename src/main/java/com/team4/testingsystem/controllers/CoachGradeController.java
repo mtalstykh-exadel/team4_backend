@@ -40,6 +40,9 @@ public class CoachGradeController {
     @PostMapping("/")
     @Secured("ROLE_COACH")
     public void add(@RequestBody CoachGradeDTO gradeDTO) {
-        gradeService.add(gradeDTO.getTestId(), gradeDTO.getQuestionId(), gradeDTO.getGrade());
+        gradeService.add(gradeDTO.getTestId(),
+                gradeDTO.getQuestionId(),
+                gradeDTO.getGrade(),
+                gradeDTO.getComment());
     }
 }
