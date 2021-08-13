@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
@@ -272,13 +273,13 @@ class TestsControllerTest {
 
         testsController.finish(GOOD_TEST_ID);
 
-        verify(testsService).finish(GOOD_TEST_ID);
+        verify(testsService).finish(anyLong(), any(Instant.class));
     }
 
     @org.junit.jupiter.api.Test
     void finishFail() {
 
-        doThrow(TestNotFoundException.class).when(testsService).finish(BAD_TEST_ID);
+        doThrow(TestNotFoundException.class).when(testsService).finish(anyLong(), any(Instant.class));
 
         Assertions.assertThrows(TestNotFoundException.class,
                 () -> testsController.finish(BAD_TEST_ID));

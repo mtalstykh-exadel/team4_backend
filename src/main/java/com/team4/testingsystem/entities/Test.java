@@ -53,6 +53,9 @@ public class Test implements Serializable {
     @Column(name = "completed_at")
     private Instant completedAt;
 
+    @Column(name = "finish_time")
+    private Instant finishTime;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "priority")
     private Priority priority;
@@ -131,6 +134,15 @@ public class Test implements Serializable {
 
     public void setLevel(Level level) {
         this.level = level;
+    }
+
+
+    public Instant getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(Instant finishTime) {
+        this.finishTime = finishTime;
     }
 
     public Instant getAssignedAt() {
@@ -214,6 +226,11 @@ public class Test implements Serializable {
             return this;
         }
 
+        public Builder finishTime(Instant finishTime) {
+            test.finishTime = finishTime;
+            return this;
+        }
+
         public Builder deadline(Instant deadline) {
             test.deadline = deadline;
             return this;
@@ -262,6 +279,7 @@ public class Test implements Serializable {
                 && Objects.equals(verifiedAt, test.verifiedAt)
                 && Objects.equals(startedAt, test.startedAt)
                 && Objects.equals(completedAt, test.completedAt)
+                && Objects.equals(finishTime, test.finishTime)
                 && Objects.equals(deadline, test.deadline)
                 && Objects.equals(priority, test.priority)
                 && Objects.equals(status, test.status)
@@ -272,7 +290,7 @@ public class Test implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, user, level,
-                assignedAt, verifiedAt, startedAt, completedAt, deadline, priority,
+                assignedAt, verifiedAt, startedAt, completedAt, finishTime, deadline, priority,
                 status, coach, questions);
     }
 }
