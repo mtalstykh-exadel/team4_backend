@@ -1,6 +1,7 @@
 package com.team4.testingsystem.converters;
 
 import com.team4.testingsystem.dto.ModuleGradesDTO;
+import com.team4.testingsystem.entities.ModuleGrade;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
@@ -25,6 +26,7 @@ public class GradesConverterTest {
 
     private final int SPEAKING_SCORE = 4;
 
+
     @InjectMocks
     private GradesConverter gradesConverter;
 
@@ -32,7 +34,7 @@ public class GradesConverterTest {
     private ModuleGradesService moduleGradesService;
 
     @Mock
-    private Map<String, Integer> gradesMap;
+    private Map<String, ModuleGrade> gradesMap;
 
     @Test
     void convertListOfGradesToDTOSuccess(){
@@ -43,6 +45,11 @@ public class GradesConverterTest {
         Mockito.when(moduleGradesService.getGradeByModule(gradesMap, Modules.ESSAY)).thenReturn(ESSAY_SCORE);
 
         Mockito.when(moduleGradesService.getGradeByModule(gradesMap, Modules.SPEAKING)).thenReturn(SPEAKING_SCORE);
+
+        Mockito.when(moduleGradesService.getCoachCommentByModule(gradesMap, Modules.ESSAY)).thenReturn("Cool essay");
+
+        Mockito.when(moduleGradesService.getCoachCommentByModule(gradesMap, Modules.SPEAKING))
+                .thenReturn("Cool speaking");
 
         ModuleGradesDTO moduleGradesDTO = EntityCreatorUtil.createModuleGradesDTO();
 

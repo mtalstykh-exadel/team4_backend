@@ -18,12 +18,16 @@ public class ModuleGrade implements Serializable {
     @Column(name = "grade")
     private Integer grade;
 
+    @Column(name = "coach_comment")
+    private String coachComment;
+
     public ModuleGrade() {
     }
 
-    public ModuleGrade(TestModuleID id, Integer grade) {
+    public ModuleGrade(TestModuleID id, Integer grade, String coachComment) {
         this.id = id;
         this.grade = grade;
+        this.coachComment = coachComment;
     }
 
     public TestModuleID getId() {
@@ -42,6 +46,14 @@ public class ModuleGrade implements Serializable {
         this.grade = grade;
     }
 
+    public String getCoachComment() {
+        return coachComment;
+    }
+
+    public void setCoachComment(String coachComment) {
+        this.coachComment = coachComment;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -52,12 +64,13 @@ public class ModuleGrade implements Serializable {
         }
         ModuleGrade that = (ModuleGrade) o;
         return Objects.equals(id, that.id)
-                && Objects.equals(grade, that.grade);
+                && Objects.equals(grade, that.grade)
+                && Objects.equals(coachComment, that.coachComment);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, grade);
+        return Objects.hash(id, grade, coachComment);
     }
 
 }
