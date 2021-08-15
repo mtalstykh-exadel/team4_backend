@@ -79,6 +79,12 @@ class UsersServiceImplTest {
     }
 
     @Test
+    void getByNameLike() {
+        Mockito.when(usersRepository.findAllByNameContainsIgnoreCase("name")).thenReturn(Lists.list(user));
+        Assertions.assertEquals(Lists.list(user), usersService.getByNameLike("name"));
+    }
+
+    @Test
     void updateLanguageUserNotFound() {
         Mockito.when(usersRepository.setLanguageById(1L, "rus")).thenReturn(0);
         Assertions.assertThrows(UserNotFoundException.class, () -> usersService.updateLanguage(1L, "rus"));

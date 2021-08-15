@@ -5,14 +5,18 @@ import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.entities.Answer;
+import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.entities.UserRole;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 
 import java.util.ArrayList;
@@ -41,6 +45,12 @@ public class EntityCreatorUtil {
                 .creator(createUser())
                 .isAvailable(true)
                 .build();
+    }
+
+    public static Question createQuestion(Modules module) {
+        Question question = createQuestion();
+        question.getModule().setName(module.getName());
+        return question;
     }
 
     public static QuestionDTO createQuestionDto() {
@@ -95,6 +105,7 @@ public class EntityCreatorUtil {
         return Test.builder()
                 .user(user)
                 .status(Status.STARTED)
+                .priority(Priority.LOW)
                 .level(level)
                 .build();
     }
@@ -116,12 +127,14 @@ public class EntityCreatorUtil {
         return testDTO;
     }
 
-    public static ModuleGradesDTO createModuleGradesDTO(){
+    public static ModuleGradesDTO createModuleGradesDTO() {
         return ModuleGradesDTO.builder()
                 .grammar(1)
                 .listening(2)
                 .essay(3)
                 .speaking(4)
+                .essayComment("Cool essay")
+                .speakingComment("Cool speaking")
                 .build();
     }
 
@@ -133,5 +146,23 @@ public class EntityCreatorUtil {
                 .creator(user)
                 .isAvailable(true)
                 .build();
+    }
+
+    public static Answer createAnswer() {
+        return Answer.builder()
+                .id(7L)
+                .answerBody("answer body")
+                .question(createQuestion())
+                .isCorrect(false)
+                .build();
+    }
+
+    public static ChosenOption createChosenOption() {
+        Answer answer = createAnswer();
+        Question question = answer.getQuestion();
+        Test test = createTest(question.getCreator(), question.getLevel());
+        test.setId(8L);
+
+        return new ChosenOption(new TestQuestionID(test, question), answer);
     }
 }

@@ -7,12 +7,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @Repository
 public interface CoachGradeRepository extends CrudRepository<CoachGrade, TestQuestionID> {
-    Optional<CoachGrade> findById(TestQuestionID testQuestionID);
-
     Collection<CoachGrade> findAllById_Test(Test test);
-
 }

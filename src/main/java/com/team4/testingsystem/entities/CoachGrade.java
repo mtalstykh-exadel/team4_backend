@@ -12,18 +12,22 @@ import javax.persistence.Table;
 public class CoachGrade implements Serializable {
 
     @EmbeddedId
-    TestQuestionID id;
+    private TestQuestionID id;
+
 
     @Column(name = "grade")
     private Integer grade;
 
+    @Column (name = "comment")
+    private String comment;
 
     public CoachGrade() {
     }
 
-    public CoachGrade(TestQuestionID id, Integer grade) {
+    public CoachGrade(TestQuestionID id, Integer grade, String comment) {
         this.id = id;
         this.grade = grade;
+        this.comment = comment;
     }
 
     public TestQuestionID getId() {
@@ -42,6 +46,14 @@ public class CoachGrade implements Serializable {
         this.grade = grade;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -52,11 +64,12 @@ public class CoachGrade implements Serializable {
         }
         CoachGrade that = (CoachGrade) o;
         return Objects.equals(id, that.id)
-                && Objects.equals(grade, that.grade);
+                && Objects.equals(grade, that.grade)
+                && Objects.equals(comment, that.comment);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, grade);
+        return Objects.hash(id, grade, comment);
     }
 }

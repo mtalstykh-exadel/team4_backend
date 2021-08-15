@@ -5,19 +5,28 @@ import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.services.ContentFilesService;
+import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.ResourceStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Service
 public class ContentFilesServiceImpl implements ContentFilesService {
-
+    private final QuestionService questionService;
     private final ContentFilesRepository contentFilesRepository;
+    private final ResourceStorageService storageService;
 
     @Autowired
-    public ContentFilesServiceImpl(ContentFilesRepository contentFilesRepository) {
+    public ContentFilesServiceImpl(QuestionService questionService,
+                                   ContentFilesRepository contentFilesRepository,
+                                   ResourceStorageService storageService) {
+        this.questionService = questionService;
         this.contentFilesRepository = contentFilesRepository;
+        this.storageService = storageService;
     }
 
     @Override
@@ -31,8 +40,24 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     }
 
     @Override
-    public ContentFile add(String url, List<Question> questions) {
-        return contentFilesRepository.save(new ContentFile(url, questions));
+    public ContentFile add(MultipartFile file, String topic, List<Question> questions) {
+        String url = storageService.upload(file.getResource());
+        return contentFilesRepository.save(new ContentFile(url, topic, questions));
+    }
+
+    @Transactional
+    @Override
+    public ContentFile update(MultipartFile file, Long id, String topic, List<Question> questions) {
+        if (file == null) {
+            questionService.archiveQuestionsByContentFileId(id);
+            ContentFile contentFile = contentFilesRepository
+                    .findById(id).orElseThrow(FileNotFoundException::new);
+            contentFile.getQuestions().addAll(questions);
+            return contentFilesRepository.save(contentFile);
+        }
+        contentFilesRepository.archiveContentFile(id);
+        questionService.archiveQuestionsByContentFileId(id);
+        return add(file, topic, questions);
     }
 
     @Override

@@ -1,8 +1,9 @@
 package com.team4.testingsystem.dto;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class ModuleGradesDTO {
+public class ModuleGradesDTO implements Serializable {
 
     private int grammar;
 
@@ -11,6 +12,10 @@ public class ModuleGradesDTO {
     private int essay;
 
     private int speaking;
+
+    private String essayComment;
+
+    private String speakingComment;
 
     public ModuleGradesDTO() {
     }
@@ -47,6 +52,22 @@ public class ModuleGradesDTO {
         this.speaking = speaking;
     }
 
+    public String getEssayComment() {
+        return essayComment;
+    }
+
+    public void setEssayComment(String essayComment) {
+        this.essayComment = essayComment;
+    }
+
+    public String getSpeakingComment() {
+        return speakingComment;
+    }
+
+    public void setSpeakingComment(String speakingComment) {
+        this.speakingComment = speakingComment;
+    }
+
     public static ModuleGradesDTO.Builder builder() {
         return new ModuleGradesDTO.Builder();
     }
@@ -78,6 +99,18 @@ public class ModuleGradesDTO {
             return this;
         }
 
+
+        public ModuleGradesDTO.Builder essayComment(String essayComment) {
+            moduleGradesDTO.setEssayComment(essayComment);
+            return this;
+        }
+
+
+        public ModuleGradesDTO.Builder speakingComment(String speakingComment) {
+            moduleGradesDTO.setSpeakingComment(speakingComment);
+            return this;
+        }
+
         public ModuleGradesDTO build() {
             return moduleGradesDTO;
         }
@@ -95,11 +128,13 @@ public class ModuleGradesDTO {
         return Objects.equals(grammar, that.grammar)
                 && Objects.equals(listening, that.listening)
                 && Objects.equals(essay, that.essay)
-                && Objects.equals(speaking, that.speaking);
+                && Objects.equals(speaking, that.speaking)
+                && Objects.equals(essayComment, that.essayComment)
+                && Objects.equals(speakingComment, that.speakingComment);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(grammar, listening, essay, speaking);
+        return Objects.hash(grammar, listening, essay, speaking, essayComment, speakingComment);
     }
 }

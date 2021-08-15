@@ -9,7 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Repository
@@ -25,22 +25,30 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
             + " where t.user = ?1 "
             + "and t.assignedAt is null "
             + "and t.startedAt >= ?2")
-    List<Test> getSelfStartedByUserAfter(User user, LocalDateTime date);
+    List<Test> getSelfStartedByUserAfter(User user, Instant date);
+
+    @Query("select t from Test t where t.coach.id = ?1 and t.status in ?2")
+    List<Test> getAllByAssignedCoachAndStatuses(Long coachId, Status[] status);
 
     @Transactional
     @Modifying
     @Query(value = "UPDATE Test t SET t.startedAt = ?1, t.status = 'STARTED' WHERE t.id = ?2")
-    int start(LocalDateTime startDate, Long id);
+    int start(Instant startDate, Long id);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE Test t SET t.assignedAt = null, t.deadline = null  WHERE t.id = ?1")
+    int deassign(Long id);
 
     @Transactional
     @Modifying
     @Query(value = "UPDATE Test t SET t.completedAt = ?1, t.status = 'COMPLETED' where t.id = ?2")
-    int finish(LocalDateTime finishDate, Long id);
+    int finish(Instant finishDate, Long id);
 
     @Transactional
     @Modifying
     @Query(value = "UPDATE Test t SET t.verifiedAt = ?1 where t.id = ?2")
-    int updateEvaluation(LocalDateTime updateDate, Long id);
+    int updateEvaluation(Instant updateDate, Long id);
 
     @Transactional
     @Modifying

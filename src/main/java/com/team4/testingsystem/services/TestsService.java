@@ -3,9 +3,10 @@ package com.team4.testingsystem.services;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.UserTest;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 public interface TestsService {
@@ -16,6 +17,8 @@ public interface TestsService {
 
     List<Test> getByStatuses(Status[] status);
 
+    List<Test> getAllUnverifiedTestsByCoach(long coachId);
+
     List<UserTest> getAllUsersAndAssignedTests();
 
     List<Test> getTestsByUserIdAndLevel(long userId, Levels level);
@@ -24,15 +27,15 @@ public interface TestsService {
 
     long startForUser(long userId, Levels level);
 
-    long assignForUser(long userId, Levels level, LocalDateTime deadline);
+    long assignForUser(long userId, Levels level, Instant deadline, Priority priority);
 
     Test start(long id);
 
-    void finish(long id);
+    void deassign(long id);
+
+    void finish(long id, Instant finishDate);
 
     void update(long id);
-
-    void removeById(long id);
 
     void assignCoach(long id, long coachId);
 

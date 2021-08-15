@@ -2,12 +2,13 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.ContentFileDTO;
+import com.team4.testingsystem.dto.ListeningTopicDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
-import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
@@ -18,17 +19,17 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 
-@ExtendWith( MockitoExtension.class )
+@ExtendWith(MockitoExtension.class)
 class QuestionControllerTest {
     @Mock
     private QuestionService questionService;
@@ -40,16 +41,16 @@ class QuestionControllerTest {
     private MultipartFile multipartFile;
 
     @Mock
-    private Resource resource;
-
-    @Mock
-    private ResourceStorageService storageService;
+    private ContentFile contentFile;
 
     @Mock
     private ContentFilesService contentFilesService;
 
     @InjectMocks
     private QuestionController questionController;
+
+    private static final Long ID = 1L;
+    private static final String TOPIC = "topic";
 
     @Test
     void getQuestion() {
@@ -74,6 +75,13 @@ class QuestionControllerTest {
                 .map(QuestionDTO::create)
                 .collect(Collectors.toList());
         Assertions.assertEquals(expectedQuestions, questionController.getQuestions(any(), any()));
+    }
+
+    @Test
+    void getListening() {
+        ContentFile contentFile = new ContentFile();
+        Mockito.when(contentFilesService.getById(1L)).thenReturn(contentFile);
+        Assertions.assertEquals(new ContentFileDTO(contentFile), questionController.getListening(1L));
     }
 
     @Test
@@ -113,11 +121,36 @@ class QuestionControllerTest {
 
     @Test
     void addListening() {
-        ContentFile contentFile = new ContentFile();
-        Mockito.when(storageService.upload(any())).thenReturn("some url");
-        Mockito.when(multipartFile.getResource()).thenReturn(resource);
-        Mockito.when(contentFilesService.add(any(), any())).thenReturn(contentFile);
+        Mockito.when(contentFilesService.add(multipartFile, TOPIC, List.of())).thenReturn(contentFile);
+
+        ContentFileDTO request = new ContentFileDTO();
+        request.setTopic(TOPIC);
+        request.setQuestions(List.of());
         Assertions.assertEquals(new ContentFileDTO(contentFile),
-                questionController.addListening(multipartFile, new ArrayList<>()));
+                questionController.addListening(multipartFile, request));
+    }
+
+    @Test
+    void updateListeningWithFile() {
+        Mockito.when(contentFilesService.update(multipartFile, ID, TOPIC, List.of())).thenReturn(contentFile);
+
+        ContentFileDTO request = new ContentFileDTO();
+        request.setTopic(TOPIC);
+        request.setQuestions(List.of());
+        ContentFileDTO result = questionController.updateListening(multipartFile, ID, request);
+
+        Assertions.assertEquals(new ContentFileDTO(contentFile), result);
+    }
+
+    @Test
+    void getListeningTopics(){
+        questionController.getListeningTopics(null);
+        verify(questionService).getListening(null);
+    }
+
+    @Test
+    void getListeningTopicsByLevel(){
+        questionController.getListeningTopics(Levels.A1);
+        verify(questionService).getListening(Levels.A1);
     }
 }

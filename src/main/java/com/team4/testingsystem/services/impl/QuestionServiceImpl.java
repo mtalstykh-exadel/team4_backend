@@ -2,10 +2,13 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.dto.AnswerDTO;
 import com.team4.testingsystem.entities.Answer;
+import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
+import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +23,13 @@ import java.util.stream.Collectors;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final ContentFilesRepository contentFilesRepository;
 
     @Autowired
-    public QuestionServiceImpl(QuestionRepository questionRepository) {
+    QuestionServiceImpl(QuestionRepository questionRepository,
+                        ContentFilesRepository contentFilesRepository) {
         this.questionRepository = questionRepository;
+        this.contentFilesRepository = contentFilesRepository;
     }
 
     @Override
@@ -76,7 +82,28 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<Question> getQuestionsByLevelAndModuleName(Levels level, Modules module) {
-        return questionRepository.getQuestionsByLevelAndModuleName(level, module);
+        return questionRepository.getQuestionsByLevelAndModuleName(level.name(), module.getName());
     }
 
+    @Override
+    public Question getQuestionByTestIdAndModule(Long testId, Modules module) {
+        return questionRepository.getQuestionByTestIdAndModule(testId, module.getName())
+                .orElseThrow(QuestionNotFoundException::new);
+    }
+
+    @Override
+    public List<ContentFile> getListening(Levels level) {
+        if (level == null) {
+            return contentFilesRepository.findAll();
+        }
+        return contentFilesRepository.getContentFiles(level.name());
+    }
+
+    @Transactional
+    @Override
+    public void archiveQuestionsByContentFileId(Long id) {
+        ContentFile contentFile = contentFilesRepository.findById(id)
+                .orElseThrow(FileNotFoundException::new);
+        contentFile.getQuestions().forEach(question -> archiveQuestion(question.getId()));
+    }
 }

@@ -2,9 +2,11 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.GradesConverter;
 import com.team4.testingsystem.converters.TestConverter;
+import com.team4.testingsystem.converters.TestVerificationConverter;
 import com.team4.testingsystem.dto.AssignTestRequest;
 import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.dto.TestVerificationDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
@@ -14,6 +16,7 @@ import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,16 +38,19 @@ public class TestsController {
     private final ModuleGradesService moduleGradesService;
     private final GradesConverter gradesConverter;
     private final TestConverter testConverter;
+    private final TestVerificationConverter verificationConverter;
 
     @Autowired
     public TestsController(TestsService testsService,
                            ModuleGradesService moduleGradesService,
                            GradesConverter gradesConverter,
-                           TestConverter testConverter) {
+                           TestConverter testConverter,
+                           TestVerificationConverter verificationConverter) {
         this.testsService = testsService;
         this.moduleGradesService = moduleGradesService;
         this.gradesConverter = gradesConverter;
         this.testConverter = testConverter;
+        this.verificationConverter = verificationConverter;
     }
 
     @ApiOperation(value = "Get all tests assigned to the current user")
@@ -54,11 +61,13 @@ public class TestsController {
 
     @ApiOperation(value = "Get all tests assigned to the user by by the optional parameter level")
     @GetMapping(path = "/history/{userId}")
+    @Secured("ROLE_HR")
     public List<TestDTO> getUsersTests(@PathVariable("userId") long userId,
                                        @RequestParam(required = false) Levels level) {
         if (level != null) {
             return convertToDTO(testsService.getTestsByUserIdAndLevel(userId, level));
         }
+
         return convertToDTO(testsService.getByUserId(userId));
     }
 
@@ -66,6 +75,13 @@ public class TestsController {
     @GetMapping(path = "/{id}")
     public TestDTO getById(@PathVariable("id") long id) {
         return testConverter.convertToDTO(testsService.getById(id));
+    }
+
+    @ApiOperation(value = "Get test for coach verification")
+    @GetMapping(path = "/verify/{testId}")
+    @Secured("ROLE_COACH")
+    public TestVerificationDTO getTestForVerification(@PathVariable long testId) {
+        return verificationConverter.convertToVerificationDTO(testsService.getById(testId));
     }
 
     @ApiOperation(value = "Use it to get test grades for a test by modules")
@@ -77,16 +93,33 @@ public class TestsController {
 
     @ApiOperation(value = "Is used to get all unverified tests")
     @GetMapping(path = "/unverified")
+    @Secured("ROLE_ADMIN")
     public List<TestDTO> getUnverifiedTests() {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
         return convertToDTO(testsService.getByStatuses(statuses));
     }
 
+    @ApiOperation(value = "Is used to get all unverified tests, assigned to current coach")
+    @GetMapping(path = "/unverified_assigned")
+    @Secured("ROLE_COACH")
+    public List<TestDTO> getUnverifiedTestsForCurrentCoach() {
+        Long coachId = JwtTokenUtil.extractUserDetails().getId();
+        return convertToDTO(testsService.getAllUnverifiedTestsByCoach(coachId));
+    }
+
     @ApiOperation(value = "Is used to assign a test for the user (HR's ability)")
     @ApiResponse(code = 200, message = "Created test's id")
     @PostMapping(path = "/assign/{userId}")
+    @Secured("ROLE_HR")
     public long assign(@PathVariable("userId") long userId, @RequestBody AssignTestRequest request) {
-        return testsService.assignForUser(userId, request.getLevel(), request.getDeadline());
+        return testsService.assignForUser(userId, request.getLevel(), request.getDeadline(), request.getPriority());
+    }
+
+    @ApiOperation(value = "Is used when to deassign tests (HR)")
+    @PostMapping(path = "/deassign/{testId}")
+    @Secured("ROLE_HR")
+    public void deassign(@PathVariable("testId") long testId) {
+        testsService.deassign(testId);
     }
 
     @ApiOperation(value =
@@ -108,7 +141,7 @@ public class TestsController {
     @ApiOperation(value = "Is used to finish tests")
     @PostMapping(path = "/finish/{testId}")
     public void finish(@PathVariable("testId") long testId) {
-        testsService.finish(testId);
+        testsService.finish(testId, Instant.now());
     }
 
     @ApiOperation(value = "Is used to update score after coach check")
@@ -118,14 +151,16 @@ public class TestsController {
     }
 
     @ApiOperation(value = "Use it to assign a test for the coach")
-    @PostMapping(path = "/assign_coach/{testId}")
     @ApiResponse(code = 409, message = "Coach can't verify his own test")
+    @PostMapping(path = "/assign_coach/{testId}")
+    @Secured("ROLE_ADMIN")
     public void assignCoach(@PathVariable("testId") long testId, @RequestParam long coachId) {
         testsService.assignCoach(testId, coachId);
     }
 
     @ApiOperation(value = "Use it to deassign coaches")
     @PostMapping(path = "/deassign_coach/{testId}")
+    @Secured("ROLE_ADMIN")
     public void deassignCoach(@PathVariable("testId") long testId) {
         testsService.deassignCoach(testId);
     }

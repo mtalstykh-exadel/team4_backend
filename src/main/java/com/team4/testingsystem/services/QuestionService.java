@@ -1,6 +1,7 @@
 package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.dto.AnswerDTO;
+import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
@@ -27,4 +28,9 @@ public interface QuestionService {
 
     List<Question> getQuestionsByLevelAndModuleName(Levels level, Modules module);
 
+    void archiveQuestionsByContentFileId(Long id);
+
+    Question getQuestionByTestIdAndModule(Long testId, Modules module);
+
+    List<ContentFile> getListening(Levels level);
 }

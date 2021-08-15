@@ -3,6 +3,7 @@ package com.team4.testingsystem.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,8 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-
-
 
 @Entity
 @Table(name = "content_file")
@@ -49,9 +48,10 @@ public class ContentFile implements Serializable {
         this.url = url;
     }
 
-    public ContentFile(String url, List<Question> questions) {
+    public ContentFile(String url, String topic, List<Question> questions) {
         this.questions = questions;
         this.url = url;
+        this.topic = topic;
     }
 
     public String getTopic() {
@@ -89,5 +89,25 @@ public class ContentFile implements Serializable {
     public void setUrl(String url) {
         this.url = url;
     }
-}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ContentFile that = (ContentFile) o;
+        return available == that.available
+                && Objects.equals(id, that.id)
+                && Objects.equals(questions, that.questions)
+                && Objects.equals(url, that.url)
+                && Objects.equals(topic, that.topic);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, questions, url, topic, available);
+    }
+}

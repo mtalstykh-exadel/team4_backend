@@ -1,8 +1,12 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.dto.AnswerDTO;
+import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
+import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
@@ -24,10 +28,19 @@ import static org.mockito.Mockito.verify;
 class QuestionServiceImplTest {
 
     @Mock
-    Question question;
+    private Question question;
+
+    @Mock
+    private ContentFile contentFile;
+
+    @Mock
+    private  List<ContentFile> contentFiles;
 
     @Mock
     private QuestionRepository questionRepository;
+
+    @Mock
+    private ContentFilesRepository contentFilesRepository;
 
     @InjectMocks
     private QuestionServiceImpl questionService;
@@ -55,7 +68,7 @@ class QuestionServiceImplTest {
     }
 
     @Test
-    void addAnswers(){
+    void addAnswers() {
         Question question = EntityCreatorUtil.createQuestion();
         Mockito.when(questionRepository.save(question)).thenReturn(question);
         List<AnswerDTO> textAnswers = new ArrayList<>();
@@ -101,11 +114,49 @@ class QuestionServiceImplTest {
     }
 
     @Test
-    void getQuestionsByLevelAndModuleName(){
-        List<Question> questions = new ArrayList<>();
-        Mockito.when(questionRepository.getQuestionsByLevelAndModuleName(any(), any())).thenReturn(questions);
-        Assertions.assertEquals(questions, questionService.getQuestionsByLevelAndModuleName(any(), any()));
+    void archiveQuestionsByContentFileId() {
+        Mockito.when(contentFilesRepository.findById(EntityCreatorUtil.ID))
+                .thenReturn(Optional.ofNullable(contentFile));
+        questionService.archiveQuestionsByContentFileId(EntityCreatorUtil.ID);
+        verify(contentFilesRepository).findById(EntityCreatorUtil.ID);
     }
 
+    @Test
+    void getQuestionsByLevelAndModuleName() {
+        List<Question> questions = new ArrayList<>();
+        Mockito.when(questionRepository.getQuestionsByLevelAndModuleName(Levels.A1.name(), Modules.ESSAY.getName()))
+                .thenReturn(questions);
+        Assertions.assertEquals(questions,
+                questionService.getQuestionsByLevelAndModuleName(Levels.A1, Modules.ESSAY));
+    }
 
+    @Test
+    void getQuestionByTestIdAndModuleNotFound() {
+        Mockito.when(questionRepository.getQuestionByTestIdAndModule(1L, Modules.ESSAY.getName()))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThrows(QuestionNotFoundException.class,
+                () -> questionService.getQuestionByTestIdAndModule(1L, Modules.ESSAY));
+    }
+
+    @Test
+    void getQuestionByTestIdAndModuleSuccess() {
+        Mockito.when(questionRepository.getQuestionByTestIdAndModule(1L, Modules.ESSAY.getName()))
+                .thenReturn(Optional.of(question));
+
+        Assertions.assertEquals(question, questionService.getQuestionByTestIdAndModule(1L, Modules.ESSAY));
+    }
+
+    @Test
+    void getListening(){
+        Mockito.when(contentFilesRepository.findAll()).thenReturn(contentFiles);
+        Assertions.assertEquals(contentFiles, questionService.getListening(null));
+    }
+
+    @Test
+    void getListeningByLevel(){
+        Mockito.when(contentFilesRepository.getContentFiles(Levels.A1.name()))
+                .thenReturn(contentFiles);
+        Assertions.assertEquals(contentFiles, questionService.getListening(Levels.A1));
+    }
 }

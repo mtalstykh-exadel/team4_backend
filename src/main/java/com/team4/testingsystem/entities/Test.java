@@ -1,10 +1,11 @@
 package com.team4.testingsystem.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +22,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 
 @Entity
 @Table(name = "test")
@@ -42,19 +42,26 @@ public class Test implements Serializable {
     private Level level;
 
     @Column(name = "assigned_at")
-    private LocalDateTime assignedAt;
+    private Instant assignedAt;
 
     @Column(name = "verified_at")
-    private LocalDateTime verifiedAt;
+    private Instant verifiedAt;
 
     @Column(name = "started_at")
-    private LocalDateTime startedAt;
+    private Instant startedAt;
 
     @Column(name = "completed_at")
-    private LocalDateTime completedAt;
+    private Instant completedAt;
+
+    @Column(name = "finish_time")
+    private Instant finishTime;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "priority")
+    private Priority priority;
 
     @Column(name = "deadline")
-    private LocalDateTime deadline;
+    private Instant deadline;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -81,30 +88,13 @@ public class Test implements Serializable {
         return user;
     }
 
-    public LocalDateTime getAssignedAt() {
-        return assignedAt;
-    }
-
-    public LocalDateTime getVerifiedAt() {
-        return verifiedAt;
-    }
-
-    public LocalDateTime getStartedAt() {
-        return startedAt;
-    }
-
-    public LocalDateTime getCompletedAt() {
-        return completedAt;
-    }
-
-    public LocalDateTime getDeadline() {
-        return deadline;
+    public Priority getPriority() {
+        return priority;
     }
 
     public Status getStatus() {
         return status;
     }
-
 
     public User getCoach() {
         return coach;
@@ -118,24 +108,8 @@ public class Test implements Serializable {
         this.user = user;
     }
 
-    public void setAssignedAt(LocalDateTime createdAt) {
-        this.assignedAt = createdAt;
-    }
-
-    public void setVerifiedAt(LocalDateTime updatedAt) {
-        this.verifiedAt = updatedAt;
-    }
-
-    public void setStartedAt(LocalDateTime startedAt) {
-        this.startedAt = startedAt;
-    }
-
-    public void setCompletedAt(LocalDateTime finishedAt) {
-        this.completedAt = finishedAt;
-    }
-
-    public void setDeadline(LocalDateTime deadline) {
-        this.deadline = deadline;
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 
     public void setStatus(Status status) {
@@ -163,6 +137,54 @@ public class Test implements Serializable {
     }
 
 
+    public Instant getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(Instant finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    public Instant getAssignedAt() {
+        return assignedAt;
+    }
+
+    public void setAssignedAt(Instant assignedAt) {
+        this.assignedAt = assignedAt;
+    }
+
+    public Instant getVerifiedAt() {
+        return verifiedAt;
+    }
+
+    public void setVerifiedAt(Instant verifiedAt) {
+        this.verifiedAt = verifiedAt;
+    }
+
+    public Instant getStartedAt() {
+        return startedAt;
+    }
+
+    public void setStartedAt(Instant startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public Instant getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(Instant completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public Instant getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(Instant deadline) {
+        this.deadline = deadline;
+    }
+
     public void setCoach(User coach) {
         this.coach = coach;
     }
@@ -184,28 +206,38 @@ public class Test implements Serializable {
             return this;
         }
 
-        public Builder assignedAt(LocalDateTime assignedAt) {
+        public Builder assignedAt(Instant assignedAt) {
             test.assignedAt = assignedAt;
             return this;
         }
 
-        public Builder verifiedAt(LocalDateTime verifiedAt) {
+        public Builder verifiedAt(Instant verifiedAt) {
             test.verifiedAt = verifiedAt;
             return this;
         }
 
-        public Builder startedAt(LocalDateTime startedAt) {
+        public Builder startedAt(Instant startedAt) {
             test.startedAt = startedAt;
             return this;
         }
 
-        public Builder completedAt(LocalDateTime completedAt) {
+        public Builder completedAt(Instant completedAt) {
             test.completedAt = completedAt;
             return this;
         }
 
-        public Builder deadline(LocalDateTime deadline) {
+        public Builder finishTime(Instant finishTime) {
+            test.finishTime = finishTime;
+            return this;
+        }
+
+        public Builder deadline(Instant deadline) {
             test.deadline = deadline;
+            return this;
+        }
+
+        public Builder priority(Priority priority) {
+            test.priority = priority;
             return this;
         }
 
@@ -247,7 +279,9 @@ public class Test implements Serializable {
                 && Objects.equals(verifiedAt, test.verifiedAt)
                 && Objects.equals(startedAt, test.startedAt)
                 && Objects.equals(completedAt, test.completedAt)
+                && Objects.equals(finishTime, test.finishTime)
                 && Objects.equals(deadline, test.deadline)
+                && Objects.equals(priority, test.priority)
                 && Objects.equals(status, test.status)
                 && Objects.equals(coach, test.coach)
                 && Objects.equals(questions, test.questions);
@@ -256,7 +290,7 @@ public class Test implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, user, level,
-                assignedAt, verifiedAt, startedAt, completedAt, deadline,
+                assignedAt, verifiedAt, startedAt, completedAt, finishTime, deadline, priority,
                 status, coach, questions);
     }
 }

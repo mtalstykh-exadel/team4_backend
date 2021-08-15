@@ -43,6 +43,7 @@ class CoachGradeControllerTest {
     private final Long testId = 1L;
     private final Long questionId = 1L;
     private final Integer grade = 10;
+    private final String comment = "Comment";
     private CoachGradeDTO gradeRequest;
 
     @BeforeEach
@@ -51,6 +52,7 @@ class CoachGradeControllerTest {
                 .testId(testId)
                 .questionId(questionId)
                 .grade(grade)
+                .comment(comment)
                 .build();
     }
 
@@ -80,28 +82,29 @@ class CoachGradeControllerTest {
         Assertions.assertEquals(grade, grades.get(0).getGrade());
     }
     @Test
-    void addGradeQuestionSuccess() {
+    void addGradeSuccess() {
         CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
                 .testId(testId)
                 .questionId(questionId)
                 .grade(grade)
+                .comment(comment)
                 .build();
         gradeController.add(gradeDTO);
 
-        Mockito.verify(gradeService).add(testId, questionId, grade);
+        Mockito.verify(gradeService).add(testId, questionId, grade, comment);
     }
 
     @Test
     void addGradeTestNotFound() {
         Mockito.doThrow(TestNotFoundException.class)
-                .when(gradeService).add(testId, questionId, grade);
+                .when(gradeService).add(testId, questionId, grade, comment);
         Assertions.assertThrows(TestNotFoundException.class, () -> gradeController.add(gradeRequest));
     }
 
     @Test
     void addGradeQuestionNotFound() {
         Mockito.doThrow(QuestionNotFoundException.class)
-                .when(gradeService).add(testId, questionId, grade);
+                .when(gradeService).add(testId, questionId, grade, comment);
         Assertions.assertThrows(QuestionNotFoundException.class, () -> gradeController.add(gradeRequest));
     }
 
