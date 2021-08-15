@@ -97,6 +97,13 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
+    public List<Test> getTestsByUserIdAndLevel(long userId, Levels level) {
+        return testsRepository.getAllByUser(usersService.getUserById(userId)).stream()
+                .filter(test -> test.getLevel().getName().equals(level.name()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Test save(Test test) {
         return testsRepository.save(test);
     }
