@@ -27,13 +27,8 @@ public class ContentFileDTO implements Serializable {
     }
 
     public ContentFileDTO(ContentFile contentFile, String level) {
-        id = contentFile.getId();
-        url = contentFile.getUrl();
-        topic = contentFile.getTopic();
+        this(contentFile);
         this.level = level;
-        questions = contentFile.getQuestions().stream()
-                .map(QuestionDTO::createWithCorrectAnswers)
-                .collect(Collectors.toList());
     }
 
     public String getTopic() {
