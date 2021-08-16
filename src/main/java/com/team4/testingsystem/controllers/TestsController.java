@@ -6,6 +6,7 @@ import com.team4.testingsystem.converters.TestVerificationConverter;
 import com.team4.testingsystem.dto.AssignTestRequest;
 import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.dto.TestInfo;
 import com.team4.testingsystem.dto.TestVerificationDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
@@ -59,8 +60,8 @@ public class TestsController {
 
     @ApiOperation(value = "Get all tests assigned to the user")
     @GetMapping(path = "/history/{userId}")
-    public List<TestDTO> getUsersTests(@PathVariable("userId") long userId) {
-        return convertToDTO(testsService.getByUserId(userId));
+    public List<TestInfo> getUsersTests(@PathVariable("userId") long userId) {
+        return convertToTestInfoDTO(testsService.getByUserId(userId));
     }
 
     @ApiOperation(value = "Use it to get a single test from the database by its id")
@@ -149,4 +150,12 @@ public class TestsController {
                 .map(testConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
+
+    private List<TestInfo> convertToTestInfoDTO(List<Test> tests) {
+        return tests.stream()
+                .map(TestInfo::new)
+                .collect(Collectors.toList());
+    }
+
+
 }
