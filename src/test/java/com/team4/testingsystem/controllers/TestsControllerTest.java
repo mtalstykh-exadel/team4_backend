@@ -183,7 +183,7 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void getTestForVerificationNotFound() {
-        Mockito.when(testsService.getById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
+        Mockito.when(testsService.startTestVerification(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
 
         Assertions.assertThrows(TestNotFoundException.class,
                 () -> testsController.getTestForVerification(BAD_TEST_ID));
@@ -191,7 +191,7 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void getTestForVerificationSuccess() {
-        Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
+        Mockito.when(testsService.startTestVerification(GOOD_TEST_ID)).thenReturn(test);
         Mockito.when(verificationConverter.convertToVerificationDTO(test)).thenReturn(testVerificationDTO);
 
         Assertions.assertEquals(testVerificationDTO, testsController.getTestForVerification(GOOD_TEST_ID));
@@ -306,18 +306,18 @@ class TestsControllerTest {
     }
 
     @org.junit.jupiter.api.Test
-    void updateEvaluationSuccess() {
-        testsController.update(GOOD_TEST_ID);
+    void coachSubmitSuccess() {
+        testsController.coachSubmit(GOOD_TEST_ID);
 
-        verify(testsService).update(GOOD_TEST_ID);
+        verify(testsService).coachSubmit(GOOD_TEST_ID);
     }
 
     @org.junit.jupiter.api.Test
-    void updateEvaluationFail() {
-        doThrow(TestNotFoundException.class).when(testsService).update(BAD_TEST_ID);
+    void coachSubmitFail() {
+        doThrow(TestNotFoundException.class).when(testsService).coachSubmit(BAD_TEST_ID);
 
         Assertions.assertThrows(TestNotFoundException.class,
-                () -> testsController.update(BAD_TEST_ID));
+                () -> testsController.coachSubmit(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test
