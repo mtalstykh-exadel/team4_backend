@@ -6,6 +6,7 @@ import com.team4.testingsystem.converters.TestVerificationConverter;
 import com.team4.testingsystem.dto.AssignTestRequest;
 import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.dto.TestInfo;
 import com.team4.testingsystem.dto.TestVerificationDTO;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.ModuleGrade;
@@ -81,6 +82,8 @@ class TestsControllerTest {
 
     private Test test;
 
+    private List<TestInfo> testInfos;
+
     @Mock
     private TestVerificationDTO testVerificationDTO;
 
@@ -107,13 +110,15 @@ class TestsControllerTest {
     void getCurrentUserTestsEmpty() {
         try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             CustomUserDetails mockUserDetails = Mockito.mock(CustomUserDetails.class);
+            Test test = EntityCreatorUtil
+                    .createTest(EntityCreatorUtil.createUser(), EntityCreatorUtil.createLevel());
             Mockito.when(mockUserDetails.getId()).thenReturn(1L);
 
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(mockUserDetails);
 
             Mockito.when(testsService.getByUserId(1L)).thenReturn(Lists.list(test));
 
-            Assertions.assertEquals(Lists.list(testConverter.convertToDTO(test)),
+            Assertions.assertEquals(Lists.list(new TestInfo(test)),
                     testsController.getCurrentUserTests());
         }
     }
@@ -226,7 +231,7 @@ class TestsControllerTest {
     void assignFail() {
         AssignTestRequest request = new AssignTestRequest(Levels.A1, Instant.now(), Priority.LOW);
 
-        Mockito.when(testsService.assignForUser(BAD_USER_ID, Levels.A1, request.getDeadline(),  Priority.LOW))
+        Mockito.when(testsService.assignForUser(BAD_USER_ID, Levels.A1, request.getDeadline(), Priority.LOW))
                 .thenThrow(UserNotFoundException.class);
 
         Assertions.assertThrows(UserNotFoundException.class, () -> testsController.assign(BAD_USER_ID, request));
