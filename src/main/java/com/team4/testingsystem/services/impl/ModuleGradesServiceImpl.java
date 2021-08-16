@@ -31,27 +31,35 @@ public class ModuleGradesServiceImpl implements ModuleGradesService {
     }
 
     @Override
-    public Integer getGradeByModule(Map<String, Integer> gradeMap, Modules module) {
-        return Optional.ofNullable(gradeMap.get(module.getName()))
+    public Integer getGradeByModule(Map<String, ModuleGrade> gradeMap, Modules module) {
+        ModuleGrade moduleGrade = Optional.ofNullable(gradeMap.get(module.getName()))
                 .orElseThrow(() -> new ModuleGradeNotFoundException(module.getName()));
+        return moduleGrade.getGrade();
     }
 
     @Override
-    public Map<String, Integer> getGradesByTest(Test test) {
+    public String getCoachCommentByModule(Map<String, ModuleGrade> gradeMap, Modules module) {
+        ModuleGrade moduleGrade = Optional.ofNullable(gradeMap.get(module.getName()))
+                .orElseThrow(() -> new ModuleGradeNotFoundException(module.getName()));
+        return moduleGrade.getCoachComment();
+    }
+
+
+    @Override
+    public Map<String, ModuleGrade> getGradesByTest(Test test) {
         List<ModuleGrade> grades = (List<ModuleGrade>) moduleGradesRepository.findAllById_Test(test);
         return grades
                 .stream()
-                .collect(Collectors.toMap(moduleGrade -> moduleGrade.getId().getModule().getName(),
-                        ModuleGrade::getGrade));
+                .collect(Collectors.toMap(moduleGrade -> moduleGrade.getId().getModule().getName(), grade -> grade));
     }
 
     @Override
-    public void add(Test test, String moduleName, Integer grade) {
+    public void add(Test test, String moduleName, Integer grade, String coachComment) {
 
         Module module = moduleService.getModuleByName(moduleName);
 
         TestModuleID testModuleID = new TestModuleID(test, module);
 
-        moduleGradesRepository.save(new ModuleGrade(testModuleID, grade));
+        moduleGradesRepository.save(new ModuleGrade(testModuleID, grade, coachComment));
     }
 }

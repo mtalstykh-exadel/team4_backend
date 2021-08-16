@@ -9,6 +9,7 @@ import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,12 +31,14 @@ public class UsersController {
 
     @ApiOperation("Get list of all coaches in the system")
     @GetMapping("/coaches")
+    @Secured("ROLE_ADMIN")
     public List<UserDTO> getCoaches() {
         return convertToDTO(usersService.getUsersByRole(Role.COACH));
     }
 
     @ApiOperation("Get all users and their assigned tests (if exist)")
     @GetMapping("/employees")
+    @Secured("ROLE_HR")
     public List<UserDTO> getAllUsersAndAssignedTests() {
         return testsService.getAllUsersAndAssignedTests().stream()
                 .map(UserTest::toUserDTO)

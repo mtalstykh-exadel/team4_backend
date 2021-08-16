@@ -9,7 +9,7 @@ public interface AnswerService {
 
     String downloadEssay(Long testId);
 
-    void uploadEssay(Long testId, String text);
+    String uploadEssay(Long testId, String text);
 
     String downloadSpeaking(Long testId);
 

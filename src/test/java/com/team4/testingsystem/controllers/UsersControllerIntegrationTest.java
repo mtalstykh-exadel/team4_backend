@@ -49,6 +49,9 @@ class UsersControllerIntegrationTest {
     private final ObjectMapper objectMapper;
 
     private CustomUserDetails userDetails;
+    private CustomUserDetails hrDetails;
+    private CustomUserDetails coachDetails;
+    private CustomUserDetails adminDetails;
 
     @Autowired
     UsersControllerIntegrationTest(MockMvc mockMvc,
@@ -67,8 +70,10 @@ class UsersControllerIntegrationTest {
 
     @BeforeEach
     void init() {
-        User user = usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow();
-        userDetails = new CustomUserDetails(user);
+        userDetails = new CustomUserDetails(usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow());
+        hrDetails = new CustomUserDetails(usersRepository.findByLogin("rus_hr@northsixty.com").orElseThrow());
+        coachDetails = new CustomUserDetails(usersRepository.findByLogin("rus_coach@northsixty.com").orElseThrow());
+        adminDetails = new CustomUserDetails(usersRepository.findByLogin("rus_admin@northsixty.com").orElseThrow());
     }
 
     @AfterEach
@@ -85,7 +90,7 @@ class UsersControllerIntegrationTest {
         final List<UserDTO> coachDTOs = coaches.stream().map(UserDTO::new).collect(Collectors.toList());
 
         MvcResult mvcResult = mockMvc.perform(get("/coaches")
-                .with(user(userDetails)))
+                .with(user(adminDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -96,9 +101,30 @@ class UsersControllerIntegrationTest {
     }
 
     @Test
+    void getCoachesUser() throws Exception {
+        mockMvc.perform(get("/coaches")
+                .with(user(userDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getCoachesHr() throws Exception {
+        mockMvc.perform(get("/coaches")
+                .with(user(hrDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getCoachesCoach() throws Exception {
+        mockMvc.perform(get("/coaches")
+                .with(user(coachDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void getAllUsersNoAssignedTest() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/employees")
-                .with(user(userDetails)))
+                .with(user(hrDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -118,7 +144,7 @@ class UsersControllerIntegrationTest {
                 .forEach(testsRepository::save);
 
         MvcResult mvcResult = mockMvc.perform(get("/employees")
-                .with(user(userDetails)))
+                .with(user(hrDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -126,6 +152,27 @@ class UsersControllerIntegrationTest {
         final List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {});
 
         userDTOs.forEach(user -> Assertions.assertNotNull(user.getAssignedTest()));
+    }
+
+    @Test
+    void getAllUsersAssignedUser() throws Exception {
+        mockMvc.perform(get("/employees")
+                .with(user(userDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getAllUsersAssignedCoach() throws Exception {
+        mockMvc.perform(get("/employees")
+                .with(user(coachDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getAllUsersAssignedAdmin() throws Exception {
+        mockMvc.perform(get("/employees")
+                .with(user(adminDetails)))
+                .andExpect(status().isForbidden());
     }
 
     @Test

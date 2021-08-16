@@ -17,7 +17,6 @@ import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
-import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -55,8 +54,12 @@ class CoachGradeControllerIntegrationTest {
     private final ObjectMapper objectMapper;
 
     private User user;
-    private CustomUserDetails userDetails;
     private Level level;
+
+    private CustomUserDetails userDetails;
+    private CustomUserDetails hrDetails;
+    private CustomUserDetails coachDetails;
+    private CustomUserDetails adminDetails;
 
     @Autowired
     CoachGradeControllerIntegrationTest(MockMvc mockMvc,
@@ -82,8 +85,13 @@ class CoachGradeControllerIntegrationTest {
     @BeforeEach
     void init() {
         answerRepository.deleteAll();
-        user = usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow();
-        userDetails = new CustomUserDetails(user);
+
+        user = usersRepository.findByLogin("rus_coach@northsixty.com").orElseThrow();
+        userDetails = new CustomUserDetails(usersRepository.findByLogin("rus_user@northsixty.com").orElseThrow());
+        hrDetails = new CustomUserDetails(usersRepository.findByLogin("rus_hr@northsixty.com").orElseThrow());
+        coachDetails = new CustomUserDetails(user);
+        adminDetails = new CustomUserDetails(usersRepository.findByLogin("rus_admin@northsixty.com").orElseThrow());
+
         level = levelRepository.findByName(Levels.A1.name()).orElseThrow();
     }
 
@@ -99,7 +107,7 @@ class CoachGradeControllerIntegrationTest {
     @Test
     void getGradesTestNotFound() throws Exception {
         mockMvc.perform(get("/grades/101")
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isNotFound());
     }
 
@@ -109,7 +117,7 @@ class CoachGradeControllerIntegrationTest {
         testsRepository.save(test);
 
         MvcResult mvcResult = mockMvc.perform(get("/grades/{testId}", test.getId())
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -129,11 +137,11 @@ class CoachGradeControllerIntegrationTest {
 
         TestQuestionID testQuestionID = new TestQuestionID(test, question);
 
-        CoachGrade grade = new CoachGrade(testQuestionID, 8);
+        CoachGrade grade = new CoachGrade(testQuestionID, 8, "Comment");
         gradeRepository.save(grade);
 
         MvcResult mvcResult = mockMvc.perform(get("/grades/{testId}", test.getId())
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -159,14 +167,14 @@ class CoachGradeControllerIntegrationTest {
 
         TestQuestionID testQuestionID2 = new TestQuestionID(test, question2);
 
-        CoachGrade grade = new CoachGrade(testQuestionID1, 8);
+        CoachGrade grade = new CoachGrade(testQuestionID1, 8, "Comment1");
         gradeRepository.save(grade);
 
-        CoachGrade grade2 = new CoachGrade(testQuestionID2, 7);
+        CoachGrade grade2 = new CoachGrade(testQuestionID2, 7, "Comment2");
         gradeRepository.save(grade2);
 
         MvcResult mvcResult = mockMvc.perform(get("/grades/{testId}", test.getId())
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -176,6 +184,27 @@ class CoachGradeControllerIntegrationTest {
         Assertions.assertEquals(2, grades.size());
         Assertions.assertTrue(grades.contains(new CoachGradeDTO(grade)));
         Assertions.assertTrue(grades.contains(new CoachGradeDTO(grade2)));
+    }
+
+    @Test
+    void getGradesUser() throws Exception {
+        mockMvc.perform(get("/grades/1")
+                .with(user(userDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getGradesHr() throws Exception {
+        mockMvc.perform(get("/grades/1")
+                .with(user(hrDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getGradesAdmin() throws Exception {
+        mockMvc.perform(get("/grades/1")
+                .with(user(adminDetails)))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -189,7 +218,7 @@ class CoachGradeControllerIntegrationTest {
         mockMvc.perform(post("/grades/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(gradeDTO))
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isNotFound());
     }
 
@@ -207,7 +236,7 @@ class CoachGradeControllerIntegrationTest {
         mockMvc.perform(post("/grades/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(gradeDTO))
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isNotFound());
     }
 
@@ -225,19 +254,47 @@ class CoachGradeControllerIntegrationTest {
                 .testId(test.getId())
                 .questionId(question.getId())
                 .grade(10)
+                .comment("Comment")
                 .build();
 
         mockMvc.perform(post("/grades/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(gradeDTO))
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isOk());
 
         Optional<CoachGrade> grade = gradeRepository.findById(testQuestionID);
         Assertions.assertTrue(grade.isPresent());
         Assertions.assertEquals(gradeDTO.getGrade(), grade.get().getGrade());
+        Assertions.assertEquals(gradeDTO.getComment(), grade.get().getComment());
     }
 
+    @Test
+    void addGradeUser() throws Exception {
+        mockMvc.perform(post("/grades/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}")
+                .with(user(userDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void addGradeHr() throws Exception {
+        mockMvc.perform(post("/grades/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}")
+                .with(user(hrDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void addGradeAdmin() throws Exception {
+        mockMvc.perform(post("/grades/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}")
+                .with(user(adminDetails)))
+                .andExpect(status().isForbidden());
+    }
 
     @Test
     void updateGradeSuccess() throws Exception {
@@ -251,21 +308,23 @@ class CoachGradeControllerIntegrationTest {
                 .testId(test.getId())
                 .questionId(question.getId())
                 .grade(10)
+                .comment("Comment2")
                 .build();
 
         TestQuestionID testQuestionID = new TestQuestionID(test, question);
 
-        CoachGrade grade = new CoachGrade(testQuestionID, 2);
+        CoachGrade grade = new CoachGrade(testQuestionID, 2, "Comment1");
         gradeRepository.save(grade);
 
         mockMvc.perform(post("/grades/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(gradeDTO))
-                .with(user(userDetails)))
+                .with(user(coachDetails)))
                 .andExpect(status().isOk());
 
         Optional<CoachGrade> savedGrade = gradeRepository.findById(testQuestionID);
         Assertions.assertTrue(savedGrade.isPresent());
         Assertions.assertEquals(10, savedGrade.get().getGrade());
+        Assertions.assertEquals("Comment2", savedGrade.get().getComment());
     }
 }

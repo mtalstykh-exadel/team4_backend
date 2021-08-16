@@ -15,6 +15,7 @@ import java.util.List;
 @Repository
 public interface TestsRepository extends CrudRepository<Test, Long> {
 
+    @Query("select t from Test t where t.user = ?1")
     List<Test> getAllByUser(User user);
 
     @Query("select t from Test t where t.status in ?1")
@@ -25,6 +26,9 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
             + "and t.assignedAt is null "
             + "and t.startedAt >= ?2")
     List<Test> getSelfStartedByUserAfter(User user, Instant date);
+
+    @Query("select t from Test t where t.coach.id = ?1 and t.status in ?2")
+    List<Test> getAllByAssignedCoachAndStatuses(Long coachId, Status[] status);
 
     @Transactional
     @Modifying
