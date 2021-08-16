@@ -81,7 +81,8 @@ public class TestsController {
     @GetMapping(path = "/verify/{testId}")
     @Secured("ROLE_COACH")
     public TestVerificationDTO getTestForVerification(@PathVariable long testId) {
-        return verificationConverter.convertToVerificationDTO(testsService.getById(testId));
+        Test test = testsService.startTestVerification(testId);
+        return verificationConverter.convertToVerificationDTO(test);
     }
 
     @ApiOperation(value = "Use it to get test grades for a test by modules")
@@ -146,8 +147,9 @@ public class TestsController {
 
     @ApiOperation(value = "Is used to update score after coach check")
     @PutMapping(path = "/{testId}")
-    public void update(@PathVariable("testId") long testId) {
-        testsService.update(testId);
+    @Secured("ROLE_COACH")
+    public void coachSubmit(@PathVariable("testId") long testId) {
+        testsService.coachSubmit(testId);
     }
 
     @ApiOperation(value = "Use it to assign a test for the coach")

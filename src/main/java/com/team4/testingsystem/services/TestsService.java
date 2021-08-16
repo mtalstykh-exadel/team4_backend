@@ -23,6 +23,8 @@ public interface TestsService {
 
     List<Test> getTestsByUserIdAndLevel(long userId, Levels level);
 
+    Test startTestVerification(long testId);
+
     Test save(Test test);
 
     long startForUser(long userId, Levels level);
@@ -35,7 +37,7 @@ public interface TestsService {
 
     void finish(long id, Instant finishDate);
 
-    void update(long id);
+    void coachSubmit(long id);
 
     void assignCoach(long id, long coachId);
 
