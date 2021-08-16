@@ -2,9 +2,10 @@ package com.team4.testingsystem.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.dto.TestInfo;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.User;
@@ -102,8 +103,8 @@ class TestsControllerIntegrationTest {
 
     @AfterEach
     void destroy() {
-        contentFilesRepository.deleteAll();
         testsRepository.deleteAll();
+        contentFilesRepository.deleteAll();
         questionRepository.deleteAll();
     }
 
@@ -132,10 +133,11 @@ class TestsControllerIntegrationTest {
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        List<TestDTO> tests = objectMapper.readValue(response, new TypeReference<>() {});
+        List<TestInfo> tests = objectMapper.readValue(response, new TypeReference<>() {
+        });
 
         Assertions.assertEquals(1, tests.size());
-        Assertions.assertEquals(test.getId(), tests.get(0).getId());
+        Assertions.assertEquals(test.getId(), tests.get(0).getTestId());
 
         contentFile.setQuestions(null);
         contentFilesRepository.save(contentFile);
@@ -194,7 +196,8 @@ class TestsControllerIntegrationTest {
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        List<TestDTO> testDTOs = objectMapper.readValue(response, new TypeReference<>() {});
+        List<TestDTO> testDTOs = objectMapper.readValue(response, new TypeReference<>() {
+        });
 
         Assertions.assertEquals(1, testDTOs.size());
         Assertions.assertEquals(test.getId(), testDTOs.get(0).getId());
