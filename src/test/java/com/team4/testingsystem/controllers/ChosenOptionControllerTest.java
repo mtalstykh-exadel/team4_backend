@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -52,7 +51,7 @@ public class ChosenOptionControllerTest {
     void getAllByTest() {
         com.team4.testingsystem.entities.Test test = chosenOption.getId().getTest();
 
-        Mockito.when(chosenOptionService.getAllByTest(ArgumentMatchers.argThat(t -> t.getId().equals(test.getId()))))
+        Mockito.when(chosenOptionService.getAllByTestId(test.getId()))
                 .thenReturn(List.of(chosenOption));
 
         Assertions.assertEquals(List.of(new ChosenOptionDTO(chosenOption)),

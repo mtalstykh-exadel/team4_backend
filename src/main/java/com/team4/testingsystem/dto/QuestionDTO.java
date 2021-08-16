@@ -106,7 +106,8 @@ public class QuestionDTO implements Serializable {
             return false;
         }
         QuestionDTO that = (QuestionDTO) o;
-        return Objects.equals(questionBody, that.questionBody)
+        return Objects.equals(id, that.id)
+                && Objects.equals(questionBody, that.questionBody)
                 && Objects.equals(creator, that.creator)
                 && Objects.equals(level, that.level)
                 && Objects.equals(module, that.module)
@@ -115,6 +116,6 @@ public class QuestionDTO implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(questionBody, creator, level, module, answers);
+        return Objects.hash(id, questionBody, creator, level, module, answers);
     }
 }

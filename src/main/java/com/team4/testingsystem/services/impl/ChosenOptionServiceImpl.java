@@ -29,8 +29,8 @@ public class ChosenOptionServiceImpl implements ChosenOptionService {
     }
 
     @Override
-    public List<ChosenOption> getAllByTest(Test id) {
-        return chosenOptionRepository.findByTest(id);
+    public List<ChosenOption> getAllByTestId(Long testId) {
+        return chosenOptionRepository.findByTestId(testId);
     }
 
     @Override

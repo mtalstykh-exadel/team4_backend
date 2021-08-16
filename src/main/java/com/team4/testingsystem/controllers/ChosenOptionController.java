@@ -40,10 +40,7 @@ public class ChosenOptionController {
     @ApiOperation(value = "Use it to get all chosen options by test ID")
     @GetMapping(path = "/{testId}")
     public List<ChosenOptionDTO> getAllByTest(@PathVariable Long testId) {
-        Test test = new Test();
-        test.setId(testId);
-
-        return chosenOptionService.getAllByTest(test).stream()
+        return chosenOptionService.getAllByTestId(testId).stream()
                 .map(ChosenOptionDTO::new)
                 .collect(Collectors.toList());
     }

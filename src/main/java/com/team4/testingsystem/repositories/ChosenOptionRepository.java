@@ -15,6 +15,6 @@ public interface ChosenOptionRepository extends CrudRepository<ChosenOption, Tes
     @Query(value = "select co from ChosenOption co where co.id.test.id = ?1 and co.id.question.id = ?2")
     Optional<ChosenOption> findByTestAndQuestionId(Long testId, Long questionId);
 
-    @Query(value = "select co from ChosenOption co where co.id.test = ?1")
-    List<ChosenOption> findByTest(Test test);
+    @Query(value = "select co from ChosenOption co where co.id.test.id = ?1")
+    List<ChosenOption> findByTestId(Long testId);
 }

@@ -9,7 +9,7 @@ public interface ChosenOptionService {
 
     ChosenOption getByTestAndQuestionId(Long testId, Long questionId);
 
-    List<ChosenOption> getAllByTest(Test test);
+    List<ChosenOption> getAllByTestId(Long testId);
 
     void save(ChosenOption chosenOption);
 
