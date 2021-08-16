@@ -9,17 +9,67 @@ import java.util.Objects;
 public class TestInfo implements Serializable {
     private Long testId;
     private String level;
+    private Instant assigned;
     private Instant deadline;
+    private Instant verified;
+    private String status;
     private String priority;
+    private Instant completedAt;
+    private Instant startedAt;
 
     public TestInfo() {
     }
 
     public TestInfo(Test test) {
-        this.testId = test.getId();
-        this.level = test.getLevel().getName();
-        this.deadline = test.getDeadline();
-        this.priority = test.getPriority().getName();
+        testId = test.getId();
+        level = test.getLevel().getName();
+        deadline = test.getDeadline();
+        priority = test.getPriority().getName();
+        assigned = test.getAssignedAt();
+        verified = test.getVerifiedAt();
+        status = test.getStatus().name();
+        completedAt = test.getCompletedAt();
+        startedAt = test.getStartedAt();
+    }
+
+    public Instant getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(Instant completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public Instant getStartedAt() {
+        return startedAt;
+    }
+
+    public void setStartedAt(Instant startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public Instant getAssigned() {
+        return assigned;
+    }
+
+    public void setAssigned(Instant assigned) {
+        this.assigned = assigned;
+    }
+
+    public Instant getVerified() {
+        return verified;
+    }
+
+    public void setVerified(Instant verified) {
+        this.verified = verified;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Long getTestId() {
@@ -64,9 +114,9 @@ public class TestInfo implements Serializable {
         }
         TestInfo testInfo = (TestInfo) o;
         return Objects.equals(testId, testInfo.testId)
-                && Objects.equals(level, testInfo.level)
-                && Objects.equals(deadline, testInfo.deadline)
-                && Objects.equals(priority, testInfo.priority);
+               && Objects.equals(level, testInfo.level)
+               && Objects.equals(deadline, testInfo.deadline)
+               && Objects.equals(priority, testInfo.priority);
     }
 
     @Override
