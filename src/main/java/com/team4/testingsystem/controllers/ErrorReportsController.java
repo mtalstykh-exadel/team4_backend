@@ -20,19 +20,11 @@ import java.util.stream.Collectors;
 @RequestMapping(path = "/error_reports")
 public class ErrorReportsController {
 
-    private ErrorReportsService errorReportsService;
+    private final ErrorReportsService errorReportsService;
 
     @Autowired
     public ErrorReportsController(ErrorReportsService errorReportsService) {
         this.errorReportsService = errorReportsService;
-    }
-
-    @ApiOperation(value = "Use it to get all error reports for the test")
-    @GetMapping("/{testId}")
-    public List<ErrorReportDTO> getReports(@PathVariable long testId) {
-        return errorReportsService.getReportsByTest(testId).stream()
-                .map(ErrorReportDTO::new)
-                .collect(Collectors.toList());
     }
 
     @ApiOperation(value = "Use it to add or update an error report")
