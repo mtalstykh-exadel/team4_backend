@@ -5,34 +5,21 @@ import com.team4.testingsystem.services.ErrorReportsService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping(path = "/error_reports")
 public class ErrorReportsController {
 
-    private ErrorReportsService errorReportsService;
+    private final ErrorReportsService errorReportsService;
 
     @Autowired
     public ErrorReportsController(ErrorReportsService errorReportsService) {
         this.errorReportsService = errorReportsService;
-    }
-
-    @ApiOperation(value = "Use it to get all error reports for the test")
-    @GetMapping("/{testId}")
-    public List<ErrorReportDTO> getReports(@PathVariable long testId) {
-        return errorReportsService.getReportsByTest(testId).stream()
-                .map(ErrorReportDTO::new)
-                .collect(Collectors.toList());
     }
 
     @ApiOperation(value = "Use it to add or update an error report")
