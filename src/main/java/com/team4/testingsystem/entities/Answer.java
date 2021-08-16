@@ -38,12 +38,12 @@ public class Answer implements Serializable {
 
     public Answer(AnswerDTO answerDTO) {
         this.answerBody = answerDTO.getAnswer();
-        this.isCorrect = answerDTO.getCorrect();
+        this.isCorrect = answerDTO.isCorrect();
     }
 
     public Answer(AnswerDTO answerDTO, Question question) {
         this.answerBody = answerDTO.getAnswer();
-        this.isCorrect = answerDTO.getCorrect();
+        this.isCorrect = answerDTO.isCorrect();
         this.question = question;
     }
 
