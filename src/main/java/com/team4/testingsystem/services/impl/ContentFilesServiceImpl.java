@@ -2,11 +2,13 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
+import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +43,8 @@ public class ContentFilesServiceImpl implements ContentFilesService {
 
     @Override
     public ContentFile add(MultipartFile file, String topic, List<Question> questions) {
-        String url = storageService.upload(file.getResource());
+        Long creatorId = JwtTokenUtil.extractUserDetails().getId();
+        String url = storageService.upload(file.getResource(), Modules.LISTENING, creatorId);
         return contentFilesRepository.save(new ContentFile(url, topic, questions));
     }
 
