@@ -9,6 +9,7 @@ import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.QuestionStatus;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
@@ -74,11 +75,11 @@ class QuestionControllerTest {
     @Test
     void getQuestionsByLevelAndModuleName() {
         List<Question> questions = Lists.list(EntityCreatorUtil.createQuestion());
-        Mockito.when(questionService.getQuestionsByLevelAndModuleName(any(), any())).thenReturn(questions);
+        Mockito.when(questionService.getQuestionsByLevelAndModuleName(any(), any(), any())).thenReturn(questions);
         List<QuestionDTO> expectedQuestions = questions.stream()
                 .map(QuestionDTO::create)
                 .collect(Collectors.toList());
-        Assertions.assertEquals(expectedQuestions, questionController.getQuestions(any(), any()));
+        Assertions.assertEquals(expectedQuestions, questionController.getQuestions(any(), any(), any()));
     }
 
     @Test
@@ -181,13 +182,13 @@ class QuestionControllerTest {
 
     @Test
     void getListeningTopics(){
-        questionController.getListeningTopics(null);
-        verify(questionService).getListening(null);
+        questionController.getListeningTopics(null, QuestionStatus.ARCHIVED);
+        verify(questionService).getListening(null,  QuestionStatus.ARCHIVED);
     }
 
     @Test
     void getListeningTopicsByLevel(){
-        questionController.getListeningTopics(Levels.A1);
-        verify(questionService).getListening(Levels.A1);
+        questionController.getListeningTopics(Levels.A1,  QuestionStatus.UNARCHIVED);
+        verify(questionService).getListening(Levels.A1,  QuestionStatus.UNARCHIVED);
     }
 }
