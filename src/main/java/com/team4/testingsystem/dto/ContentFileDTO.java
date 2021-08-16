@@ -16,11 +16,21 @@ public class ContentFileDTO implements Serializable {
 
     public ContentFileDTO() {
     }
+
     public ContentFileDTO(ContentFile contentFile) {
         id = contentFile.getId();
         url = contentFile.getUrl();
         topic = contentFile.getTopic();
-        level = contentFile.getQuestions().get(0).getLevel().getName();
+        questions = contentFile.getQuestions().stream()
+                .map(QuestionDTO::createWithCorrectAnswers)
+                .collect(Collectors.toList());
+    }
+
+    public ContentFileDTO(ContentFile contentFile, String level) {
+        id = contentFile.getId();
+        url = contentFile.getUrl();
+        topic = contentFile.getTopic();
+        this.level = level;
         questions = contentFile.getQuestions().stream()
                 .map(QuestionDTO::createWithCorrectAnswers)
                 .collect(Collectors.toList());

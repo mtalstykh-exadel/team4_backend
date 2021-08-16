@@ -5,6 +5,7 @@ import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.dto.ListeningTopicDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.ContentFile;
+import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.services.ContentFilesService;
@@ -80,8 +81,11 @@ class QuestionControllerTest {
     @Test
     void getListening() {
         ContentFile contentFile = new ContentFile();
+        Question question = EntityCreatorUtil.createQuestion();
+        contentFile.setQuestions(List.of(question));
         Mockito.when(contentFilesService.getById(1L)).thenReturn(contentFile);
-        Assertions.assertEquals(new ContentFileDTO(contentFile), questionController.getListening(1L));
+        Assertions.assertEquals(new ContentFileDTO(contentFile, question.getLevel().getName()),
+                questionController.getListening(1L));
     }
 
     @Test
@@ -121,11 +125,13 @@ class QuestionControllerTest {
 
     @Test
     void addListening() {
-        Mockito.when(contentFilesService.add(multipartFile, TOPIC, List.of())).thenReturn(contentFile);
+        Mockito.when(contentFilesService.add(multipartFile, TOPIC, Lists.emptyList()))
+                .thenReturn(contentFile);
 
         ContentFileDTO request = new ContentFileDTO();
         request.setTopic(TOPIC);
         request.setQuestions(List.of());
+
         Assertions.assertEquals(new ContentFileDTO(contentFile),
                 questionController.addListening(multipartFile, request));
     }
