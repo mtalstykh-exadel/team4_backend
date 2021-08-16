@@ -9,6 +9,7 @@ public class AnswerDTO implements Serializable {
     private Long id;
     private String answer;
     private Boolean correct;
+    private Boolean checked;
 
     public AnswerDTO() {
     }
@@ -28,6 +29,14 @@ public class AnswerDTO implements Serializable {
         return answerDTO;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getAnswer() {
         return answer;
     }
@@ -36,7 +45,7 @@ public class AnswerDTO implements Serializable {
         this.answer = answer;
     }
 
-    public Boolean getCorrect() {
+    public Boolean isCorrect() {
         return correct;
     }
 
@@ -44,12 +53,12 @@ public class AnswerDTO implements Serializable {
         this.correct = correct;
     }
 
-    public Long getId() {
-        return id;
+    public Boolean isChecked() {
+        return checked;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
     }
 
     @Override
@@ -62,7 +71,8 @@ public class AnswerDTO implements Serializable {
         }
         AnswerDTO answerDTO = (AnswerDTO) o;
         return Objects.equals(answer, answerDTO.answer)
-               && Objects.equals(correct, answerDTO.correct);
+                && Objects.equals(correct, answerDTO.correct)
+                && Objects.equals(checked, answerDTO.checked);
     }
 
     @Override
