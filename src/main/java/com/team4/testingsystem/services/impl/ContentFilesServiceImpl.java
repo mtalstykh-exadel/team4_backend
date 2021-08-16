@@ -1,10 +1,8 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
-import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
