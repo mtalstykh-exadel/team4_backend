@@ -89,11 +89,24 @@ public class TestsServiceImpl implements TestsService {
     public List<UserTest> getAllUsersAndAssignedTests() {
         Status[] statuses = {Status.ASSIGNED};
         Map<User, Test> assignedTests = getByStatuses(statuses).stream()
-            .collect(Collectors.toMap(Test::getUser, Function.identity()));
+                .collect(Collectors.toMap(Test::getUser, Function.identity()));
 
         return usersService.getAll().stream()
-            .map(user -> new UserTest(user, assignedTests.getOrDefault(user, null)))
-            .collect(Collectors.toList());
+                .map(user -> new UserTest(user, assignedTests.getOrDefault(user, null)))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Test> getTestsByUserIdAndLevel(long userId, Levels level) {
+        return testsRepository.getAllByUser(usersService.getUserById(userId)).stream()
+                .filter(test -> test.getLevel().getName().equals(level.name()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Test startTestVerification(long testId) {
+        testsRepository.updateStatusByTestId(testId, Status.IN_VERIFICATION);
+        return getById(testId);
     }
 
     @Override
@@ -105,17 +118,17 @@ public class TestsServiceImpl implements TestsService {
     public long startForUser(long userId, Levels levelName) {
         User user = usersService.getUserById(userId);
         List<Test> selfStarted = testsRepository
-            .getSelfStartedByUserAfter(user, Instant.now().minus(1, ChronoUnit.DAYS));
+                .getSelfStartedByUserAfter(user, Instant.now().minus(1, ChronoUnit.DAYS));
 
         if (selfStarted.size() >= testsLimit) {
             throw new TestsLimitExceededException(selfStarted.get(0)
-                .getStartedAt().plus(1, ChronoUnit.DAYS).toString());
+                    .getStartedAt().plus(1, ChronoUnit.DAYS).toString());
         }
         Test test = createForUser(userId, levelName)
-            .startedAt(Instant.now())
-            .status(Status.STARTED)
-            .priority(Priority.LOW)
-            .build();
+                .startedAt(Instant.now())
+                .status(Status.STARTED)
+                .priority(Priority.LOW)
+                .build();
 
         testsRepository.save(test);
         return test.getId();
@@ -124,11 +137,11 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public long assignForUser(long userId, Levels levelName, Instant deadline, Priority priority) {
         Test test = createForUser(userId, levelName)
-            .assignedAt(Instant.now())
-            .deadline(deadline)
-            .status(Status.ASSIGNED)
-            .priority(priority)
-            .build();
+                .assignedAt(Instant.now())
+                .deadline(deadline)
+                .status(Status.ASSIGNED)
+                .priority(priority)
+                .build();
 
         testsRepository.save(test);
         return test.getId();
@@ -148,8 +161,8 @@ public class TestsServiceImpl implements TestsService {
         Level level = levelService.getLevelByName(levelName.name());
         User user = usersService.getUserById(userId);
         return Test.builder()
-            .user(user)
-            .level(level);
+                .user(user)
+                .level(level);
     }
 
     @Override
@@ -183,7 +196,7 @@ public class TestsServiceImpl implements TestsService {
 
         java.util.Timer timer = new java.util.Timer(String.valueOf(testId));
         long delay = test.getFinishTime().plus(2L, ChronoUnit.MINUTES).toEpochMilli()
-            - Instant.now().toEpochMilli();
+                - Instant.now().toEpochMilli();
         if (delay <= 0) {
             finish(testId, test.getFinishTime());
             timer.cancel();
@@ -208,7 +221,7 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public void update(long id) {
+    public void coachSubmit(long id) {
         testEvaluationService.updateScoreAfterCoachCheck(getById(id));
         testsRepository.updateEvaluation(Instant.now(), id);
     }

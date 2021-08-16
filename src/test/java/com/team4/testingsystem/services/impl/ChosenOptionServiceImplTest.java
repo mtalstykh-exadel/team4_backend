@@ -55,18 +55,18 @@ public class ChosenOptionServiceImplTest {
     void getChosenOptionByTestSuccess() {
         List<ChosenOption> chosenOptions = List.of(new ChosenOption(), new ChosenOption());
 
-        Mockito.when(chosenOptionRepository.findByTest(test)).thenReturn(chosenOptions);
+        Mockito.when(chosenOptionRepository.findByTestId(TEST_ID)).thenReturn(chosenOptions);
 
-        Assertions.assertEquals(chosenOptions, chosenOptionService.getAllByTest(test));
+        Assertions.assertEquals(chosenOptions, chosenOptionService.getAllByTestId(TEST_ID));
     }
 
     @Test
     void getEmptyChosenOptionByTest() {
         List<ChosenOption> chosenOptions = List.of();
 
-        Mockito.when(chosenOptionRepository.findByTest(test)).thenReturn(chosenOptions);
+        Mockito.when(chosenOptionRepository.findByTestId(TEST_ID)).thenReturn(chosenOptions);
 
-        Assertions.assertEquals(chosenOptions, chosenOptionService.getAllByTest(test));
+        Assertions.assertEquals(chosenOptions, chosenOptionService.getAllByTestId(TEST_ID));
     }
 
     @Test

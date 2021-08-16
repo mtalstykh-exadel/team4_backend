@@ -6,6 +6,7 @@ import com.team4.testingsystem.converters.TestVerificationConverter;
 import com.team4.testingsystem.dto.AssignTestRequest;
 import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.dto.TestInfo;
 import com.team4.testingsystem.dto.TestVerificationDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
@@ -55,15 +56,19 @@ public class TestsController {
 
     @ApiOperation(value = "Get all tests assigned to the current user")
     @GetMapping(path = "/")
-    public Iterable<TestDTO> getCurrentUserTests() {
-        return convertToDTO(testsService.getByUserId(JwtTokenUtil.extractUserDetails().getId()));
+    public List<TestInfo> getCurrentUserTests() {
+        return convertToTestInfoDTO(testsService.getByUserId(JwtTokenUtil.extractUserDetails().getId()));
     }
 
-    @ApiOperation(value = "Get all tests assigned to the user")
+    @ApiOperation(value = "Get all tests assigned to the user by by the optional parameter level")
     @GetMapping(path = "/history/{userId}")
     @Secured("ROLE_HR")
-    public List<TestDTO> getUsersTests(@PathVariable("userId") long userId) {
-        return convertToDTO(testsService.getByUserId(userId));
+    public List<TestInfo> getUsersTests(@PathVariable("userId") long userId,
+                                       @RequestParam(required = false) Levels level) {
+        if (level != null) {
+            return convertToTestInfoDTO(testsService.getTestsByUserIdAndLevel(userId, level));
+        }
+        return convertToTestInfoDTO(testsService.getByUserId(userId));
     }
 
     @ApiOperation(value = "Use it to get a single test from the database by its id")
@@ -76,7 +81,8 @@ public class TestsController {
     @GetMapping(path = "/verify/{testId}")
     @Secured("ROLE_COACH")
     public TestVerificationDTO getTestForVerification(@PathVariable long testId) {
-        return verificationConverter.convertToVerificationDTO(testsService.getById(testId));
+        Test test = testsService.startTestVerification(testId);
+        return verificationConverter.convertToVerificationDTO(test);
     }
 
     @ApiOperation(value = "Use it to get test grades for a test by modules")
@@ -89,9 +95,9 @@ public class TestsController {
     @ApiOperation(value = "Is used to get all unverified tests")
     @GetMapping(path = "/unverified")
     @Secured("ROLE_ADMIN")
-    public List<TestDTO> getUnverifiedTests() {
+    public List<TestInfo> getUnverifiedTests() {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
-        return convertToDTO(testsService.getByStatuses(statuses));
+        return convertToTestInfoDTO(testsService.getByStatuses(statuses));
     }
 
     @ApiOperation(value = "Is used to get all unverified tests, assigned to current coach")
@@ -141,8 +147,9 @@ public class TestsController {
 
     @ApiOperation(value = "Is used to update score after coach check")
     @PutMapping(path = "/{testId}")
-    public void update(@PathVariable("testId") long testId) {
-        testsService.update(testId);
+    @Secured("ROLE_COACH")
+    public void coachSubmit(@PathVariable("testId") long testId) {
+        testsService.coachSubmit(testId);
     }
 
     @ApiOperation(value = "Use it to assign a test for the coach")
@@ -163,6 +170,12 @@ public class TestsController {
     private List<TestDTO> convertToDTO(List<Test> tests) {
         return tests.stream()
                 .map(testConverter::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private List<TestInfo> convertToTestInfoDTO(List<Test> tests) {
+        return tests.stream()
+                .map(TestInfo::new)
                 .collect(Collectors.toList());
     }
 }

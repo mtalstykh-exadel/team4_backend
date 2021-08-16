@@ -1,9 +1,11 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.QuestionConverter;
+import com.team4.testingsystem.dto.AnswerDTO;
 import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.dto.ListeningTopicDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
+import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Question;
@@ -15,11 +17,13 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -89,9 +93,22 @@ class QuestionControllerTest {
     }
 
     @Test
-    void addQuestion() {
+    void addQuestionWithoutAnswers() {
         Question question = EntityCreatorUtil.createQuestion();
         QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
+        Mockito.when(questionConverter.convertToEntity(questionDTO)).thenReturn(question);
+        Mockito.when(questionService.createQuestion(question)).thenReturn(question);
+        QuestionDTO result = questionController.addQuestion(questionDTO);
+
+        Assertions.assertEquals(questionDTO, result);
+    }
+
+    @Test
+    void addQuestionWithAnswers() {
+        Question question = EntityCreatorUtil.createQuestion();
+        question.setAnswers(List.of(EntityCreatorUtil.createAnswer()));
+        QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
+        questionDTO.setAnswers(List.of(AnswerDTO.createWithCorrect(EntityCreatorUtil.createAnswer())));
         Mockito.when(questionConverter.convertToEntity(questionDTO)).thenReturn(question);
         Mockito.when(questionService.createQuestion(question)).thenReturn(question);
         QuestionDTO result = questionController.addQuestion(questionDTO);
@@ -106,10 +123,30 @@ class QuestionControllerTest {
     }
 
     @Test
-    void updateQuestion() {
+    void updateQuestionWithoutAnswers() {
         QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
         questionDTO.setQuestionBody("new question body");
         Question question = EntityCreatorUtil.createQuestion();
+        question.setBody(questionDTO.getQuestionBody());
+        Mockito.when(questionConverter.convertToEntity(questionDTO, question.getId())).thenReturn(question);
+        Mockito.when(questionService.updateQuestion(question, question.getId())).thenReturn(question);
+
+        try (MockedStatic<QuestionDTO> mockQuestionDTO = Mockito.mockStatic(QuestionDTO.class)) {
+            mockQuestionDTO.when(() -> QuestionDTO.createWithCorrectAnswers(question))
+                    .thenReturn(questionDTO);
+
+            QuestionDTO modifiedQuestionDTO = questionController.updateQuestion(questionDTO, question.getId());
+            Assertions.assertEquals(questionDTO, modifiedQuestionDTO);
+        }
+    }
+
+    @Test
+    void updateQuestionWithAnswers() {
+        QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
+        questionDTO.setAnswers(List.of(AnswerDTO.createWithCorrect(EntityCreatorUtil.createAnswer())));
+        questionDTO.setQuestionBody("new question body");
+        Question question = EntityCreatorUtil.createQuestion();
+        question.setAnswers(List.of(EntityCreatorUtil.createAnswer()));
         question.setBody(questionDTO.getQuestionBody());
         Mockito.when(questionConverter.convertToEntity(questionDTO, question.getId())).thenReturn(question);
         Mockito.when(questionService.updateQuestion(question, question.getId())).thenReturn(question);
