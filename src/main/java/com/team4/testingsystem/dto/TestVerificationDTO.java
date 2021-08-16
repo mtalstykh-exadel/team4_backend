@@ -12,6 +12,18 @@ public class TestVerificationDTO implements Serializable {
     private String essayText;
     private QuestionDTO speakingQuestion;
     private String speakingUrl;
+    private ModuleGradesDTO gradesDTO;
+
+    public TestVerificationDTO() {
+    }
+
+    public ModuleGradesDTO getGradesDTO() {
+        return gradesDTO;
+    }
+
+    public void setGradesDTO(ModuleGradesDTO gradesDTO) {
+        this.gradesDTO = gradesDTO;
+    }
 
     public Long getTestId() {
         return testId;
@@ -115,6 +127,11 @@ public class TestVerificationDTO implements Serializable {
             return this;
         }
 
+        public Builder grades(ModuleGradesDTO gradesDTO) {
+            dto.gradesDTO = gradesDTO;
+            return this;
+        }
+
         public TestVerificationDTO build() {
             return dto;
         }
@@ -130,12 +147,12 @@ public class TestVerificationDTO implements Serializable {
         }
         TestVerificationDTO that = (TestVerificationDTO) o;
         return Objects.equals(testId, that.testId)
-                && Objects.equals(testLevel, that.testLevel)
-                && Objects.equals(reportedQuestions, that.reportedQuestions)
-                && Objects.equals(essayQuestion, that.essayQuestion)
-                && Objects.equals(essayText, that.essayText)
-                && Objects.equals(speakingQuestion, that.speakingQuestion)
-                && Objects.equals(speakingUrl, that.speakingUrl);
+               && Objects.equals(testLevel, that.testLevel)
+               && Objects.equals(reportedQuestions, that.reportedQuestions)
+               && Objects.equals(essayQuestion, that.essayQuestion)
+               && Objects.equals(essayText, that.essayText)
+               && Objects.equals(speakingQuestion, that.speakingQuestion)
+               && Objects.equals(speakingUrl, that.speakingUrl);
     }
 
     @Override
