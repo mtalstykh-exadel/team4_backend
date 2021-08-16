@@ -6,6 +6,7 @@ import com.team4.testingsystem.converters.TestVerificationConverter;
 import com.team4.testingsystem.dto.AssignTestRequest;
 import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.dto.TestInfo;
 import com.team4.testingsystem.dto.TestVerificationDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
@@ -62,13 +63,12 @@ public class TestsController {
     @ApiOperation(value = "Get all tests assigned to the user by by the optional parameter level")
     @GetMapping(path = "/history/{userId}")
     @Secured("ROLE_HR")
-    public List<TestDTO> getUsersTests(@PathVariable("userId") long userId,
+    public List<TestInfo> getUsersTests(@PathVariable("userId") long userId,
                                        @RequestParam(required = false) Levels level) {
         if (level != null) {
-            return convertToDTO(testsService.getTestsByUserIdAndLevel(userId, level));
+            return convertToTestInfoDTO(testsService.getTestsByUserIdAndLevel(userId, level));
         }
-
-        return convertToDTO(testsService.getByUserId(userId));
+        return convertToTestInfoDTO(testsService.getByUserId(userId));
     }
 
     @ApiOperation(value = "Use it to get a single test from the database by its id")
@@ -95,9 +95,9 @@ public class TestsController {
     @ApiOperation(value = "Is used to get all unverified tests")
     @GetMapping(path = "/unverified")
     @Secured("ROLE_ADMIN")
-    public List<TestDTO> getUnverifiedTests() {
+    public List<TestInfo> getUnverifiedTests() {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
-        return convertToDTO(testsService.getByStatuses(statuses));
+        return convertToTestInfoDTO(testsService.getByStatuses(statuses));
     }
 
     @ApiOperation(value = "Is used to get all unverified tests, assigned to current coach")
@@ -170,6 +170,12 @@ public class TestsController {
     private List<TestDTO> convertToDTO(List<Test> tests) {
         return tests.stream()
                 .map(testConverter::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private List<TestInfo> convertToTestInfoDTO(List<Test> tests) {
+        return tests.stream()
+                .map(TestInfo::new)
                 .collect(Collectors.toList());
     }
 }
