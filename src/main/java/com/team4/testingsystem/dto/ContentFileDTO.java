@@ -11,17 +11,18 @@ public class ContentFileDTO implements Serializable {
     private Long id;
     private String url;
     private String topic;
+    private String level;
     private List<QuestionDTO> questions;
 
     public ContentFileDTO() {
     }
-
     public ContentFileDTO(ContentFile contentFile) {
         id = contentFile.getId();
         url = contentFile.getUrl();
         topic = contentFile.getTopic();
+        level = contentFile.getQuestions().get(0).getLevel().getName();
         questions = contentFile.getQuestions().stream()
-                .map(QuestionDTO::create)
+                .map(QuestionDTO::createWithCorrectAnswers)
                 .collect(Collectors.toList());
     }
 
@@ -57,6 +58,14 @@ public class ContentFileDTO implements Serializable {
         this.questions = questions;
     }
 
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -69,11 +78,13 @@ public class ContentFileDTO implements Serializable {
         return Objects.equals(id, that.id)
                && Objects.equals(url, that.url)
                && Objects.equals(topic, that.topic)
+               && Objects.equals(level, that.level)
                && Objects.equals(questions,that.questions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, url, topic, questions);
+        return Objects.hash(id, url, topic, level, questions);
     }
+
 }
