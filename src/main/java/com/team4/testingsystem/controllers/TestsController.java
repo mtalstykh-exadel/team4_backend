@@ -56,8 +56,8 @@ public class TestsController {
 
     @ApiOperation(value = "Get all tests assigned to the current user")
     @GetMapping(path = "/")
-    public Iterable<TestDTO> getCurrentUserTests() {
-        return convertToDTO(testsService.getByUserId(JwtTokenUtil.extractUserDetails().getId()));
+    public List<TestInfo> getCurrentUserTests() {
+        return convertToTestInfoDTO(testsService.getByUserId(JwtTokenUtil.extractUserDetails().getId()));
     }
 
     @ApiOperation(value = "Get all tests assigned to the user by by the optional parameter level")
