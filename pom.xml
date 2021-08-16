@@ -250,6 +250,7 @@
                     </targetTests>
                     <excludedClasses>
                         <param>com.team4.testingsystem.entities.*</param>
+                        <param>com.team4.testingsystem.enums.*</param>
                         <param>com.team4.testingsystem.dto.*</param>
                         <param>com.team4.testingsystem.config.*</param>
                         <param>com.team4.testingsystem.exceptions.*</param>

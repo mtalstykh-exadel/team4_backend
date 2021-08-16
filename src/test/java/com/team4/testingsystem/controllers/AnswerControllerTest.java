@@ -100,8 +100,8 @@ class AnswerControllerTest {
 
     @Test
     void uploadEssaySuccess() {
-        answerController.uploadEssay(TEST_ID, ESSAY_TEXT);
-        Mockito.verify(answerService).uploadEssay(TEST_ID, ESSAY_TEXT);
+        Mockito.when(answerService.uploadEssay(TEST_ID, ESSAY_TEXT)).thenReturn(ESSAY_TEXT);
+        Assertions.assertEquals(ESSAY_TEXT, answerController.uploadEssay(TEST_ID, ESSAY_TEXT));
     }
 
     @Test

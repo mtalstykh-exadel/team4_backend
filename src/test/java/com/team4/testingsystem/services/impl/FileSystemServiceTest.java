@@ -85,23 +85,6 @@ class FileSystemServiceTest {
     }
 
     @Test
-    void saveFileDirectoryNotExists() {
-        Path nonExistingPath = Path.of("non-existing-dir/" + FILE_NAME);
-        Mockito.when(fileSystemService.generateFilePath(FILE_NAME)).thenReturn(nonExistingPath);
-
-        Assertions.assertDoesNotThrow(() -> fileSystemService.save(FILE_NAME, sourceFile));
-
-        Assertions.assertTrue(Files.exists(nonExistingPath));
-
-        try {
-            Files.delete(nonExistingPath);
-            Files.delete(nonExistingPath.getParent());
-        } catch (IOException e) {
-            Assertions.fail();
-        }
-    }
-
-    @Test
     void loadFileNotExists() {
         Mockito.when(fileSystemService.generateFilePath(FILE_NAME)).thenReturn(FILE_PATH);
 
