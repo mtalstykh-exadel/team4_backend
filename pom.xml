@@ -255,7 +255,7 @@
                         <param>com.team4.testingsystem.config.*</param>
                         <param>com.team4.testingsystem.exceptions.*</param>
                     </excludedClasses>
-                    <mutationThreshold>75</mutationThreshold>
+                    <mutationThreshold>60</mutationThreshold>
                     <coverageThreshold>90</coverageThreshold>
                 </configuration>
             </plugin>
