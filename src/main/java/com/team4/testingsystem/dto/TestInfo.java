@@ -16,6 +16,7 @@ public class TestInfo implements Serializable {
     private String priority;
     private Instant completedAt;
     private Instant startedAt;
+    private UserDTO coach;
 
     public TestInfo() {
     }
@@ -30,6 +31,17 @@ public class TestInfo implements Serializable {
         status = test.getStatus().name();
         completedAt = test.getCompletedAt();
         startedAt = test.getStartedAt();
+        if (test.getCoach() != null) {
+            coach = new UserDTO(test.getCoach());
+        }
+    }
+
+    public UserDTO getCoach() {
+        return coach;
+    }
+
+    public void setCoach(UserDTO coach) {
+        this.coach = coach;
     }
 
     public Instant getCompletedAt() {
@@ -115,12 +127,27 @@ public class TestInfo implements Serializable {
         TestInfo testInfo = (TestInfo) o;
         return Objects.equals(testId, testInfo.testId)
                && Objects.equals(level, testInfo.level)
+               && Objects.equals(assigned, testInfo.assigned)
                && Objects.equals(deadline, testInfo.deadline)
-               && Objects.equals(priority, testInfo.priority);
+               && Objects.equals(verified, testInfo.verified)
+               && Objects.equals(status, testInfo.status)
+               && Objects.equals(priority, testInfo.priority)
+               && Objects.equals(completedAt, testInfo.completedAt)
+               && Objects.equals(startedAt, testInfo.startedAt)
+               && Objects.equals(coach, testInfo.coach);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(testId, level, deadline, priority);
+        return Objects.hash(testId,
+                level,
+                assigned,
+                deadline,
+                verified,
+                status,
+                priority,
+                completedAt,
+                startedAt,
+                coach);
     }
 }
