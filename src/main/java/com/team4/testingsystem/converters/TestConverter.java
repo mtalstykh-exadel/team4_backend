@@ -6,6 +6,8 @@ import static java.util.stream.Collectors.toMap;
 import com.team4.testingsystem.dto.ListeningTopicDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.entities.Answer;
+import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Modules;
@@ -44,13 +46,14 @@ public class TestConverter {
     }
 
     private void attachQuestions(TestDTO testDTO) {
-        Map<Long, Long> chosenOptions = chosenOptionService.getAllByTestId(testDTO.getId()).stream()
-                .collect(toMap(option -> option.getId().getQuestion().getId(), option -> option.getAnswer().getId()));
+        Map<Long, Answer> chosenAnswerByQuestionId = chosenOptionService.getAllByTestId(testDTO.getId())
+                .stream()
+                .collect(toMap(option -> option.getId().getQuestion().getId(), ChosenOption::getAnswer));
 
         Map<String, List<QuestionDTO>> questions = questionService.getQuestionsByTestId(testDTO.getId()).stream()
                 .peek(question -> Collections.shuffle(question.getAnswers()))
                 .map(QuestionDTO::create)
-                .peek(question -> markChosenOption(question, chosenOptions.getOrDefault(question.getId(), null)))
+                .peek(question -> checkChosenAnswer(question, chosenAnswerByQuestionId))
                 .collect(groupingBy(QuestionDTO::getModule));
 
         testDTO.setQuestions(questions);
@@ -67,7 +70,12 @@ public class TestConverter {
         testDTO.setContentFile(new ListeningTopicDTO(contentFile));
     }
 
-    private void markChosenOption(QuestionDTO questionDTO, Long chosenAnswerId) {
+    private void checkChosenAnswer(QuestionDTO questionDTO, Map<Long, Answer> chosenAnswerByQuestionId) {
+        if (!chosenAnswerByQuestionId.containsKey(questionDTO.getId())) {
+            return;
+        }
+
+        Long chosenAnswerId = chosenAnswerByQuestionId.get(questionDTO.getId()).getId();
         questionDTO.getAnswers().stream()
                 .filter(answer -> answer.getId().equals(chosenAnswerId))
                 .forEach(answer -> answer.setChecked(true));
