@@ -2,6 +2,7 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.services.QuestionService;
@@ -53,9 +54,9 @@ class ContentFilesServiceImplTest {
     @Test
     void updateWithFile() {
         Mockito.when(contentFilesRepository.save(any())).thenReturn(contentFile);
-        ContentFile result = contentFilesService.update(file, EntityCreatorUtil.ID, URL, questions);
+        Mockito.when(contentFilesRepository.archiveContentFile(EntityCreatorUtil.ID)).thenReturn(1);
+        ContentFile result = contentFilesService.update(file, EntityCreatorUtil.ID, TOPIC, questions);
         verify(questionService).archiveQuestionsByContentFileId(EntityCreatorUtil.ID);
-        verify(contentFilesRepository).archiveContentFile(EntityCreatorUtil.ID);
         Assertions.assertEquals(contentFile, result);
     }
 
@@ -105,26 +106,27 @@ class ContentFilesServiceImplTest {
     void updateUrlFail() {
         Mockito.when(contentFilesRepository.changeUrl("https://42.com/", 42L)).thenReturn(0);
 
-        Assertions.assertThrows(FileNotFoundException.class,
+        Assertions.assertThrows(ContentFileNotFoundException.class,
                 () -> contentFilesService.updateURL(42L, "https://42.com/"));
     }
 
     @Test
-    void removeSuccess() {
-        Mockito.when(contentFilesRepository.removeById(1L)).thenReturn(1);
+    void archiveSuccess() {
+        Mockito.when(contentFilesRepository.archiveContentFile(1L)).thenReturn(1);
 
-        contentFilesService.removeById(1L);
+        contentFilesService.archive(1L);
 
-        verify(contentFilesRepository).removeById(1L);
+        verify(contentFilesRepository).archiveContentFile(1L);
 
-        Assertions.assertDoesNotThrow(() -> contentFilesService.removeById(1L));
+        Assertions.assertDoesNotThrow(() -> contentFilesService.archive(1L));
     }
 
     @Test
-    void removeFail() {
-        Mockito.when(contentFilesRepository.removeById(42L)).thenReturn(0);
+    void archiveFail() {
+        Mockito.when(contentFilesRepository.archiveContentFile(42L)).thenReturn(0);
 
-        Assertions.assertThrows(FileNotFoundException.class, () -> contentFilesService.removeById(42L));
+        Assertions.assertThrows(ContentFileNotFoundException.class,
+            () -> contentFilesService.archive(42L));
     }
 
     @Test
