@@ -18,6 +18,7 @@ import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
+import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -77,6 +78,15 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public List<Test> getByStatuses(Status[] statuses) {
         return testsRepository.getByStatuses(statuses);
+    }
+
+    @Override
+    public List<Test> getAllUnverifiedTests(){
+        Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+        return getByStatuses(statuses).stream()
+            .filter(test-> !test.getUser().getId().equals(currentUserId))
+            .collect(Collectors.toList());
     }
 
     @Override

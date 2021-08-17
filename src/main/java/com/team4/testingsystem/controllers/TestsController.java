@@ -96,8 +96,7 @@ public class TestsController {
     @GetMapping(path = "/unverified")
     @Secured("ROLE_ADMIN")
     public List<TestInfo> getUnverifiedTests() {
-        Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
-        return convertToTestInfoDTO(testsService.getByStatuses(statuses));
+        return convertToTestInfoDTO(testsService.getAllUnverifiedTests());
     }
 
     @ApiOperation(value = "Is used to get all unverified tests, assigned to current coach")
