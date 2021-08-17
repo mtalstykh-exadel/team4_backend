@@ -1,7 +1,6 @@
 package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.Answer;
-import com.team4.testingsystem.enums.Modules;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface AnswerService {

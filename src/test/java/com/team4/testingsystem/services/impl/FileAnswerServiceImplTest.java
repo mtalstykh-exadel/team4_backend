@@ -85,7 +85,7 @@ class FileAnswerServiceImplTest {
 
         Assertions.assertEquals(URL, fileAnswerService.getUrl(TEST_ID, QUESTION_ID));
     }
-    
+
 
     @org.junit.jupiter.api.Test
     void removeTestNotFound() {

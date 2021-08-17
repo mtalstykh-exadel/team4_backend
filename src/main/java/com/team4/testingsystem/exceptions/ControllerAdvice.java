@@ -61,7 +61,7 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {DoNotHaveRightsException.class})
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
-    public ErrorResponse handleDoNotHaveRightsException(DoNotHaveRightsException e){
+    public ErrorResponse handleDoNotHaveRightsException(DoNotHaveRightsException e) {
         return new ErrorResponse(e.getMessage());
     }
 }
