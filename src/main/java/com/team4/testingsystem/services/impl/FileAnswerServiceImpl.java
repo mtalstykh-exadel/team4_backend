@@ -15,7 +15,6 @@ import com.team4.testingsystem.services.TestsService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -64,7 +63,7 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     @Override
     public FileAnswer save(Long testId, Long questionId, String url) {
         TestQuestionID id = createId(testId, questionId);
-        if(!fileAnswerRepository.existsById(id)) {
+        if (!fileAnswerRepository.existsById(id)) {
             FileAnswer fileAnswer = FileAnswer.builder()
                     .id(id)
                     .url(url)
