@@ -10,6 +10,7 @@ import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 
@@ -77,8 +79,8 @@ class QuestionControllerTest {
         List<Question> questions = Lists.list(EntityCreatorUtil.createQuestion());
         Mockito.when(questionService.getQuestionsByLevelAndModuleName(any(), any())).thenReturn(questions);
         List<QuestionDTO> expectedQuestions = questions.stream()
-                .map(QuestionDTO::create)
-                .collect(Collectors.toList());
+            .map(QuestionDTO::create)
+            .collect(Collectors.toList());
         Assertions.assertEquals(expectedQuestions, questionController.getQuestions(any(), any()));
     }
 
@@ -121,6 +123,21 @@ class QuestionControllerTest {
         questionController.archiveQuestion(1L);
         Mockito.verify(questionService).archiveQuestion(1L);
     }
+
+    @Test
+    void archiveListeningSuccess() {
+        questionController.archiveListening(1L);
+        Mockito.verify(contentFilesService).archive(1L);
+    }
+
+    @Test
+    void archiveListeningFail() {
+        doThrow(ContentFileNotFoundException.class).when(contentFilesService).archive(42L);
+
+        Assertions.assertThrows(ContentFileNotFoundException.class,
+            () -> questionController.archiveListening(42L));
+    }
+
 
     @Test
     void updateQuestionWithoutAnswers() {

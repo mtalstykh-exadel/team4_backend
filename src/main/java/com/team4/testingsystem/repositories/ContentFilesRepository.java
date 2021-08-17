@@ -17,10 +17,6 @@ public interface ContentFilesRepository extends CrudRepository<ContentFile, Long
     @Query(value = "UPDATE ContentFile cf SET cf.url = ?1 WHERE cf.id = ?2")
     int changeUrl(String url, Long id);
 
-    @Transactional
-    @Modifying
-    @Query(value = "DELETE from ContentFile cf WHERE cf.id = ?1")
-    int removeById(Long id);
 
     @Query(value = "select * from language_testing.content_file as cf "
                    + "join language_testing.question_content_file as qcf on cf.id = qcf.content_file_id "
@@ -35,9 +31,10 @@ public interface ContentFilesRepository extends CrudRepository<ContentFile, Long
            + "where q.id = ?1")
     ContentFile getContentFileByQuestionId(Long id);
 
+    @Transactional
     @Modifying
     @Query(value = "update ContentFile cf set cf.available = false where cf.id = ?1")
-    void archiveContentFile(Long id);
+    int archiveContentFile(Long id);
 
     List<ContentFile> findAll();
 

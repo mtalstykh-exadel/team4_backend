@@ -115,6 +115,13 @@ public class QuestionController {
         questionService.archiveQuestion(id);
     }
 
+    @ApiOperation(value = "Archive the listening")
+    @DeleteMapping("/listening/{contentFileId}")
+    @Secured("ROLE_COACH")
+    public void archiveListening(@PathVariable("contentFileId") Long contentFileId) {
+        contentFilesService.archive(contentFileId);
+    }
+
     @ApiOperation(value = "Change the question")
     @PutMapping("/{id}")
     @Secured("ROLE_COACH")
