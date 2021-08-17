@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class NotificationConverter {
-    Map<NotificationType, SingleNotificationConverter> converterByType;
+    private final Map<NotificationType, SingleNotificationConverter> converterByType;
 
     @Autowired
     public NotificationConverter(List<SingleNotificationConverter> converters) {

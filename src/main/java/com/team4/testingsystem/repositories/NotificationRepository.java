@@ -12,6 +12,4 @@ public interface NotificationRepository extends CrudRepository<Notification, Lon
 
     @Query(value = "select n from Notification n where n.user.id = ?1")
     List<Notification> getAllByUserId(Long userId);
-
-    int removeById(Long id);
 }

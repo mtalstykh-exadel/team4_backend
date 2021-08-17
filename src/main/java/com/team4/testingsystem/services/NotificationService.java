@@ -13,5 +13,5 @@ public interface NotificationService {
 
     List<Notification> getAllByUserId(Long userId);
 
-    void remove(Long id);
+    void removeById(Long notificationId);
 }

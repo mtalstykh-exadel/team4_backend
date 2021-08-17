@@ -7,9 +7,11 @@ import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.exceptions.NotificationNotFoundException;
 import com.team4.testingsystem.repositories.NotificationRepository;
 import com.team4.testingsystem.services.NotificationService;
+import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.AccessControlException;
 import java.time.Instant;
 import java.util.List;
 
@@ -39,9 +41,15 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void remove(Long id) {
-        if (notificationRepository.removeById(id) == 0) {
-            throw new NotificationNotFoundException();
+    public void removeById(Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(NotificationNotFoundException::new);
+
+        Long userId = JwtTokenUtil.extractUserDetails().getId();
+        if (!notification.getUser().getId().equals(userId)) {
+            throw new AccessControlException("You don't have access to this notification");
         }
+
+        notificationRepository.delete(notification);
     }
 }
