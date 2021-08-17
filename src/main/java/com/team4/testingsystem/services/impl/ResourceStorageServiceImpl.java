@@ -21,10 +21,10 @@ public class ResourceStorageServiceImpl implements ResourceStorageService {
     @Override
     public String upload(Resource file, Modules module, Long primaryId) {
         String randomId = UUID.randomUUID().toString().replace('-', '_');
-        String filePath = String.join("/", module.getName(), primaryId.toString(), randomId);
+        String filePath = String.join("-", module.getName(), primaryId.toString(), randomId);
 
         save(filePath, file);
-        return encodeForWeb(filePath);
+        return filePath;
     }
 
     @Override
@@ -34,19 +34,11 @@ public class ResourceStorageServiceImpl implements ResourceStorageService {
 
     @Override
     public Resource load(String fileUrl) {
-        return filesService.load(decodeFromWeb(fileUrl));
+        return filesService.load(fileUrl);
     }
 
     @Override
     public void delete(String fileUrl) {
-        filesService.delete(decodeFromWeb(fileUrl));
-    }
-
-    private String encodeForWeb(String url) {
-        return url.replace('/', '-');
-    }
-
-    private String decodeFromWeb(String webUrl) {
-        return webUrl.replace('-', '/');
+        filesService.delete(fileUrl);
     }
 }

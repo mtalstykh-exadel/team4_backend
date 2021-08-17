@@ -57,7 +57,7 @@ class ResourceStorageServiceImplTest {
 
     @Test
     void uploadFailed() {
-        String expectedFilePrefix = Modules.ESSAY.getName() + "/7/";
+        String expectedFilePrefix = Modules.ESSAY.getName() + "-7-";
         Mockito.doThrow(new FileSavingFailedException()).when(filesService)
                 .save(Mockito.contains(expectedFilePrefix), Mockito.eq(sourceFile));
 
@@ -67,7 +67,7 @@ class ResourceStorageServiceImplTest {
 
     @Test
     void uploadSuccess() {
-        String expectedFilePrefix = Modules.ESSAY.getName() + "/7/";
+        String expectedFilePrefix = Modules.ESSAY.getName() + "-7-";
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         Mockito.doNothing().when(filesService).save(captor.capture(), Mockito.eq(sourceFile));
@@ -75,7 +75,6 @@ class ResourceStorageServiceImplTest {
         String fileUrl = fileStorage.upload(sourceFile, Modules.ESSAY, 7L);
         Assertions.assertFalse(fileUrl.contains("/"));
 
-        fileUrl = fileUrl.replace('-', '/');
         Assertions.assertEquals(fileUrl, captor.getValue());
         Assertions.assertTrue(fileUrl.startsWith(expectedFilePrefix));
     }
