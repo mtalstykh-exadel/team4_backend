@@ -7975,51 +7975,51 @@
 
     <changeSet id="update_listening_urls" author="maxim12321">
         <update tableName="content_file">
-            <column name="url" value="Listening/6/46142b1f_364e_476f_9da8_6e39c9f69ecd"/>
+            <column name="url" value="Listening-6-46142b1f_364e_476f_9da8_6e39c9f69ecd"/>
             <where>url='listening-A1-02.mp3'</where>
         </update>
         <update tableName="content_file">
-            <column name="url" value="Listening/6/3f325a6d_c223_4136_9d89_06a46b71716c"/>
+            <column name="url" value="Listening-6-3f325a6d_c223_4136_9d89_06a46b71716c"/>
             <where>url='listening-A1-05.mp3'</where>
         </update>
         <update tableName="content_file">
-            <column name="url" value="Listening/5/44a97dbc_5a2e_445a_b3ac_ae4adb09dcd5"/>
+            <column name="url" value="Listening-5-44a97dbc_5a2e_445a_b3ac_ae4adb09dcd5"/>
             <where>url='listening-A2-24.mp3'</where>
         </update>
         <update tableName="content_file">
-            <column name="url" value="Listening/5/786d5604_226d_4dd8_a72a_b380336354bf"/>
+            <column name="url" value="Listening-5-786d5604_226d_4dd8_a72a_b380336354bf"/>
             <where>url='listening-A2-28.mp3'</where>
         </update>
         <update tableName="content_file">
-            <column name="url" value="Listening/5/dcd18f53_3e3a_476f_ad48_fb6df2a51e30"/>
+            <column name="url" value="Listening-5-dcd18f53_3e3a_476f_ad48_fb6df2a51e30"/>
             <where>url='listening-B1-16.mp3'</where>
         </update>
         <update tableName="content_file">
-            <column name="url" value="Listening/5/6238417b_8015_4ccf_905a_6508d8021daf"/>
+            <column name="url" value="Listening-5-6238417b_8015_4ccf_905a_6508d8021daf"/>
             <where>url='listening-B1-12.mp3'</where>
         </update>
         <update tableName="content_file">
-            <column name="url" value="Listening/5/8a4e16b2_0695_4843_abbc_9feca8940896"/>
+            <column name="url" value="Listening-5-8a4e16b2_0695_4843_abbc_9feca8940896"/>
             <where>url='listening-B2-05.mp3'</where>
         </update>
         <update tableName="content_file">
-            <column name="url" value="Listening/5/3f647e87_9bce_4fa5_9a5d_6c600cf0832c"/>
+            <column name="url" value="Listening-5-3f647e87_9bce_4fa5_9a5d_6c600cf0832c"/>
             <where>url='listening-B2-03.mp3'</where>
         </update>
         <update tableName="content_file">
-            <column name="url" value="Listening/5/9895569b_8606_4d24_95a1_af67148f68f4"/>
+            <column name="url" value="Listening-5-9895569b_8606_4d24_95a1_af67148f68f4"/>
             <where>url='listening-C1-10.mp3'</where>
         </update>
         <update tableName="content_file">
-            <column name="url" value="Listening/5/7cb90c12_35e8_4dbc_8957_4f7902fd6c52"/>
+            <column name="url" value="Listening-5-7cb90c12_35e8_4dbc_8957_4f7902fd6c52"/>
             <where>url='listening-C1-11.mp3'</where>
         </update>
         <update tableName="content_file">
-            <column name="url" value="Listening/5/a15e9296_88a7_414e_a498_fd40b0dd6289"/>
+            <column name="url" value="Listening-5-a15e9296_88a7_414e_a498_fd40b0dd6289"/>
             <where>url='listening-C2-23.mp3'</where>
         </update>
         <update tableName="content_file">
-            <column name="url" value="Listening/6/56c857fa_8b00_4bf9_91d8_8bddd4ed2c53"/>
+            <column name="url" value="Listening-6-56c857fa_8b00_4bf9_91d8_8bddd4ed2c53"/>
             <where>url='listening-C2-27.mp3'</where>
         </update>
     </changeSet>
