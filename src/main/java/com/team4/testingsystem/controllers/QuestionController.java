@@ -107,6 +107,13 @@ public class QuestionController {
         return new ContentFileDTO(contentFile);
     }
 
+    @ApiOperation(value = "Archive the listening")
+    @DeleteMapping("/listening/{contentFileId}")
+    @Secured("ROLE_COACH")
+    public void archiveListening(@PathVariable("contentFileId") Long id) {
+        contentFilesService.archiveContentFile(id);
+    }   
+
     @ApiOperation(value = "Archive the question")
     @DeleteMapping("/{id}")
     @Secured("ROLE_COACH")

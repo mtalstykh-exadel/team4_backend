@@ -83,4 +83,9 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     public ContentFile getContentFileByQuestionId(Long id) {
         return contentFilesRepository.getContentFileByQuestionId(id);
     }
+
+    @Override
+    public void archiveContentFile(Long id) {
+        contentFilesRepository.archiveContentFile(id);
+    }
 }

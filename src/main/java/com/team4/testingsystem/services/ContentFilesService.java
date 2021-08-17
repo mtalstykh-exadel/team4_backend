@@ -23,4 +23,6 @@ public interface ContentFilesService {
     ContentFile getRandomContentFile(String level);
 
     ContentFile getContentFileByQuestionId(Long id);
+
+    void archiveContentFile(Long id);
 }
