@@ -321,7 +321,7 @@ class TestsServiceImplTest {
 
         testsService.coachSubmit(GOOD_TEST_ID);
 
-        verify(testsRepository).update(any(Instant.class), anyLong());
+        verify(testsRepository).coachSubmit(any(Instant.class), anyLong());
 
         verify(testEvaluationService).updateScoreAfterCoachCheck(test);
 
