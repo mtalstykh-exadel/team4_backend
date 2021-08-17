@@ -66,11 +66,6 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.verifiedAt = ?1 where t.id = ?2")
-    int updateEvaluation(Instant updateDate, Long id);
-
-    @Transactional
-    @Modifying
     @Query(value = "UPDATE Test t SET t.verifiedAt = ?1, t.status = 'VERIFIED' where t.id = ?2")
     int coachSubmit(Instant updateDate, Long id);
 
