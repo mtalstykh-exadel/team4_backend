@@ -15,7 +15,6 @@ import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
-import liquibase.pro.packaged.U;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +24,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -56,9 +54,6 @@ class FileAnswerServiceImplTest {
 
     @Mock
     private Question question;
-
-    @Mock
-    MultipartFile file;
 
     @InjectMocks
     private FileAnswerServiceImpl fileAnswerService;
@@ -248,7 +243,7 @@ class FileAnswerServiceImplTest {
     void uploadEssaySavingError() {
         Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
         Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY)).thenReturn(question);
-        Mockito.when(resourceStorageService.upload(Mockito.any()))
+        Mockito.when(resourceStorageService.upload(Mockito.any(), Mockito.eq(Modules.ESSAY), Mockito.eq(TEST_ID)))
                 .thenThrow(FileSavingFailedException.class);
 
         Assertions.assertThrows(FileSavingFailedException.class,
@@ -259,7 +254,8 @@ class FileAnswerServiceImplTest {
     void uploadEssaySuccess() {
         Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
         Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY)).thenReturn(question);
-        Mockito.when(resourceStorageService.upload(Mockito.any())).thenReturn(URL);
+        Mockito.when(resourceStorageService.upload(Mockito.any(), Mockito.eq(Modules.ESSAY), Mockito.eq(TEST_ID)))
+                .thenReturn(URL);
 
         fileAnswerService.uploadEssay(TEST_ID, ESSAY_TEXT);
 

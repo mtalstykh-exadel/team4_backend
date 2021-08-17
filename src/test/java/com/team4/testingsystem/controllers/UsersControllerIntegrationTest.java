@@ -178,7 +178,7 @@ class UsersControllerIntegrationTest {
     @Test
     void getAllUsersByNameLikeExactName() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/users")
-                .with(user(userDetails))
+                .with(user(hrDetails))
                 .param("name", "Russian User"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -191,9 +191,31 @@ class UsersControllerIntegrationTest {
     }
 
     @Test
+    void getAllUsersByNameLikeUser() throws Exception {
+        mockMvc.perform(get("/users?name=", "an U")
+                .with(user(userDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getAllUsersByNameLikeCoach() throws Exception {
+        mockMvc.perform(get("/users?name=", "an U")
+                .with(user(coachDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getAllUsersByNameLikeAdmin() throws Exception {
+        mockMvc.perform(get("/users?name=", "an U")
+                .with(user(adminDetails)))
+                .andExpect(status().isForbidden());
+    }
+
+
+    @Test
     void getAllUsersByNameLikeSubstring() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/users")
-                .with(user(userDetails))
+                .with(user(hrDetails))
                 .param("name", "an U"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -208,7 +230,7 @@ class UsersControllerIntegrationTest {
     @Test
     void getAllUsersByNameLikeSubstringIgnoreCase() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/users")
-                .with(user(userDetails))
+                .with(user(hrDetails))
                 .param("name", "An u"))
                 .andExpect(status().isOk())
                 .andReturn();
