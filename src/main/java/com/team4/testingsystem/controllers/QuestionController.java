@@ -8,6 +8,7 @@ import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.enums.QuestionStatus;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import io.swagger.annotations.ApiOperation;
@@ -55,8 +56,10 @@ public class QuestionController {
     @GetMapping("/")
     @Secured("ROLE_COACH")
     public List<QuestionDTO> getQuestions(@RequestParam("level") Levels level,
-                                          @RequestParam("module") Modules module) {
-        return questionService.getQuestionsByLevelAndModuleName(level, module).stream()
+                                          @RequestParam("module") Modules module,
+                                          @RequestParam("status") QuestionStatus status
+    ) {
+        return questionService.getQuestionsByLevelAndModuleName(level, module, status).stream()
                 .map(QuestionDTO::create)
                 .collect(Collectors.toList());
     }
@@ -65,7 +68,8 @@ public class QuestionController {
     @GetMapping("/listening/{contentFileId}")
     @Secured("ROLE_COACH")
     public ContentFileDTO getListening(@PathVariable("contentFileId") Long contentFileId) {
-        return new ContentFileDTO(contentFilesService.getById(contentFileId));
+        ContentFile contentFile = contentFilesService.getById(contentFileId);
+        return new ContentFileDTO(contentFile, contentFile.getQuestions().get(0).getLevel().getName());
     }
 
     @ApiOperation(value = "Add a new question")
@@ -82,8 +86,10 @@ public class QuestionController {
 
     @ApiOperation(value = "Get all topics (or get by level)")
     @GetMapping(value = "/listening")
-    public List<ListeningTopicDTO> getListeningTopics(@RequestParam(required = false) Levels level) {
-        return convertToDTO(questionService.getListening(level));
+    public List<ListeningTopicDTO> getListeningTopics(@RequestParam(required = false) Levels level,
+                                                      @RequestParam("status") QuestionStatus status
+                                                      ) {
+        return convertToDTO(questionService.getListening(level, status));
     }
 
     @ApiOperation(value = "Add content file with questions")
@@ -112,6 +118,13 @@ public class QuestionController {
     @Secured("ROLE_COACH")
     public void archiveQuestion(@PathVariable("id") Long id) {
         questionService.archiveQuestion(id);
+    }
+
+    @ApiOperation(value = "Archive the listening")
+    @DeleteMapping("/listening/{contentFileId}")
+    @Secured("ROLE_COACH")
+    public void archiveListening(@PathVariable("contentFileId") Long contentFileId) {
+        contentFilesService.archive(contentFileId);
     }
 
     @ApiOperation(value = "Change the question")

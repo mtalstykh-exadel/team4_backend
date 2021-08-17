@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.FileDeletingFailedException;
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.exceptions.FileSavingFailedException;
@@ -56,21 +57,26 @@ class ResourceStorageServiceImplTest {
 
     @Test
     void uploadFailed() {
+        String expectedFilePrefix = Modules.ESSAY.getName() + "-7-";
         Mockito.doThrow(new FileSavingFailedException()).when(filesService)
-                .save(Mockito.contains(SOURCE_FILE_NAME), Mockito.eq(sourceFile));
+                .save(Mockito.contains(expectedFilePrefix), Mockito.eq(sourceFile));
 
         Assertions.assertThrows(FileSavingFailedException.class,
-                () -> fileStorage.upload(sourceFile));
+                () -> fileStorage.upload(sourceFile, Modules.ESSAY, 7L));
     }
 
     @Test
     void uploadSuccess() {
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        Mockito.doNothing().when(filesService)
-                .save(captor.capture(), Mockito.eq(sourceFile));
+        String expectedFilePrefix = Modules.ESSAY.getName() + "-7-";
 
-        String fileUrl = fileStorage.upload(sourceFile);
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        Mockito.doNothing().when(filesService).save(captor.capture(), Mockito.eq(sourceFile));
+
+        String fileUrl = fileStorage.upload(sourceFile, Modules.ESSAY, 7L);
+        Assertions.assertFalse(fileUrl.contains("/"));
+
         Assertions.assertEquals(fileUrl, captor.getValue());
+        Assertions.assertTrue(fileUrl.startsWith(expectedFilePrefix));
     }
 
     @Test

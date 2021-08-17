@@ -5,6 +5,7 @@ import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.enums.QuestionStatus;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
@@ -116,7 +117,7 @@ class QuestionServiceImplTest {
     @Test
     void archiveQuestionsByContentFileId() {
         Mockito.when(contentFilesRepository.findById(EntityCreatorUtil.ID))
-                .thenReturn(Optional.ofNullable(contentFile));
+                .thenReturn(Optional.of(contentFile));
         questionService.archiveQuestionsByContentFileId(EntityCreatorUtil.ID);
         verify(contentFilesRepository).findById(EntityCreatorUtil.ID);
     }
@@ -124,10 +125,12 @@ class QuestionServiceImplTest {
     @Test
     void getQuestionsByLevelAndModuleName() {
         List<Question> questions = new ArrayList<>();
-        Mockito.when(questionRepository.getQuestionsByLevelAndModuleName(Levels.A1.name(), Modules.ESSAY.getName()))
+        Mockito.when(questionRepository.getQuestionsByLevelAndModuleName(Levels.A1.name(),
+            Modules.ESSAY.getName(), true))
                 .thenReturn(questions);
+
         Assertions.assertEquals(questions,
-                questionService.getQuestionsByLevelAndModuleName(Levels.A1, Modules.ESSAY));
+                questionService.getQuestionsByLevelAndModuleName(Levels.A1, Modules.ESSAY, QuestionStatus.UNARCHIVED));
     }
 
     @Test
@@ -149,14 +152,14 @@ class QuestionServiceImplTest {
 
     @Test
     void getListening(){
-        Mockito.when(contentFilesRepository.findAll()).thenReturn(contentFiles);
-        Assertions.assertEquals(contentFiles, questionService.getListening(null));
+        Mockito.when(contentFilesRepository.findAllByAvailable(false)).thenReturn(contentFiles);
+        Assertions.assertEquals(contentFiles, questionService.getListening(null, QuestionStatus.ARCHIVED));
     }
 
     @Test
     void getListeningByLevel(){
-        Mockito.when(contentFilesRepository.getContentFiles(Levels.A1.name()))
+        Mockito.when(contentFilesRepository.getContentFiles(Levels.A1.name(), true))
                 .thenReturn(contentFiles);
-        Assertions.assertEquals(contentFiles, questionService.getListening(Levels.A1));
+        Assertions.assertEquals(contentFiles, questionService.getListening(Levels.A1, QuestionStatus.UNARCHIVED));
     }
 }
