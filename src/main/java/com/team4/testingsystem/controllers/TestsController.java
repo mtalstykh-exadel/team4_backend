@@ -21,7 +21,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -142,13 +141,6 @@ public class TestsController {
     @PostMapping(path = "/finish/{testId}")
     public void finish(@PathVariable("testId") long testId) {
         testsService.finish(testId, Instant.now());
-    }
-
-    @ApiOperation(value = "Is used to update score after coach check")
-    @PutMapping(path = "/{testId}")
-    @Secured("ROLE_COACH")
-    public void coachSubmit(@PathVariable("testId") long testId) {
-        testsService.coachSubmit(testId);
     }
 
     @ApiOperation(value = "Use it to assign a test for the coach")

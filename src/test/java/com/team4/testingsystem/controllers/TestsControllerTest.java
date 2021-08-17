@@ -311,21 +311,6 @@ class TestsControllerTest {
     }
 
     @org.junit.jupiter.api.Test
-    void coachSubmitSuccess() {
-        testsController.coachSubmit(GOOD_TEST_ID);
-
-        verify(testsService).coachSubmit(GOOD_TEST_ID);
-    }
-
-    @org.junit.jupiter.api.Test
-    void coachSubmitFail() {
-        doThrow(TestNotFoundException.class).when(testsService).coachSubmit(BAD_TEST_ID);
-
-        Assertions.assertThrows(TestNotFoundException.class,
-                () -> testsController.coachSubmit(BAD_TEST_ID));
-    }
-
-    @org.junit.jupiter.api.Test
     void assignCoachSuccess() {
         testsController.assignCoach(GOOD_TEST_ID, GOOD_USER_ID);
 
