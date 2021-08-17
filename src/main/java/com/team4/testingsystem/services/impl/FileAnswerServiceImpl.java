@@ -100,7 +100,7 @@ public class FileAnswerServiceImpl implements FileAnswerService {
         if (text.length() > 512) {
             throw new TooLongEssayException();
         }
-    
+
         InputStream inputStream = IOUtils.toInputStream(text, StandardCharsets.UTF_8);
         String url = storageService.upload(new InputStreamResource(inputStream), Modules.ESSAY, testId);
 
