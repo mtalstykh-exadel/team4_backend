@@ -15,19 +15,33 @@ import java.util.List;
 @Repository
 public interface TestsRepository extends CrudRepository<Test, Long> {
 
-    @Query("select t from Test t where t.user = ?1")
+    @Query("select t from Test t where t.user = ?1 "
+           + "order by case "
+           + "when t.status = 'STARTED' then 'A' "
+           + "when t.status = 'ASSIGNED' then 'B' ELSE t.status end, "
+           + "t.verifiedAt desc, t.deadline desc, t.assignedAt desc ")
     List<Test> getAllByUser(User user);
 
-    @Query("select t from Test t where t.status in ?1")
+    @Query("select t from Test t where t.status in ?1 "
+           + "order by case "
+           + "when t.priority = 'High' then 'A' "
+           + "when t.priority = 'Medium' then 'B' "
+           + "when t.priority = 'Low' then 'C' ELSE t.priority end, "
+           + "t.deadline asc, t.assignedAt desc ")
     List<Test> getByStatuses(Status[] statuses);
 
     @Query("select t from Test t"
-            + " where t.user = ?1 "
-            + "and t.assignedAt is null "
-            + "and t.startedAt >= ?2")
+           + " where t.user = ?1 "
+           + "and t.assignedAt is null "
+           + "and t.startedAt >= ?2")
     List<Test> getSelfStartedByUserAfter(User user, Instant date);
 
-    @Query("select t from Test t where t.coach.id = ?1 and t.status in ?2")
+    @Query("select t from Test t where t.coach.id = ?1 and t.status in ?2 "
+           + "order by case "
+           + "when t.priority = 'High' then 'A' "
+           + "when t.priority = 'Medium' then 'B' "
+           + "when t.priority = 'Low' then 'C' ELSE t.priority end, "
+           + "t.deadline asc, t.assignedAt desc ")
     List<Test> getAllByAssignedCoachAndStatuses(Long coachId, Status[] status);
 
     @Transactional
@@ -49,6 +63,11 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     @Modifying
     @Query(value = "UPDATE Test t SET t.completedAt = ?1, t.status = 'COMPLETED' where t.id = ?2")
     int finish(Instant finishDate, Long id);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE Test t SET t.verifiedAt = ?1 where t.id = ?2")
+    int updateEvaluation(Instant updateDate, Long id);
 
     @Transactional
     @Modifying
