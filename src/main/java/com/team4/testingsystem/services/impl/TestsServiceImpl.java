@@ -18,10 +18,12 @@ import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
+import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -84,8 +86,8 @@ public class TestsServiceImpl implements TestsService {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
         return getByStatuses(statuses).stream()
-            .filter(test -> !test.getUser().getId().equals(currentUserId))
-            .collect(Collectors.toList());
+                .filter(test -> !test.getUser().getId().equals(currentUserId))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -98,24 +100,20 @@ public class TestsServiceImpl implements TestsService {
     public List<UserTest> getAllUsersAndAssignedTests() {
         Status[] statuses = {Status.ASSIGNED};
         Map<User, Test> assignedTests = getByStatuses(statuses).stream()
-            .collect(Collectors.toMap(Test::getUser, Function.identity()));
+                .collect(Collectors.toMap(Test::getUser, Function.identity()));
 
         return usersService.getAll().stream()
-            .map(user -> new UserTest(user, assignedTests.getOrDefault(user, null)))
-            .collect(Collectors.toList());
+                .map(user -> new UserTest(user, assignedTests.getOrDefault(user, null)))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Test> getTestsByUserIdAndLevel(long userId, Levels level) {
-        return testsRepository.getAllByUser(usersService.getUserById(userId)).stream()
-            .filter(test -> test.getLevel().getName().equals(level.name()))
-            .collect(Collectors.toList());
     public List<Test> getTestsByUserIdAndLevel(long userId, Levels level, Pageable pageable) {
         return testsRepository.getAllByUser(usersService.getUserById(userId), pageable).stream()
                 .filter(test -> test.getLevel().getName().equals(level.name()))
                 .collect(Collectors.toList());
     }
-
+    
     @Override
     public Test startTestVerification(long testId) {
         testsRepository.updateStatusByTestId(testId, Status.IN_VERIFICATION);
@@ -131,17 +129,17 @@ public class TestsServiceImpl implements TestsService {
     public long startForUser(long userId, Levels levelName) {
         User user = usersService.getUserById(userId);
         List<Test> selfStarted = testsRepository
-            .getSelfStartedByUserAfter(user, Instant.now().minus(1, ChronoUnit.DAYS));
+                .getSelfStartedByUserAfter(user, Instant.now().minus(1, ChronoUnit.DAYS));
 
         if (selfStarted.size() >= testsLimit) {
             throw new TestsLimitExceededException(selfStarted.get(0)
-                .getStartedAt().plus(1, ChronoUnit.DAYS).toString());
+                    .getStartedAt().plus(1, ChronoUnit.DAYS).toString());
         }
         Test test = createForUser(userId, levelName)
-            .startedAt(Instant.now())
-            .status(Status.STARTED)
-            .priority(Priority.LOW)
-            .build();
+                .startedAt(Instant.now())
+                .status(Status.STARTED)
+                .priority(Priority.LOW)
+                .build();
 
         testsRepository.save(test);
         return test.getId();
@@ -150,11 +148,11 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public long assignForUser(long userId, Levels levelName, Instant deadline, Priority priority) {
         Test test = createForUser(userId, levelName)
-            .assignedAt(Instant.now())
-            .deadline(deadline)
-            .status(Status.ASSIGNED)
-            .priority(priority)
-            .build();
+                .assignedAt(Instant.now())
+                .deadline(deadline)
+                .status(Status.ASSIGNED)
+                .priority(priority)
+                .build();
 
         testsRepository.save(test);
         return test.getId();
@@ -174,8 +172,8 @@ public class TestsServiceImpl implements TestsService {
         Level level = levelService.getLevelByName(levelName.name());
         User user = usersService.getUserById(userId);
         return Test.builder()
-            .user(user)
-            .level(level);
+                .user(user)
+                .level(level);
     }
 
     @Override
@@ -209,7 +207,7 @@ public class TestsServiceImpl implements TestsService {
 
         java.util.Timer timer = new java.util.Timer(String.valueOf(testId));
         long delay = test.getFinishTime().plus(2L, ChronoUnit.MINUTES).toEpochMilli()
-            - Instant.now().toEpochMilli();
+                     - Instant.now().toEpochMilli();
         if (delay <= 0) {
             finish(testId, test.getFinishTime());
             timer.cancel();
