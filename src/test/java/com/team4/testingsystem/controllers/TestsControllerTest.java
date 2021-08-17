@@ -82,8 +82,6 @@ class TestsControllerTest {
 
     private Test test;
 
-    private List<TestInfo> testInfos;
-
     @Mock
     private TestVerificationDTO testVerificationDTO;
 
@@ -118,8 +116,10 @@ class TestsControllerTest {
 
             Mockito.when(testsService.getByUserId(1L)).thenReturn(Lists.list(test));
 
-            Assertions.assertEquals(Lists.list(new TestInfo(test)),
-                    testsController.getCurrentUserTests());
+            TestInfo expectedInfo = new TestInfo(test, 4);
+            Mockito.when(testConverter.convertToInfo(test)).thenReturn(expectedInfo);
+
+            Assertions.assertEquals(Lists.list(expectedInfo), testsController.getCurrentUserTests());
         }
     }
 
@@ -357,9 +357,7 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void getUnverifiedTests() {
-        List<Test> tests = new ArrayList<>();
-        List<TestDTO> testsDto = new ArrayList<>();
-        Mockito.when(testsService.getAllUnverifiedTests()).thenReturn(tests);
-        Assertions.assertEquals(testsDto, testsController.getUnverifiedTests());
+        Mockito.when(testsService.getAllUnverifiedTests()).thenReturn(List.of());
+        Assertions.assertEquals(List.of(), testsController.getUnverifiedTests());
     }
 }
