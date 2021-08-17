@@ -47,6 +47,7 @@ public class UsersController {
 
     @ApiOperation("Get users by name substring (ignoring case)")
     @GetMapping("/users")
+    @Secured("ROLE_HR")
     public List<UserDTO> getAllUsersByNameLike(@RequestParam String name) {
         return convertToDTO(usersService.getByNameLike(name));
     }

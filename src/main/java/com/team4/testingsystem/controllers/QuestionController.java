@@ -68,7 +68,8 @@ public class QuestionController {
     @GetMapping("/listening/{contentFileId}")
     @Secured("ROLE_COACH")
     public ContentFileDTO getListening(@PathVariable("contentFileId") Long contentFileId) {
-        return new ContentFileDTO(contentFilesService.getById(contentFileId));
+        ContentFile contentFile = contentFilesService.getById(contentFileId);
+        return new ContentFileDTO(contentFile, contentFile.getQuestions().get(0).getLevel().getName());
     }
 
     @ApiOperation(value = "Add a new question")
@@ -117,6 +118,13 @@ public class QuestionController {
     @Secured("ROLE_COACH")
     public void archiveQuestion(@PathVariable("id") Long id) {
         questionService.archiveQuestion(id);
+    }
+
+    @ApiOperation(value = "Archive the listening")
+    @DeleteMapping("/listening/{contentFileId}")
+    @Secured("ROLE_COACH")
+    public void archiveListening(@PathVariable("contentFileId") Long contentFileId) {
+        contentFilesService.archive(contentFileId);
     }
 
     @ApiOperation(value = "Change the question")
