@@ -2,7 +2,6 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.FileAnswer;
-import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.AnswerNotFoundException;
 import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.services.FileAnswerService;
@@ -76,8 +75,8 @@ class AnswerServiceImplTest {
 
     @Test
     void uploadSpeaking() {
-        Mockito.when(fileAnswerService.uploadSpeaking(file, TEST_ID, Modules.SPEAKING)).thenReturn(fileAnswer);
+        Mockito.when(fileAnswerService.uploadSpeaking(file, TEST_ID)).thenReturn(fileAnswer);
         Mockito.when(fileAnswer.getUrl()).thenReturn(URL);
-        Assertions.assertEquals(URL, fileAnswerService.uploadSpeaking(file, TEST_ID, Modules.SPEAKING).getUrl());
+        Assertions.assertEquals(URL, fileAnswerService.uploadSpeaking(file, TEST_ID).getUrl());
     }
 }
