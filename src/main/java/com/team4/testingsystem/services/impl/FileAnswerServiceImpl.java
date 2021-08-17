@@ -49,7 +49,7 @@ public class FileAnswerServiceImpl implements FileAnswerService {
 
     @Override
     public FileAnswer uploadSpeaking(MultipartFile file, Long testId, Modules module) {
-        String url = storageService.upload(file.getResource());
+        String url = storageService.upload(file.getResource(), Modules.SPEAKING, testId);
         Question question = questionService.getQuestionByTestIdAndModule(testId, module);
         return save(testId, question.getId(), url);
     }
@@ -62,11 +62,17 @@ public class FileAnswerServiceImpl implements FileAnswerService {
 
     @Override
     public FileAnswer save(Long testId, Long questionId, String url) {
-        FileAnswer fileAnswer = FileAnswer.builder()
-                .id(createId(testId, questionId))
-                .url(url)
-                .build();
-        return fileAnswerRepository.save(fileAnswer);
+        TestQuestionID id = createId(testId, questionId);
+        if (!fileAnswerRepository.existsById(id)) {
+            FileAnswer fileAnswer = FileAnswer.builder()
+                    .id(id)
+                    .url(url)
+                    .build();
+            return fileAnswerRepository.save(fileAnswer);
+        }
+        fileAnswerRepository.updateUrl(id, url);
+        return fileAnswerRepository.findById(id)
+                .orElseThrow(FileAnswerNotFoundException::new);
     }
 
     @Override
@@ -91,7 +97,8 @@ public class FileAnswerServiceImpl implements FileAnswerService {
         Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
 
         InputStream inputStream = IOUtils.toInputStream(text, StandardCharsets.UTF_8);
-        String url = storageService.upload(new InputStreamResource(inputStream));
+        String url = storageService.upload(new InputStreamResource(inputStream), Modules.ESSAY, testId);
+
         FileAnswer fileAnswer = FileAnswer.builder()
                 .id(new TestQuestionID(test, question))
                 .url(url)

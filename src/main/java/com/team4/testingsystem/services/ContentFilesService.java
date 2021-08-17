@@ -18,7 +18,7 @@ public interface ContentFilesService {
 
     void updateURL(Long id, String newUrl);
 
-    void removeById(Long id);
+    void archive(Long id);
 
     ContentFile getRandomContentFile(String level);
 

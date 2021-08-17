@@ -1,12 +1,15 @@
 package com.team4.testingsystem.services.impl;
 
+
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.exceptions.FileNotFoundException;
+import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
+import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,12 +39,13 @@ public class ContentFilesServiceImpl implements ContentFilesService {
 
     @Override
     public ContentFile getById(long id) {
-        return contentFilesRepository.findById(id).orElseThrow(FileNotFoundException::new);
+        return contentFilesRepository.findById(id).orElseThrow(ContentFileNotFoundException::new);
     }
 
     @Override
     public ContentFile add(MultipartFile file, String topic, List<Question> questions) {
-        String url = storageService.upload(file.getResource());
+        Long creatorId = JwtTokenUtil.extractUserDetails().getId();
+        String url = storageService.upload(file.getResource(), Modules.LISTENING, creatorId);
         return contentFilesRepository.save(new ContentFile(url, topic, questions));
     }
 
@@ -51,27 +55,28 @@ public class ContentFilesServiceImpl implements ContentFilesService {
         if (file == null) {
             questionService.archiveQuestionsByContentFileId(id);
             ContentFile contentFile = contentFilesRepository
-                    .findById(id).orElseThrow(FileNotFoundException::new);
+                    .findById(id).orElseThrow(ContentFileNotFoundException::new);
             contentFile.getQuestions().addAll(questions);
             return contentFilesRepository.save(contentFile);
         }
-        contentFilesRepository.archiveContentFile(id);
-        questionService.archiveQuestionsByContentFileId(id);
+
+        archive(id);
         return add(file, topic, questions);
     }
 
     @Override
     public void updateURL(Long id, String newUrl) {
         if (contentFilesRepository.changeUrl(newUrl, id) == 0) {
-            throw new FileNotFoundException();
+            throw new ContentFileNotFoundException();
         }
     }
 
     @Override
-    public void removeById(Long id) {
-        if (contentFilesRepository.removeById(id) == 0) {
-            throw new FileNotFoundException();
+    public void archive(Long id) {
+        if (contentFilesRepository.archiveContentFile(id) == 0) {
+            throw new ContentFileNotFoundException();
         }
+        questionService.archiveQuestionsByContentFileId(id);
     }
 
     @Override
