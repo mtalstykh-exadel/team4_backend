@@ -9,7 +9,6 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
-import com.team4.testingsystem.exceptions.DoNotHaveRightsException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.repositories.TestsRepository;
@@ -26,6 +25,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.security.AccessControlException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -256,17 +256,17 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public void checkRights(Test test) {
+    public void checkOwnerIsCurrentUser(Test test) {
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
         if (!test.getUser().getId().equals(currentUserId)) {
-            throw new DoNotHaveRightsException("The test has another owner");
+            throw new AccessControlException("The test has another owner");
         }
     }
 
     @Override
     public void checkStartedStatus(Test test) {
         if (!test.getStatus().name().equals(Status.STARTED.name())) {
-            throw new DoNotHaveRightsException("The test isn't started");
+            throw new AccessControlException("The test isn't started");
         }
     }
 }

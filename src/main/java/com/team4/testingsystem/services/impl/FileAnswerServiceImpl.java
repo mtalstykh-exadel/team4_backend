@@ -52,7 +52,7 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     public FileAnswer uploadSpeaking(MultipartFile file, Long testId) {
         Test test = testsService.getById(testId);
 
-        testsService.checkRights(test);
+        testsService.checkOwnerIsCurrentUser(test);
 
         testsService.checkStartedStatus(test);
 
@@ -94,7 +94,7 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     public FileAnswer uploadEssay(Long testId, String text) {
         Test test = testsService.getById(testId);
 
-        testsService.checkRights(test);
+        testsService.checkOwnerIsCurrentUser(test);
 
         testsService.checkStartedStatus(test);
 

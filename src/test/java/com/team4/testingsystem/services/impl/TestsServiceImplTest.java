@@ -9,7 +9,6 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
-import com.team4.testingsystem.exceptions.DoNotHaveRightsException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
@@ -31,6 +30,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.security.AccessControlException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -476,14 +476,14 @@ class TestsServiceImplTest {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
             Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID + 1);
 
-            Assertions.assertThrows(DoNotHaveRightsException.class, () -> testsService.checkRights(test));
+            Assertions.assertThrows(AccessControlException.class, () -> testsService.checkOwnerIsCurrentUser(test));
         }
     }
 
     @org.junit.jupiter.api.Test
     void checkStartedStatus() {
         Mockito.when(test.getStatus()).thenReturn(Status.COMPLETED);
-        Assertions.assertThrows(DoNotHaveRightsException.class, () -> testsService.checkStartedStatus(test));
+        Assertions.assertThrows(AccessControlException.class, () -> testsService.checkStartedStatus(test));
     }
 
 }
