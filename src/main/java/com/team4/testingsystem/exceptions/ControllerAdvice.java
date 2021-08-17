@@ -58,4 +58,10 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
         }
         return handleExceptionInternal(e, body, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
+
+    @ExceptionHandler(value = {DoNotHaveRightsException.class})
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public ErrorResponse handleDoNotHaveRightsException(DoNotHaveRightsException e){
+        return new ErrorResponse(e.getMessage());
+    }
 }

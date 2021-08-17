@@ -43,7 +43,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public String uploadSpeaking(MultipartFile file, Long testId, Modules module) {
-        return fileAnswerService.uploadSpeaking(file, testId, module).getUrl();
+    public String uploadSpeaking(MultipartFile file, Long testId) {
+        return fileAnswerService.uploadSpeaking(file, testId).getUrl();
     }
 }

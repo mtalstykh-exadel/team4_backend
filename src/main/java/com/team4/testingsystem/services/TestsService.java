@@ -44,4 +44,8 @@ public interface TestsService {
     void assignCoach(long id, long coachId);
 
     void deassignCoach(long id);
+
+    void checkRights(Test test);
+
+    void checkStartedStatus(Test test);
 }

@@ -9,6 +9,7 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
+import com.team4.testingsystem.exceptions.DoNotHaveRightsException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.repositories.TestsRepository;
@@ -251,6 +252,21 @@ public class TestsServiceImpl implements TestsService {
     public void deassignCoach(long id) {
         if (testsRepository.deassignCoach(id) == 0) {
             throw new TestNotFoundException();
+        }
+    }
+
+    @Override
+    public void checkRights(Test test) {
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+        if (!test.getUser().getId().equals(currentUserId)) {
+            throw new DoNotHaveRightsException("The test has another owner");
+        }
+    }
+
+    @Override
+    public void checkStartedStatus(Test test) {
+        if (!test.getStatus().name().equals(Status.STARTED.name())) {
+            throw new DoNotHaveRightsException("The test isn't started");
         }
     }
 }

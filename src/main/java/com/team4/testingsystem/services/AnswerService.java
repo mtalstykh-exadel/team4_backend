@@ -13,6 +13,6 @@ public interface AnswerService {
 
     String downloadSpeaking(Long testId);
 
-    String uploadSpeaking(MultipartFile file, Long testId, Modules module);
+    String uploadSpeaking(MultipartFile file, Long testId);
 
 }
