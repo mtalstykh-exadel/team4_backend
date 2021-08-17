@@ -5,6 +5,7 @@ import com.team4.testingsystem.entities.UserTest;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
+import org.springframework.data.domain.Pageable;
 
 import java.time.Instant;
 import java.util.List;
@@ -13,7 +14,7 @@ public interface TestsService {
 
     Test getById(long id);
 
-    List<Test> getByUserId(long userId);
+    List<Test> getByUserId(long userId, Pageable pageable);
 
     List<Test> getByStatuses(Status[] status);
 
@@ -21,7 +22,7 @@ public interface TestsService {
 
     List<UserTest> getAllUsersAndAssignedTests();
 
-    List<Test> getTestsByUserIdAndLevel(long userId, Levels level);
+    List<Test> getTestsByUserIdAndLevel(long userId, Levels level, Pageable pageable);
 
     Test startTestVerification(long testId);
 

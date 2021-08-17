@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -69,9 +70,9 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public List<Test> getByUserId(long userId) {
+    public List<Test> getByUserId(long userId, Pageable pageable) {
         User user = usersService.getUserById(userId);
-        return testsRepository.getAllByUser(user);
+        return testsRepository.getAllByUser(user, pageable);
     }
 
     @Override
@@ -97,8 +98,8 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public List<Test> getTestsByUserIdAndLevel(long userId, Levels level) {
-        return testsRepository.getAllByUser(usersService.getUserById(userId)).stream()
+    public List<Test> getTestsByUserIdAndLevel(long userId, Levels level, Pageable pageable) {
+        return testsRepository.getAllByUser(usersService.getUserById(userId), pageable).stream()
                 .filter(test -> test.getLevel().getName().equals(level.name()))
                 .collect(Collectors.toList());
     }
