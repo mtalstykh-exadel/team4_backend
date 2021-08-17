@@ -1,5 +1,6 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.converters.ErrorReportsConverter;
 import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.entities.ErrorReport;
 import com.team4.testingsystem.entities.Question;
@@ -17,8 +18,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -40,6 +43,9 @@ public class ErrorReportsControllerTest {
 
     @Mock
     ErrorReportsService errorReportsService;
+
+    @Mock
+    ErrorReportsConverter errorReportsConverter;
 
     @Mock
     com.team4.testingsystem.entities.Test test;
@@ -122,5 +128,29 @@ public class ErrorReportsControllerTest {
 
         Assertions.assertThrows(ErrorReportNotFoundException.class,
                 ()-> errorReportsController.removeByTestAndQuestion(BAD_TEST_ID, BAD_QUESTION_ID));
+    }
+
+    @Test
+    void getByTestIdSuccess() {
+        Assertions.assertEquals(List.of(), errorReportsController.getByTestId(GOOD_TEST_ID));
+        verify(errorReportsService).getReportsByTest(GOOD_TEST_ID);
+    }
+
+    @Test
+    void getByTestIdFailTestNotFound() {
+        Mockito.when(errorReportsService.getReportsByTest(BAD_TEST_ID))
+                .thenThrow(TestNotFoundException.class);
+        Assertions.assertThrows(TestNotFoundException.class,
+                () -> errorReportsController.getByTestId(BAD_TEST_ID));
+    }
+
+    @Test
+    void addAll(){
+        List<ErrorReportDTO> errorReports = List.of(EntityCreatorUtil
+                .createErrorReportDTO(GOOD_REPORT_BODY, GOOD_QUESTION_ID, GOOD_TEST_ID));
+        Assertions.assertDoesNotThrow(() -> errorReportsController.addAll(errorReports));
+        verify(errorReportsService).addAll(errorReports.stream()
+                .map(errorReportsConverter::convertToEntity)
+                .collect(Collectors.toList()));
     }
 }

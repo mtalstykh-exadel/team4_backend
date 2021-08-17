@@ -104,6 +104,12 @@ public class ErrorReportsServiceImplTest {
                 () -> errorReportsService.add("Bad report", GOOD_QUESTION_ID, BAD_TEST_ID));
     }
 
+    @Test
+    void addAll(){
+        ErrorReport errorReport = new ErrorReport();
+        Assertions.assertDoesNotThrow(()->errorReportsService.addAll(List.of(errorReport)));
+        verify(errorReportsRepository).saveAll(List.of(errorReport));
+    }
 
     @Test
     void removeSuccess() {
