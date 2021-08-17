@@ -62,11 +62,17 @@ public class FileAnswerServiceImpl implements FileAnswerService {
 
     @Override
     public FileAnswer save(Long testId, Long questionId, String url) {
-        FileAnswer fileAnswer = FileAnswer.builder()
-                .id(createId(testId, questionId))
-                .url(url)
-                .build();
-        return fileAnswerRepository.save(fileAnswer);
+        TestQuestionID id = createId(testId, questionId);
+        if (!fileAnswerRepository.existsById(id)) {
+            FileAnswer fileAnswer = FileAnswer.builder()
+                    .id(id)
+                    .url(url)
+                    .build();
+            return fileAnswerRepository.save(fileAnswer);
+        }
+        fileAnswerRepository.updateUrl(id, url);
+        return fileAnswerRepository.findById(id)
+                .orElseThrow(FileAnswerNotFoundException::new);
     }
 
     @Override
