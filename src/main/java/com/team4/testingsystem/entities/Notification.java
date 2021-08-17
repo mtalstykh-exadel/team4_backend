@@ -90,27 +90,27 @@ public class Notification {
         }
 
         public Builder id(Long id) {
-            notification.id = id;
+            notification.setId(id);
             return this;
         }
 
         public Builder type(NotificationType type) {
-            notification.type = type;
+            notification.setType(type);
             return this;
         }
 
         public Builder user(User user) {
-            notification.user = user;
+            notification.setUser(user);
             return this;
         }
 
         public Builder test(Test test) {
-            notification.test = test;
+            notification.setTest(test);
             return this;
         }
 
         public Builder createdAt(Instant createdAt) {
-            notification.createdAt = createdAt;
+            notification.setCreatedAt(createdAt);
             return this;
         }
 
