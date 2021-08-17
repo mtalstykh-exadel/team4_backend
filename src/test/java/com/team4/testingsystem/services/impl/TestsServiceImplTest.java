@@ -14,10 +14,12 @@ import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.TimerRepository;
+import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
+import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -72,6 +75,12 @@ class TestsServiceImplTest {
     TestEvaluationService testEvaluationService;
 
     @Mock
+    Stream<Test> stream;
+
+    @Mock
+    CustomUserDetails userDetails;
+
+    @Mock
     List<Test> tests;
 
 
@@ -111,7 +120,7 @@ class TestsServiceImplTest {
 
         Mockito.when(usersService.getAll()).thenReturn(Lists.list(user));
         Mockito.when(testsRepository.getByStatuses(new Status[]{Status.ASSIGNED}))
-                .thenReturn(Lists.emptyList());
+            .thenReturn(Lists.emptyList());
 
         Assertions.assertEquals(Lists.list(new UserTest(user, null)), testsService.getAllUsersAndAssignedTests());
     }
@@ -123,9 +132,30 @@ class TestsServiceImplTest {
 
         Mockito.when(usersService.getAll()).thenReturn(Lists.list(user));
         Mockito.when(testsRepository.getByStatuses(new Status[]{Status.ASSIGNED}))
-                .thenReturn(Lists.list(test));
+            .thenReturn(Lists.list(test));
 
         Assertions.assertEquals(Lists.list(new UserTest(user, test)), testsService.getAllUsersAndAssignedTests());
+    }
+
+    @org.junit.jupiter.api.Test
+    void getAllUnverifiedTestsSuccess() {
+        Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
+
+        Mockito.when(userDetails.getId()).thenReturn(1L);
+
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+
+            Mockito.when(testsRepository.getByStatuses(statuses))
+                .thenReturn(tests);
+            Mockito.when(tests.stream()).thenReturn(stream);
+
+            Mockito.when(stream.filter(any())).thenReturn(stream);
+
+            Mockito.when(stream.collect(any())).thenReturn(tests);
+
+            Assertions.assertEquals(tests, testsService.getAllUnverifiedTests());
+        }
     }
 
     @org.junit.jupiter.api.Test
