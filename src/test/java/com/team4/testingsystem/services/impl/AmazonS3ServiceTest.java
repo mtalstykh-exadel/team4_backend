@@ -105,7 +105,7 @@ class AmazonS3ServiceTest {
 
     @Test
     void loadFail() {
-        Mockito.when(amazonS3.getObject(bucketName, FILE_NAME))
+        Mockito.when(amazonS3.getObject(bucketName, FILE_NAME.replace('-', '/')))
                 .thenThrow(new AmazonServiceException(""));
 
         Assertions.assertThrows(FileLoadingFailedException.class,
@@ -117,7 +117,7 @@ class AmazonS3ServiceTest {
         S3Object s3Object = new S3Object();
         s3Object.setObjectContent(sourceFile.getInputStream());
 
-        Mockito.when(amazonS3.getObject(bucketName, FILE_NAME)).thenReturn(s3Object);
+        Mockito.when(amazonS3.getObject(bucketName, FILE_NAME.replace('-', '/'))).thenReturn(s3Object);
 
         Assertions.assertArrayEquals(TEST_CONTENT.getBytes(StandardCharsets.UTF_8),
                 amazonS3Service.load(FILE_NAME).getInputStream().readAllBytes());
@@ -126,7 +126,7 @@ class AmazonS3ServiceTest {
     @Test
     void deleteFail() {
         Mockito.doThrow(new AmazonServiceException(""))
-                .when(amazonS3).deleteObject(bucketName, FILE_NAME);
+                .when(amazonS3).deleteObject(bucketName, FILE_NAME.replace('-', '/'));
 
         Assertions.assertThrows(FileDeletingFailedException.class,
                 () -> amazonS3Service.delete(FILE_NAME));
@@ -134,7 +134,7 @@ class AmazonS3ServiceTest {
 
     @Test
     void deleteSuccess() {
-        Mockito.doNothing().when(amazonS3).deleteObject(bucketName, FILE_NAME);
+        Mockito.doNothing().when(amazonS3).deleteObject(bucketName, FILE_NAME.replace('-', '/'));
 
         Assertions.assertDoesNotThrow(() -> amazonS3Service.delete(FILE_NAME));
     }
