@@ -36,7 +36,8 @@ public class TestConverter {
     @Autowired
     public TestConverter(QuestionService questionService,
                          ContentFilesService contentFilesService,
-                         ChosenOptionService chosenOptionService, ModuleGradesService moduleGradesService) {
+                         ChosenOptionService chosenOptionService,
+                         ModuleGradesService moduleGradesService) {
         this.questionService = questionService;
         this.contentFilesService = contentFilesService;
         this.chosenOptionService = chosenOptionService;
