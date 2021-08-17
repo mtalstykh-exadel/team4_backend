@@ -328,6 +328,7 @@ class TestsControllerIntegrationTest {
         Optional<com.team4.testingsystem.entities.Test> updatedTest = testsRepository.findById(testId);
         Assertions.assertTrue(updatedTest.isPresent());
         Assertions.assertNull(updatedTest.get().getCoach());
+        Assertions.assertEquals(Status.COMPLETED.name(), updatedTest.get().getStatus().name());
     }
 
     @Test
