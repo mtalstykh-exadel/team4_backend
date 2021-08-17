@@ -12,21 +12,21 @@ public class TestVerificationDTO implements Serializable {
     private String essayText;
     private QuestionDTO speakingQuestion;
     private String speakingUrl;
-    private ModuleGradesDTO gradesDTO;
+    private List<CoachGradeDTO> grades;
 
     public TestVerificationDTO() {
     }
 
-    public ModuleGradesDTO getGradesDTO() {
-        return gradesDTO;
-    }
-
-    public void setGradesDTO(ModuleGradesDTO gradesDTO) {
-        this.gradesDTO = gradesDTO;
-    }
-
     public Long getTestId() {
         return testId;
+    }
+
+    public List<CoachGradeDTO> getGradesDTO() {
+        return grades;
+    }
+
+    public void setGradesDTO(List<CoachGradeDTO> gradesDTO) {
+        this.grades = gradesDTO;
     }
 
     public void setTestId(Long testId) {
@@ -127,8 +127,8 @@ public class TestVerificationDTO implements Serializable {
             return this;
         }
 
-        public Builder grades(ModuleGradesDTO gradesDTO) {
-            dto.gradesDTO = gradesDTO;
+        public Builder grades(List<CoachGradeDTO> gradesDTO) {
+            dto.grades = gradesDTO;
             return this;
         }
 
