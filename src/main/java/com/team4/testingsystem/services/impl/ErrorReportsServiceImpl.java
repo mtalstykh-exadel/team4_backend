@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class ErrorReportsServiceImpl implements ErrorReportsService {
@@ -59,5 +60,10 @@ public class ErrorReportsServiceImpl implements ErrorReportsService {
         if (errorReportsRepository.removeById(errorReportId) == 0) {
             throw new ErrorReportNotFoundException();
         }
+    }
+
+    @Override
+    public void addAll(List<ErrorReport> errorReports) {
+        errorReportsRepository.saveAll(errorReports);
     }
 }
