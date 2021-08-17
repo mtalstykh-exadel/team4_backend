@@ -77,29 +77,29 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public List<Test> getByStatuses(Status[] statuses) {
-        return testsRepository.getByStatuses(statuses);
+    public List<Test> getByStatuses(Status[] statuses, Pageable pageable) {
+        return testsRepository.getByStatuses(statuses, pageable);
     }
 
     @Override
-    public List<Test> getAllUnverifiedTests() {
+    public List<Test> getAllUnverifiedTests(Pageable pageable) {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
-        return getByStatuses(statuses).stream()
+        return getByStatuses(statuses, pageable).stream()
                 .filter(test -> !test.getUser().getId().equals(currentUserId))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Test> getAllUnverifiedTestsByCoach(long coachId) {
+    public List<Test> getAllUnverifiedTestsByCoach(long coachId, Pageable pageable) {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
-        return testsRepository.getAllByAssignedCoachAndStatuses(coachId, statuses);
+        return testsRepository.getAllByAssignedCoachAndStatuses(coachId, statuses, pageable);
     }
 
     @Override
-    public List<UserTest> getAllUsersAndAssignedTests() {
+    public List<UserTest> getAllUsersAndAssignedTests(Pageable pageable) {
         Status[] statuses = {Status.ASSIGNED};
-        Map<User, Test> assignedTests = getByStatuses(statuses).stream()
+        Map<User, Test> assignedTests = getByStatuses(statuses, pageable).stream()
                 .collect(Collectors.toMap(Test::getUser, Function.identity()));
 
         return usersService.getAll().stream()
