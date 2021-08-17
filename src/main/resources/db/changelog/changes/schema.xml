@@ -617,7 +617,7 @@
         </addColumn>
     </changeSet>
 
-    <changeSet  id="add_default_priority" author="Anlord241">
+    <changeSet id="add_default_priority" author="Anlord241">
         <addNotNullConstraint tableName="test"
                               columnName="priority"
                               defaultNullValue="LOW"/>
@@ -626,7 +626,7 @@
     <changeSet id="add_timer_table" author="Anlord241">
         <createTable tableName="timer">
             <column name="id" type="int" autoIncrement="true">
-            <constraints primaryKey="true"/>
+                <constraints primaryKey="true"/>
             </column>
             <column name="test_id" type="int">
             </column>
@@ -651,6 +651,33 @@
         <addColumn tableName="module_grade">
             <column name="coach_comment" type="text"/>
         </addColumn>
+    </changeSet>
+
+    <changeSet id="add_notifications" author="maxim12321">
+        <createTable tableName="notification">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="type" type="varchar(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="test_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="notification" baseColumnNames="user_id"
+                                 constraintName="notification_user_id_fk"
+                                 referencedTableName="user" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="notification" baseColumnNames="test_id"
+                                 constraintName="notification_test_id_fk"
+                                 referencedTableName="test" referencedColumnNames="id"/>
     </changeSet>
 
 </databaseChangeLog>
