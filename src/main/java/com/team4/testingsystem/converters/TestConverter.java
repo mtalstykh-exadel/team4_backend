@@ -6,14 +6,17 @@ import static java.util.stream.Collectors.toMap;
 import com.team4.testingsystem.dto.ListeningTopicDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.dto.TestDTO;
+import com.team4.testingsystem.dto.TestInfo;
 import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.entities.ContentFile;
+import com.team4.testingsystem.entities.ModuleGrade;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
 import com.team4.testingsystem.services.ChosenOptionService;
 import com.team4.testingsystem.services.ContentFilesService;
+import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,14 +31,23 @@ public class TestConverter {
     private final QuestionService questionService;
     private final ContentFilesService contentFilesService;
     private final ChosenOptionService chosenOptionService;
+    private final ModuleGradesService moduleGradesService;
 
     @Autowired
     public TestConverter(QuestionService questionService,
                          ContentFilesService contentFilesService,
-                         ChosenOptionService chosenOptionService) {
+                         ChosenOptionService chosenOptionService, ModuleGradesService moduleGradesService) {
         this.questionService = questionService;
         this.contentFilesService = contentFilesService;
         this.chosenOptionService = chosenOptionService;
+        this.moduleGradesService = moduleGradesService;
+    }
+
+    public TestInfo convertToInfo(Test test) {
+        Integer totalScore = moduleGradesService.getGradesByTest(test).values().stream()
+                .map(ModuleGrade::getGrade)
+                .reduce(0, Integer::sum);
+        return new TestInfo(test, totalScore);
     }
 
     public TestDTO convertToDTO(Test test) {
