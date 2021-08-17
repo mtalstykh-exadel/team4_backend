@@ -65,7 +65,8 @@ public class QuestionController {
     @GetMapping("/listening/{contentFileId}")
     @Secured("ROLE_COACH")
     public ContentFileDTO getListening(@PathVariable("contentFileId") Long contentFileId) {
-        return new ContentFileDTO(contentFilesService.getById(contentFileId));
+        ContentFile contentFile = contentFilesService.getById(contentFileId);
+        return new ContentFileDTO(contentFile, contentFile.getQuestions().get(0).getLevel().getName());
     }
 
     @ApiOperation(value = "Add a new question")
