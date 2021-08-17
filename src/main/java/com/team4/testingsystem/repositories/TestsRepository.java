@@ -27,7 +27,7 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
            + "when t.priority = 'High' then 'A' "
            + "when t.priority = 'Medium' then 'B' "
            + "when t.priority = 'Low' then 'C' ELSE t.priority end, "
-           + "t.deadline asc, t.assignedAt desc ")
+           + "t.deadline asc, t.assignedAt desc, t.completedAt desc ")
     List<Test> getByStatuses(Status[] statuses);
 
     @Query("select t from Test t"
