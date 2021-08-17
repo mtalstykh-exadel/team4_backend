@@ -140,4 +140,10 @@ class ContentFilesServiceImplTest {
         Mockito.when(contentFilesRepository.getContentFileByQuestionId(any())).thenReturn(contentFile);
         Assertions.assertEquals(contentFile, contentFilesService.getContentFileByQuestionId(any()));
     }
+
+    @Test
+    void archiveListening() {
+        contentFilesService.archiveContentFile(1L);
+        verify(contentFilesRepository).archiveContentFile(1L);
+    }
 }

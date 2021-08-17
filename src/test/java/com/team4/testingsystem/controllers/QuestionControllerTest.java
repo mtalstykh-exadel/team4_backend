@@ -3,9 +3,7 @@ package com.team4.testingsystem.controllers;
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.AnswerDTO;
 import com.team4.testingsystem.dto.ContentFileDTO;
-import com.team4.testingsystem.dto.ListeningTopicDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
-import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
@@ -16,16 +14,13 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -119,6 +114,12 @@ class QuestionControllerTest {
     }
 
     @Test
+    void archiveListening() {
+        questionController.archiveListening(1L);
+        Mockito.verify(contentFilesService).archiveContentFile(1L);
+    }
+
+    @Test
     void updateQuestionWithoutAnswers() {
         QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
         questionDTO.setQuestionBody("new question body");
@@ -180,13 +181,13 @@ class QuestionControllerTest {
     }
 
     @Test
-    void getListeningTopics(){
+    void getListeningTopics() {
         questionController.getListeningTopics(null);
         verify(questionService).getListening(null);
     }
 
     @Test
-    void getListeningTopicsByLevel(){
+    void getListeningTopicsByLevel() {
         questionController.getListeningTopics(Levels.A1);
         verify(questionService).getListening(Levels.A1);
     }
