@@ -44,11 +44,12 @@ public class AmazonS3Service implements FilesService {
             throw new FileSavingFailedException();
         }
 
+        String fileKey = fileName.replace('-', '/');
         File tempFile = new File(tempFilePath.toString());
 
         try {
             FileUtils.copyInputStreamToFile(file.getInputStream(), tempFile);
-            amazonS3.putObject(bucketName, fileName, tempFile);
+            amazonS3.putObject(bucketName, fileKey, tempFile);
         } catch (IOException | AmazonServiceException e) {
             throw new FileSavingFailedException();
         } finally {

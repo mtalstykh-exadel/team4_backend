@@ -37,7 +37,7 @@ class AmazonS3ServiceTest {
     private String bucketName;
 
     private static final String SOURCE_FILE_NAME = "source_file.txt";
-    private static final String FILE_NAME = "test_file.txt";
+    private static final String FILE_NAME = "test-file.txt";
     private static final String TEST_CONTENT = "test content";
 
     private static final Path SOURCE_FILE_PATH = Path.of(SOURCE_FILE_NAME);
@@ -73,7 +73,7 @@ class AmazonS3ServiceTest {
         ArgumentCaptor<File> fileArgumentCaptor = ArgumentCaptor.forClass(File.class);
         Mockito.when(amazonS3.putObject(
                 Mockito.eq(bucketName),
-                Mockito.eq(FILE_NAME),
+                Mockito.eq(FILE_NAME.replace('-', '/')),
                 fileArgumentCaptor.capture())
         ).thenThrow(new AmazonServiceException(""));
 
@@ -91,7 +91,7 @@ class AmazonS3ServiceTest {
         ArgumentCaptor<File> fileArgumentCaptor = ArgumentCaptor.forClass(File.class);
         Mockito.verify(amazonS3).putObject(
                 Mockito.eq(bucketName),
-                Mockito.eq(FILE_NAME),
+                Mockito.eq(FILE_NAME.replace('-', '/')),
                 fileArgumentCaptor.capture()
         );
 
