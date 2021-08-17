@@ -76,10 +76,13 @@ class TestEvaluationServiceImplTest {
     @Mock
     private com.team4.testingsystem.entities.Test test;
 
+    private static final Long TEST_ID = 1L;
+
     @Test
     public void countScoreBeforeCoachCheckSuccess() {
 
-        Mockito.when(chosenOptionService.getAllByTest(test)).thenReturn(chosenOptionList);
+        Mockito.when(test.getId()).thenReturn(TEST_ID);
+        Mockito.when(chosenOptionService.getAllByTestId(TEST_ID)).thenReturn(chosenOptionList);
         Mockito.when(chosenOptionList.stream()).thenReturn(streamChosenOption);
         Mockito.when(streamChosenOption.filter(any())).thenReturn(streamChosenOption);
         Mockito.when(streamChosenOption.map(any())).thenAnswer(invocation -> streamAnswer);

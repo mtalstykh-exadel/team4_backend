@@ -107,11 +107,11 @@ public class QuestionDTO implements Serializable {
         }
         QuestionDTO that = (QuestionDTO) o;
         return Objects.equals(id, that.id)
-               && Objects.equals(questionBody, that.questionBody)
-               && Objects.equals(creator, that.creator)
-               && Objects.equals(level, that.level)
-               && Objects.equals(module, that.module)
-               && Objects.equals(answers, that.answers);
+                && Objects.equals(questionBody, that.questionBody)
+                && Objects.equals(creator, that.creator)
+                && Objects.equals(level, that.level)
+                && Objects.equals(module, that.module)
+                && Objects.equals(answers, that.answers);
     }
 
     @Override

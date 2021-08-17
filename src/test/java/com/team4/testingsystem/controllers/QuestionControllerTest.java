@@ -7,8 +7,10 @@ import com.team4.testingsystem.dto.ListeningTopicDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ContentFile;
+import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
@@ -30,6 +32,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 
@@ -76,16 +79,19 @@ class QuestionControllerTest {
         List<Question> questions = Lists.list(EntityCreatorUtil.createQuestion());
         Mockito.when(questionService.getQuestionsByLevelAndModuleName(any(), any())).thenReturn(questions);
         List<QuestionDTO> expectedQuestions = questions.stream()
-                .map(QuestionDTO::create)
-                .collect(Collectors.toList());
+            .map(QuestionDTO::create)
+            .collect(Collectors.toList());
         Assertions.assertEquals(expectedQuestions, questionController.getQuestions(any(), any()));
     }
 
     @Test
     void getListening() {
         ContentFile contentFile = new ContentFile();
+        Question question = EntityCreatorUtil.createQuestion();
+        contentFile.setQuestions(List.of(question));
         Mockito.when(contentFilesService.getById(1L)).thenReturn(contentFile);
-        Assertions.assertEquals(new ContentFileDTO(contentFile), questionController.getListening(1L));
+        Assertions.assertEquals(new ContentFileDTO(contentFile, question.getLevel().getName()),
+                questionController.getListening(1L));
     }
 
     @Test
@@ -117,6 +123,21 @@ class QuestionControllerTest {
         questionController.archiveQuestion(1L);
         Mockito.verify(questionService).archiveQuestion(1L);
     }
+
+    @Test
+    void archiveListeningSuccess() {
+        questionController.archiveListening(1L);
+        Mockito.verify(contentFilesService).archive(1L);
+    }
+
+    @Test
+    void archiveListeningFail() {
+        doThrow(ContentFileNotFoundException.class).when(contentFilesService).archive(42L);
+
+        Assertions.assertThrows(ContentFileNotFoundException.class,
+            () -> questionController.archiveListening(42L));
+    }
+
 
     @Test
     void updateQuestionWithoutAnswers() {
@@ -158,11 +179,13 @@ class QuestionControllerTest {
 
     @Test
     void addListening() {
-        Mockito.when(contentFilesService.add(multipartFile, TOPIC, List.of())).thenReturn(contentFile);
+        Mockito.when(contentFilesService.add(multipartFile, TOPIC, Lists.emptyList()))
+                .thenReturn(contentFile);
 
         ContentFileDTO request = new ContentFileDTO();
         request.setTopic(TOPIC);
         request.setQuestions(List.of());
+
         Assertions.assertEquals(new ContentFileDTO(contentFile),
                 questionController.addListening(multipartFile, request));
     }
