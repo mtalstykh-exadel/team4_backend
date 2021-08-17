@@ -10,7 +10,6 @@ import com.team4.testingsystem.dto.TestInfo;
 import com.team4.testingsystem.dto.TestVerificationDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
-import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
@@ -103,8 +102,7 @@ public class TestsController {
     @GetMapping(path = "/unverified")
     @Secured("ROLE_ADMIN")
     public List<TestInfo> getUnverifiedTests() {
-        Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
-        return convertToTestInfoDTO(testsService.getByStatuses(statuses));
+        return convertToTestInfoDTO(testsService.getAllUnverifiedTests());
     }
 
     @ApiOperation(value = "Is used to get all unverified tests, assigned to current coach")

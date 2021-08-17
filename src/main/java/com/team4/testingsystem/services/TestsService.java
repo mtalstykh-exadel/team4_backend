@@ -18,6 +18,8 @@ public interface TestsService {
 
     List<Test> getByStatuses(Status[] status);
 
+    List<Test> getAllUnverifiedTests();
+
     List<Test> getAllUnverifiedTestsByCoach(long coachId);
 
     List<UserTest> getAllUsersAndAssignedTests();

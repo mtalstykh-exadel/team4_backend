@@ -48,7 +48,7 @@ public class AmazonS3Service implements FilesService {
 
         try {
             FileUtils.copyInputStreamToFile(file.getInputStream(), tempFile);
-            amazonS3.putObject(bucketName, fileName, tempFile);
+            amazonS3.putObject(bucketName, fileNameToS3Key(fileName), tempFile);
         } catch (IOException | AmazonServiceException e) {
             throw new FileSavingFailedException();
         } finally {
@@ -59,7 +59,7 @@ public class AmazonS3Service implements FilesService {
     @Override
     public Resource load(String fileName) throws FileLoadingFailedException {
         try {
-            S3Object data = amazonS3.getObject(bucketName, fileName);
+            S3Object data = amazonS3.getObject(bucketName, fileNameToS3Key(fileName));
             S3ObjectInputStream objectContent = data.getObjectContent();
 
             return new ByteArrayResource(IOUtils.toByteArray(objectContent));
@@ -71,7 +71,7 @@ public class AmazonS3Service implements FilesService {
     @Override
     public void delete(String fileName) throws FileDeletingFailedException {
         try {
-            amazonS3.deleteObject(bucketName, fileName);
+            amazonS3.deleteObject(bucketName, fileNameToS3Key(fileName));
         } catch (AmazonServiceException e) {
             throw new FileDeletingFailedException();
         }
@@ -79,5 +79,9 @@ public class AmazonS3Service implements FilesService {
 
     public Path createTempFile(String fileName) throws IOException {
         return Files.createTempFile(null, fileName);
+    }
+
+    private String fileNameToS3Key(String fileName) {
+        return fileName.replace('-', '/');
     }
 }
