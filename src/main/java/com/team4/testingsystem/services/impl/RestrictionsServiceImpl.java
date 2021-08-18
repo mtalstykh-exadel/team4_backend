@@ -25,7 +25,7 @@ public class RestrictionsServiceImpl implements RestrictionsService {
 
     @Override
     public void checkStatus(Test test, Status status) {
-        if (!test.getStatus().name().equals(status.name())) {
+        if (!test.getStatus().equals(status)) {
             throw new AccessControlException("The test isn't " + status.name().toLowerCase());
 
         }
