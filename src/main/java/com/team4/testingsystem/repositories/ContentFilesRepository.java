@@ -18,7 +18,6 @@ public interface ContentFilesRepository extends CrudRepository<ContentFile, Long
     @Query(value = "UPDATE ContentFile cf SET cf.url = ?1 WHERE cf.id = ?2")
     int changeUrl(String url, Long id);
 
-
     @Query(value = "select * from language_testing.content_file as cf "
                    + "join language_testing.question_content_file as qcf on cf.id = qcf.content_file_id "
                    + "join language_testing.question as q on qcf.question_id = q.id "
