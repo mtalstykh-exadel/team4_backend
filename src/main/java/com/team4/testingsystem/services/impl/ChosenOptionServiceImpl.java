@@ -8,7 +8,6 @@ import com.team4.testingsystem.exceptions.ChosenOptionNotFoundException;
 import com.team4.testingsystem.repositories.ChosenOptionRepository;
 import com.team4.testingsystem.services.ChosenOptionService;
 import com.team4.testingsystem.services.RestrictionsService;
-import com.team4.testingsystem.services.TestsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
