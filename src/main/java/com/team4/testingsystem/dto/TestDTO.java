@@ -21,9 +21,13 @@ public class TestDTO implements Serializable {
     private String priority;
     private String status;
     private UserDTO coach;
-    private List<ErrorReportDTO> errorReports;
     private Map<String, List<QuestionDTO>> questions;
     private ListeningTopicDTO contentFile;
+
+    private String essayText;
+    private String speakingUrl;
+
+    private List<ErrorReportDTO> errorReports;
 
     public TestDTO() {
     }
@@ -148,6 +152,22 @@ public class TestDTO implements Serializable {
         this.coach = coach;
     }
 
+    public String getEssayText() {
+        return essayText;
+    }
+
+    public void setEssayText(String essayText) {
+        this.essayText = essayText;
+    }
+
+    public String getSpeakingUrl() {
+        return speakingUrl;
+    }
+
+    public void setSpeakingUrl(String speakingUrl) {
+        this.speakingUrl = speakingUrl;
+    }
+
     public List<ErrorReportDTO> getErrorReports() {
         return errorReports;
     }
@@ -174,12 +194,15 @@ public class TestDTO implements Serializable {
                 && Objects.equals(deadline, testDTO.deadline)
                 && Objects.equals(priority, testDTO.priority)
                 && Objects.equals(status, testDTO.status)
-                && Objects.equals(coach, testDTO.coach);
+                && Objects.equals(coach, testDTO.coach)
+                && Objects.equals(essayText, testDTO.essayText)
+                && Objects.equals(speakingUrl, testDTO.speakingUrl)
+                && Objects.equals(errorReports, testDTO.errorReports);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(level, assignedAt, completedAt, verifiedAt, startedAt, deadline, finishTime,
-                priority, status, coach);
+                priority, status, coach, essayText, speakingUrl, errorReports);
     }
 }
