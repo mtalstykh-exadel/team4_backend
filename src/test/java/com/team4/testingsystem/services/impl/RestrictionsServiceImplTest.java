@@ -81,11 +81,11 @@ public class RestrictionsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void checkModule(){
+    void checkModuleIsEssayOrSpeaking(){
         Mockito.when(question.getModule()).thenReturn(module);
         Mockito.when(module.getName()).thenReturn(Modules.GRAMMAR.getName());
         Assertions.assertThrows(AccessControlException.class,
-            () -> restrictionsService.checkModule(question));
+            () -> restrictionsService.checkModuleIsEssayOrSpeaking(question));
     }
 
     @org.junit.jupiter.api.Test

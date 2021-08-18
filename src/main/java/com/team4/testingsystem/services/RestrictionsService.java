@@ -12,7 +12,7 @@ public interface RestrictionsService {
 
     void checkGradeIsCorrect(int grade);
 
-    void checkModule(Question question);
+    void checkModuleIsEssayOrSpeaking(Question question);
 
     void checkTestContainsQuestion(Test test, Question question);
 

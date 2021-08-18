@@ -58,7 +58,7 @@ public class CoachGradeServiceImpl implements CoachGradeService {
 
         restrictionsService.checkTestContainsQuestion(test, question);
 
-        restrictionsService.checkModule(question);
+        restrictionsService.checkModuleIsEssayOrSpeaking(question);
 
         restrictionsService.checkGradeIsCorrect(grade);
 

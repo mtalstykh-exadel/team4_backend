@@ -48,7 +48,7 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     }
 
     @Override
-    public void checkModule(Question question) {
+    public void checkModuleIsEssayOrSpeaking(Question question) {
         if (!question.getModule().getName().equals(Modules.ESSAY.getName())
             && !question.getModule().getName().equals(Modules.SPEAKING.getName())) {
             throw new AccessControlException("Coach can grade only essay and speaking");
