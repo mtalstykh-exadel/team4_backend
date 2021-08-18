@@ -1,6 +1,5 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.ErrorReport;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.exceptions.ErrorReportNotFoundException;
@@ -17,9 +16,6 @@ import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -56,26 +52,6 @@ public class ErrorReportsServiceImplTest {
     ErrorReportsServiceImpl errorReportsService;
 
     @Test
-    void getByTestSuccess() {
-        List<ErrorReport> errorReports = new ArrayList<>();
-
-        Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
-
-        Mockito.when(errorReportsRepository.findAllById_Test(test)).thenReturn(errorReports);
-
-        Assertions.assertEquals(errorReports, errorReportsService.getReportsByTest(GOOD_TEST_ID));
-    }
-
-    @Test
-    void getByTestFail() {
-
-        Mockito.when(testsService.getById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
-
-        Assertions.assertThrows(TestNotFoundException.class,
-                () -> errorReportsService.getReportsByTest(BAD_TEST_ID));
-    }
-
-    @Test
     void addSuccess() {
         Mockito.when(questionService.getById(GOOD_QUESTION_ID)).thenReturn(question);
 
@@ -103,7 +79,6 @@ public class ErrorReportsServiceImplTest {
         Assertions.assertThrows(TestNotFoundException.class,
                 () -> errorReportsService.add("Bad report", GOOD_QUESTION_ID, BAD_TEST_ID));
     }
-
 
     @Test
     void removeSuccess() {

@@ -17,7 +17,9 @@ import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.services.ChosenOptionService;
 import com.team4.testingsystem.services.ContentFilesService;
+import com.team4.testingsystem.services.ErrorReportsService;
 import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.impl.ErrorReportsServiceImpl;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -46,6 +48,9 @@ class TestConverterTest {
 
     @Mock
     private ChosenOptionService chosenOptionService;
+
+    @Mock
+    private ErrorReportsService errorReportsService;
 
     @InjectMocks
     private TestConverter testConverter;

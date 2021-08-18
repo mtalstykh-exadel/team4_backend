@@ -11,4 +11,5 @@ public interface ErrorReportsService {
     void add(String requestBody, Long questionId, Long testId);
 
     void removeByTestAndQuestion(long testId, long questionId);
+
 }

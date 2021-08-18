@@ -21,6 +21,7 @@ public class TestDTO implements Serializable {
     private String priority;
     private String status;
     private UserDTO coach;
+    private List<ErrorReportDTO> errorReports;
     private Map<String, List<QuestionDTO>> questions;
     private ListeningTopicDTO contentFile;
 
@@ -145,6 +146,14 @@ public class TestDTO implements Serializable {
 
     public void setCoach(UserDTO coach) {
         this.coach = coach;
+    }
+
+    public List<ErrorReportDTO> getErrorReports() {
+        return errorReports;
+    }
+
+    public void setErrorReports(List<ErrorReportDTO> errorReports) {
+        this.errorReports = errorReports;
     }
 
     @Override
