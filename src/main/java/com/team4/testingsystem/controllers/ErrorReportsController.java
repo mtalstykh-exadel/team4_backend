@@ -20,13 +20,10 @@ import java.util.stream.Collectors;
 public class ErrorReportsController {
 
     private final ErrorReportsService errorReportsService;
-    private final ErrorReportsConverter errorReportsConverter;
 
     @Autowired
-    public ErrorReportsController(ErrorReportsService errorReportsService,
-                                  ErrorReportsConverter errorReportsConverter) {
+    public ErrorReportsController(ErrorReportsService errorReportsService) {
         this.errorReportsService = errorReportsService;
-        this.errorReportsConverter = errorReportsConverter;
     }
 
     @ApiOperation(value = "Use it to add or update an error report")
@@ -35,14 +32,6 @@ public class ErrorReportsController {
         errorReportsService.add(errorReportDTO.getReportBody(),
                 errorReportDTO.getQuestionId(),
                 errorReportDTO.getTestId());
-    }
-
-    @ApiOperation(value = "add a list of error reports")
-    @PostMapping(path = "/all")
-    public void addAll(@RequestBody List<ErrorReportDTO> errorReports) {
-        errorReportsService.addAll(errorReports.stream()
-                .map(errorReportsConverter::convertToEntity)
-                .collect(Collectors.toList()));
     }
 
     @ApiOperation(value = "Use it to remove an error report from the database")
