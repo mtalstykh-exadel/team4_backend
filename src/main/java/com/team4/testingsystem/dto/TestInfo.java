@@ -18,6 +18,8 @@ public class TestInfo implements Serializable {
     private Instant startedAt;
     private UserDTO coach;
 
+    private Integer totalScore = 0;
+
     public TestInfo() {
     }
 
@@ -34,6 +36,11 @@ public class TestInfo implements Serializable {
         if (test.getCoach() != null) {
             coach = new UserDTO(test.getCoach());
         }
+    }
+
+    public TestInfo(Test test, Integer totalScore) {
+        this(test);
+        this.totalScore = totalScore;
     }
 
     public UserDTO getCoach() {
@@ -116,6 +123,14 @@ public class TestInfo implements Serializable {
         this.priority = priority;
     }
 
+    public Integer getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(Integer totalScore) {
+        this.totalScore = totalScore;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -126,28 +141,21 @@ public class TestInfo implements Serializable {
         }
         TestInfo testInfo = (TestInfo) o;
         return Objects.equals(testId, testInfo.testId)
-               && Objects.equals(level, testInfo.level)
-               && Objects.equals(assigned, testInfo.assigned)
-               && Objects.equals(deadline, testInfo.deadline)
-               && Objects.equals(verified, testInfo.verified)
-               && Objects.equals(status, testInfo.status)
-               && Objects.equals(priority, testInfo.priority)
-               && Objects.equals(completedAt, testInfo.completedAt)
-               && Objects.equals(startedAt, testInfo.startedAt)
-               && Objects.equals(coach, testInfo.coach);
+                && Objects.equals(level, testInfo.level)
+                && Objects.equals(assigned, testInfo.assigned)
+                && Objects.equals(deadline, testInfo.deadline)
+                && Objects.equals(verified, testInfo.verified)
+                && Objects.equals(status, testInfo.status)
+                && Objects.equals(priority, testInfo.priority)
+                && Objects.equals(completedAt, testInfo.completedAt)
+                && Objects.equals(startedAt, testInfo.startedAt)
+                && Objects.equals(coach, testInfo.coach)
+                && Objects.equals(totalScore, testInfo.totalScore);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(testId,
-                level,
-                assigned,
-                deadline,
-                verified,
-                status,
-                priority,
-                completedAt,
-                startedAt,
-                coach);
+        return Objects.hash(testId, level, assigned, deadline, verified,
+                status, priority, completedAt, startedAt, coach, totalScore);
     }
 }

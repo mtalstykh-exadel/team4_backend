@@ -1,9 +1,9 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.services.AnswerService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +26,7 @@ public class AnswerController {
 
     @ApiOperation(value = "Download essay text by test ID")
     @GetMapping("/essay/{testId}")
+    @Secured("ROLE_COACH")
     public String downloadEssay(@PathVariable Long testId) {
         return answerService.downloadEssay(testId);
     }
@@ -40,11 +41,12 @@ public class AnswerController {
     @PostMapping("/speaking/{testId}")
     public String uploadSpeaking(@RequestPart MultipartFile file,
                                  @PathVariable("testId") Long testId) {
-        return answerService.uploadSpeaking(file, testId, Modules.SPEAKING);
+        return answerService.uploadSpeaking(file, testId);
     }
 
     @ApiOperation("Get an answer file for the speaking module")
     @GetMapping("/speaking/{testId}")
+    @Secured("ROLE_COACH")
     public String downloadSpeaking(@PathVariable("testId") Long testId) {
         return answerService.downloadSpeaking(testId);
     }

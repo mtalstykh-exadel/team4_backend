@@ -6,6 +6,7 @@ import com.team4.testingsystem.entities.Timer;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.entities.UserTest;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
@@ -14,14 +15,17 @@ import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.TimerRepository;
 import com.team4.testingsystem.services.LevelService;
+import com.team4.testingsystem.services.NotificationService;
 import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
+import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -38,6 +42,7 @@ public class TestsServiceImpl implements TestsService {
     private final TestsRepository testsRepository;
     private final TestGeneratingService testGeneratingService;
     private final TestEvaluationService testEvaluationService;
+    private final NotificationService notificationService;
 
     private final LevelService levelService;
     private final UsersService usersService;
@@ -47,17 +52,18 @@ public class TestsServiceImpl implements TestsService {
     @Value("${tests-limit:3}")
     private int testsLimit;
 
-
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
                             TestGeneratingService testGeneratingService,
                             TestEvaluationService testEvaluationService,
+                            NotificationService notificationService,
                             LevelService levelService,
                             UsersService usersService,
                             TimerRepository timerRepository) {
         this.testsRepository = testsRepository;
         this.testGeneratingService = testGeneratingService;
         this.testEvaluationService = testEvaluationService;
+        this.notificationService = notificationService;
         this.levelService = levelService;
         this.usersService = usersService;
         this.timerRepository = timerRepository;
@@ -69,26 +75,35 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public List<Test> getByUserId(long userId) {
+    public List<Test> getByUserId(long userId, Pageable pageable) {
         User user = usersService.getUserById(userId);
-        return testsRepository.getAllByUser(user);
+        return testsRepository.getAllByUser(user, pageable);
     }
 
     @Override
-    public List<Test> getByStatuses(Status[] statuses) {
-        return testsRepository.getByStatuses(statuses);
+    public List<Test> getByStatuses(Status[] statuses, Pageable pageable) {
+        return testsRepository.getByStatuses(statuses, pageable);
     }
 
     @Override
-    public List<Test> getAllUnverifiedTestsByCoach(long coachId) {
+    public List<Test> getAllUnverifiedTests(Pageable pageable) {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
-        return testsRepository.getAllByAssignedCoachAndStatuses(coachId, statuses);
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+        return getByStatuses(statuses, pageable).stream()
+                .filter(test -> !test.getUser().getId().equals(currentUserId))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<UserTest> getAllUsersAndAssignedTests() {
+    public List<Test> getAllUnverifiedTestsByCoach(long coachId, Pageable pageable) {
+        Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
+        return testsRepository.getAllByAssignedCoachAndStatuses(coachId, statuses, pageable);
+    }
+
+    @Override
+    public List<UserTest> getAllUsersAndAssignedTests(Pageable pageable) {
         Status[] statuses = {Status.ASSIGNED};
-        Map<User, Test> assignedTests = getByStatuses(statuses).stream()
+        Map<User, Test> assignedTests = getByStatuses(statuses, pageable).stream()
                 .collect(Collectors.toMap(Test::getUser, Function.identity()));
 
         return usersService.getAll().stream()
@@ -97,12 +112,12 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public List<Test> getTestsByUserIdAndLevel(long userId, Levels level) {
-        return testsRepository.getAllByUser(usersService.getUserById(userId)).stream()
+    public List<Test> getTestsByUserIdAndLevel(long userId, Levels level, Pageable pageable) {
+        return testsRepository.getAllByUser(usersService.getUserById(userId), pageable).stream()
                 .filter(test -> test.getLevel().getName().equals(level.name()))
                 .collect(Collectors.toList());
     }
-
+    
     @Override
     public Test startTestVerification(long testId) {
         testsRepository.updateStatusByTestId(testId, Status.IN_VERIFICATION);
@@ -144,6 +159,9 @@ public class TestsServiceImpl implements TestsService {
                 .build();
 
         testsRepository.save(test);
+
+        notificationService.create(NotificationType.TEST_ASSIGNED, test.getUser(), test);
+
         return test.getId();
     }
 
@@ -151,10 +169,11 @@ public class TestsServiceImpl implements TestsService {
     public void deassign(long id) {
         Test test = getById(id);
         if (test.getStartedAt() == null) {
-            testsRepository.removeById(id);
+            testsRepository.archiveById(id);
         } else {
             testsRepository.deassign(id);
         }
+        notificationService.create(NotificationType.TEST_DEASSIGNED, test.getUser(), test);
     }
 
     private Test.Builder createForUser(long userId, Levels levelName) {
@@ -167,7 +186,6 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public Test start(long id) {
-
         if (testsRepository.start(Instant.now(), id) == 0) {
             throw new TestNotFoundException();
         }
@@ -196,7 +214,7 @@ public class TestsServiceImpl implements TestsService {
 
         java.util.Timer timer = new java.util.Timer(String.valueOf(testId));
         long delay = test.getFinishTime().plus(2L, ChronoUnit.MINUTES).toEpochMilli()
-                - Instant.now().toEpochMilli();
+                     - Instant.now().toEpochMilli();
         if (delay <= 0) {
             finish(testId, test.getFinishTime());
             timer.cancel();
@@ -222,8 +240,10 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public void coachSubmit(long id) {
-        testEvaluationService.updateScoreAfterCoachCheck(getById(id));
-        testsRepository.updateEvaluation(Instant.now(), id);
+        Test test = getById(id);
+        testEvaluationService.updateScoreAfterCoachCheck(test);
+        testsRepository.coachSubmit(Instant.now(), id);
+        notificationService.create(NotificationType.TEST_VERIFIED, test.getUser(), test);
     }
 
     @Override
@@ -243,4 +263,5 @@ public class TestsServiceImpl implements TestsService {
             throw new TestNotFoundException();
         }
     }
+
 }

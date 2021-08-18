@@ -7,10 +7,12 @@ import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
+import com.team4.testingsystem.exceptions.TooLongEssayException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.services.FileAnswerService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
+import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,16 +30,19 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     private final QuestionService questionService;
     private final TestsService testsService;
     private final ResourceStorageService storageService;
+    private final RestrictionsService restrictionsService;
 
     @Autowired
     public FileAnswerServiceImpl(FileAnswerRepository fileAnswerRepository,
                                  QuestionService questionService,
                                  TestsService testsService,
-                                 ResourceStorageService storageService) {
+                                 ResourceStorageService storageService,
+                                 RestrictionsService restrictionsService) {
         this.fileAnswerRepository = fileAnswerRepository;
         this.questionService = questionService;
         this.testsService = testsService;
         this.storageService = storageService;
+        this.restrictionsService = restrictionsService;
     }
 
     @Override
@@ -48,10 +53,29 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     }
 
     @Override
-    public FileAnswer uploadSpeaking(MultipartFile file, Long testId, Modules module) {
-        String url = storageService.upload(file.getResource());
-        Question question = questionService.getQuestionByTestIdAndModule(testId, module);
-        return save(testId, question.getId(), url);
+    public FileAnswer uploadSpeaking(MultipartFile file, Long testId) {
+        Test test = testsService.getById(testId);
+
+        restrictionsService.checkOwnerIsCurrentUser(test);
+
+        restrictionsService.checkStartedStatus(test);
+
+        String url = storageService.upload(file.getResource(), Modules.SPEAKING, testId);
+
+        Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.SPEAKING);
+
+        TestQuestionID id = new TestQuestionID(test, question);
+        if (!fileAnswerRepository.existsById(id)) {
+            FileAnswer fileAnswer = FileAnswer.builder()
+                .id(id)
+                .url(url)
+                .build();
+            return fileAnswerRepository.save(fileAnswer);
+        }
+        fileAnswerRepository.updateUrl(id, url);
+        return fileAnswerRepository.findById(id)
+            .orElseThrow(FileAnswerNotFoundException::new);
+
     }
 
     @Override
@@ -60,14 +84,6 @@ public class FileAnswerServiceImpl implements FileAnswerService {
         return getUrl(testId, question.getId());
     }
 
-    @Override
-    public FileAnswer save(Long testId, Long questionId, String url) {
-        FileAnswer fileAnswer = FileAnswer.builder()
-                .id(createId(testId, questionId))
-                .url(url)
-                .build();
-        return fileAnswerRepository.save(fileAnswer);
-    }
 
     @Override
     public void remove(Long testId, Long questionId) {
@@ -88,15 +104,33 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     @Override
     public FileAnswer uploadEssay(Long testId, String text) {
         Test test = testsService.getById(testId);
+
+        restrictionsService.checkOwnerIsCurrentUser(test);
+
+        restrictionsService.checkStartedStatus(test);
+
         Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
 
+        if (text.length() > 512) {
+            throw new TooLongEssayException();
+        }
+
         InputStream inputStream = IOUtils.toInputStream(text, StandardCharsets.UTF_8);
-        String url = storageService.upload(new InputStreamResource(inputStream));
-        FileAnswer fileAnswer = FileAnswer.builder()
-                .id(new TestQuestionID(test, question))
+        String url = storageService.upload(new InputStreamResource(inputStream), Modules.ESSAY, testId);
+
+        TestQuestionID id = new TestQuestionID(test, question);
+
+        if (!fileAnswerRepository.existsById(id)) {
+            FileAnswer fileAnswer = FileAnswer.builder()
+                .id(id)
                 .url(url)
                 .build();
-        return fileAnswerRepository.save(fileAnswer);
+            return fileAnswerRepository.save(fileAnswer);
+        }
+
+        fileAnswerRepository.updateUrl(id, url);
+        return fileAnswerRepository.findById(id)
+            .orElseThrow(FileAnswerNotFoundException::new);
     }
 
     private TestQuestionID createId(Long testId, Long questionId) {

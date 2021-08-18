@@ -8,12 +8,13 @@ import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.enums.QuestionStatus;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,8 +56,13 @@ public class QuestionController {
     @GetMapping("/")
     @Secured("ROLE_COACH")
     public List<QuestionDTO> getQuestions(@RequestParam("level") Levels level,
-                                          @RequestParam("module") Modules module) {
-        return questionService.getQuestionsByLevelAndModuleName(level, module).stream()
+                                          @RequestParam("module") Modules module,
+                                          @RequestParam("status") QuestionStatus status,
+                                          @RequestParam int pageNumb,
+                                          @RequestParam int pageSize
+    ) {
+        return questionService.getQuestionsByLevelAndModuleName(
+                level, module, status, PageRequest.of(pageNumb, pageSize)).stream()
                 .map(QuestionDTO::create)
                 .collect(Collectors.toList());
     }
@@ -83,8 +89,12 @@ public class QuestionController {
 
     @ApiOperation(value = "Get all topics (or get by level)")
     @GetMapping(value = "/listening")
-    public List<ListeningTopicDTO> getListeningTopics(@RequestParam(required = false) Levels level) {
-        return convertToDTO(questionService.getListening(level));
+    public List<ListeningTopicDTO> getListeningTopics(@RequestParam(required = false) Levels level,
+                                                      @RequestParam("status") QuestionStatus status,
+                                                      @RequestParam int pageNumb,
+                                                      @RequestParam int pageSize
+                                                      ) {
+        return convertToDTO(questionService.getListening(level, status, PageRequest.of(pageNumb, pageSize)));
     }
 
     @ApiOperation(value = "Add content file with questions")
@@ -98,7 +108,7 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "Update content file with questions or just questions for content file")
-    @PutMapping(value = "/listening/{contentFileId}")
+    @PutMapping(value = "/update/listening/{contentFileId}")
     @Secured("ROLE_COACH")
     public ContentFileDTO updateListening(@RequestPart(required = false) MultipartFile file,
                                           @PathVariable("contentFileId") Long id,
@@ -108,15 +118,24 @@ public class QuestionController {
         return new ContentFileDTO(contentFile);
     }
 
-    @ApiOperation(value = "Archive the question")
-    @DeleteMapping("/{id}")
+    @ApiOperation(value = "Archive/Unarchive the question")
+    @PutMapping("/{id}")
     @Secured("ROLE_COACH")
-    public void archiveQuestion(@PathVariable("id") Long id) {
-        questionService.archiveQuestion(id);
+    public void updateAvailability(@PathVariable("id") Long id,
+                                   @RequestParam Boolean available) {
+        questionService.updateAvailability(id, available);
+    }
+
+    @ApiOperation(value = "Archive/Unarchive the listening")
+    @PutMapping("/listening/{contentFileId}")
+    @Secured("ROLE_COACH")
+    public void updateAvailabilityListening(@PathVariable("contentFileId") Long contentFileId,
+                                            @RequestParam Boolean available) {
+        contentFilesService.updateAvailability(contentFileId, available);
     }
 
     @ApiOperation(value = "Change the question")
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     @Secured("ROLE_COACH")
     public QuestionDTO updateQuestion(@RequestBody QuestionDTO questionDTO, @PathVariable("id") Long id) {
         Question resultQuestion = questionService

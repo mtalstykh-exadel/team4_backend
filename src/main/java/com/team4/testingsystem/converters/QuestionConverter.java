@@ -38,6 +38,7 @@ public class QuestionConverter {
                 .creator(usersService.getUserById(JwtTokenUtil.extractUserDetails().getId()))
                 .level(getLevel(question, questionDTO))
                 .module(getModule(question, questionDTO))
+                .isAvailable(true)
                 .build();
     }
 

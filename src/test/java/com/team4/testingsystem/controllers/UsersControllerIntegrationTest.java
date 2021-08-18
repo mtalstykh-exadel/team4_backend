@@ -53,6 +53,9 @@ class UsersControllerIntegrationTest {
     private CustomUserDetails coachDetails;
     private CustomUserDetails adminDetails;
 
+    private final String page = "0";
+    private final String count = "10";
+
     @Autowired
     UsersControllerIntegrationTest(MockMvc mockMvc,
                                    UsersRepository usersRepository,
@@ -124,6 +127,8 @@ class UsersControllerIntegrationTest {
     @Test
     void getAllUsersNoAssignedTest() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/employees")
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(hrDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -144,6 +149,8 @@ class UsersControllerIntegrationTest {
                 .forEach(testsRepository::save);
 
         MvcResult mvcResult = mockMvc.perform(get("/employees")
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(hrDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -157,6 +164,8 @@ class UsersControllerIntegrationTest {
     @Test
     void getAllUsersAssignedUser() throws Exception {
         mockMvc.perform(get("/employees")
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(userDetails)))
                 .andExpect(status().isForbidden());
     }
@@ -164,6 +173,8 @@ class UsersControllerIntegrationTest {
     @Test
     void getAllUsersAssignedCoach() throws Exception {
         mockMvc.perform(get("/employees")
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(coachDetails)))
                 .andExpect(status().isForbidden());
     }
@@ -171,6 +182,8 @@ class UsersControllerIntegrationTest {
     @Test
     void getAllUsersAssignedAdmin() throws Exception {
         mockMvc.perform(get("/employees")
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(adminDetails)))
                 .andExpect(status().isForbidden());
     }
