@@ -14,6 +14,7 @@ import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.TimerRepository;
 import com.team4.testingsystem.services.LevelService;
+import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
@@ -44,6 +45,7 @@ public class TestsServiceImpl implements TestsService {
 
     private final LevelService levelService;
     private final UsersService usersService;
+    private final RestrictionsService restrictionsService;
 
     private final TimerRepository timerRepository;
 
@@ -57,12 +59,14 @@ public class TestsServiceImpl implements TestsService {
                             TestEvaluationService testEvaluationService,
                             LevelService levelService,
                             UsersService usersService,
+                            RestrictionsService restrictionsService,
                             TimerRepository timerRepository) {
         this.testsRepository = testsRepository;
         this.testGeneratingService = testGeneratingService;
         this.testEvaluationService = testEvaluationService;
         this.levelService = levelService;
         this.usersService = usersService;
+        this.restrictionsService = restrictionsService;
         this.timerRepository = timerRepository;
     }
 
@@ -234,7 +238,13 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public void coachSubmit(long id) {
-        testEvaluationService.updateScoreAfterCoachCheck(getById(id));
+        Test test = getById(id);
+
+        restrictionsService.checkCoachIsCurrentUser(test);
+
+        restrictionsService.checkStatus(test, Status.IN_VERIFICATION);
+
+        testEvaluationService.updateScoreAfterCoachCheck(test);
         testsRepository.coachSubmit(Instant.now(), id);
     }
 
