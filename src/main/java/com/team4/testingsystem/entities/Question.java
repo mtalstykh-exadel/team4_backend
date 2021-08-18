@@ -26,7 +26,7 @@ public class Question implements Serializable {
     @Column(name = "question_body")
     private String body;
     @Column(name = "is_available")
-    private boolean isAvailable;
+    private Boolean isAvailable;
 
     @ManyToOne
     @JoinColumn(name = "creator_user_id", referencedColumnName = "id")
