@@ -60,11 +60,18 @@ public class FileAnswerServiceImpl implements FileAnswerService {
 
         Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.SPEAKING);
 
-        FileAnswer fileAnswer = FileAnswer.builder()
-            .id(new TestQuestionID(test, question))
-            .url(url)
-            .build();
-        return fileAnswerRepository.save(fileAnswer);
+        TestQuestionID id = new TestQuestionID(test, question);
+        if (!fileAnswerRepository.existsById(id)) {
+            FileAnswer fileAnswer = FileAnswer.builder()
+                .id(id)
+                .url(url)
+                .build();
+            return fileAnswerRepository.save(fileAnswer);
+        }
+        fileAnswerRepository.updateUrl(id, url);
+        return fileAnswerRepository.findById(id)
+            .orElseThrow(FileAnswerNotFoundException::new);
+
     }
 
     @Override
@@ -107,11 +114,19 @@ public class FileAnswerServiceImpl implements FileAnswerService {
         InputStream inputStream = IOUtils.toInputStream(text, StandardCharsets.UTF_8);
         String url = storageService.upload(new InputStreamResource(inputStream), Modules.ESSAY, testId);
 
-        FileAnswer fileAnswer = FileAnswer.builder()
-                .id(new TestQuestionID(test, question))
+        TestQuestionID id = new TestQuestionID(test, question);
+
+        if (!fileAnswerRepository.existsById(id)) {
+            FileAnswer fileAnswer = FileAnswer.builder()
+                .id(id)
                 .url(url)
                 .build();
-        return fileAnswerRepository.save(fileAnswer);
+            return fileAnswerRepository.save(fileAnswer);
+        }
+
+        fileAnswerRepository.updateUrl(id, url);
+        return fileAnswerRepository.findById(id)
+            .orElseThrow(FileAnswerNotFoundException::new);
     }
 
     private TestQuestionID createId(Long testId, Long questionId) {
