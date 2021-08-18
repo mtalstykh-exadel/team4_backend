@@ -6,7 +6,6 @@ import com.team4.testingsystem.dto.ReportedQuestionDTO;
 import com.team4.testingsystem.dto.TestVerificationDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Modules;
-import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.services.AnswerService;
 import com.team4.testingsystem.services.CoachGradeService;
@@ -37,19 +36,8 @@ public class TestVerificationConverter {
                 .map(ReportedQuestionDTO::new)
                 .collect(Collectors.toList());
 
-        String essayText;
-        try {
-            essayText = answerService.downloadEssay(test.getId());
-        } catch (FileAnswerNotFoundException e) {
-            essayText = null;
-        }
-
-        String speakingUrl;
-        try {
-            speakingUrl = answerService.downloadSpeaking(test.getId());
-        } catch (FileAnswerNotFoundException e) {
-            speakingUrl = null;
-        }
+        String essayText = answerService.tryDownloadEssay(test.getId()).orElse(null);
+        String speakingUrl = answerService.tryDownloadSpeaking(test.getId()).orElse(null);
 
         List<CoachGradeDTO> grades = gradeService.getGradesByTest(test.getId()).stream()
                 .map(CoachGradeDTO::new)
