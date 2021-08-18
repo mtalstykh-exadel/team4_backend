@@ -1,6 +1,7 @@
 package com.team4.testingsystem.repositories;
 
 import com.team4.testingsystem.entities.ContentFile;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -19,16 +20,16 @@ public interface ContentFilesRepository extends CrudRepository<ContentFile, Long
 
 
     @Query(value = "select * from language_testing.content_file as cf "
-        + "join language_testing.question_content_file as qcf on cf.id = qcf.content_file_id "
-        + "join language_testing.question as q on qcf.question_id = q.id "
-        + "join language_testing.level as l on l.id = q.level_id "
-        + "where l.level_name = ?1 and cf.is_available = true "
-        + "order by RANDOM() limit 1; ", nativeQuery = true)
+                   + "join language_testing.question_content_file as qcf on cf.id = qcf.content_file_id "
+                   + "join language_testing.question as q on qcf.question_id = q.id "
+                   + "join language_testing.level as l on l.id = q.level_id "
+                   + "where l.level_name = ?1 and cf.is_available = true "
+                   + "order by RANDOM() limit 1; ", nativeQuery = true)
     ContentFile getRandomFiles(String level);
 
     @Query("select cf from ContentFile cf "
-        + "join cf.questions q "
-        + "where q.id = ?1")
+           + "join cf.questions q "
+           + "where q.id = ?1")
     ContentFile getContentFileByQuestionId(Long id);
 
     @Transactional
@@ -36,11 +37,12 @@ public interface ContentFilesRepository extends CrudRepository<ContentFile, Long
     @Query(value = "update ContentFile cf set cf.available = false where cf.id = ?1")
     int archiveContentFile(Long id);
 
-    List<ContentFile> findAllByAvailable(boolean isAvailable);
+    List<ContentFile> findAllByAvailableOrderByIdDesc(boolean isAvailable, Pageable pageable);
 
     @Query("select distinct cf from ContentFile cf "
-        + "join cf.questions q "
-        + "where q.level.name = ?1 "
-        + "and cf.available = ?2")
-    List<ContentFile> getContentFiles(String level, boolean isAvailable);
+           + "join cf.questions q "
+           + "where q.level.name = ?1 "
+           + "and cf.available = ?2 "
+           + "order by cf.id desc ")
+    List<ContentFile> getContentFiles(String level, boolean isAvailable, Pageable pageable);
 }
