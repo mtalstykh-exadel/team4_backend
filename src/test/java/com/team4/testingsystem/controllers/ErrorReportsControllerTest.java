@@ -131,20 +131,6 @@ public class ErrorReportsControllerTest {
     }
 
     @Test
-    void getByTestIdSuccess() {
-        Assertions.assertEquals(List.of(), errorReportsController.getByTestId(GOOD_TEST_ID));
-        verify(errorReportsService).getReportsByTest(GOOD_TEST_ID);
-    }
-
-    @Test
-    void getByTestIdFailTestNotFound() {
-        Mockito.when(errorReportsService.getReportsByTest(BAD_TEST_ID))
-                .thenThrow(TestNotFoundException.class);
-        Assertions.assertThrows(TestNotFoundException.class,
-                () -> errorReportsController.getByTestId(BAD_TEST_ID));
-    }
-
-    @Test
     void addAll(){
         List<ErrorReportDTO> errorReports = List.of(EntityCreatorUtil
                 .createErrorReportDTO(GOOD_REPORT_BODY, GOOD_QUESTION_ID, GOOD_TEST_ID));
