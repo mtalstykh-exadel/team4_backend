@@ -16,6 +16,7 @@ import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.TimerRepository;
 import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.NotificationService;
+import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
@@ -46,6 +47,7 @@ public class TestsServiceImpl implements TestsService {
 
     private final LevelService levelService;
     private final UsersService usersService;
+    private final RestrictionsService restrictionsService;
 
     private final TimerRepository timerRepository;
 
@@ -59,6 +61,7 @@ public class TestsServiceImpl implements TestsService {
                             NotificationService notificationService,
                             LevelService levelService,
                             UsersService usersService,
+                            RestrictionsService restrictionsService,
                             TimerRepository timerRepository) {
         this.testsRepository = testsRepository;
         this.testGeneratingService = testGeneratingService;
@@ -66,6 +69,7 @@ public class TestsServiceImpl implements TestsService {
         this.notificationService = notificationService;
         this.levelService = levelService;
         this.usersService = usersService;
+        this.restrictionsService = restrictionsService;
         this.timerRepository = timerRepository;
     }
 
@@ -241,6 +245,11 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public void coachSubmit(long id) {
         Test test = getById(id);
+
+        restrictionsService.checkCoachIsCurrentUser(test);
+
+        restrictionsService.checkStatus(test, Status.IN_VERIFICATION);
+
         testEvaluationService.updateScoreAfterCoachCheck(test);
         testsRepository.coachSubmit(Instant.now(), id);
         notificationService.create(NotificationType.TEST_VERIFIED, test.getUser(), test);

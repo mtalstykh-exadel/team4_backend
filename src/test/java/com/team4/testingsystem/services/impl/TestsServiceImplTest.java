@@ -18,6 +18,7 @@ import com.team4.testingsystem.repositories.TimerRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.NotificationService;
+import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
@@ -89,6 +90,9 @@ class TestsServiceImplTest {
 
     @Mock
     private List<Test> tests;
+
+    @Mock
+    RestrictionsService restrictionsService;
 
     @InjectMocks
     private TestsServiceImpl testsService;

@@ -3,6 +3,7 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.ChosenOptionBadRequestException;
 import com.team4.testingsystem.exceptions.ChosenOptionNotFoundException;
 import com.team4.testingsystem.repositories.ChosenOptionRepository;
@@ -47,7 +48,7 @@ public class ChosenOptionServiceImpl implements ChosenOptionService {
 
                 restrictionsService.checkOwnerIsCurrentUser(test);
 
-                restrictionsService.checkStartedStatus(test);
+                restrictionsService.checkStatus(test, Status.STARTED);
 
                 restrictionsService.checkTestContainsQuestion(test, question);
             }

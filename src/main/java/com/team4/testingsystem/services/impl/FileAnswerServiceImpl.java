@@ -5,6 +5,7 @@ import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.exceptions.TooLongEssayException;
@@ -58,7 +59,7 @@ public class FileAnswerServiceImpl implements FileAnswerService {
 
         restrictionsService.checkOwnerIsCurrentUser(test);
 
-        restrictionsService.checkStartedStatus(test);
+        restrictionsService.checkStatus(test, Status.STARTED);
 
         String url = storageService.upload(file.getResource(), Modules.SPEAKING, testId);
 
@@ -107,7 +108,7 @@ public class FileAnswerServiceImpl implements FileAnswerService {
 
         restrictionsService.checkOwnerIsCurrentUser(test);
 
-        restrictionsService.checkStartedStatus(test);
+        restrictionsService.checkStatus(test, Status.STARTED);
 
         Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
 

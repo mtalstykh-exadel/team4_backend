@@ -2,7 +2,9 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.enums.Status;
+import com.team4.testingsystem.exceptions.IllegalGradeException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
@@ -22,9 +24,10 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     }
 
     @Override
-    public void checkStartedStatus(Test test) {
-        if (!test.getStatus().name().equals(Status.STARTED.name())) {
-            throw new AccessControlException("The test isn't started");
+    public void checkStatus(Test test, Status status) {
+        if (!test.getStatus().equals(status)) {
+            throw new AccessControlException("The test isn't " + status.name().toLowerCase());
+
         }
     }
 
@@ -33,6 +36,35 @@ public class RestrictionsServiceImpl implements RestrictionsService {
         if (!test.getQuestions().contains(question)) {
             throw new QuestionNotFoundException("The test doesn't contain the question with id = "
                 + question.getId());
+        }
+    }
+
+
+    @Override
+    public void checkGradeIsCorrect(int grade) {
+        if (grade < 0 || grade > 10) {
+            throw new IllegalGradeException();
+        }
+    }
+
+    @Override
+    public void checkModuleIsEssayOrSpeaking(Question question) {
+        if (!question.getModule().getName().equals(Modules.ESSAY.getName())
+            && !question.getModule().getName().equals(Modules.SPEAKING.getName())) {
+            throw new AccessControlException("Coach can grade only essay and speaking");
+        }
+    }
+
+    @Override
+    public void checkCoachIsCurrentUser(Test test) {
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+
+        if (test.getCoach() == null) {
+            throw new AccessControlException("The test has no assigned coach");
+        }
+
+        if (!test.getCoach().getId().equals(currentUserId)) {
+            throw new AccessControlException("The test has another coach");
         }
     }
 }
