@@ -40,20 +40,18 @@ public class ChosenOptionServiceImpl implements ChosenOptionService {
 
     @Override
     public void saveAll(List<ChosenOption> chosenOptions) {
-        Test test;
 
-        Question question;
+        chosenOptions.parallelStream().forEach(item -> {
+                Test test = item.getId().getTest();
+                Question question = item.getId().getQuestion();
 
-        for (ChosenOption item : chosenOptions) {
-            test = item.getId().getTest();
-            question = item.getId().getQuestion();
+                restrictionsService.checkOwnerIsCurrentUser(test);
 
-            restrictionsService.checkOwnerIsCurrentUser(test);
+                restrictionsService.checkStartedStatus(test);
 
-            restrictionsService.checkStartedStatus(test);
-
-            restrictionsService.checkTestContainsQuestion(test, question);
-        }
+                restrictionsService.checkTestContainsQuestion(test, question);
+            }
+        );
 
         try {
             chosenOptionRepository.saveAll(chosenOptions);
