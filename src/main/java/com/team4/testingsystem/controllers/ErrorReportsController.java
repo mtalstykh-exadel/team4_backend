@@ -1,6 +1,5 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.converters.ErrorReportsConverter;
 import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.services.ErrorReportsService;
 import io.swagger.annotations.ApiOperation;
@@ -11,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/error_reports")
