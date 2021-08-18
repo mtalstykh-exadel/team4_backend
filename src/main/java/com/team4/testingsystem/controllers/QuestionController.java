@@ -15,7 +15,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -109,7 +108,7 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "Update content file with questions or just questions for content file")
-    @PutMapping(value = "/listening/{contentFileId}")
+    @PutMapping(value = "/update/listening/{contentFileId}")
     @Secured("ROLE_COACH")
     public ContentFileDTO updateListening(@RequestPart(required = false) MultipartFile file,
                                           @PathVariable("contentFileId") Long id,
@@ -119,22 +118,24 @@ public class QuestionController {
         return new ContentFileDTO(contentFile);
     }
 
-    @ApiOperation(value = "Archive the question")
-    @DeleteMapping("/{id}")
+    @ApiOperation(value = "Archive/Unarchive the question")
+    @PutMapping("/{id}")
     @Secured("ROLE_COACH")
-    public void archiveQuestion(@PathVariable("id") Long id) {
-        questionService.archiveQuestion(id);
+    public void updateAvailability(@PathVariable("id") Long id,
+                                   @RequestParam Boolean available) {
+        questionService.updateAvailability(id, available);
     }
 
-    @ApiOperation(value = "Archive the listening")
-    @DeleteMapping("/listening/{contentFileId}")
+    @ApiOperation(value = "Archive/Unarchive the listening")
+    @PutMapping("/listening/{contentFileId}")
     @Secured("ROLE_COACH")
-    public void archiveListening(@PathVariable("contentFileId") Long contentFileId) {
-        contentFilesService.archive(contentFileId);
+    public void updateAvailabilityListening(@PathVariable("contentFileId") Long contentFileId,
+                                            @RequestParam Boolean available) {
+        contentFilesService.updateAvailability(contentFileId, available);
     }
 
     @ApiOperation(value = "Change the question")
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     @Secured("ROLE_COACH")
     public QuestionDTO updateQuestion(@RequestBody QuestionDTO questionDTO, @PathVariable("id") Long id) {
         Question resultQuestion = questionService

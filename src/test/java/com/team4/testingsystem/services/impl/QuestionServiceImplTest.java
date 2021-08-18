@@ -47,12 +47,11 @@ class QuestionServiceImplTest {
     @InjectMocks
     private QuestionServiceImpl questionService;
 
-    private final Pageable pageable = PageRequest.of(1, 10);
-    private final Modules module = Modules.SPEAKING;
-    private final Levels level = Levels.A1;
-    private final QuestionStatus status = QuestionStatus.UNARCHIVED;
-    private final int page = 1;
-    private final int count = 10;
+    private static final boolean UNAVAILABLE = false;
+    private static final Pageable PAGE_REQUEST = PageRequest.of(1, 10);
+    private static final Modules SPEAKING = Modules.SPEAKING;
+    private static final Levels A1 = Levels.A1;
+    private static final QuestionStatus UNARCHIVED = QuestionStatus.UNARCHIVED;
     private static final long ID = 1L;
 
     @Test
@@ -88,14 +87,14 @@ class QuestionServiceImplTest {
 
     @Test
     void archiveQuestion() {
-        questionService.archiveQuestion(ID);
-        verify(questionRepository).archiveQuestion(ID);
+        questionService.updateAvailability(ID, UNAVAILABLE);
+        verify(questionRepository).updateAvailability(ID, UNAVAILABLE);
     }
 
     @Test
     void updateQuestion() {
         questionService.updateQuestion(question, ID);
-        verify(questionRepository).archiveQuestion(ID);
+        verify(questionRepository).updateAvailability(ID, UNAVAILABLE);
         verify(questionRepository).save(question);
     }
 
@@ -103,17 +102,17 @@ class QuestionServiceImplTest {
     void getRandomQuestions() {
         List<Question> questions = new ArrayList<>();
         Mockito.when(questionRepository
-                .getRandomQuestions(level.name(), module.getName(), pageable)).thenReturn(questions);
+                .getRandomQuestions(A1.name(), SPEAKING.getName(), PAGE_REQUEST)).thenReturn(questions);
         Assertions
-                .assertEquals(questions, questionService.getRandomQuestions(level.name(), module.getName(), pageable));
+                .assertEquals(questions, questionService.getRandomQuestions(A1.name(), SPEAKING.getName(), PAGE_REQUEST));
     }
 
     @Test
     void getRandomQuestionsByContentFile() {
         List<Question> questions = new ArrayList<>();
         Mockito.when(questionRepository
-                .getRandomQuestionByContentFile(ID, pageable)).thenReturn(questions);
-        Assertions.assertEquals(questions, questionService.getRandomQuestionsByContentFile(ID, pageable));
+                .getRandomQuestionByContentFile(ID, PAGE_REQUEST)).thenReturn(questions);
+        Assertions.assertEquals(questions, questionService.getRandomQuestionsByContentFile(ID, PAGE_REQUEST));
     }
 
     @Test
@@ -135,42 +134,42 @@ class QuestionServiceImplTest {
     @Test
     void getQuestionsByLevelAndModuleName() {
         List<Question> questions = new ArrayList<>();
-        Mockito.when(questionRepository.getQuestionsByLevelAndModuleName(level.name(),
-                module.getName(), true, pageable))
+        Mockito.when(questionRepository.getQuestionsByLevelAndModuleName(A1.name(),
+                SPEAKING.getName(), true, PAGE_REQUEST))
                 .thenReturn(questions);
 
         Assertions.assertEquals(questions,
-                questionService.getQuestionsByLevelAndModuleName(level, module, status, pageable));
+                questionService.getQuestionsByLevelAndModuleName(A1, SPEAKING, UNARCHIVED, PAGE_REQUEST));
     }
 
     @Test
     void getQuestionByTestIdAndModuleNotFound() {
-        Mockito.when(questionRepository.getQuestionByTestIdAndModule(ID, module.getName()))
+        Mockito.when(questionRepository.getQuestionByTestIdAndModule(ID, SPEAKING.getName()))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThrows(QuestionNotFoundException.class,
-                () -> questionService.getQuestionByTestIdAndModule(ID, module));
+                () -> questionService.getQuestionByTestIdAndModule(ID, SPEAKING));
     }
 
     @Test
     void getQuestionByTestIdAndModuleSuccess() {
-        Mockito.when(questionRepository.getQuestionByTestIdAndModule(ID, module.getName()))
+        Mockito.when(questionRepository.getQuestionByTestIdAndModule(ID, SPEAKING.getName()))
                 .thenReturn(Optional.of(question));
 
-        Assertions.assertEquals(question, questionService.getQuestionByTestIdAndModule(ID, module));
+        Assertions.assertEquals(question, questionService.getQuestionByTestIdAndModule(ID, SPEAKING));
     }
 
     @Test
     void getListening() {
-        Mockito.when(contentFilesRepository.findAllByAvailableOrderByIdDesc(true, pageable))
+        Mockito.when(contentFilesRepository.findAllByAvailableOrderByIdDesc(true, PAGE_REQUEST))
                 .thenReturn(contentFiles);
-        Assertions.assertEquals(contentFiles, questionService.getListening(null, status, pageable));
+        Assertions.assertEquals(contentFiles, questionService.getListening(null, UNARCHIVED, PAGE_REQUEST));
     }
 
     @Test
     void getListeningByLevel() {
-        Mockito.when(contentFilesRepository.getContentFiles(level.name(), true, pageable))
+        Mockito.when(contentFilesRepository.getContentFiles(A1.name(), true, PAGE_REQUEST))
                 .thenReturn(contentFiles);
-        Assertions.assertEquals(contentFiles, questionService.getListening(level, status, pageable));
+        Assertions.assertEquals(contentFiles, questionService.getListening(A1, UNARCHIVED, PAGE_REQUEST));
     }
 }
