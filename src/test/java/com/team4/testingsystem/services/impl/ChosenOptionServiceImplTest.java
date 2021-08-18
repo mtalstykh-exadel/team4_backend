@@ -4,6 +4,7 @@ import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.exceptions.ChosenOptionBadRequestException;
 import com.team4.testingsystem.exceptions.ChosenOptionNotFoundException;
 import com.team4.testingsystem.repositories.ChosenOptionRepository;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -70,23 +71,8 @@ public class ChosenOptionServiceImplTest {
     }
 
     @Test
-    void saveSuccess(){
-        chosenOptionService.save(chosenOption);
-
-        Mockito.verify(chosenOptionRepository).save(chosenOption);
-    }
-
-    @Test
-    void saveFail(){
-        Mockito.when(chosenOptionRepository.save(chosenOption)).thenThrow(EntityNotFoundException.class);
-
-        Assertions.assertThrows(ChosenOptionBadRequestException.class,
-                () -> chosenOptionService.save(chosenOption));
-    }
-
-    @Test
     void saveAllSuccess(){
-        List<ChosenOption> chosenOptions = List.of(new ChosenOption(), new ChosenOption());
+        List<ChosenOption> chosenOptions = Lists.emptyList();
 
         chosenOptionService.saveAll(chosenOptions);
 

@@ -28,7 +28,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.security.AccessControlException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -265,18 +264,4 @@ public class TestsServiceImpl implements TestsService {
         }
     }
 
-    @Override
-    public void checkOwnerIsCurrentUser(Test test) {
-        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
-        if (!test.getUser().getId().equals(currentUserId)) {
-            throw new AccessControlException("The test has another owner");
-        }
-    }
-
-    @Override
-    public void checkStartedStatus(Test test) {
-        if (!test.getStatus().name().equals(Status.STARTED.name())) {
-            throw new AccessControlException("The test isn't started");
-        }
-    }
 }
