@@ -59,6 +59,10 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     public void checkCoachIsCurrentUser(Test test) {
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
 
+        if (test.getCoach() == null) {
+            throw new AccessControlException("The test has no assigned coach");
+        }
+
         if (!test.getCoach().getId().equals(currentUserId)) {
             throw new AccessControlException("The test has another coach");
         }
