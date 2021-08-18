@@ -85,13 +85,6 @@ public class ErrorReportsServiceImplTest {
     }
 
     @Test
-    void addAll(){
-        ErrorReport errorReport = new ErrorReport();
-        Assertions.assertDoesNotThrow(()->errorReportsService.addAll(List.of(errorReport)));
-        verify(errorReportsRepository).saveAll(List.of(errorReport));
-    }
-
-    @Test
     void removeSuccess() {
 
         Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);

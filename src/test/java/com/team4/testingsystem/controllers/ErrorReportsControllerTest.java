@@ -129,14 +129,4 @@ public class ErrorReportsControllerTest {
         Assertions.assertThrows(ErrorReportNotFoundException.class,
                 ()-> errorReportsController.removeByTestAndQuestion(BAD_TEST_ID, BAD_QUESTION_ID));
     }
-
-    @Test
-    void addAll(){
-        List<ErrorReportDTO> errorReports = List.of(EntityCreatorUtil
-                .createErrorReportDTO(GOOD_REPORT_BODY, GOOD_QUESTION_ID, GOOD_TEST_ID));
-        Assertions.assertDoesNotThrow(() -> errorReportsController.addAll(errorReports));
-        verify(errorReportsService).addAll(errorReports.stream()
-                .map(errorReportsConverter::convertToEntity)
-                .collect(Collectors.toList()));
-    }
 }
