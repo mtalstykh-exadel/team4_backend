@@ -67,6 +67,8 @@ public class Test implements Serializable {
     @Column(name = "status")
     private Status status;
 
+    @Column(name = "is_available")
+    private Boolean isAvailable = true;
 
     @ManyToOne
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
@@ -136,7 +138,6 @@ public class Test implements Serializable {
         this.level = level;
     }
 
-
     public Instant getFinishTime() {
         return finishTime;
     }
@@ -183,6 +184,14 @@ public class Test implements Serializable {
 
     public void setDeadline(Instant deadline) {
         this.deadline = deadline;
+    }
+
+    public Boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(Boolean available) {
+        isAvailable = available;
     }
 
     public void setCoach(User coach) {
@@ -246,7 +255,6 @@ public class Test implements Serializable {
             return this;
         }
 
-
         public Builder coach(User coach) {
             test.coach = coach;
             return this;
@@ -254,6 +262,11 @@ public class Test implements Serializable {
 
         public Builder level(Level level) {
             test.level = level;
+            return this;
+        }
+
+        public Builder isAvailable(Boolean isAvailable) {
+            test.isAvailable = isAvailable;
             return this;
         }
 
@@ -284,13 +297,13 @@ public class Test implements Serializable {
                 && Objects.equals(priority, test.priority)
                 && Objects.equals(status, test.status)
                 && Objects.equals(coach, test.coach)
+                && Objects.equals(isAvailable, test.isAvailable)
                 && Objects.equals(questions, test.questions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, level,
-                assignedAt, verifiedAt, startedAt, completedAt, finishTime, deadline, priority,
-                status, coach, questions);
+        return Objects.hash(id, user, level, assignedAt, verifiedAt, startedAt, completedAt, finishTime,
+                priority, deadline, status, isAvailable, coach, questions);
     }
 }
