@@ -680,4 +680,12 @@
                                  referencedTableName="test" referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet id="test_is_available" author="maxim12321">
+        <addColumn tableName="test">
+            <column name="is_available" type="boolean" defaultOnNull="true" defaultValue="true">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

@@ -19,5 +19,4 @@ public interface FileAnswerRepository extends CrudRepository<FileAnswer, TestQue
     @Modifying
     @Query("update FileAnswer fa set fa.url = ?2 where fa.id = ?1 ")
     void updateUrl(TestQuestionID id, String url);
-
 }

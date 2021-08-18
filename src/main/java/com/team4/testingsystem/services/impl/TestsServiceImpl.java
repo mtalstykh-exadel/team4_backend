@@ -168,7 +168,7 @@ public class TestsServiceImpl implements TestsService {
     public void deassign(long id) {
         Test test = getById(id);
         if (test.getStartedAt() == null) {
-            testsRepository.removeById(id);
+            testsRepository.archiveById(id);
         } else {
             testsRepository.deassign(id);
         }

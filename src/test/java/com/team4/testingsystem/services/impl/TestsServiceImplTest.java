@@ -288,7 +288,7 @@ class TestsServiceImplTest {
 
         testsService.deassign(GOOD_TEST_ID);
 
-        Mockito.verify(testsRepository).removeById(GOOD_TEST_ID);
+        Mockito.verify(testsRepository).archiveById(GOOD_TEST_ID);
         Mockito.verify(notificationService).create(NotificationType.TEST_DEASSIGNED, user, test);
     }
 
