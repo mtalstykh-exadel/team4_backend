@@ -26,13 +26,13 @@ public class AnswerController {
 
     @ApiOperation(value = "Download essay text by test ID")
     @GetMapping("/essay/{testId}")
+    @Secured("ROLE_COACH")
     public String downloadEssay(@PathVariable Long testId) {
         return answerService.downloadEssay(testId);
     }
 
     @ApiOperation(value = "Upload essay text")
     @PostMapping("/essay/{testId}")
-    @Secured("ROLE_COACH")
     public String uploadEssay(@PathVariable Long testId, @RequestBody String text) {
         return answerService.uploadEssay(testId, text);
     }
