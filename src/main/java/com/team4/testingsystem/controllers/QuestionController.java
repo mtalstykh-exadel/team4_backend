@@ -126,7 +126,7 @@ public class QuestionController {
         questionService.updateAvailability(id, available);
     }
 
-    @ApiOperation(value = "Archive the listening")
+    @ApiOperation(value = "Archive/Unarchive the listening")
     @PutMapping("/listening/{contentFileId}")
     @Secured("ROLE_COACH")
     public void updateAvailabilityListening(@PathVariable("contentFileId") Long contentFileId,
