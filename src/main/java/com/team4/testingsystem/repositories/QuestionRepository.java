@@ -14,8 +14,8 @@ import java.util.Optional;
 public interface QuestionRepository extends CrudRepository<Question, Long> {
 
     @Modifying
-    @Query(value = "update Question q set q.isAvailable = false where q.id = ?1")
-    void archiveQuestion(Long id);
+    @Query(value = "update Question q set q.isAvailable = ?2 where q.id = ?1")
+    void updateAvailability(Long id, boolean available);
 
     @Query(value = "select q from Question q "
         + "where q.isAvailable = true "

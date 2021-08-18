@@ -55,14 +55,14 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Transactional
     @Override
-    public void archiveQuestion(Long id) {
-        questionRepository.archiveQuestion(id);
+    public void updateAvailability(Long id, boolean available) {
+        questionRepository.updateAvailability(id, available);
     }
 
     @Transactional
     @Override
     public Question updateQuestion(Question question, Long id) {
-        questionRepository.archiveQuestion(id);
+        questionRepository.updateAvailability(id, false);
         return questionRepository.save(question);
     }
 
@@ -113,6 +113,6 @@ public class QuestionServiceImpl implements QuestionService {
     public void archiveQuestionsByContentFileId(Long id) {
         ContentFile contentFile = contentFilesRepository.findById(id)
                 .orElseThrow(FileNotFoundException::new);
-        contentFile.getQuestions().forEach(question -> archiveQuestion(question.getId()));
+        contentFile.getQuestions().forEach(question -> updateAvailability(question.getId(), false));
     }
 }

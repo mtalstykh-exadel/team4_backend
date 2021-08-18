@@ -14,6 +14,7 @@ import com.team4.testingsystem.exceptions.TooLongEssayException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
+import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.apache.commons.io.IOUtils;
@@ -59,6 +60,9 @@ class FileAnswerServiceImplTest {
 
     @Mock
     private MultipartFile file;
+
+    @Mock
+    private RestrictionsService restrictionsService;
 
     @InjectMocks
     private FileAnswerServiceImpl fileAnswerService;

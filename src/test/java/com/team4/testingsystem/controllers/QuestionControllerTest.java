@@ -53,13 +53,16 @@ class QuestionControllerTest {
     private QuestionController questionController;
 
     private static final Long ID = 1L;
+    private static final Long BAD_ID = 42L;
+    private static final boolean UNAVAILABLE = false;
     private static final String TOPIC = "topic";
-    private final Pageable pageable = PageRequest.of(1, 10);
-    private final Modules module = Modules.SPEAKING;
-    private final Levels level = Levels.A1;
-    private final QuestionStatus status = QuestionStatus.ARCHIVED;
-    private final int page = 1;
-    private final int count = 10;
+    private static final String NEW_QUESTION_BODY = "new question body";
+    private static final Pageable PAGE_REQUEST = PageRequest.of(1, 10);
+    private static final Modules SPEAKING = Modules.SPEAKING;
+    private static final Levels A1 = Levels.A1;
+    private static final QuestionStatus ARCHIVED = QuestionStatus.ARCHIVED;
+    private static final int PAGE = 1;
+    private static final int COUNT = 10;
 
     @Test
     void getQuestion() {
@@ -79,14 +82,14 @@ class QuestionControllerTest {
     @Test
     void getQuestionsByLevelAndModuleName() {
         List<Question> questions = Lists.list(EntityCreatorUtil.createQuestion());
-        Mockito.when(questionService.getQuestionsByLevelAndModuleName(level, module, status, pageable))
+        Mockito.when(questionService.getQuestionsByLevelAndModuleName(A1, SPEAKING, ARCHIVED, PAGE_REQUEST))
                 .thenReturn(questions);
         List<QuestionDTO> expectedQuestions = questions.stream()
                 .map(QuestionDTO::create)
                 .collect(Collectors.toList());
 
         Assertions
-                .assertEquals(expectedQuestions, questionController.getQuestions(level, module, status, page, count));
+                .assertEquals(expectedQuestions, questionController.getQuestions(A1, SPEAKING, ARCHIVED, PAGE, COUNT));
 
     }
 
@@ -95,9 +98,9 @@ class QuestionControllerTest {
         ContentFile contentFile = new ContentFile();
         Question question = EntityCreatorUtil.createQuestion();
         contentFile.setQuestions(List.of(question));
-        Mockito.when(contentFilesService.getById(1L)).thenReturn(contentFile);
+        Mockito.when(contentFilesService.getById(ID)).thenReturn(contentFile);
         Assertions.assertEquals(new ContentFileDTO(contentFile, question.getLevel().getName()),
-                questionController.getListening(1L));
+                questionController.getListening(ID));
     }
 
     @Test
@@ -125,30 +128,30 @@ class QuestionControllerTest {
     }
 
     @Test
-    void archiveQuestion() {
-        questionController.archiveQuestion(1L);
-        Mockito.verify(questionService).archiveQuestion(1L);
+    void updateAvailability() {
+        questionController.updateAvailability(ID, UNAVAILABLE);
+        Mockito.verify(questionService).updateAvailability(ID, UNAVAILABLE);
     }
 
     @Test
-    void archiveListeningSuccess() {
-        questionController.archiveListening(1L);
-        Mockito.verify(contentFilesService).archive(1L);
+    void updateAvailabilityListeningSuccess() {
+        questionController.updateAvailabilityListening(ID, UNAVAILABLE);
+        Mockito.verify(contentFilesService).updateAvailability(ID, UNAVAILABLE);
     }
 
     @Test
-    void archiveListeningFail() {
-        doThrow(ContentFileNotFoundException.class).when(contentFilesService).archive(42L);
+    void updateAvailabilityListeningFail() {
+        doThrow(ContentFileNotFoundException.class).when(contentFilesService).updateAvailability(BAD_ID, UNAVAILABLE);
 
         Assertions.assertThrows(ContentFileNotFoundException.class,
-                () -> questionController.archiveListening(42L));
+                () -> questionController.updateAvailabilityListening(BAD_ID, UNAVAILABLE));
     }
 
 
     @Test
     void updateQuestionWithoutAnswers() {
         QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
-        questionDTO.setQuestionBody("new question body");
+        questionDTO.setQuestionBody(NEW_QUESTION_BODY);
         Question question = EntityCreatorUtil.createQuestion();
         question.setBody(questionDTO.getQuestionBody());
         Mockito.when(questionConverter.convertToEntity(questionDTO, question.getId())).thenReturn(question);
@@ -167,7 +170,7 @@ class QuestionControllerTest {
     void updateQuestionWithAnswers() {
         QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
         questionDTO.setAnswers(List.of(AnswerDTO.createWithCorrect(EntityCreatorUtil.createAnswer())));
-        questionDTO.setQuestionBody("new question body");
+        questionDTO.setQuestionBody(NEW_QUESTION_BODY);
         Question question = EntityCreatorUtil.createQuestion();
         question.setAnswers(List.of(EntityCreatorUtil.createAnswer()));
         question.setBody(questionDTO.getQuestionBody());
@@ -210,13 +213,13 @@ class QuestionControllerTest {
 
     @Test
     void getListeningTopics() {
-        questionController.getListeningTopics(null, QuestionStatus.ARCHIVED, page, count);
-        verify(questionService).getListening(null, QuestionStatus.ARCHIVED, pageable);
+        questionController.getListeningTopics(null, QuestionStatus.ARCHIVED, PAGE, COUNT);
+        verify(questionService).getListening(null, QuestionStatus.ARCHIVED, PAGE_REQUEST);
     }
 
     @Test
     void getListeningTopicsByLevel() {
-        questionController.getListeningTopics(level, QuestionStatus.UNARCHIVED, page, count);
-        verify(questionService).getListening(level, QuestionStatus.UNARCHIVED, pageable);
+        questionController.getListeningTopics(A1, QuestionStatus.UNARCHIVED, PAGE, COUNT);
+        verify(questionService).getListening(A1, QuestionStatus.UNARCHIVED, PAGE_REQUEST);
     }
 }

@@ -27,6 +27,7 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     public void checkStatus(Test test, Status status) {
         if (!test.getStatus().name().equals(status.name())) {
             throw new AccessControlException("The test isn't " + status.name().toLowerCase());
+
         }
     }
 
@@ -37,6 +38,7 @@ public class RestrictionsServiceImpl implements RestrictionsService {
                 + question.getId());
         }
     }
+
 
     @Override
     public void checkGradeIsCorrect(int grade){
@@ -55,10 +57,10 @@ public class RestrictionsServiceImpl implements RestrictionsService {
 
     @Override
     public void checkCoachIsCurrentUser(Test test){
-        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+            Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
 
-        if (!test.getUser().getId().equals(currentUserId)) {
-            throw new AccessControlException("The test has another coach");
+            if (!test.getUser().getId().equals(currentUserId)) {
+                throw new AccessControlException("The test has another coach");
+            }
         }
-    }
 }

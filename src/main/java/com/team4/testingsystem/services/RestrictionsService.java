@@ -17,4 +17,5 @@ public interface RestrictionsService {
     void checkTestContainsQuestion(Test test, Question question);
 
     void checkCoachIsCurrentUser(Test test);
+
 }
