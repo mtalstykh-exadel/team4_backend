@@ -77,7 +77,7 @@ public class TestConverter {
         testDTO.setContentFile(new ListeningTopicDTO(contentFile));
     }
 
-    private void attachErrorReports(TestDTO testDTO){
+    private void attachErrorReports(TestDTO testDTO) {
         List<ErrorReportDTO> errorReports = errorReportsService.getReportsByTest(testDTO.getId())
                 .stream()
                 .map(ErrorReportDTO::new)
