@@ -60,7 +60,7 @@ public class ContentFilesServiceImpl implements ContentFilesService {
             return contentFilesRepository.save(contentFile);
         }
 
-        archive(id);
+        updateAvailability(id, false);
         return add(file, topic, questions);
     }
 
@@ -72,8 +72,8 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     }
 
     @Override
-    public void archive(Long id) {
-        if (contentFilesRepository.archiveContentFile(id) == 0) {
+    public void updateAvailability(Long id, boolean available) {
+        if (contentFilesRepository.updateAvailable(id, available) == 0) {
             throw new ContentFileNotFoundException();
         }
         questionService.archiveQuestionsByContentFileId(id);
