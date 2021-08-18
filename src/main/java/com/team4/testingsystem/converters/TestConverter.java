@@ -34,7 +34,7 @@ public class TestConverter {
     private final QuestionService questionService;
     private final ContentFilesService contentFilesService;
     private final ChosenOptionService chosenOptionService;
-    private  final ErrorReportsService errorReportsService;
+    private final ErrorReportsService errorReportsService;
     private final ModuleGradesService moduleGradesService;
 
     @Autowired
