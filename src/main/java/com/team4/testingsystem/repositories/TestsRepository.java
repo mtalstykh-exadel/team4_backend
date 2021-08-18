@@ -19,7 +19,7 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     @Query("select t from Test t where t.user = ?1 "
            + "order by case "
            + "when t.status = 'STARTED' then 'A' "
-           + "when t.status = 'ASSIGNED' then 'B' ELSE t.status end, "
+           + "when t.status = 'ASSIGNED' then 'B' ELSE 'C' end, "
            + "t.verifiedAt desc, t.deadline desc, t.assignedAt desc ")
     List<Test> getAllByUser(User user, Pageable pageable);
 
@@ -27,14 +27,14 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
            + "order by case "
            + "when t.priority = 'High' then 'A' "
            + "when t.priority = 'Medium' then 'B' "
-           + "when t.priority = 'Low' then 'C' ELSE t.priority end, "
+           + "when t.priority = 'Low' then 'C' ELSE 'D' end, "
            + "t.deadline asc, t.assignedAt desc ")
     List<Test> getByStatuses(Status[] statuses, Pageable pageable);
 
     @Query("select t from Test t"
-           + " where t.user = ?1 "
-           + "and t.assignedAt is null "
-           + "and t.startedAt >= ?2")
+            + " where t.user = ?1 "
+            + "and t.assignedAt is null "
+            + "and t.startedAt >= ?2")
     List<Test> getSelfStartedByUserAfter(User user, Instant date);
 
     @Query("select t from Test t where t.coach.id = ?1 and t.status in ?2 "

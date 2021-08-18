@@ -175,7 +175,7 @@ public class TestsController {
 
     private List<TestInfo> convertToTestInfoDTO(List<Test> tests) {
         return tests.stream()
-                .map(TestInfo::new)
+                .map(testConverter::convertToInfo)
                 .collect(Collectors.toList());
     }
 }
