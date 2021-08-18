@@ -31,7 +31,10 @@ import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.security.AccessControlException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -90,6 +93,8 @@ class TestsServiceImplTest {
     @InjectMocks
     private TestsServiceImpl testsService;
 
+    private final Pageable pageable = PageRequest.of(1, 10);
+
     @org.junit.jupiter.api.Test
     void getByIdSuccess() {
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
@@ -106,15 +111,15 @@ class TestsServiceImplTest {
     void getByUserIdSuccess() {
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
 
-        Mockito.when(testsRepository.getAllByUser(user)).thenReturn(tests);
+        Mockito.when(testsRepository.getAllByUser(user, pageable)).thenReturn(tests);
 
-        Assertions.assertEquals(tests, testsService.getByUserId(GOOD_USER_ID));
+        Assertions.assertEquals(tests, testsService.getByUserId(GOOD_USER_ID, pageable));
     }
 
     @org.junit.jupiter.api.Test
     void getByUserIdFailUserNotFound() {
         Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
-        Assertions.assertThrows(UserNotFoundException.class, () -> testsService.getByUserId(BAD_USER_ID));
+        Assertions.assertThrows(UserNotFoundException.class, () -> testsService.getByUserId(BAD_USER_ID, pageable));
     }
 
     @org.junit.jupiter.api.Test
@@ -122,10 +127,10 @@ class TestsServiceImplTest {
         User user = EntityCreatorUtil.createUser();
 
         Mockito.when(usersService.getAll()).thenReturn(Lists.list(user));
-        Mockito.when(testsRepository.getByStatuses(new Status[]{Status.ASSIGNED}))
+        Mockito.when(testsRepository.getByStatuses(new Status[]{Status.ASSIGNED}, pageable))
                 .thenReturn(Lists.emptyList());
 
-        Assertions.assertEquals(Lists.list(new UserTest(user, null)), testsService.getAllUsersAndAssignedTests());
+        Assertions.assertEquals(Lists.list(new UserTest(user, null)), testsService.getAllUsersAndAssignedTests(pageable));
     }
 
     @org.junit.jupiter.api.Test
@@ -134,10 +139,10 @@ class TestsServiceImplTest {
         Test test = EntityCreatorUtil.createTest(user, EntityCreatorUtil.createLevel());
 
         Mockito.when(usersService.getAll()).thenReturn(Lists.list(user));
-        Mockito.when(testsRepository.getByStatuses(new Status[]{Status.ASSIGNED}))
+        Mockito.when(testsRepository.getByStatuses(new Status[]{Status.ASSIGNED}, pageable))
                 .thenReturn(Lists.list(test));
 
-        Assertions.assertEquals(Lists.list(new UserTest(user, test)), testsService.getAllUsersAndAssignedTests());
+        Assertions.assertEquals(Lists.list(new UserTest(user, test)), testsService.getAllUsersAndAssignedTests(pageable));
     }
 
     @org.junit.jupiter.api.Test
@@ -149,7 +154,7 @@ class TestsServiceImplTest {
         try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
 
-            Mockito.when(testsRepository.getByStatuses(statuses))
+            Mockito.when(testsRepository.getByStatuses(statuses, pageable))
                     .thenReturn(tests);
             Mockito.when(tests.stream()).thenReturn(stream);
 
@@ -157,17 +162,17 @@ class TestsServiceImplTest {
 
             Mockito.when(stream.collect(any())).thenReturn(tests);
 
-            Assertions.assertEquals(tests, testsService.getAllUnverifiedTests());
+            Assertions.assertEquals(tests, testsService.getAllUnverifiedTests(pageable));
         }
     }
 
     @org.junit.jupiter.api.Test
     void getAllUnverifiedTestsByCoachSuccess() {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
-        Mockito.when(testsRepository.getAllByAssignedCoachAndStatuses(GOOD_USER_ID, statuses))
+        Mockito.when(testsRepository.getAllByAssignedCoachAndStatuses(GOOD_USER_ID, statuses, pageable))
                 .thenReturn(Lists.list(test));
 
-        Assertions.assertEquals(Lists.list(test), testsService.getAllUnverifiedTestsByCoach(GOOD_USER_ID));
+        Assertions.assertEquals(Lists.list(test), testsService.getAllUnverifiedTestsByCoach(GOOD_USER_ID, pageable));
     }
 
     @org.junit.jupiter.api.Test
@@ -475,7 +480,27 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void getByStatus() {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
-        Mockito.when(testsRepository.getByStatuses(any())).thenReturn(tests);
-        Assertions.assertEquals(tests, testsService.getByStatuses(statuses));
+        Mockito.when(testsRepository.getByStatuses(statuses, pageable)).thenReturn(tests);
+        Assertions.assertEquals(tests, testsService.getByStatuses(statuses, pageable));
     }
+
+    @org.junit.jupiter.api.Test
+    void checkRights() {
+        Mockito.when(test.getUser()).thenReturn(user);
+        Mockito.when(user.getId()).thenReturn(GOOD_USER_ID);
+
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID + 1);
+
+            Assertions.assertThrows(AccessControlException.class, () -> testsService.checkOwnerIsCurrentUser(test));
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void checkStartedStatus() {
+        Mockito.when(test.getStatus()).thenReturn(Status.COMPLETED);
+        Assertions.assertThrows(AccessControlException.class, () -> testsService.checkStartedStatus(test));
+    }
+
 }

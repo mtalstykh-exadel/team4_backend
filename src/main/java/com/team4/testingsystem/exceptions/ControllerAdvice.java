@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.security.AccessControlException;
+
 @RestControllerAdvice
 public class ControllerAdvice extends ResponseEntityExceptionHandler {
 
@@ -57,5 +59,11 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
             body = "Incorrect data provided for column '" + errorMessage.getColumn() + "'";
         }
         return handleExceptionInternal(e, body, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = {AccessControlException.class})
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public ErrorResponse handleDoNotHaveRightsException(AccessControlException e) {
+        return new ErrorResponse(e.getMessage());
     }
 }

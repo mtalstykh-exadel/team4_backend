@@ -49,10 +49,29 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     }
 
     @Override
-    public FileAnswer uploadSpeaking(MultipartFile file, Long testId, Modules module) {
+    public FileAnswer uploadSpeaking(MultipartFile file, Long testId) {
+        Test test = testsService.getById(testId);
+
+        testsService.checkOwnerIsCurrentUser(test);
+
+        testsService.checkStartedStatus(test);
+
         String url = storageService.upload(file.getResource(), Modules.SPEAKING, testId);
-        Question question = questionService.getQuestionByTestIdAndModule(testId, module);
-        return save(testId, question.getId(), url);
+
+        Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.SPEAKING);
+
+        TestQuestionID id = new TestQuestionID(test, question);
+        if (!fileAnswerRepository.existsById(id)) {
+            FileAnswer fileAnswer = FileAnswer.builder()
+                .id(id)
+                .url(url)
+                .build();
+            return fileAnswerRepository.save(fileAnswer);
+        }
+        fileAnswerRepository.updateUrl(id, url);
+        return fileAnswerRepository.findById(id)
+            .orElseThrow(FileAnswerNotFoundException::new);
+
     }
 
     @Override
@@ -61,20 +80,6 @@ public class FileAnswerServiceImpl implements FileAnswerService {
         return getUrl(testId, question.getId());
     }
 
-    @Override
-    public FileAnswer save(Long testId, Long questionId, String url) {
-        TestQuestionID id = createId(testId, questionId);
-        if (!fileAnswerRepository.existsById(id)) {
-            FileAnswer fileAnswer = FileAnswer.builder()
-                    .id(id)
-                    .url(url)
-                    .build();
-            return fileAnswerRepository.save(fileAnswer);
-        }
-        fileAnswerRepository.updateUrl(id, url);
-        return fileAnswerRepository.findById(id)
-                .orElseThrow(FileAnswerNotFoundException::new);
-    }
 
     @Override
     public void remove(Long testId, Long questionId) {
@@ -95,6 +100,11 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     @Override
     public FileAnswer uploadEssay(Long testId, String text) {
         Test test = testsService.getById(testId);
+
+        testsService.checkOwnerIsCurrentUser(test);
+
+        testsService.checkStartedStatus(test);
+
         Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
 
         if (text.length() > 512) {
@@ -104,11 +114,19 @@ public class FileAnswerServiceImpl implements FileAnswerService {
         InputStream inputStream = IOUtils.toInputStream(text, StandardCharsets.UTF_8);
         String url = storageService.upload(new InputStreamResource(inputStream), Modules.ESSAY, testId);
 
-        FileAnswer fileAnswer = FileAnswer.builder()
-                .id(new TestQuestionID(test, question))
+        TestQuestionID id = new TestQuestionID(test, question);
+
+        if (!fileAnswerRepository.existsById(id)) {
+            FileAnswer fileAnswer = FileAnswer.builder()
+                .id(id)
                 .url(url)
                 .build();
-        return fileAnswerRepository.save(fileAnswer);
+            return fileAnswerRepository.save(fileAnswer);
+        }
+
+        fileAnswerRepository.updateUrl(id, url);
+        return fileAnswerRepository.findById(id)
+            .orElseThrow(FileAnswerNotFoundException::new);
     }
 
     private TestQuestionID createId(Long testId, Long questionId) {

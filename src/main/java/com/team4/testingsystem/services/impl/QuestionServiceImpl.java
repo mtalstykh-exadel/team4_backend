@@ -47,8 +47,8 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public Question addAnswers(Question question, List<AnswerDTO> textAnswers) {
         List<Answer> answers = textAnswers.stream()
-            .map(answerDTO -> new Answer(answerDTO, question))
-            .collect(Collectors.toList());
+                .map(answerDTO -> new Answer(answerDTO, question))
+                .collect(Collectors.toList());
         question.setAnswers(answers);
         return questionRepository.save(question);
     }
@@ -82,11 +82,15 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<Question> getQuestionsByLevelAndModuleName(Levels level, Modules module, QuestionStatus status) {
+    public List<Question> getQuestionsByLevelAndModuleName(Levels level,
+                                                           Modules module,
+                                                           QuestionStatus status,
+                                                           Pageable pageable) {
         boolean isAvailable = status.getName().equals(QuestionStatus.UNARCHIVED.getName());
         return questionRepository.getQuestionsByLevelAndModuleName(level.name(),
-            module.getName(),
-            isAvailable);
+                module.getName(),
+                isAvailable,
+                pageable);
     }
 
     @Override
@@ -96,12 +100,12 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<ContentFile> getListening(Levels level, QuestionStatus status) {
+    public List<ContentFile> getListening(Levels level, QuestionStatus status, Pageable pageable) {
         boolean isAvailable = status.getName().equals(QuestionStatus.UNARCHIVED.getName());
         if (level == null) {
-            return contentFilesRepository.findAllByAvailable(isAvailable);
+            return contentFilesRepository.findAllByAvailableOrderByIdDesc(isAvailable, pageable);
         }
-        return contentFilesRepository.getContentFiles(level.name(), isAvailable);
+        return contentFilesRepository.getContentFiles(level.name(), isAvailable, pageable);
     }
 
     @Transactional
