@@ -6,7 +6,7 @@ import com.team4.testingsystem.enums.Status;
 
 public interface RestrictionsService {
 
-    void checkOwnerIsCurrentUser(Test test);
+    void checkOwnerIsCurrentUser(Test test, Long currentUserId);
 
     void checkStatus(Test test, Status status);
 

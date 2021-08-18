@@ -49,14 +49,9 @@ public class RestrictionsServiceImplTest {
         Mockito.when(test.getUser()).thenReturn(user);
         Mockito.when(user.getId()).thenReturn(GOOD_USER_ID);
 
-        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
-            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
-            Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID + 1);
-
             Assertions.assertThrows(AccessControlException.class,
-                () -> restrictionsService.checkOwnerIsCurrentUser(test));
+                () -> restrictionsService.checkOwnerIsCurrentUser(test, GOOD_USER_ID + 1));
         }
-    }
 
     @org.junit.jupiter.api.Test
     void checkStatus() {

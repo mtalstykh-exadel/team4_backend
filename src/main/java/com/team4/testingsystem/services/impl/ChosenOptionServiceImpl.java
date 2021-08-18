@@ -9,6 +9,7 @@ import com.team4.testingsystem.exceptions.ChosenOptionNotFoundException;
 import com.team4.testingsystem.repositories.ChosenOptionRepository;
 import com.team4.testingsystem.services.ChosenOptionService;
 import com.team4.testingsystem.services.RestrictionsService;
+import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,11 +43,13 @@ public class ChosenOptionServiceImpl implements ChosenOptionService {
     @Override
     public void saveAll(List<ChosenOption> chosenOptions) {
 
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+
         chosenOptions.parallelStream().forEach(item -> {
                 Test test = item.getId().getTest();
                 Question question = item.getId().getQuestion();
 
-                restrictionsService.checkOwnerIsCurrentUser(test);
+                restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
 
                 restrictionsService.checkStatus(test, Status.STARTED);
 
