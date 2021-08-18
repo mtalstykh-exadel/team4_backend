@@ -10,7 +10,5 @@ public interface ChosenOptionService {
 
     List<ChosenOption> getAllByTestId(Long testId);
 
-    void save(ChosenOption chosenOption);
-
     void saveAll(List<ChosenOption> chosenOptions);
 }
