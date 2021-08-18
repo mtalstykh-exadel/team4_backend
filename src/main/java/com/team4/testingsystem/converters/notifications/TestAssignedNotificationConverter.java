@@ -15,7 +15,7 @@ public class TestAssignedNotificationConverter implements SingleNotificationConv
                 .testId(notification.getTest().getId())
                 .createdAt(notification.getCreatedAt())
                 .level(notification.getTest().getLevel().getName())
-                .finishTime(notification.getTest().getFinishTime())
+                .deadline(notification.getTest().getDeadline())
                 .build();
     }
 

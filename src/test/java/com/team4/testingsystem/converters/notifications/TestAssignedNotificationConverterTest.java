@@ -36,14 +36,14 @@ public class TestAssignedNotificationConverterTest {
     @Test
     public void convertToDTO() {
         Instant createdAt = Instant.now();
-        Instant finishTime = Instant.now().plusSeconds(1);
+        Instant deadline = Instant.now().plusSeconds(1);
 
         Mockito.when(notification.getId()).thenReturn(NOTIFICATION_ID);
         Mockito.when(notification.getCreatedAt()).thenReturn(createdAt);
         Mockito.when(notification.getTest()).thenReturn(test);
 
         Mockito.when(test.getId()).thenReturn(TEST_ID);
-        Mockito.when(test.getFinishTime()).thenReturn(finishTime);
+        Mockito.when(test.getDeadline()).thenReturn(deadline);
         Mockito.when(test.getLevel()).thenReturn(level);
 
         Mockito.when(level.getName()).thenReturn(LEVEL_NAME);
@@ -55,9 +55,9 @@ public class TestAssignedNotificationConverterTest {
         Assertions.assertEquals(TEST_ID, dto.getTestId());
         Assertions.assertEquals(createdAt, dto.getCreatedAt());
         Assertions.assertEquals(LEVEL_NAME, dto.getLevel());
-        Assertions.assertEquals(finishTime, dto.getFinishTime());
+        Assertions.assertEquals(deadline, dto.getDeadline());
 
-        Assertions.assertNull(dto.getDeadline());
+        Assertions.assertNull(dto.getFinishTime());
     }
 
     @Test

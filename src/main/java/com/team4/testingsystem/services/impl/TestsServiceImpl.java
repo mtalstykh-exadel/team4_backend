@@ -6,6 +6,7 @@ import com.team4.testingsystem.entities.Timer;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.entities.UserTest;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
@@ -14,6 +15,7 @@ import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.TimerRepository;
 import com.team4.testingsystem.services.LevelService;
+import com.team4.testingsystem.services.NotificationService;
 import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
@@ -39,6 +41,7 @@ public class TestsServiceImpl implements TestsService {
     private final TestsRepository testsRepository;
     private final TestGeneratingService testGeneratingService;
     private final TestEvaluationService testEvaluationService;
+    private final NotificationService notificationService;
 
     private final LevelService levelService;
     private final UsersService usersService;
@@ -48,17 +51,18 @@ public class TestsServiceImpl implements TestsService {
     @Value("${tests-limit:3}")
     private int testsLimit;
 
-
     @Autowired
     public TestsServiceImpl(TestsRepository testsRepository,
                             TestGeneratingService testGeneratingService,
                             TestEvaluationService testEvaluationService,
+                            NotificationService notificationService,
                             LevelService levelService,
                             UsersService usersService,
                             TimerRepository timerRepository) {
         this.testsRepository = testsRepository;
         this.testGeneratingService = testGeneratingService;
         this.testEvaluationService = testEvaluationService;
+        this.notificationService = notificationService;
         this.levelService = levelService;
         this.usersService = usersService;
         this.timerRepository = timerRepository;
@@ -154,6 +158,9 @@ public class TestsServiceImpl implements TestsService {
             .build();
 
         testsRepository.save(test);
+
+        notificationService.create(NotificationType.TEST_ASSIGNED, test.getUser(), test);
+
         return test.getId();
     }
 
@@ -165,6 +172,7 @@ public class TestsServiceImpl implements TestsService {
         } else {
             testsRepository.deassign(id);
         }
+        notificationService.create(NotificationType.TEST_DEASSIGNED, test.getUser(), test);
     }
 
     private Test.Builder createForUser(long userId, Levels levelName) {
@@ -177,7 +185,6 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public Test start(long id) {
-
         if (testsRepository.start(Instant.now(), id) == 0) {
             throw new TestNotFoundException();
         }
@@ -232,8 +239,10 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public void coachSubmit(long id) {
-        testEvaluationService.updateScoreAfterCoachCheck(getById(id));
+        Test test = getById(id);
+        testEvaluationService.updateScoreAfterCoachCheck(test);
         testsRepository.coachSubmit(Instant.now(), id);
+        notificationService.create(NotificationType.TEST_VERIFIED, test.getUser(), test);
     }
 
     @Override

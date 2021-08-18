@@ -136,7 +136,7 @@ public class NotificationDTO {
         return Objects.equals(id, that.id)
                 && type == that.type
                 && Objects.equals(testId, that.testId)
-                && level == that.level
+                && Objects.equals(level, that.level)
                 && Objects.equals(finishTime, that.finishTime)
                 && Objects.equals(deadline, that.deadline);
     }

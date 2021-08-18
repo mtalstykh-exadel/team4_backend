@@ -2,6 +2,8 @@ package com.team4.testingsystem.entities;
 
 import com.team4.testingsystem.enums.NotificationType;
 
+import java.time.Instant;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,8 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.time.Instant;
-import java.util.Objects;
 
 @Entity
 @Table(name = "notification")
