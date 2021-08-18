@@ -93,8 +93,7 @@ public class QuestionController {
     public List<ListeningTopicDTO> getListeningTopics(@RequestParam(required = false) Levels level,
                                                       @RequestParam("status") QuestionStatus status,
                                                       @RequestParam int pageNumb,
-                                                      @RequestParam int pageSize
-    ) {
+                                                      @RequestParam int pageSize) {
         return convertToDTO(questionService.getListening(level, status, PageRequest.of(pageNumb, pageSize)));
     }
 
