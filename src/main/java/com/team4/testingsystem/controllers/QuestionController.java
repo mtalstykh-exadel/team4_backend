@@ -1,5 +1,6 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.converters.ContentFileConverter;
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.dto.ListeningTopicDTO;
@@ -35,14 +36,17 @@ public class QuestionController {
     private final QuestionService questionService;
     private final ContentFilesService contentFilesService;
     private final QuestionConverter questionConverter;
+    private final ContentFileConverter contentFileConverter;
 
     @Autowired
     public QuestionController(QuestionService questionService,
                               ContentFilesService contentFilesService,
-                              QuestionConverter questionConverter) {
+                              QuestionConverter questionConverter,
+                              ContentFileConverter contentFileConverter) {
         this.questionService = questionService;
         this.contentFilesService = contentFilesService;
         this.questionConverter = questionConverter;
+        this.contentFileConverter = contentFileConverter;
     }
 
     @ApiOperation(value = "Get a single question from the database by it's id")
@@ -81,9 +85,6 @@ public class QuestionController {
     public QuestionDTO addQuestion(@RequestBody QuestionDTO questionDTO) {
         Question question = questionService
                 .createQuestion(questionConverter.convertToEntity(questionDTO));
-        if (questionDTO.getAnswers() != null) {
-            questionService.addAnswers(question, questionDTO.getAnswers());
-        }
         return QuestionDTO.createWithCorrectAnswers(question);
     }
 
@@ -92,8 +93,7 @@ public class QuestionController {
     public List<ListeningTopicDTO> getListeningTopics(@RequestParam(required = false) Levels level,
                                                       @RequestParam("status") QuestionStatus status,
                                                       @RequestParam int pageNumb,
-                                                      @RequestParam int pageSize
-                                                      ) {
+                                                      @RequestParam int pageSize) {
         return convertToDTO(questionService.getListening(level, status, PageRequest.of(pageNumb, pageSize)));
     }
 
@@ -103,7 +103,7 @@ public class QuestionController {
     public ContentFileDTO addListening(@RequestPart MultipartFile file,
                                        @RequestPart ContentFileDTO data) {
         ContentFile contentFile = contentFilesService
-                .add(file, data.getTopic(), convertToEntity(data.getQuestions()));
+                .add(file, contentFileConverter.convertToEntity(data));
         return new ContentFileDTO(contentFile);
     }
 
@@ -114,7 +114,7 @@ public class QuestionController {
                                           @PathVariable("contentFileId") Long id,
                                           @RequestPart ContentFileDTO data) {
         ContentFile contentFile = contentFilesService
-                .update(file, id, data.getTopic(), convertToEntity(data.getQuestions()));
+                .update(file, id, contentFileConverter.convertToEntity(data));
         return new ContentFileDTO(contentFile);
     }
 
@@ -140,14 +140,7 @@ public class QuestionController {
     public QuestionDTO updateQuestion(@RequestBody QuestionDTO questionDTO, @PathVariable("id") Long id) {
         Question resultQuestion = questionService
                 .updateQuestion(questionConverter.convertToEntity(questionDTO, id), id);
-        if (questionDTO.getAnswers() != null) {
-            questionService.addAnswers(resultQuestion, questionDTO.getAnswers());
-        }
         return QuestionDTO.createWithCorrectAnswers(resultQuestion);
-    }
-
-    private List<Question> convertToEntity(List<QuestionDTO> questionsDTO) {
-        return questionsDTO.stream().map(questionConverter::convertToEntity).collect(Collectors.toList());
     }
 
     private List<ListeningTopicDTO> convertToDTO(List<ContentFile> contentFiles) {

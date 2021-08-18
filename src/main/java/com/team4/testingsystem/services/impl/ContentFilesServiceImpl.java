@@ -1,8 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
-
 import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
@@ -14,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Service
 public class ContentFilesServiceImpl implements ContentFilesService {
@@ -43,25 +39,22 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     }
 
     @Override
-    public ContentFile add(MultipartFile file, String topic, List<Question> questions) {
+    public ContentFile add(MultipartFile file, ContentFile contentFile) {
         Long creatorId = JwtTokenUtil.extractUserDetails().getId();
         String url = storageService.upload(file.getResource(), Modules.LISTENING, creatorId);
-        return contentFilesRepository.save(new ContentFile(url, topic, questions));
+        contentFile.setUrl(url);
+        return contentFilesRepository.save(contentFile);
     }
 
     @Transactional
     @Override
-    public ContentFile update(MultipartFile file, Long id, String topic, List<Question> questions) {
+    public ContentFile update(MultipartFile file, Long id, ContentFile contentFile) {
         if (file == null) {
             questionService.archiveQuestionsByContentFileId(id);
-            ContentFile contentFile = contentFilesRepository
-                    .findById(id).orElseThrow(ContentFileNotFoundException::new);
-            contentFile.getQuestions().addAll(questions);
             return contentFilesRepository.save(contentFile);
         }
-
         updateAvailability(id, false);
-        return add(file, topic, questions);
+        return add(file, contentFile);
     }
 
     @Override
