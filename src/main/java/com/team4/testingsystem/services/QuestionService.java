@@ -15,7 +15,7 @@ public interface QuestionService {
 
     Question createQuestion(Question question);
 
-    void archiveQuestion(Long id);
+    void updateAvailability(Long id, boolean available);
 
     Question updateQuestion(Question question, Long id);
 
