@@ -34,8 +34,8 @@ public interface ContentFilesRepository extends CrudRepository<ContentFile, Long
 
     @Transactional
     @Modifying
-    @Query(value = "update ContentFile cf set cf.available = false where cf.id = ?1")
-    int archiveContentFile(Long id);
+    @Query(value = "update ContentFile cf set cf.available = ?2 where cf.id = ?1")
+    int updateAvailable(Long id, boolean available);
 
     List<ContentFile> findAllByAvailableOrderByIdDesc(boolean isAvailable, Pageable pageable);
 
