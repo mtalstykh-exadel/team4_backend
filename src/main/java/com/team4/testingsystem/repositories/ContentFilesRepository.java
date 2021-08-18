@@ -1,6 +1,7 @@
 package com.team4.testingsystem.repositories;
 
 import com.team4.testingsystem.entities.ContentFile;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -36,10 +37,12 @@ public interface ContentFilesRepository extends CrudRepository<ContentFile, Long
     @Query(value = "update ContentFile cf set cf.available = false where cf.id = ?1")
     int archiveContentFile(Long id);
 
-    List<ContentFile> findAll();
+    List<ContentFile> findAllByAvailableOrderByIdDesc(boolean isAvailable, Pageable pageable);
 
     @Query("select distinct cf from ContentFile cf "
            + "join cf.questions q "
-           + "where q.level.name = ?1 ")
-    List<ContentFile> getContentFiles(String level);
+           + "where q.level.name = ?1 "
+           + "and cf.available = ?2 "
+           + "order by cf.id desc ")
+    List<ContentFile> getContentFiles(String level, boolean isAvailable, Pageable pageable);
 }

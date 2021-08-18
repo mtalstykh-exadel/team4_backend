@@ -46,8 +46,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class TestsControllerIntegrationTest {
 
     private final long BAD_USER_ID = 4242L;
-
     private final long BAD_TEST_ID = 42L;
+    private final String page = "0";
+    private final String count = "10";
 
     private final MockMvc mockMvc;
 
@@ -57,7 +58,6 @@ class TestsControllerIntegrationTest {
     private final UsersRepository usersRepository;
     private final ContentFilesRepository contentFilesRepository;
     private final QuestionRepository questionRepository;
-
     private final ObjectMapper objectMapper;
 
     private User user;
@@ -128,6 +128,8 @@ class TestsControllerIntegrationTest {
         long userId = user.getId();
 
         MvcResult mvcResult = mockMvc.perform(get("/tests/history/{userId}", userId)
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(hrDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -146,6 +148,8 @@ class TestsControllerIntegrationTest {
     @Test
     void getUsersTestsFailUserNotFound() throws Exception {
         mockMvc.perform(get("/tests/history/{userId}", BAD_USER_ID)
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(hrDetails)))
                 .andExpect(status().isNotFound());
     }
@@ -153,6 +157,8 @@ class TestsControllerIntegrationTest {
     @Test
     void getUsersTestsUser() throws Exception {
         mockMvc.perform(get("/tests/history/{userId}", BAD_USER_ID)
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(userDetails)))
                 .andExpect(status().isForbidden());
     }
@@ -160,6 +166,8 @@ class TestsControllerIntegrationTest {
     @Test
     void getUsersTestsCoach() throws Exception {
         mockMvc.perform(get("/tests/history/{userId}", BAD_USER_ID)
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(coachDetails)))
                 .andExpect(status().isForbidden());
     }
@@ -167,6 +175,8 @@ class TestsControllerIntegrationTest {
     @Test
     void getUsersTestsAdmin() throws Exception {
         mockMvc.perform(get("/tests/history/{userId}", BAD_USER_ID)
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(adminDetails)))
                 .andExpect(status().isForbidden());
     }
@@ -191,6 +201,8 @@ class TestsControllerIntegrationTest {
         testsRepository.save(test);
 
         MvcResult mvcResult = mockMvc.perform(get("/tests/unverified_assigned")
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(coachDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -209,6 +221,8 @@ class TestsControllerIntegrationTest {
     @Test
     void getUnverifiedTestsForCurrentCoachUser() throws Exception {
         mockMvc.perform(get("/tests/unverified_assigned")
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(userDetails)))
                 .andExpect(status().isForbidden());
     }
@@ -216,6 +230,8 @@ class TestsControllerIntegrationTest {
     @Test
     void getUnverifiedTestsForCurrentCoachHr() throws Exception {
         mockMvc.perform(get("/tests/unverified_assigned")
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(hrDetails)))
                 .andExpect(status().isForbidden());
     }
@@ -223,6 +239,8 @@ class TestsControllerIntegrationTest {
     @Test
     void getUnverifiedTestsForCurrentCoachAdmin() throws Exception {
         mockMvc.perform(get("/tests/unverified_assigned")
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(adminDetails)))
                 .andExpect(status().isForbidden());
     }
@@ -328,6 +346,7 @@ class TestsControllerIntegrationTest {
         Optional<com.team4.testingsystem.entities.Test> updatedTest = testsRepository.findById(testId);
         Assertions.assertTrue(updatedTest.isPresent());
         Assertions.assertNull(updatedTest.get().getCoach());
+        Assertions.assertEquals(Status.COMPLETED.name(), updatedTest.get().getStatus().name());
     }
 
     @Test
@@ -341,6 +360,7 @@ class TestsControllerIntegrationTest {
     void deassignCoachUser() throws Exception {
         mockMvc.perform(post("/tests/deassign_coach/{testId}", BAD_TEST_ID)
                 .with(user(userDetails)))
+
                 .andExpect(status().isForbidden());
     }
 

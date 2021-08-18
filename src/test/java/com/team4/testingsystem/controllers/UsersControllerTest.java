@@ -20,6 +20,8 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -36,7 +38,7 @@ class UsersControllerTest {
 
     private User user;
     private com.team4.testingsystem.entities.Test test;
-
+    private final Pageable pageable = PageRequest.of(1, 10);
     @BeforeEach
     void init() {
         user = EntityCreatorUtil.createUser();
@@ -57,23 +59,23 @@ class UsersControllerTest {
 
     @Test
     void getAllUsersAndAssignedTestsNoAssignedTest() {
-        Mockito.when(testsService.getAllUsersAndAssignedTests())
+        Mockito.when(testsService.getAllUsersAndAssignedTests(pageable))
                 .thenReturn(Lists.list(new UserTest(user, null)));
 
-        List<UserDTO> users = usersController.getAllUsersAndAssignedTests();
+        List<UserDTO> users = usersController.getAllUsersAndAssignedTests(1, 10);
         Assertions.assertEquals(1, users.size());
         Assertions.assertEquals(new UserDTO(user), users.get(0));
     }
 
     @Test
     void getAllUsersAndAssignedTestsSuccess() {
-        Mockito.when(testsService.getAllUsersAndAssignedTests())
+        Mockito.when(testsService.getAllUsersAndAssignedTests(pageable))
                 .thenReturn(Lists.list(new UserTest(user, test)));
 
         UserDTO expectedUserDTO = new UserDTO(user);
         expectedUserDTO.setAssignedTest(new TestInfo(test));
 
-        List<UserDTO> users = usersController.getAllUsersAndAssignedTests();
+        List<UserDTO> users = usersController.getAllUsersAndAssignedTests(1, 10);
         Assertions.assertEquals(1, users.size());
         Assertions.assertEquals(expectedUserDTO, users.get(0));
     }

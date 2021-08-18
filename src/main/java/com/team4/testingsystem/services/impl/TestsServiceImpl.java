@@ -18,10 +18,12 @@ import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;
+import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -69,26 +71,35 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public List<Test> getByUserId(long userId) {
+    public List<Test> getByUserId(long userId, Pageable pageable) {
         User user = usersService.getUserById(userId);
-        return testsRepository.getAllByUser(user);
+        return testsRepository.getAllByUser(user, pageable);
     }
 
     @Override
-    public List<Test> getByStatuses(Status[] statuses) {
-        return testsRepository.getByStatuses(statuses);
+    public List<Test> getByStatuses(Status[] statuses, Pageable pageable) {
+        return testsRepository.getByStatuses(statuses, pageable);
     }
 
     @Override
-    public List<Test> getAllUnverifiedTestsByCoach(long coachId) {
+    public List<Test> getAllUnverifiedTests(Pageable pageable) {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
-        return testsRepository.getAllByAssignedCoachAndStatuses(coachId, statuses);
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+        return getByStatuses(statuses, pageable).stream()
+                .filter(test -> !test.getUser().getId().equals(currentUserId))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<UserTest> getAllUsersAndAssignedTests() {
+    public List<Test> getAllUnverifiedTestsByCoach(long coachId, Pageable pageable) {
+        Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
+        return testsRepository.getAllByAssignedCoachAndStatuses(coachId, statuses, pageable);
+    }
+
+    @Override
+    public List<UserTest> getAllUsersAndAssignedTests(Pageable pageable) {
         Status[] statuses = {Status.ASSIGNED};
-        Map<User, Test> assignedTests = getByStatuses(statuses).stream()
+        Map<User, Test> assignedTests = getByStatuses(statuses, pageable).stream()
                 .collect(Collectors.toMap(Test::getUser, Function.identity()));
 
         return usersService.getAll().stream()
@@ -97,12 +108,12 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public List<Test> getTestsByUserIdAndLevel(long userId, Levels level) {
-        return testsRepository.getAllByUser(usersService.getUserById(userId)).stream()
+    public List<Test> getTestsByUserIdAndLevel(long userId, Levels level, Pageable pageable) {
+        return testsRepository.getAllByUser(usersService.getUserById(userId), pageable).stream()
                 .filter(test -> test.getLevel().getName().equals(level.name()))
                 .collect(Collectors.toList());
     }
-
+    
     @Override
     public Test startTestVerification(long testId) {
         testsRepository.updateStatusByTestId(testId, Status.IN_VERIFICATION);
@@ -196,7 +207,7 @@ public class TestsServiceImpl implements TestsService {
 
         java.util.Timer timer = new java.util.Timer(String.valueOf(testId));
         long delay = test.getFinishTime().plus(2L, ChronoUnit.MINUTES).toEpochMilli()
-                - Instant.now().toEpochMilli();
+                     - Instant.now().toEpochMilli();
         if (delay <= 0) {
             finish(testId, test.getFinishTime());
             timer.cancel();
@@ -223,7 +234,7 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public void coachSubmit(long id) {
         testEvaluationService.updateScoreAfterCoachCheck(getById(id));
-        testsRepository.updateEvaluation(Instant.now(), id);
+        testsRepository.coachSubmit(Instant.now(), id);
     }
 
     @Override

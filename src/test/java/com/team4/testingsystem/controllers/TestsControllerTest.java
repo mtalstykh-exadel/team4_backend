@@ -33,6 +33,8 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -82,7 +84,7 @@ class TestsControllerTest {
 
     private Test test;
 
-    private List<TestInfo> testInfos;
+    private final Pageable pageable = PageRequest.of(1, 10);
 
     @Mock
     private TestVerificationDTO testVerificationDTO;
@@ -113,13 +115,14 @@ class TestsControllerTest {
             Test test = EntityCreatorUtil
                     .createTest(EntityCreatorUtil.createUser(), EntityCreatorUtil.createLevel());
             Mockito.when(mockUserDetails.getId()).thenReturn(1L);
-
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(mockUserDetails);
+            Mockito.when(testsService.getByUserId(1L, pageable)).thenReturn(Lists.list(test));
+            TestInfo expectedInfo = new TestInfo(test, 4);
+            Mockito.when(testConverter.convertToInfo(test)).thenReturn(expectedInfo);
 
-            Mockito.when(testsService.getByUserId(1L)).thenReturn(Lists.list(test));
+            Assertions.assertEquals(Lists.list(expectedInfo),
+                    testsController.getCurrentUserTests(1, 10));
 
-            Assertions.assertEquals(Lists.list(new TestInfo(test)),
-                    testsController.getCurrentUserTests());
         }
     }
 
@@ -154,36 +157,39 @@ class TestsControllerTest {
     void getUsersTestsSuccess() {
         List<Test> tests = new ArrayList<>();
 
-        Mockito.when(testsService.getByUserId(GOOD_USER_ID)).thenReturn(tests);
+        Mockito.when(testsService
+                .getByUserId(GOOD_USER_ID, pageable)).thenReturn(tests);
 
-        Assertions.assertEquals(Lists.emptyList(), testsController.getUsersTests(GOOD_USER_ID, null));
+        Assertions.assertEquals(Lists.emptyList(),
+                testsController.getUsersTests(GOOD_USER_ID, null, 1, 10));
     }
 
     @org.junit.jupiter.api.Test
     void getUsersTestsFailUserNotFound() {
-        Mockito.when(testsService.getByUserId(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
+        Mockito.when(testsService.getByUserId(BAD_USER_ID, pageable)).thenThrow(UserNotFoundException.class);
 
         Assertions.assertThrows(UserNotFoundException.class,
-                () -> testsController.getUsersTests(BAD_USER_ID, null));
+                () -> testsController.getUsersTests(BAD_USER_ID, null, 1, 10));
     }
 
     @org.junit.jupiter.api.Test
     void getUsersTestsWithLevelSuccess() {
         List<Test> tests = new ArrayList<>();
 
-        Mockito.when(testsService.getTestsByUserIdAndLevel(GOOD_USER_ID, Levels.A1)).thenReturn(tests);
+        Mockito.when(testsService.getTestsByUserIdAndLevel(GOOD_USER_ID, Levels.A1, pageable)).thenReturn(tests);
 
-        Assertions.assertEquals(Lists.emptyList(), testsController.getUsersTests(GOOD_USER_ID, Levels.A1));
+        Assertions.assertEquals(Lists.emptyList(),
+                testsController.getUsersTests(GOOD_USER_ID, Levels.A1, 1, 10));
     }
 
 
     @org.junit.jupiter.api.Test
     void getUsersTestsWithLevelFailUserNotFound() {
-        Mockito.when(testsService.getTestsByUserIdAndLevel(BAD_USER_ID, Levels.A1))
+        Mockito.when(testsService.getTestsByUserIdAndLevel(BAD_USER_ID, Levels.A1, pageable))
                 .thenThrow(UserNotFoundException.class);
 
         Assertions.assertThrows(UserNotFoundException.class,
-                () -> testsController.getUsersTests(BAD_USER_ID, Levels.A1));
+                () -> testsController.getUsersTests(BAD_USER_ID, Levels.A1, 1, 10));
     }
 
     @org.junit.jupiter.api.Test
@@ -209,11 +215,11 @@ class TestsControllerTest {
         try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
             Mockito.when(customUserDetails.getId()).thenReturn(GOOD_USER_ID);
-            Mockito.when(testsService.getAllUnverifiedTestsByCoach(GOOD_USER_ID))
+            Mockito.when(testsService.getAllUnverifiedTestsByCoach(GOOD_USER_ID, pageable))
                     .thenReturn(Lists.list(test));
             Mockito.when(testConverter.convertToDTO(test)).thenReturn(testDTO);
 
-            Assertions.assertEquals(Lists.list(testDTO), testsController.getUnverifiedTestsForCurrentCoach());
+            Assertions.assertEquals(Lists.list(testDTO), testsController.getUnverifiedTestsForCurrentCoach(1, 10));
         }
     }
 
@@ -359,7 +365,7 @@ class TestsControllerTest {
     void getUnverifiedTests() {
         List<Test> tests = new ArrayList<>();
         List<TestDTO> testsDto = new ArrayList<>();
-        Mockito.when(testsService.getByStatuses(any())).thenReturn(tests);
-        Assertions.assertEquals(testsDto, testsController.getUnverifiedTests());
+        Mockito.when(testsService.getAllUnverifiedTests(pageable)).thenReturn(tests);
+        Assertions.assertEquals(testsDto, testsController.getUnverifiedTests(1, 10));
     }
 }

@@ -8,10 +8,12 @@ import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.enums.QuestionStatus;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,8 +57,13 @@ public class QuestionController {
     @GetMapping("/")
     @Secured("ROLE_COACH")
     public List<QuestionDTO> getQuestions(@RequestParam("level") Levels level,
-                                          @RequestParam("module") Modules module) {
-        return questionService.getQuestionsByLevelAndModuleName(level, module).stream()
+                                          @RequestParam("module") Modules module,
+                                          @RequestParam("status") QuestionStatus status,
+                                          @RequestParam int pageNumb,
+                                          @RequestParam int pageSize
+    ) {
+        return questionService.getQuestionsByLevelAndModuleName(
+                level, module, status, PageRequest.of(pageNumb, pageSize)).stream()
                 .map(QuestionDTO::create)
                 .collect(Collectors.toList());
     }
@@ -83,8 +90,12 @@ public class QuestionController {
 
     @ApiOperation(value = "Get all topics (or get by level)")
     @GetMapping(value = "/listening")
-    public List<ListeningTopicDTO> getListeningTopics(@RequestParam(required = false) Levels level) {
-        return convertToDTO(questionService.getListening(level));
+    public List<ListeningTopicDTO> getListeningTopics(@RequestParam(required = false) Levels level,
+                                                      @RequestParam("status") QuestionStatus status,
+                                                      @RequestParam int pageNumb,
+                                                      @RequestParam int pageSize
+                                                      ) {
+        return convertToDTO(questionService.getListening(level, status, PageRequest.of(pageNumb, pageSize)));
     }
 
     @ApiOperation(value = "Add content file with questions")

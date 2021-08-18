@@ -7,6 +7,7 @@ import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
+import com.team4.testingsystem.exceptions.TooLongEssayException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.services.FileAnswerService;
 import com.team4.testingsystem.services.QuestionService;
@@ -95,6 +96,10 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     public FileAnswer uploadEssay(Long testId, String text) {
         Test test = testsService.getById(testId);
         Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
+
+        if (text.length() > 512) {
+            throw new TooLongEssayException();
+        }
 
         InputStream inputStream = IOUtils.toInputStream(text, StandardCharsets.UTF_8);
         String url = storageService.upload(new InputStreamResource(inputStream), Modules.ESSAY, testId);

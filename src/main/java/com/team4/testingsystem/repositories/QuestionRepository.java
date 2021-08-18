@@ -18,27 +18,32 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
     void archiveQuestion(Long id);
 
     @Query(value = "select q from Question q "
-                   + "where q.isAvailable = true "
-                   + "and q.level.name = ?1 "
-                   + "and q.module.name = ?2 "
-                   + "order by function('random') ")
+        + "where q.isAvailable = true "
+        + "and q.level.name = ?1 "
+        + "and q.module.name = ?2 "
+        + "order by function('random') ")
     List<Question> getRandomQuestions(String level, String module, Pageable pageable);
 
     @Query("select q from Question q "
-           + "join q.contentFiles cf "
-           + "where cf.id = ?1 "
-           + "order by function('random') ")
+        + "join q.contentFiles cf "
+        + "where cf.id = ?1 "
+        + "order by function('random') ")
     List<Question> getRandomQuestionByContentFile(Long id, Pageable pageable);
 
     @Query("select q from Question q "
-           + "join q.tests t "
-           + "where t.id = ?1 ")
+        + "join q.tests t "
+        + "where t.id = ?1 ")
     List<Question> getQuestionsByTestId(Long id);
 
     @Query("select q from Question q "
            + "where q.level.name = ?1 "
-           + "and q.module.name = ?2 ")
-    List<Question> getQuestionsByLevelAndModuleName(String level, String module);
+           + "and q.module.name = ?2 "
+           + "and q.isAvailable = ?3 "
+           + "order by q.id desc ")
+    List<Question> getQuestionsByLevelAndModuleName(String level,
+                                                    String module,
+                                                    boolean isAvailable,
+                                                    Pageable pageable);
 
     @Query("select q from Question q "
            + "join q.tests t "

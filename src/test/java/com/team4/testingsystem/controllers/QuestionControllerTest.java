@@ -3,13 +3,12 @@ package com.team4.testingsystem.controllers;
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.AnswerDTO;
 import com.team4.testingsystem.dto.ContentFileDTO;
-import com.team4.testingsystem.dto.ListeningTopicDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
-import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
+import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.enums.QuestionStatus;
 import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
@@ -18,23 +17,20 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-
 
 @ExtendWith(MockitoExtension.class)
 class QuestionControllerTest {
@@ -58,6 +54,12 @@ class QuestionControllerTest {
 
     private static final Long ID = 1L;
     private static final String TOPIC = "topic";
+    private final Pageable pageable = PageRequest.of(1, 10);
+    private final Modules module = Modules.SPEAKING;
+    private final Levels level = Levels.A1;
+    private final QuestionStatus status = QuestionStatus.ARCHIVED;
+    private final int page = 1;
+    private final int count = 10;
 
     @Test
     void getQuestion() {
@@ -77,11 +79,15 @@ class QuestionControllerTest {
     @Test
     void getQuestionsByLevelAndModuleName() {
         List<Question> questions = Lists.list(EntityCreatorUtil.createQuestion());
-        Mockito.when(questionService.getQuestionsByLevelAndModuleName(any(), any())).thenReturn(questions);
+        Mockito.when(questionService.getQuestionsByLevelAndModuleName(level, module, status, pageable))
+                .thenReturn(questions);
         List<QuestionDTO> expectedQuestions = questions.stream()
-            .map(QuestionDTO::create)
-            .collect(Collectors.toList());
-        Assertions.assertEquals(expectedQuestions, questionController.getQuestions(any(), any()));
+                .map(QuestionDTO::create)
+                .collect(Collectors.toList());
+
+        Assertions
+                .assertEquals(expectedQuestions, questionController.getQuestions(level, module, status, page, count));
+
     }
 
     @Test
@@ -135,7 +141,7 @@ class QuestionControllerTest {
         doThrow(ContentFileNotFoundException.class).when(contentFilesService).archive(42L);
 
         Assertions.assertThrows(ContentFileNotFoundException.class,
-            () -> questionController.archiveListening(42L));
+                () -> questionController.archiveListening(42L));
     }
 
 
@@ -203,14 +209,14 @@ class QuestionControllerTest {
     }
 
     @Test
-    void getListeningTopics(){
-        questionController.getListeningTopics(null);
-        verify(questionService).getListening(null);
+    void getListeningTopics() {
+        questionController.getListeningTopics(null, QuestionStatus.ARCHIVED, page, count);
+        verify(questionService).getListening(null, QuestionStatus.ARCHIVED, pageable);
     }
 
     @Test
-    void getListeningTopicsByLevel(){
-        questionController.getListeningTopics(Levels.A1);
-        verify(questionService).getListening(Levels.A1);
+    void getListeningTopicsByLevel() {
+        questionController.getListeningTopics(level, QuestionStatus.UNARCHIVED, page, count);
+        verify(questionService).getListening(level, QuestionStatus.UNARCHIVED, pageable);
     }
 }

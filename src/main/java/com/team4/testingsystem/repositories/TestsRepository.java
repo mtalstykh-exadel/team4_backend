@@ -3,6 +3,7 @@ package com.team4.testingsystem.repositories;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Status;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -15,11 +16,20 @@ import java.util.List;
 @Repository
 public interface TestsRepository extends CrudRepository<Test, Long> {
 
-    @Query("select t from Test t where t.user = ?1")
-    List<Test> getAllByUser(User user);
+    @Query("select t from Test t where t.user = ?1 "
+           + "order by case "
+           + "when t.status = 'STARTED' then 'A' "
+           + "when t.status = 'ASSIGNED' then 'B' ELSE 'C' end, "
+           + "t.verifiedAt desc, t.deadline desc, t.assignedAt desc ")
+    List<Test> getAllByUser(User user, Pageable pageable);
 
-    @Query("select t from Test t where t.status in ?1")
-    List<Test> getByStatuses(Status[] statuses);
+    @Query("select t from Test t where t.status in ?1 "
+           + "order by case "
+           + "when t.priority = 'High' then 'A' "
+           + "when t.priority = 'Medium' then 'B' "
+           + "when t.priority = 'Low' then 'C' ELSE 'D' end, "
+           + "t.deadline asc, t.assignedAt desc ")
+    List<Test> getByStatuses(Status[] statuses, Pageable pageable);
 
     @Query("select t from Test t"
             + " where t.user = ?1 "
@@ -27,8 +37,13 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
             + "and t.startedAt >= ?2")
     List<Test> getSelfStartedByUserAfter(User user, Instant date);
 
-    @Query("select t from Test t where t.coach.id = ?1 and t.status in ?2")
-    List<Test> getAllByAssignedCoachAndStatuses(Long coachId, Status[] status);
+    @Query("select t from Test t where t.coach.id = ?1 and t.status in ?2 "
+           + "order by case "
+           + "when t.priority = 'High' then 'A' "
+           + "when t.priority = 'Medium' then 'B' "
+           + "when t.priority = 'Low' then 'C' ELSE t.priority end, "
+           + "t.deadline asc, t.assignedAt desc ")
+    List<Test> getAllByAssignedCoachAndStatuses(Long coachId, Status[] status, Pageable pageable);
 
     @Transactional
     @Modifying
@@ -52,8 +67,8 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.verifiedAt = ?1 where t.id = ?2")
-    int updateEvaluation(Instant updateDate, Long id);
+    @Query(value = "UPDATE Test t SET t.verifiedAt = ?1, t.status = 'VERIFIED' where t.id = ?2")
+    int coachSubmit(Instant updateDate, Long id);
 
     @Transactional
     @Modifying
@@ -67,6 +82,6 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.coach = null where t.id = ?1")
+    @Query(value = "UPDATE Test t SET t.coach = null, t.status = 'COMPLETED' where t.id = ?1")
     int deassignCoach(Long id);
 }
