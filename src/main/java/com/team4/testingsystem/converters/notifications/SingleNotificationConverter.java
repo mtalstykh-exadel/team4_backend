@@ -4,9 +4,17 @@ import com.team4.testingsystem.dto.NotificationDTO;
 import com.team4.testingsystem.entities.Notification;
 import com.team4.testingsystem.enums.NotificationType;
 
-public interface SingleNotificationConverter {
+public abstract class SingleNotificationConverter {
 
-    NotificationDTO convertToDTO(Notification notification);
+    protected NotificationDTO.Builder notificationBuilder(Notification notification) {
+        return NotificationDTO.builder()
+                .id(notification.getId())
+                .type(notification.getType())
+                .testId(notification.getTest().getId())
+                .createdAt(notification.getCreatedAt());
+    }
 
-    NotificationType converterType();
+    public abstract NotificationDTO convertToDTO(Notification notification);
+
+    public abstract NotificationType converterType();
 }

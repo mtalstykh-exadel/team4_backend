@@ -6,15 +6,10 @@ import com.team4.testingsystem.enums.NotificationType;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TestDeassignedNotificationConverter implements SingleNotificationConverter {
+public class TestDeassignedNotificationConverter extends SingleNotificationConverter {
     @Override
     public NotificationDTO convertToDTO(Notification notification) {
-        return NotificationDTO.builder()
-                .id(notification.getId())
-                .type(NotificationType.TEST_DEASSIGNED)
-                .testId(notification.getTest().getId())
-                .createdAt(notification.getCreatedAt())
-                .build();
+        return notificationBuilder(notification).build();
     }
 
     @Override

@@ -34,6 +34,7 @@ public class TestDeassignedNotificationConverterTest {
         Mockito.when(notification.getId()).thenReturn(NOTIFICATION_ID);
         Mockito.when(notification.getCreatedAt()).thenReturn(createdAt);
         Mockito.when(notification.getTest()).thenReturn(test);
+        Mockito.when(notification.getType()).thenReturn(NotificationType.TEST_DEASSIGNED);
 
         Mockito.when(test.getId()).thenReturn(TEST_ID);
 
