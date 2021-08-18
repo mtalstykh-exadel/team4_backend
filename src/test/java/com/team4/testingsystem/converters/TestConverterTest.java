@@ -15,8 +15,10 @@ import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
+import com.team4.testingsystem.services.AnswerService;
 import com.team4.testingsystem.services.ChosenOptionService;
 import com.team4.testingsystem.services.ContentFilesService;
+import com.team4.testingsystem.services.ErrorReportsService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
@@ -30,6 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,8 +50,17 @@ class TestConverterTest {
     @Mock
     private ChosenOptionService chosenOptionService;
 
+    @Mock
+    private AnswerService answerService;
+
+    @Mock
+    private ErrorReportsService errorReportsService;
+
     @InjectMocks
     private TestConverter testConverter;
+
+    private static final String ESSAY_TEXT = "essay";
+    private static final String SPEAKING_URL = "url";
 
     @Test
     void convertToDTO() {
@@ -96,6 +108,10 @@ class TestConverterTest {
         Mockito.when(contentFilesService.getContentFileByQuestionId(any()))
                 .thenReturn(new ContentFile("url"));
 
+        Mockito.when(answerService.tryDownloadEssay(test.getId())).thenReturn(Optional.of(ESSAY_TEXT));
+        Mockito.when(answerService.tryDownloadSpeaking(test.getId())).thenReturn(Optional.of(SPEAKING_URL));
+        Mockito.when(errorReportsService.getReportsByTest(test.getId())).thenReturn(List.of());
+
         TestDTO testDTO = testConverter.convertToDTO(test);
 
         Assertions.assertEquals(test.getId(), testDTO.getId());
@@ -110,6 +126,10 @@ class TestConverterTest {
         Assertions.assertEquals(Priority.LOW.getName(), testDTO.getPriority());
         Assertions.assertEquals(Status.STARTED.name(), testDTO.getStatus());
         Assertions.assertEquals(new UserDTO(coach), testDTO.getCoach());
+
+        Assertions.assertEquals(ESSAY_TEXT, testDTO.getEssayText());
+        Assertions.assertEquals(SPEAKING_URL, testDTO.getSpeakingUrl());
+        Assertions.assertEquals(List.of(), testDTO.getErrorReports());
 
         for (Modules module : Modules.values()) {
             QuestionDTO expectedQuestion = questions.stream()

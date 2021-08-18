@@ -1,7 +1,5 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.dto.ErrorReportDTO;
-import com.team4.testingsystem.entities.ErrorReport;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.exceptions.ErrorReportNotFoundException;
@@ -14,11 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -49,9 +43,6 @@ public class ErrorReportsControllerTest {
 
     @Mock
     TestQuestionID testQuestionID;
-
-    @Mock
-    ErrorReport errorReport;
 
     @InjectMocks
     ErrorReportsController errorReportsController;
