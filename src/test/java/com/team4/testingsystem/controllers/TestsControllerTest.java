@@ -115,17 +115,14 @@ class TestsControllerTest {
             Test test = EntityCreatorUtil
                     .createTest(EntityCreatorUtil.createUser(), EntityCreatorUtil.createLevel());
             Mockito.when(mockUserDetails.getId()).thenReturn(1L);
-
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(mockUserDetails);
-
             Mockito.when(testsService.getByUserId(1L, pageable)).thenReturn(Lists.list(test));
-
-            Assertions.assertEquals(Lists.list(new TestInfo(test)),
-                    testsController.getCurrentUserTests(1, 10));
             TestInfo expectedInfo = new TestInfo(test, 4);
             Mockito.when(testConverter.convertToInfo(test)).thenReturn(expectedInfo);
 
-            Assertions.assertEquals(Lists.list(expectedInfo), testsController.getCurrentUserTests());
+            Assertions.assertEquals(Lists.list(expectedInfo),
+                    testsController.getCurrentUserTests(1, 10));
+
         }
     }
 
@@ -366,8 +363,6 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void getUnverifiedTests() {
-        Mockito.when(testsService.getAllUnverifiedTests()).thenReturn(List.of());
-        Assertions.assertEquals(List.of(), testsController.getUnverifiedTests());
         List<Test> tests = new ArrayList<>();
         List<TestDTO> testsDto = new ArrayList<>();
         Mockito.when(testsService.getAllUnverifiedTests(pageable)).thenReturn(tests);
