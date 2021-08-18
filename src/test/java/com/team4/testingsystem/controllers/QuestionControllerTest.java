@@ -1,5 +1,6 @@
 package com.team4.testingsystem.controllers;
 
+import com.team4.testingsystem.converters.ContentFileConverter;
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.AnswerDTO;
 import com.team4.testingsystem.dto.ContentFileDTO;
@@ -41,6 +42,9 @@ class QuestionControllerTest {
     private QuestionConverter questionConverter;
 
     @Mock
+    private ContentFileConverter contentFileConverter;
+
+    @Mock
     private MultipartFile multipartFile;
 
     @Mock
@@ -61,6 +65,7 @@ class QuestionControllerTest {
     private static final Modules SPEAKING = Modules.SPEAKING;
     private static final Levels A1 = Levels.A1;
     private static final QuestionStatus ARCHIVED = QuestionStatus.ARCHIVED;
+    private static final QuestionStatus UNARCHIVED = QuestionStatus.UNARCHIVED;
     private static final int PAGE = 1;
     private static final int COUNT = 10;
 
@@ -82,14 +87,14 @@ class QuestionControllerTest {
     @Test
     void getQuestionsByLevelAndModuleName() {
         List<Question> questions = Lists.list(EntityCreatorUtil.createQuestion());
-        Mockito.when(questionService.getQuestionsByLevelAndModuleName(A1, SPEAKING, ARCHIVED, PAGE_REQUEST))
+        Mockito.when(questionService.getQuestionsByLevelAndModuleName(A1, SPEAKING, UNARCHIVED, PAGE_REQUEST))
                 .thenReturn(questions);
         List<QuestionDTO> expectedQuestions = questions.stream()
                 .map(QuestionDTO::create)
                 .collect(Collectors.toList());
 
         Assertions
-                .assertEquals(expectedQuestions, questionController.getQuestions(A1, SPEAKING, ARCHIVED, PAGE, COUNT));
+                .assertEquals(expectedQuestions, questionController.getQuestions(A1, SPEAKING, UNARCHIVED, PAGE, COUNT));
 
     }
 
@@ -188,38 +193,45 @@ class QuestionControllerTest {
 
     @Test
     void addListening() {
-        Mockito.when(contentFilesService.add(multipartFile, TOPIC, Lists.emptyList()))
-                .thenReturn(contentFile);
-
         ContentFileDTO request = new ContentFileDTO();
+        request.setId(0L);
         request.setTopic(TOPIC);
         request.setQuestions(List.of());
+        Mockito.when(contentFileConverter.convertToEntity(request))
+                .thenReturn(contentFile);
+        Mockito.when(contentFilesService.add(multipartFile, contentFile))
+                .thenReturn(contentFile);
+        ContentFileDTO result = questionController.addListening(multipartFile, request);
+        result.setTopic(TOPIC);
 
-        Assertions.assertEquals(new ContentFileDTO(contentFile),
-                questionController.addListening(multipartFile, request));
+        Assertions.assertEquals(request, result);
     }
 
     @Test
     void updateListeningWithFile() {
-        Mockito.when(contentFilesService.update(multipartFile, ID, TOPIC, List.of())).thenReturn(contentFile);
-
         ContentFileDTO request = new ContentFileDTO();
+        request.setId(0L);
         request.setTopic(TOPIC);
         request.setQuestions(List.of());
+        Mockito.when(contentFileConverter.convertToEntity(request))
+                .thenReturn(contentFile);
+        Mockito.when(contentFilesService.update(multipartFile, ID, contentFile))
+                .thenReturn(contentFile);
         ContentFileDTO result = questionController.updateListening(multipartFile, ID, request);
+        result.setTopic(TOPIC);
 
-        Assertions.assertEquals(new ContentFileDTO(contentFile), result);
+        Assertions.assertEquals(request, result);
     }
 
     @Test
     void getListeningTopics() {
-        questionController.getListeningTopics(null, QuestionStatus.ARCHIVED, PAGE, COUNT);
-        verify(questionService).getListening(null, QuestionStatus.ARCHIVED, PAGE_REQUEST);
+        questionController.getListeningTopics(null, ARCHIVED, PAGE, COUNT);
+        verify(questionService).getListening(null, ARCHIVED, PAGE_REQUEST);
     }
 
     @Test
     void getListeningTopicsByLevel() {
-        questionController.getListeningTopics(A1, QuestionStatus.UNARCHIVED, PAGE, COUNT);
-        verify(questionService).getListening(A1, QuestionStatus.UNARCHIVED, PAGE_REQUEST);
+        questionController.getListeningTopics(A1, UNARCHIVED, PAGE, COUNT);
+        verify(questionService).getListening(A1, UNARCHIVED, PAGE_REQUEST);
     }
 }

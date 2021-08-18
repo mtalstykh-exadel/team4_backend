@@ -41,9 +41,6 @@ class ContentFilesServiceImplTest {
     private ContentFile contentFile;
 
     @Mock
-    private List<Question> questions;
-
-    @Mock
     private ContentFilesRepository contentFilesRepository;
 
     @Mock
@@ -52,14 +49,13 @@ class ContentFilesServiceImplTest {
     @Mock
     private QuestionService questionService;
 
-    @InjectMocks
-    private ContentFilesServiceImpl contentFilesService;
-
     @Mock
     private CustomUserDetails userDetails;
 
+    @InjectMocks
+    private ContentFilesServiceImpl contentFilesService;
+
     private static final String URL = "https://best_listening_audios.com/";
-    private static final String TOPIC = "topic";
     private static final Long USER_ID = 1L;
     private static final boolean UNAVAILABLE = false;
     private static final Long ID = 1L;
@@ -73,7 +69,7 @@ class ContentFilesServiceImplTest {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
             Mockito.when(contentFilesRepository.save(any())).thenReturn(contentFile);
             Mockito.when(contentFilesRepository.updateAvailable(ID, UNAVAILABLE)).thenReturn(1);
-            ContentFile result = contentFilesService.update(file, ID, URL, questions);
+            ContentFile result = contentFilesService.update(file, ID, contentFile);
 
             verify(questionService).archiveQuestionsByContentFileId(ID);
             Assertions.assertEquals(contentFile, result);
@@ -104,12 +100,11 @@ class ContentFilesServiceImplTest {
 
     @Test
     void addSuccess() {
-        List<Question> questions = new ArrayList<>();
         Mockito.when(userDetails.getId()).thenReturn(USER_ID);
         Mockito.when(storageService.upload(file.getResource(), Modules.LISTENING, USER_ID)).thenReturn(URL);
         try (final MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
-            contentFilesService.add(file, TOPIC, questions);
+            contentFilesService.add(file, contentFile);
 
             verify(contentFilesRepository).save(any());
         }
