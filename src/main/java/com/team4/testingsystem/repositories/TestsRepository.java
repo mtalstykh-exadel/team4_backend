@@ -3,6 +3,7 @@ package com.team4.testingsystem.repositories;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Status;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -20,20 +21,20 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
            + "when t.status = 'STARTED' then 'A' "
            + "when t.status = 'ASSIGNED' then 'B' ELSE 'C' end, "
            + "t.verifiedAt desc, t.deadline desc, t.assignedAt desc ")
-    List<Test> getAllByUser(User user);
+    List<Test> getAllByUser(User user, Pageable pageable);
 
     @Query("select t from Test t where t.status in ?1 "
            + "order by case "
            + "when t.priority = 'High' then 'A' "
            + "when t.priority = 'Medium' then 'B' "
-           + "when t.priority = 'Low' then 'C' ELSE t.priority end, "
-           + "t.deadline asc, t.assignedAt desc, t.completedAt desc ")
-    List<Test> getByStatuses(Status[] statuses);
+           + "when t.priority = 'Low' then 'C' ELSE 'D' end, "
+           + "t.deadline asc, t.assignedAt desc ")
+    List<Test> getByStatuses(Status[] statuses, Pageable pageable);
 
     @Query("select t from Test t"
-           + " where t.user = ?1 "
-           + "and t.assignedAt is null "
-           + "and t.startedAt >= ?2")
+            + " where t.user = ?1 "
+            + "and t.assignedAt is null "
+            + "and t.startedAt >= ?2")
     List<Test> getSelfStartedByUserAfter(User user, Instant date);
 
     @Query("select t from Test t where t.coach.id = ?1 and t.status in ?2 "
@@ -42,7 +43,7 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
            + "when t.priority = 'Medium' then 'B' "
            + "when t.priority = 'Low' then 'C' ELSE t.priority end, "
            + "t.deadline asc, t.assignedAt desc ")
-    List<Test> getAllByAssignedCoachAndStatuses(Long coachId, Status[] status);
+    List<Test> getAllByAssignedCoachAndStatuses(Long coachId, Status[] status, Pageable pageable);
 
     @Transactional
     @Modifying

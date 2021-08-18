@@ -16,6 +16,7 @@ import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,19 +55,24 @@ public class TestsController {
 
     @ApiOperation(value = "Get all tests assigned to the current user")
     @GetMapping(path = "/")
-    public List<TestInfo> getCurrentUserTests() {
-        return convertToTestInfoDTO(testsService.getByUserId(JwtTokenUtil.extractUserDetails().getId()));
+    public List<TestInfo> getCurrentUserTests(@RequestParam int pageNumb,
+                                              @RequestParam int pageSize) {
+        return convertToTestInfoDTO(testsService
+                .getByUserId(JwtTokenUtil.extractUserDetails().getId(), PageRequest.of(pageNumb, pageSize)));
     }
 
     @ApiOperation(value = "Get all tests assigned to the user by by the optional parameter level")
     @GetMapping(path = "/history/{userId}")
     @Secured("ROLE_HR")
     public List<TestInfo> getUsersTests(@PathVariable("userId") long userId,
-                                       @RequestParam(required = false) Levels level) {
+                                       @RequestParam(required = false) Levels level,
+                                        @RequestParam int pageNumb,
+                                        @RequestParam int pageSize) {
         if (level != null) {
-            return convertToTestInfoDTO(testsService.getTestsByUserIdAndLevel(userId, level));
+            return convertToTestInfoDTO(testsService
+                    .getTestsByUserIdAndLevel(userId, level, PageRequest.of(pageNumb, pageSize)));
         }
-        return convertToTestInfoDTO(testsService.getByUserId(userId));
+        return convertToTestInfoDTO(testsService.getByUserId(userId, PageRequest.of(pageNumb, pageSize)));
     }
 
     @ApiOperation(value = "Use it to get a single test from the database by its id")
@@ -93,16 +99,20 @@ public class TestsController {
     @ApiOperation(value = "Is used to get all unverified tests")
     @GetMapping(path = "/unverified")
     @Secured("ROLE_ADMIN")
-    public List<TestInfo> getUnverifiedTests() {
-        return convertToTestInfoDTO(testsService.getAllUnverifiedTests());
+    public List<TestInfo> getUnverifiedTests(@RequestParam int pageNumb,
+                                             @RequestParam int pageSize) {
+        return convertToTestInfoDTO(testsService
+                .getAllUnverifiedTests(PageRequest.of(pageNumb, pageSize)));
     }
 
     @ApiOperation(value = "Is used to get all unverified tests, assigned to current coach")
     @GetMapping(path = "/unverified_assigned")
     @Secured("ROLE_COACH")
-    public List<TestDTO> getUnverifiedTestsForCurrentCoach() {
+    public List<TestDTO> getUnverifiedTestsForCurrentCoach(@RequestParam int pageNumb,
+                                                           @RequestParam int pageSize) {
         Long coachId = JwtTokenUtil.extractUserDetails().getId();
-        return convertToDTO(testsService.getAllUnverifiedTestsByCoach(coachId));
+        return convertToDTO(testsService
+                .getAllUnverifiedTestsByCoach(coachId, PageRequest.of(pageNumb, pageSize)));
     }
 
     @ApiOperation(value = "Is used to assign a test for the user (HR's ability)")

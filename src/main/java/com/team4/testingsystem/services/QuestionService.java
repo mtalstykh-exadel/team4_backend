@@ -27,11 +27,14 @@ public interface QuestionService {
 
     List<Question> getQuestionsByTestId(Long id);
 
-    List<Question> getQuestionsByLevelAndModuleName(Levels level, Modules module, QuestionStatus status);
+    List<Question> getQuestionsByLevelAndModuleName(Levels level,
+                                                    Modules module,
+                                                    QuestionStatus status,
+                                                    Pageable pageable);
 
     void archiveQuestionsByContentFileId(Long id);
 
     Question getQuestionByTestIdAndModule(Long testId, Modules module);
 
-    List<ContentFile> getListening(Levels level, QuestionStatus status);
+    List<ContentFile> getListening(Levels level, QuestionStatus status, Pageable pageable);
 }
