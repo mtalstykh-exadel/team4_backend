@@ -122,7 +122,6 @@ class TestsControllerTest {
 
             Assertions.assertEquals(Lists.list(expectedInfo),
                     testsController.getCurrentUserTests(1, 10));
-
         }
     }
 
@@ -210,16 +209,16 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void getUnverifiedTestsForCurrentCoachSuccess() {
-        TestDTO testDTO = new TestDTO();
+        TestInfo testInfo = new TestInfo();
 
         try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
             Mockito.when(customUserDetails.getId()).thenReturn(GOOD_USER_ID);
             Mockito.when(testsService.getAllUnverifiedTestsByCoach(GOOD_USER_ID, pageable))
                     .thenReturn(Lists.list(test));
-            Mockito.when(testConverter.convertToDTO(test)).thenReturn(testDTO);
+            Mockito.when(testConverter.convertToInfo(test)).thenReturn(testInfo);
 
-            Assertions.assertEquals(Lists.list(testDTO), testsController.getUnverifiedTestsForCurrentCoach(1, 10));
+            Assertions.assertEquals(Lists.list(testInfo), testsController.getUnverifiedTestsForCurrentCoach(1, 10));
         }
     }
 
@@ -301,7 +300,6 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void finishSuccess() {
-
         testsController.finish(GOOD_TEST_ID);
 
         verify(testsService).finish(anyLong(), any(Instant.class));
@@ -309,7 +307,6 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void finishFail() {
-
         doThrow(TestNotFoundException.class).when(testsService).finish(anyLong(), any(Instant.class));
 
         Assertions.assertThrows(TestNotFoundException.class,
@@ -363,9 +360,7 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void getUnverifiedTests() {
-        List<Test> tests = new ArrayList<>();
-        List<TestDTO> testsDto = new ArrayList<>();
-        Mockito.when(testsService.getAllUnverifiedTests(pageable)).thenReturn(tests);
-        Assertions.assertEquals(testsDto, testsController.getUnverifiedTests(1, 10));
+        Mockito.when(testsService.getAllUnverifiedTests(pageable)).thenReturn(List.of());
+        Assertions.assertEquals(List.of(), testsController.getUnverifiedTests(1, 10));
     }
 }

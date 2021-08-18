@@ -12,6 +12,7 @@ import com.team4.testingsystem.repositories.FileAnswerRepository;
 import com.team4.testingsystem.services.FileAnswerService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
+import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +30,19 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     private final QuestionService questionService;
     private final TestsService testsService;
     private final ResourceStorageService storageService;
+    private final RestrictionsService restrictionsService;
 
     @Autowired
     public FileAnswerServiceImpl(FileAnswerRepository fileAnswerRepository,
                                  QuestionService questionService,
                                  TestsService testsService,
-                                 ResourceStorageService storageService) {
+                                 ResourceStorageService storageService,
+                                 RestrictionsService restrictionsService) {
         this.fileAnswerRepository = fileAnswerRepository;
         this.questionService = questionService;
         this.testsService = testsService;
         this.storageService = storageService;
+        this.restrictionsService = restrictionsService;
     }
 
     @Override
@@ -52,9 +56,9 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     public FileAnswer uploadSpeaking(MultipartFile file, Long testId) {
         Test test = testsService.getById(testId);
 
-        testsService.checkOwnerIsCurrentUser(test);
+        restrictionsService.checkOwnerIsCurrentUser(test);
 
-        testsService.checkStartedStatus(test);
+        restrictionsService.checkStartedStatus(test);
 
         String url = storageService.upload(file.getResource(), Modules.SPEAKING, testId);
 
@@ -101,9 +105,9 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     public FileAnswer uploadEssay(Long testId, String text) {
         Test test = testsService.getById(testId);
 
-        testsService.checkOwnerIsCurrentUser(test);
+        restrictionsService.checkOwnerIsCurrentUser(test);
 
-        testsService.checkStartedStatus(test);
+        restrictionsService.checkStartedStatus(test);
 
         Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
 
