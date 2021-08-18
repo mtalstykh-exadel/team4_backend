@@ -57,7 +57,7 @@ public class TestsController {
     @GetMapping(path = "/")
     public List<TestInfo> getCurrentUserTests(@RequestParam int pageNumb,
                                               @RequestParam int pageSize) {
-        return convertToTestInfoDTO(testsService
+        return convertToTestInfo(testsService
                 .getByUserId(JwtTokenUtil.extractUserDetails().getId(), PageRequest.of(pageNumb, pageSize)));
     }
 
@@ -65,14 +65,14 @@ public class TestsController {
     @GetMapping(path = "/history/{userId}")
     @Secured("ROLE_HR")
     public List<TestInfo> getUsersTests(@PathVariable("userId") long userId,
-                                       @RequestParam(required = false) Levels level,
+                                        @RequestParam(required = false) Levels level,
                                         @RequestParam int pageNumb,
                                         @RequestParam int pageSize) {
         if (level != null) {
-            return convertToTestInfoDTO(testsService
+            return convertToTestInfo(testsService
                     .getTestsByUserIdAndLevel(userId, level, PageRequest.of(pageNumb, pageSize)));
         }
-        return convertToTestInfoDTO(testsService.getByUserId(userId, PageRequest.of(pageNumb, pageSize)));
+        return convertToTestInfo(testsService.getByUserId(userId, PageRequest.of(pageNumb, pageSize)));
     }
 
     @ApiOperation(value = "Use it to get a single test from the database by its id")
@@ -101,17 +101,17 @@ public class TestsController {
     @Secured("ROLE_ADMIN")
     public List<TestInfo> getUnverifiedTests(@RequestParam int pageNumb,
                                              @RequestParam int pageSize) {
-        return convertToTestInfoDTO(testsService
+        return convertToTestInfo(testsService
                 .getAllUnverifiedTests(PageRequest.of(pageNumb, pageSize)));
     }
 
     @ApiOperation(value = "Is used to get all unverified tests, assigned to current coach")
     @GetMapping(path = "/unverified_assigned")
     @Secured("ROLE_COACH")
-    public List<TestDTO> getUnverifiedTestsForCurrentCoach(@RequestParam int pageNumb,
-                                                           @RequestParam int pageSize) {
+    public List<TestInfo> getUnverifiedTestsForCurrentCoach(@RequestParam int pageNumb,
+                                                            @RequestParam int pageSize) {
         Long coachId = JwtTokenUtil.extractUserDetails().getId();
-        return convertToDTO(testsService
+        return convertToTestInfo(testsService
                 .getAllUnverifiedTestsByCoach(coachId, PageRequest.of(pageNumb, pageSize)));
     }
 
@@ -167,13 +167,7 @@ public class TestsController {
         testsService.deassignCoach(testId);
     }
 
-    private List<TestDTO> convertToDTO(List<Test> tests) {
-        return tests.stream()
-                .map(testConverter::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    private List<TestInfo> convertToTestInfoDTO(List<Test> tests) {
+    private List<TestInfo> convertToTestInfo(List<Test> tests) {
         return tests.stream()
                 .map(testConverter::convertToInfo)
                 .collect(Collectors.toList());

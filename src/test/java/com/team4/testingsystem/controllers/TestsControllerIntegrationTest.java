@@ -2,7 +2,6 @@ package com.team4.testingsystem.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.dto.TestInfo;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Level;
@@ -208,11 +207,11 @@ class TestsControllerIntegrationTest {
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        List<TestDTO> testDTOs = objectMapper.readValue(response, new TypeReference<>() {
+        List<TestInfo> testInfos = objectMapper.readValue(response, new TypeReference<>() {
         });
 
-        Assertions.assertEquals(1, testDTOs.size());
-        Assertions.assertEquals(test.getId(), testDTOs.get(0).getId());
+        Assertions.assertEquals(1, testInfos.size());
+        Assertions.assertEquals(test.getId(), testInfos.get(0).getTestId());
 
         contentFile.setQuestions(null);
         contentFilesRepository.save(contentFile);
