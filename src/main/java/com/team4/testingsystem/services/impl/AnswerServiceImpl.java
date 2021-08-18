@@ -1,7 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Answer;
-import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.AnswerNotFoundException;
 import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.services.AnswerService;
@@ -43,7 +42,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public String uploadSpeaking(MultipartFile file, Long testId, Modules module) {
-        return fileAnswerService.uploadSpeaking(file, testId, module).getUrl();
+    public String uploadSpeaking(MultipartFile file, Long testId) {
+        return fileAnswerService.uploadSpeaking(file, testId).getUrl();
     }
 }
