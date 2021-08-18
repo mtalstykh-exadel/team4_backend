@@ -233,7 +233,7 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public void coachSubmit(long id) {
         testEvaluationService.updateScoreAfterCoachCheck(getById(id));
-        testsRepository.updateEvaluation(Instant.now(), id);
+        testsRepository.coachSubmit(Instant.now(), id);
     }
 
     @Override
