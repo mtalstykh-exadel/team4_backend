@@ -16,8 +16,7 @@ import java.security.AccessControlException;
 public class RestrictionsServiceImpl implements RestrictionsService {
 
     @Override
-    public void checkOwnerIsCurrentUser(Test test) {
-        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+    public void checkOwnerIsCurrentUser(Test test, Long currentUserId) {
         if (!test.getUser().getId().equals(currentUserId)) {
             throw new AccessControlException("The test has another owner");
         }
