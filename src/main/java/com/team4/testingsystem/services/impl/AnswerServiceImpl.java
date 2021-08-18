@@ -2,12 +2,15 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.exceptions.AnswerNotFoundException;
+import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.services.AnswerService;
 import com.team4.testingsystem.services.FileAnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 @Service
 public class AnswerServiceImpl implements AnswerService {
@@ -32,6 +35,15 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
+    public Optional<String> tryDownloadEssay(Long testId) {
+        try {
+            return Optional.of(downloadEssay(testId));
+        } catch (FileAnswerNotFoundException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public String uploadEssay(Long testId, String text) {
         return fileAnswerService.uploadEssay(testId, text).getUrl();
     }
@@ -39,6 +51,15 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public String downloadSpeaking(Long testId) {
         return fileAnswerService.downloadSpeaking(testId);
+    }
+
+    @Override
+    public Optional<String> tryDownloadSpeaking(Long testId) {
+        try {
+            return Optional.of(downloadSpeaking(testId));
+        } catch (FileAnswerNotFoundException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
