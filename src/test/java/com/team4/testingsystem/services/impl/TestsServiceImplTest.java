@@ -470,23 +470,4 @@ class TestsServiceImplTest {
         Assertions.assertEquals(tests, testsService.getByStatuses(statuses, pageable));
     }
 
-    @org.junit.jupiter.api.Test
-    void checkRights() {
-        Mockito.when(test.getUser()).thenReturn(user);
-        Mockito.when(user.getId()).thenReturn(GOOD_USER_ID);
-
-        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
-            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
-            Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID + 1);
-
-            Assertions.assertThrows(AccessControlException.class, () -> testsService.checkOwnerIsCurrentUser(test));
-        }
-    }
-
-    @org.junit.jupiter.api.Test
-    void checkStartedStatus() {
-        Mockito.when(test.getStatus()).thenReturn(Status.COMPLETED);
-        Assertions.assertThrows(AccessControlException.class, () -> testsService.checkStartedStatus(test));
-    }
-
 }
