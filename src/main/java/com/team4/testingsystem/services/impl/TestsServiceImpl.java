@@ -93,8 +93,8 @@ public class TestsServiceImpl implements TestsService {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
         return getByStatuses(statuses, pageable).stream()
-                .filter(test -> !test.getUser().getId().equals(currentUserId))
-                .collect(Collectors.toList());
+            .filter(test -> !test.getUser().getId().equals(currentUserId))
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -107,11 +107,11 @@ public class TestsServiceImpl implements TestsService {
     public List<UserTest> getAllUsersAndAssignedTests(Pageable pageable) {
         Status[] statuses = {Status.ASSIGNED};
         Map<User, Test> assignedTests = getByStatuses(statuses, pageable).stream()
-                .collect(Collectors.toMap(Test::getUser, Function.identity()));
+            .collect(Collectors.toMap(Test::getUser, Function.identity()));
 
         return usersService.getAll().stream()
-                .map(user -> new UserTest(user, assignedTests.getOrDefault(user, null)))
-                .collect(Collectors.toList());
+            .map(user -> new UserTest(user, assignedTests.getOrDefault(user, null)))
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -121,7 +121,7 @@ public class TestsServiceImpl implements TestsService {
         }
         return testsRepository.getAllByUserId(userId, pageable);
     }
-    
+
     @Override
     public Test startTestVerification(long testId) {
         Test test = getById(testId);
@@ -141,18 +141,21 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public long startForUser(long userId, Levels levelName) {
         User user = usersService.getUserById(userId);
+
+        restrictionsService.checkHasNoStartedTests(userId);
+
         List<Test> selfStarted = testsRepository
-                .getSelfStartedByUserAfter(user, Instant.now().minus(1, ChronoUnit.DAYS));
+            .getSelfStartedByUserAfter(user, Instant.now().minus(1, ChronoUnit.DAYS));
 
         if (selfStarted.size() >= testsLimit) {
             throw new TestsLimitExceededException(selfStarted.get(0)
-                    .getStartedAt().plus(1, ChronoUnit.DAYS).toString());
+                .getStartedAt().plus(1, ChronoUnit.DAYS).toString());
         }
         Test test = createForUser(user, levelName)
-                .startedAt(Instant.now())
-                .status(Status.STARTED)
-                .priority(Priority.LOW)
-                .build();
+            .startedAt(Instant.now())
+            .status(Status.STARTED)
+            .priority(Priority.LOW)
+            .build();
 
         testsRepository.save(test);
         return test.getId();
@@ -163,17 +166,16 @@ public class TestsServiceImpl implements TestsService {
 
         User user = usersService.getUserById(userId);
 
-
         restrictionsService.checkNotSelfAssign(user);
 
         restrictionsService.checkHasNoAssignedTests(user);
 
         Test test = createForUser(user, levelName)
-                .assignedAt(Instant.now())
-                .deadline(deadline)
-                .status(Status.ASSIGNED)
-                .priority(priority)
-                .build();
+            .assignedAt(Instant.now())
+            .deadline(deadline)
+            .status(Status.ASSIGNED)
+            .priority(priority)
+            .build();
 
         testsRepository.save(test);
 
@@ -201,12 +203,13 @@ public class TestsServiceImpl implements TestsService {
     private Test.Builder createForUser(User user, Levels levelName) {
         Level level = levelService.getLevelByName(levelName.name());
         return Test.builder()
-                .user(user)
-                .level(level);
+            .user(user)
+            .level(level);
     }
 
     @Override
     public Test start(long id) {
+
         if (testsRepository.start(Instant.now(), id) == 0) {
             throw new TestNotFoundException();
         }
@@ -235,7 +238,7 @@ public class TestsServiceImpl implements TestsService {
 
         java.util.Timer timer = new java.util.Timer(String.valueOf(testId));
         long delay = test.getFinishTime().plus(2L, ChronoUnit.MINUTES).toEpochMilli()
-                     - Instant.now().toEpochMilli();
+            - Instant.now().toEpochMilli();
         if (delay <= 0) {
             finish(testId, test.getFinishTime());
             timer.cancel();
@@ -251,7 +254,9 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public void finish(long id, Instant finishDate) {
+
         Test test = getById(id);
+
         if (test.getStatus().name().equals(Status.STARTED.name())) {
             timerRepository.deleteByTestId(id);
             testEvaluationService.countScoreBeforeCoachCheck(test);
@@ -276,18 +281,32 @@ public class TestsServiceImpl implements TestsService {
     public void assignCoach(long id, long coachId) {
         User coach = usersService.getUserById(coachId);
 
-        if (getById(id).getUser().getId() == coachId) {
-            throw new CoachAssignmentFailException();
-        }
+        Test test = getById(id);
+
+        restrictionsService.checkHasNoAssignedCoaches(test);
+
+        restrictionsService.checkNotSelfAssignmentCoach(test, coachId);
+
+        restrictionsService.checkStatus(test, Status.COMPLETED);
+
+        restrictionsService.checkNotSelfAssignAdmin(test);
 
         testsRepository.assignCoach(coach, id);
     }
 
     @Override
     public void deassignCoach(long id) {
-        if (testsRepository.deassignCoach(id) == 0) {
-            throw new TestNotFoundException();
-        }
+
+        Test test = getById(id);
+
+        restrictionsService.checkHasAssignedCoach(test);
+
+        restrictionsService.checkNotVerifiedForCoachDeassign(test);
+
+        restrictionsService.checkNotSelfDeassignAdmin(test);
+
+        testsRepository.deassignCoach(id);
+
     }
 
 }

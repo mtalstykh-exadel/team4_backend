@@ -158,12 +158,31 @@ public class TestsController {
     @ApiOperation(value = "Is used when the user starts the test which was assigned by an HR")
     @PostMapping(path = "/start/{testId}")
     public TestDTO startAssigned(@PathVariable("testId") long testId) {
+        Test test = testsService.getById(testId);
+
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+
+        restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
+
+        restrictionsService.checkStatus(test, Status.ASSIGNED);
+
+        restrictionsService.checkHasNoStartedTests(currentUserId);
+
         return testConverter.convertToDTO(testsService.start(testId));
     }
 
     @ApiOperation(value = "Is used to finish tests")
     @PostMapping(path = "/finish/{testId}")
     public void finish(@PathVariable("testId") long testId) {
+        Test test = testsService.getById(testId);
+
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+
+        restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
+
+        restrictionsService.checkStatus(test, Status.STARTED);
+
+
         testsService.finish(testId, Instant.now());
     }
 

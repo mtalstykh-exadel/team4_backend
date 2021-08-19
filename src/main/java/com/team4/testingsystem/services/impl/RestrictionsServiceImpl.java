@@ -6,8 +6,10 @@ import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.AssignmentFailException;
+import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.IllegalGradeException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
+import com.team4.testingsystem.exceptions.TestAlreadyStartedException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
@@ -45,7 +47,7 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     public void checkTestContainsQuestion(Test test, Question question) {
         if (!test.getQuestions().contains(question)) {
             throw new QuestionNotFoundException("The test doesn't contain the question with id = "
-                + question.getId());
+                    + question.getId());
         }
     }
 
@@ -60,7 +62,7 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     @Override
     public void checkModuleIsEssayOrSpeaking(Question question) {
         if (!question.getModule().getName().equals(Modules.ESSAY.getName())
-            && !question.getModule().getName().equals(Modules.SPEAKING.getName())) {
+                && !question.getModule().getName().equals(Modules.SPEAKING.getName())) {
             throw new AccessControlException("Coach can grade only essay and speaking");
         }
     }
@@ -69,9 +71,7 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     public void checkCoachIsCurrentUser(Test test) {
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
 
-        if (test.getCoach() == null) {
-            throw new AccessControlException("The test has no assigned coach");
-        }
+        checkHasAssignedCoach(test);
 
         if (!test.getCoach().getId().equals(currentUserId)) {
             throw new AccessControlException("The test has another coach");
@@ -111,4 +111,59 @@ public class RestrictionsServiceImpl implements RestrictionsService {
             throw new AccessControlException("HR can't deassign his own tests");
         }
     }
+
+    @Override
+    public void checkHasNoStartedTests(Long userId) {
+        if (testsRepository.hasStartedTests(userId)) {
+            throw new TestAlreadyStartedException("You can have only one started test at the same time");
+        }
+    }
+
+    @Override
+    public void checkHasAssignedCoach(Test test) {
+        if (test.getCoach() == null) {
+            throw new CoachAssignmentFailException("The test has no assigned coach");
+        }
+    }
+
+    @Override
+    public void checkHasNoAssignedCoaches(Test test) {
+        if (test.getCoach() != null) {
+            throw new CoachAssignmentFailException("Somebody has already assigned a coach for the test");
+        }
+    }
+
+    @Override
+    public void checkNotSelfAssignmentCoach(Test test, Long coachId) {
+        if (test.getUser().getId().equals(coachId)) {
+            throw new CoachAssignmentFailException("Coach can't verify his own test");
+        }
+    }
+
+    @Override
+    public void checkNotVerifiedForCoachDeassign(Test test) {
+        if (test.getStatus().equals(Status.VERIFIED)) {
+            throw new CoachAssignmentFailException("The coach has already verified the test");
+        }
+    }
+
+    @Override
+    public void checkNotSelfAssignAdmin(Test test){
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+
+        if (test.getUser().getId().equals(currentUserId)) {
+            throw new AccessControlException("Admin can assign coaches for his own tests");
+        }
+    }
+
+    @Override
+    public void checkNotSelfDeassignAdmin(Test test) {
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+
+        if (test.getUser().getId().equals(currentUserId)) {
+
+            throw new AccessControlException("Admin can deassign coaches from his own tests");
+        }
+    }
+
 }
