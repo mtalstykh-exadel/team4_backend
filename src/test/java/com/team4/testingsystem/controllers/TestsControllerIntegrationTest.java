@@ -109,6 +109,7 @@ class TestsControllerIntegrationTest {
         notificationRepository.deleteAll();
         testsRepository.deleteAll();
         contentFilesRepository.deleteAll();
+        testsRepository.deleteAll();
         questionRepository.deleteAll();
     }
 

@@ -21,6 +21,7 @@ import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.ModuleGradesService;
+import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
@@ -79,6 +80,9 @@ class TestsControllerTest {
     @Mock
     private TestVerificationConverter verificationConverter;
 
+    @Mock
+    private RestrictionsService restrictionsService;
+
     @InjectMocks
     private TestsController testsController;
 
@@ -96,9 +100,14 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void getByIdSuccess() {
-        Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
+            Mockito.when(customUserDetails.getId()).thenReturn(GOOD_USER_ID);
 
-        Assertions.assertEquals(testConverter.convertToDTO(test), testsController.getById(GOOD_TEST_ID));
+            Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
+
+            Assertions.assertEquals(testConverter.convertToDTO(test), testsController.getById(GOOD_TEST_ID));
+        }
     }
 
     @org.junit.jupiter.api.Test
@@ -127,13 +136,18 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void getGradesSuccess() {
-        Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
+            Mockito.when(customUserDetails.getId()).thenReturn(GOOD_USER_ID);
 
-        Mockito.when(moduleGradesService.getGradesByTest(test)).thenReturn(gradesMap);
+            Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
 
-        Mockito.when(gradesConverter.convertListOfGradesToDTO(gradesMap)).thenReturn(moduleGradesDTO);
+            Mockito.when(moduleGradesService.getGradesByTest(test)).thenReturn(gradesMap);
 
-        Assertions.assertEquals(moduleGradesDTO, testsController.getGrades(GOOD_TEST_ID));
+            Mockito.when(gradesConverter.convertListOfGradesToDTO(gradesMap)).thenReturn(moduleGradesDTO);
+
+            Assertions.assertEquals(moduleGradesDTO, testsController.getGrades(GOOD_TEST_ID));
+        }
     }
 
     @org.junit.jupiter.api.Test

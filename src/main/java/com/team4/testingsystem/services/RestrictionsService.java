@@ -2,6 +2,7 @@ package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Status;
 
 public interface RestrictionsService {
@@ -17,5 +18,13 @@ public interface RestrictionsService {
     void checkTestContainsQuestion(Test test, Question question);
 
     void checkCoachIsCurrentUser(Test test);
+
+    void checkHasNoAssignedTests(User user);
+
+    void checkIsAssigned(Test test);
+
+    void checkNotSelfAssign(User user);
+
+    void checkNotSelfDeassign(User user);
 
 }
