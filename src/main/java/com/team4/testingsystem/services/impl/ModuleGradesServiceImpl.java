@@ -23,7 +23,6 @@ public class ModuleGradesServiceImpl implements ModuleGradesService {
 
     private final ModuleGradesRepository moduleGradesRepository;
     private final ModuleService moduleService;
-    private final RestrictionsService restrictionsService;
 
     @Autowired
     public ModuleGradesServiceImpl(ModuleGradesRepository moduleGradesRepository,
@@ -31,7 +30,6 @@ public class ModuleGradesServiceImpl implements ModuleGradesService {
                                    RestrictionsService restrictionsService) {
         this.moduleGradesRepository = moduleGradesRepository;
         this.moduleService = moduleService;
-        this.restrictionsService = restrictionsService;
     }
 
     @Override
