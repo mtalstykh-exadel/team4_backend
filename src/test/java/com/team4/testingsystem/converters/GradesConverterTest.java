@@ -1,6 +1,7 @@
 package com.team4.testingsystem.converters;
 
 import com.team4.testingsystem.dto.ModuleGradesDTO;
+import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.ModuleGrade;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.services.ModuleGradesService;
@@ -36,8 +37,16 @@ public class GradesConverterTest {
     @Mock
     private Map<String, ModuleGrade> gradesMap;
 
+    @Mock
+    private com.team4.testingsystem.entities.Test test;
+
+    @Mock
+    private Level level;
+
     @Test
-    void convertListOfGradesToDTOSuccess(){
+    void convertListOfGradesToDTOSuccess() {
+        Mockito.when(moduleGradesService.getGradesByTest(test)).thenReturn(gradesMap);
+
         Mockito.when(moduleGradesService.getGradeByModule(gradesMap, Modules.GRAMMAR)).thenReturn(GRAMMAR_SCORE);
 
         Mockito.when(moduleGradesService.getGradeByModule(gradesMap, Modules.LISTENING)).thenReturn(LISTENING_SCORE);
@@ -53,6 +62,10 @@ public class GradesConverterTest {
 
         ModuleGradesDTO moduleGradesDTO = EntityCreatorUtil.createModuleGradesDTO();
 
-        Assertions.assertEquals(moduleGradesDTO, gradesConverter.convertListOfGradesToDTO(gradesMap));
+        Mockito.when(test.getStatus()).thenReturn(moduleGradesDTO.getStatus());
+        Mockito.when(test.getLevel()).thenReturn(level);
+        Mockito.when(level.getName()).thenReturn(moduleGradesDTO.getLevel());
+
+        Assertions.assertEquals(moduleGradesDTO, gradesConverter.convertListOfGradesToDTO(test));
     }
 }

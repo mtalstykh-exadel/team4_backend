@@ -11,7 +11,6 @@ import com.team4.testingsystem.dto.TestVerificationDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Status;
-import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
@@ -37,7 +36,6 @@ import java.util.stream.Collectors;
 public class TestsController {
 
     private final TestsService testsService;
-    private final ModuleGradesService moduleGradesService;
     public final RestrictionsService restrictionsService;
     private final GradesConverter gradesConverter;
     private final TestConverter testConverter;
@@ -45,13 +43,11 @@ public class TestsController {
 
     @Autowired
     public TestsController(TestsService testsService,
-                           ModuleGradesService moduleGradesService,
                            RestrictionsService restrictionsService,
                            GradesConverter gradesConverter,
                            TestConverter testConverter,
                            TestVerificationConverter verificationConverter) {
         this.testsService = testsService;
-        this.moduleGradesService = moduleGradesService;
         this.restrictionsService = restrictionsService;
         this.gradesConverter = gradesConverter;
         this.testConverter = testConverter;
@@ -107,8 +103,7 @@ public class TestsController {
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
         restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
 
-        return gradesConverter.convertListOfGradesToDTO(moduleGradesService
-                .getGradesByTest(test));
+        return gradesConverter.convertListOfGradesToDTO(test);
     }
 
     @ApiOperation(value = "Is used to get all unverified tests")

@@ -16,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
@@ -35,6 +37,8 @@ class UsersServiceImplTest {
 
     @Mock
     private User user;
+
+    private final Pageable pageable = PageRequest.of(1, 10);
 
     @Test
     void getUserById() {
@@ -74,8 +78,8 @@ class UsersServiceImplTest {
 
     @Test
     void getAllSuccess() {
-        Mockito.when(usersRepository.findAll()).thenReturn(Lists.list(user));
-        Assertions.assertEquals(Lists.list(user), usersService.getAll());
+        Mockito.when(usersRepository.getAll(pageable)).thenReturn(Lists.list(user));
+        Assertions.assertEquals(Lists.list(user), usersService.getAll(pageable));
     }
 
     @Test

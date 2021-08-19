@@ -9,7 +9,6 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
-import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.repositories.TestsRepository;
@@ -32,9 +31,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
 import java.util.TimerTask;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -105,13 +102,11 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public List<UserTest> getAllUsersAndAssignedTests(Pageable pageable) {
-        Status[] statuses = {Status.ASSIGNED};
-        Map<User, Test> assignedTests = getByStatuses(statuses, pageable).stream()
-            .collect(Collectors.toMap(Test::getUser, Function.identity()));
 
-        return usersService.getAll().stream()
-            .map(user -> new UserTest(user, assignedTests.getOrDefault(user, null)))
-            .collect(Collectors.toList());
+        return usersService.getAll(pageable).stream()
+                .map(user -> new UserTest(user,
+                        testsRepository.getAssignedTestByUserId(user.getId()).orElse(null)))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -218,6 +213,8 @@ public class TestsServiceImpl implements TestsService {
         test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
         save(test);
         createTimer(test);
+
+        notificationService.create(NotificationType.TEST_STARTED, test.getUser(), test);
         return test;
     }
 
@@ -239,6 +236,7 @@ public class TestsServiceImpl implements TestsService {
         java.util.Timer timer = new java.util.Timer(String.valueOf(testId));
         long delay = test.getFinishTime().plus(2L, ChronoUnit.MINUTES).toEpochMilli()
             - Instant.now().toEpochMilli();
+
         if (delay <= 0) {
             finish(testId, test.getFinishTime());
             timer.cancel();
@@ -292,6 +290,7 @@ public class TestsServiceImpl implements TestsService {
         restrictionsService.checkNotSelfAssignAdmin(test);
 
         testsRepository.assignCoach(coach, id);
+        notificationService.create(NotificationType.COACH_ASSIGNED, coach, test);
     }
 
     @Override
@@ -305,8 +304,11 @@ public class TestsServiceImpl implements TestsService {
 
         restrictionsService.checkNotSelfDeassignAdmin(test);
 
+        User coach = test.getCoach();
+
         testsRepository.deassignCoach(id);
 
-    }
+        notificationService.create(NotificationType.COACH_DEASSIGNED, coach, test);
 
+    }
 }

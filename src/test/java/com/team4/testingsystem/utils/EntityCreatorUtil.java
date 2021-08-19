@@ -108,6 +108,8 @@ public class EntityCreatorUtil {
                 .speaking(4)
                 .essayComment("Cool essay")
                 .speakingComment("Cool speaking")
+                .level(Levels.A1.name())
+                .status(Status.COMPLETED)
                 .build();
     }
 

@@ -48,6 +48,7 @@ public class TestDeassignedNotificationConverterTest {
         Assertions.assertNull(dto.getLevel());
         Assertions.assertNull(dto.getFinishTime());
         Assertions.assertNull(dto.getDeadline());
+        Assertions.assertNull(dto.getPriority());
     }
 
     @Test

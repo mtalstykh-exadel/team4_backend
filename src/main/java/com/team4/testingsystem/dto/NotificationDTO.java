@@ -2,6 +2,7 @@ package com.team4.testingsystem.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.testingsystem.enums.NotificationType;
+import com.team4.testingsystem.enums.Priority;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -16,6 +17,7 @@ public class NotificationDTO {
     private String level;
     private Instant finishTime;
     private Instant deadline;
+    private Priority priority;
 
     public Long getId() {
         return id;
@@ -73,12 +75,20 @@ public class NotificationDTO {
         this.deadline = deadline;
     }
 
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
 
     public static class Builder {
-        private NotificationDTO notificationDTO;
+        private final NotificationDTO notificationDTO;
 
         public Builder() {
             notificationDTO = new NotificationDTO();
@@ -119,6 +129,11 @@ public class NotificationDTO {
             return this;
         }
 
+        public Builder priority(Priority priority) {
+            notificationDTO.setPriority(priority);
+            return this;
+        }
+
         public NotificationDTO build() {
             return notificationDTO;
         }
@@ -138,11 +153,12 @@ public class NotificationDTO {
                 && Objects.equals(testId, that.testId)
                 && Objects.equals(level, that.level)
                 && Objects.equals(finishTime, that.finishTime)
-                && Objects.equals(deadline, that.deadline);
+                && Objects.equals(deadline, that.deadline)
+                && Objects.equals(priority, that.priority);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type, testId, level, finishTime, deadline);
+        return Objects.hash(id, type, testId, level, finishTime, deadline, priority);
     }
 }
