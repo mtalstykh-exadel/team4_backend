@@ -287,31 +287,51 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void startAssignedSuccess() {
-        testsController.startAssigned(GOOD_TEST_ID);
+        try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
+            builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
+            Mockito.when(customUserDetails.getId()).thenReturn(1L);
 
-        verify(testsService).start(GOOD_TEST_ID);
+            testsController.startAssigned(GOOD_TEST_ID);
+
+            verify(testsService).start(GOOD_TEST_ID);
+        }
     }
 
     @org.junit.jupiter.api.Test
     void startAssignedFail() {
-        doThrow(TestNotFoundException.class).when(testsService).start(BAD_TEST_ID);
+        try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
+            builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
+            Mockito.when(customUserDetails.getId()).thenReturn(1L);
 
-        Assertions.assertThrows(TestNotFoundException.class, () -> testsController.startAssigned(BAD_TEST_ID));
+            doThrow(TestNotFoundException.class).when(testsService).start(BAD_TEST_ID);
+
+            Assertions.assertThrows(TestNotFoundException.class, () -> testsController.startAssigned(BAD_TEST_ID));
+        }
     }
 
     @org.junit.jupiter.api.Test
     void finishSuccess() {
-        testsController.finish(GOOD_TEST_ID);
+        try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
+            builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
+            Mockito.when(customUserDetails.getId()).thenReturn(1L);
 
-        verify(testsService).finish(anyLong(), any(Instant.class));
+            testsController.finish(GOOD_TEST_ID);
+
+            verify(testsService).finish(anyLong(), any(Instant.class));
+        }
     }
 
     @org.junit.jupiter.api.Test
     void finishFail() {
-        doThrow(TestNotFoundException.class).when(testsService).finish(anyLong(), any(Instant.class));
+        try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
+            builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
+            Mockito.when(customUserDetails.getId()).thenReturn(1L);
 
-        Assertions.assertThrows(TestNotFoundException.class,
-                () -> testsController.finish(BAD_TEST_ID));
+            doThrow(TestNotFoundException.class).when(testsService).finish(anyLong(), any(Instant.class));
+
+            Assertions.assertThrows(TestNotFoundException.class,
+                    () -> testsController.finish(BAD_TEST_ID));
+        }
     }
 
     @org.junit.jupiter.api.Test

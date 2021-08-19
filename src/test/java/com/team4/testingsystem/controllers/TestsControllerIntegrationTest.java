@@ -242,6 +242,7 @@ class TestsControllerIntegrationTest {
     @Test
     void assignCoachSuccess() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        test.setStatus(Status.COMPLETED);
         testsRepository.save(test);
 
         User coach = usersRepository.findByLogin("rus_coach@northsixty.com").orElseThrow();
@@ -288,6 +289,9 @@ class TestsControllerIntegrationTest {
     @Test
     void assignCoachFailSelfAssignment() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+
+        test.setStatus(Status.COMPLETED);
+
         testsRepository.save(test);
 
         long userId = user.getId();
