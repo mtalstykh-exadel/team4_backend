@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TestsRepository extends CrudRepository<Test, Long> {
@@ -21,28 +22,23 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
            + "and t.status = 'ASSIGNED' ")
     Optional<Test> getAssignedTestByUserId(Long id);
 
-    @Query("select t from Test t where t.user = ?1 and t.isAvailable = true "
+    @Query("select t from Test t where t.user.id = ?1 and t.isAvailable = true "
            + "order by case "
            + "when t.status = 'STARTED' then 'A' "
            + "when t.status = 'ASSIGNED' then 'B' ELSE 'C' end, "
            + "t.verifiedAt desc nulls last, "
            + "t.deadline desc nulls last, "
            + "t.assignedAt desc nulls last ")
-    List<Test> getAllByUser(User user, Pageable pageable);
-
-    @Query("select t from Test t where t.user.id = ?1 and t.isAvailable = true "
-        + "order by case "
-        + "when t.status = 'STARTED' then 'A' "
-        + "when t.status = 'ASSIGNED' then 'B' ELSE 'C' end, "
-        + "t.verifiedAt desc, t.deadline desc, t.assignedAt desc ")
     List<Test> getAllByUserId(Long userId, Pageable pageable);
 
     @Query("select t from Test t where t.user.id = ?1 "
-        + "and t.isAvailable = true "
-        + "and t.level.name = ?2 order by case "
-        + "when t.status = 'STARTED' then 'A' "
-        + "when t.status = 'ASSIGNED' then 'B' ELSE 'C' end, "
-        + "t.verifiedAt desc, t.deadline desc, t.assignedAt desc ")
+           + "and t.isAvailable = true "
+           + "and t.level.name = ?2 order by case "
+           + "when t.status = 'STARTED' then 'A' "
+           + "when t.status = 'ASSIGNED' then 'B' ELSE 'C' end, "
+           + "t.verifiedAt desc nulls last, "
+           + "t.deadline desc nulls last, "
+           + "t.assignedAt desc nulls last ")
     List<Test> getAllByUserAndLevel(Long userId, String level, Pageable pageable);
 
 
@@ -52,31 +48,17 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
            + "when t.priority = 'Medium' then 'B' "
            + "when t.priority = 'Low' then 'C' ELSE 'D' end, "
            + "t.deadline asc nulls last, "
-           + "t.assignedAt desc nulls last")
-        + "order by case "
-        + "when t.priority = 'High' then 'A' "
-        + "when t.priority = 'Medium' then 'B' "
-        + "when t.priority = 'Low' then 'C' ELSE 'D' end, "
-        + "t.deadline asc, t.assignedAt desc ")
+           + "t.assignedAt desc nulls last ")
     List<Test> getByStatuses(Status[] statuses, Pageable pageable);
 
     @Query("select t from Test t "
            + "where t.user = ?1 "
            + "and t.isAvailable = true "
            + "and t.assignedAt is null "
-           + "and t.startedAt >= ?2")
-        + "where t.user = ?1"
-        + "and t.isAvailable = true "
-        + "and t.assignedAt is null "
-        + "and t.startedAt >= ?2")
+           + "and t.startedAt >= ?2 ")
     List<Test> getSelfStartedByUserAfter(User user, Instant date);
 
     @Query("select t from Test t where t.coach.id = ?1 and t.status in ?2 and t.isAvailable = true "
-        + "order by case "
-        + "when t.priority = 'High' then 'A' "
-        + "when t.priority = 'Medium' then 'B' "
-        + "when t.priority = 'Low' then 'C' ELSE t.priority end, "
-        + "t.deadline asc, t.assignedAt desc ")
            + "order by case "
            + "when t.priority = 'High' then 'A' "
            + "when t.priority = 'Medium' then 'B' "
@@ -92,52 +74,47 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.startedAt = ?1, t.status = 'STARTED' "
-        + "WHERE t.id = ?2 and t.isAvailable = true ")
-                   + "WHERE t.id = ?2 and t.isAvailable = true ")
+    @Query("UPDATE Test t SET t.startedAt = ?1, t.status = 'STARTED' "
+           + "WHERE t.id = ?2 and t.isAvailable = true ")
     int start(Instant startDate, Long id);
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.assignedAt = null, t.deadline = null "
-        + "WHERE t.id = ?1 and t.isAvailable = true")
-                   + "WHERE t.id = ?1 and t.isAvailable = true")
+    @Query("UPDATE Test t SET t.assignedAt = null, t.deadline = null "
+           + "WHERE t.id = ?1 and t.isAvailable = true")
     int deassign(Long id);
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.completedAt = ?1, t.status = 'COMPLETED' "
-                   + "where t.id = ?2 and t.isAvailable = true")
-        + "where t.id = ?2 and t.isAvailable = true")
+    @Query("UPDATE Test t SET t.completedAt = ?1, t.status = 'COMPLETED' "
+           + "where t.id = ?2 and t.isAvailable = true")
     int finish(Instant finishDate, Long id);
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.verifiedAt = ?1, t.status = 'VERIFIED' "
-                   + "where t.id = ?2 and t.isAvailable = true")
-        + "where t.id = ?2 and t.isAvailable = true")
+    @Query("UPDATE Test t SET t.verifiedAt = ?1, t.status = 'VERIFIED' "
+           + "where t.id = ?2 and t.isAvailable = true")
     int coachSubmit(Instant updateDate, Long id);
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.isAvailable = false where t.id = ?1")
+    @Query("UPDATE Test t SET t.isAvailable = false where t.id = ?1")
     int archiveById(Long id);
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.coach = ?1 where t.id = ?2 and t.isAvailable = true")
+    @Query("UPDATE Test t SET t.coach = ?1 where t.id = ?2 and t.isAvailable = true")
     int assignCoach(User coach, Long id);
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.coach = null, t.status = 'COMPLETED' "
-                   + "where t.id = ?1 and t.isAvailable = true")
-        + "where t.id = ?1 and t.isAvailable = true")
+    @Query("UPDATE Test t SET t.coach = null, t.status = 'COMPLETED' "
+           + "where t.id = ?1 and t.isAvailable = true ")
     int deassignCoach(Long id);
 
     @Query(value = " select case when count(t)> 0 then true else false end "
-        + "from Test t where t.user = ?1"
-        + " and t.assignedAt is not null "
-        + "and t.status = 'ASSIGNED' ")
+                   + "from Test t where t.user = ?1 "
+                   + "and t.assignedAt is not null "
+                   + "and t.status = 'ASSIGNED' ")
     boolean hasAssignedTests(User user);
 }
