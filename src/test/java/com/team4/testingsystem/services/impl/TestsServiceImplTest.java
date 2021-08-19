@@ -92,6 +92,9 @@ class TestsServiceImplTest {
     @Mock
     private List<Test> tests;
 
+    @Mock
+    private RestrictionsService restrictionsService;
+
     @InjectMocks
     private TestsServiceImpl testsService;
 
