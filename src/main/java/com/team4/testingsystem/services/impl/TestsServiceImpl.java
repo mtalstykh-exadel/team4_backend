@@ -198,6 +198,8 @@ public class TestsServiceImpl implements TestsService {
         test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
         save(test);
         createTimer(test);
+
+        notificationService.create(NotificationType.TEST_STARTED, test.getUser(), test);
         return test;
     }
 
@@ -270,8 +272,12 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public void deassignCoach(long id) {
+        Test test = getById(id);
+        User coach = test.getCoach();
+
         if (testsRepository.deassignCoach(id) == 0) {
             throw new TestNotFoundException();
         }
+        notificationService.create(NotificationType.COACH_DEASSIGNED, coach, test);
     }
 }
