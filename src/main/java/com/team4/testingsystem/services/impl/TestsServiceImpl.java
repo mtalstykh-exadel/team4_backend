@@ -80,8 +80,7 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public List<Test> getByUserId(long userId, Pageable pageable) {
-        User user = usersService.getUserById(userId);
-        return testsRepository.getAllByUser(user, pageable);
+        return testsRepository.getAllByUserId(userId, pageable);
     }
 
     @Override
@@ -117,9 +116,10 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public List<Test> getTestsByUserIdAndLevel(long userId, Levels level, Pageable pageable) {
-        return testsRepository.getAllByUser(usersService.getUserById(userId), pageable).stream()
-                .filter(test -> test.getLevel().getName().equals(level.name()))
-                .collect(Collectors.toList());
+        if (level != null) {
+            return testsRepository.getAllByUserAndLevel(userId, level.name(), pageable);
+        }
+        return testsRepository.getAllByUserId(userId, pageable);
     }
 
     @Override

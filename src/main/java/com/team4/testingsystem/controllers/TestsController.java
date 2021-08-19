@@ -68,11 +68,8 @@ public class TestsController {
                                         @RequestParam(required = false) Levels level,
                                         @RequestParam int pageNumb,
                                         @RequestParam int pageSize) {
-        if (level != null) {
-            return convertToTestInfo(testsService
-                    .getTestsByUserIdAndLevel(userId, level, PageRequest.of(pageNumb, pageSize)));
-        }
-        return convertToTestInfo(testsService.getByUserId(userId, PageRequest.of(pageNumb, pageSize)));
+        return convertToTestInfo(testsService
+                .getTestsByUserIdAndLevel(userId, level, PageRequest.of(pageNumb, pageSize)));
     }
 
     @ApiOperation(value = "Use it to get a single test from the database by its id")
