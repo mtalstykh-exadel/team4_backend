@@ -154,21 +154,8 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void getUsersTestsSuccess() {
-        List<Test> tests = new ArrayList<>();
-
-        Mockito.when(testsService
-                .getByUserId(GOOD_USER_ID, pageable)).thenReturn(tests);
-
         Assertions.assertEquals(Lists.emptyList(),
                 testsController.getUsersTests(GOOD_USER_ID, null, 1, 10));
-    }
-
-    @org.junit.jupiter.api.Test
-    void getUsersTestsFailUserNotFound() {
-        Mockito.when(testsService.getByUserId(BAD_USER_ID, pageable)).thenThrow(UserNotFoundException.class);
-
-        Assertions.assertThrows(UserNotFoundException.class,
-                () -> testsController.getUsersTests(BAD_USER_ID, null, 1, 10));
     }
 
     @org.junit.jupiter.api.Test

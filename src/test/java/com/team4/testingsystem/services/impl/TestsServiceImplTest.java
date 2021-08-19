@@ -35,7 +35,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.security.AccessControlException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -113,17 +112,9 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void getByUserIdSuccess() {
-        Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
-
-        Mockito.when(testsRepository.getAllByUser(user, pageable)).thenReturn(tests);
+        Mockito.when(testsRepository.getAllByUserId(GOOD_USER_ID, pageable)).thenReturn(tests);
 
         Assertions.assertEquals(tests, testsService.getByUserId(GOOD_USER_ID, pageable));
-    }
-
-    @org.junit.jupiter.api.Test
-    void getByUserIdFailUserNotFound() {
-        Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
-        Assertions.assertThrows(UserNotFoundException.class, () -> testsService.getByUserId(BAD_USER_ID, pageable));
     }
 
     @org.junit.jupiter.api.Test
