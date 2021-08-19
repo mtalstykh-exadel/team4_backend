@@ -16,12 +16,22 @@ import java.util.List;
 @Repository
 public interface TestsRepository extends CrudRepository<Test, Long> {
 
-    @Query("select t from Test t where t.user = ?1 and t.isAvailable = true "
+
+    @Query("select t from Test t where t.user.id = ?1 and t.isAvailable = true "
         + "order by case "
         + "when t.status = 'STARTED' then 'A' "
         + "when t.status = 'ASSIGNED' then 'B' ELSE 'C' end, "
         + "t.verifiedAt desc, t.deadline desc, t.assignedAt desc ")
-    List<Test> getAllByUser(User user, Pageable pageable);
+    List<Test> getAllByUserId(Long userId, Pageable pageable);
+
+    @Query("select t from Test t where t.user.id = ?1 "
+        + "and t.isAvailable = true "
+        + "and t.level.name = ?2 order by case "
+        + "when t.status = 'STARTED' then 'A' "
+        + "when t.status = 'ASSIGNED' then 'B' ELSE 'C' end, "
+        + "t.verifiedAt desc, t.deadline desc, t.assignedAt desc ")
+    List<Test> getAllByUserAndLevel(Long userId, String level, Pageable pageable);
+
 
     @Query("select t from Test t where t.status in ?1 and t.isAvailable = true "
         + "order by case "
@@ -32,7 +42,7 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     List<Test> getByStatuses(Status[] statuses, Pageable pageable);
 
     @Query("select t from Test t "
-        + "where t.user = ?1 "
+        + "where t.user = ?1"
         + "and t.isAvailable = true "
         + "and t.assignedAt is null "
         + "and t.startedAt >= ?2")
@@ -96,5 +106,4 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
         + " and t.assignedAt is not null "
         + "and t.status = 'ASSIGNED' ")
     boolean hasAssignedTests(User user);
-
 }

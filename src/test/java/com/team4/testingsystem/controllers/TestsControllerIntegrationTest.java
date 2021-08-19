@@ -149,15 +149,6 @@ class TestsControllerIntegrationTest {
     }
 
     @Test
-    void getUsersTestsFailUserNotFound() throws Exception {
-        mockMvc.perform(get("/tests/history/{userId}", BAD_USER_ID)
-                .param("pageNumb", page)
-                .param("pageSize", count)
-                .with(user(hrDetails)))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
     void getUsersTestsUser() throws Exception {
         mockMvc.perform(get("/tests/history/{userId}", BAD_USER_ID)
                 .param("pageNumb", page)
