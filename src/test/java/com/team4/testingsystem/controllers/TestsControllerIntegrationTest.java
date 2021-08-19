@@ -14,6 +14,7 @@ import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.LevelRepository;
 import com.team4.testingsystem.repositories.ModuleRepository;
+import com.team4.testingsystem.repositories.NotificationRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
@@ -57,6 +58,7 @@ class TestsControllerIntegrationTest {
     private final UsersRepository usersRepository;
     private final ContentFilesRepository contentFilesRepository;
     private final QuestionRepository questionRepository;
+    private final NotificationRepository notificationRepository;
     private final ObjectMapper objectMapper;
 
     private User user;
@@ -76,6 +78,7 @@ class TestsControllerIntegrationTest {
                                    UsersRepository userRepository,
                                    ContentFilesRepository contentFilesRepository,
                                    QuestionRepository questionRepository,
+                                   NotificationRepository notificationRepository,
                                    ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.levelRepository = levelRepository;
@@ -84,6 +87,7 @@ class TestsControllerIntegrationTest {
         this.usersRepository = userRepository;
         this.contentFilesRepository = contentFilesRepository;
         this.questionRepository = questionRepository;
+        this.notificationRepository = notificationRepository;
         this.objectMapper = objectMapper;
     }
 
@@ -102,6 +106,7 @@ class TestsControllerIntegrationTest {
 
     @AfterEach
     void destroy() {
+        notificationRepository.deleteAll();
         testsRepository.deleteAll();
         contentFilesRepository.deleteAll();
         questionRepository.deleteAll();
