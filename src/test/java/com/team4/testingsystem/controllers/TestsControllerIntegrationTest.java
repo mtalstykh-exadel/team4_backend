@@ -102,9 +102,13 @@ class TestsControllerIntegrationTest {
 
     @AfterEach
     void destroy() {
-        testsRepository.deleteAll();
+
         contentFilesRepository.deleteAll();
+        testsRepository.deleteAll();
         questionRepository.deleteAll();
+
+
+
     }
 
     @Test

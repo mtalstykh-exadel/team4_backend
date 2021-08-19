@@ -124,8 +124,13 @@ public class TestsServiceImpl implements TestsService {
     
     @Override
     public Test startTestVerification(long testId) {
+        Test test = getById(testId);
+
+        restrictionsService.checkCoachIsCurrentUser(test);
+
         testsRepository.updateStatusByTestId(testId, Status.IN_VERIFICATION);
-        return getById(testId);
+
+        return test;
     }
 
     @Override
@@ -143,7 +148,7 @@ public class TestsServiceImpl implements TestsService {
             throw new TestsLimitExceededException(selfStarted.get(0)
                     .getStartedAt().plus(1, ChronoUnit.DAYS).toString());
         }
-        Test test = createForUser(userId, levelName)
+        Test test = createForUser(user, levelName)
                 .startedAt(Instant.now())
                 .status(Status.STARTED)
                 .priority(Priority.LOW)
@@ -155,7 +160,15 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public long assignForUser(long userId, Levels levelName, Instant deadline, Priority priority) {
-        Test test = createForUser(userId, levelName)
+
+        User user = usersService.getUserById(userId);
+
+
+        restrictionsService.checkNotSelfAssign(user);
+
+        restrictionsService.checkHasNoAssignedTests(user);
+
+        Test test = createForUser(user, levelName)
                 .assignedAt(Instant.now())
                 .deadline(deadline)
                 .status(Status.ASSIGNED)
@@ -172,6 +185,11 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public void deassign(long id) {
         Test test = getById(id);
+
+        restrictionsService.checkIsAssigned(test);
+
+        restrictionsService.checkNotSelfDeassign(test.getUser());
+
         if (test.getStartedAt() == null) {
             testsRepository.archiveById(id);
         } else {
@@ -180,9 +198,8 @@ public class TestsServiceImpl implements TestsService {
         notificationService.create(NotificationType.TEST_DEASSIGNED, test.getUser(), test);
     }
 
-    private Test.Builder createForUser(long userId, Levels levelName) {
+    private Test.Builder createForUser(User user, Levels levelName) {
         Level level = levelService.getLevelByName(levelName.name());
-        User user = usersService.getUserById(userId);
         return Test.builder()
                 .user(user)
                 .level(level);

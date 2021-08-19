@@ -226,9 +226,8 @@ class TestsServiceImplTest {
     void assignFail() {
         Level level = EntityCreatorUtil.createLevel();
         Instant deadline = Instant.now();
-
-        Mockito.when(levelService.getLevelByName(level.getName())).thenReturn(level);
         Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
+
 
         Assertions.assertThrows(UserNotFoundException.class,
                 () -> testsService.assignForUser(BAD_USER_ID, Levels.A1, deadline, Priority.LOW));
@@ -381,7 +380,6 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void startTestVerificationNotFound() {
-        Mockito.when(testsRepository.updateStatusByTestId(BAD_TEST_ID, Status.IN_VERIFICATION)).thenReturn(0);
         Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.startTestVerification(BAD_TEST_ID));
