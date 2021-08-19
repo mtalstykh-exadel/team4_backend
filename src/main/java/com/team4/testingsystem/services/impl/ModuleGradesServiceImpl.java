@@ -26,8 +26,7 @@ public class ModuleGradesServiceImpl implements ModuleGradesService {
 
     @Autowired
     public ModuleGradesServiceImpl(ModuleGradesRepository moduleGradesRepository,
-                                   ModuleService moduleService,
-                                   RestrictionsService restrictionsService) {
+                                   ModuleService moduleService) {
         this.moduleGradesRepository = moduleGradesRepository;
         this.moduleService = moduleService;
     }
