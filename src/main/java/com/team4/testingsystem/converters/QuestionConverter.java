@@ -33,22 +33,30 @@ public class QuestionConverter {
 
     public Question convertToEntity(QuestionDTO questionDTO, Long id) {
         Question question = questionService.getById(id);
-        return Question.builder()
+        Question result = Question.builder()
                 .body(getQuestionBody(question, questionDTO))
                 .creator(usersService.getUserById(JwtTokenUtil.extractUserDetails().getId()))
                 .level(getLevel(question, questionDTO))
                 .module(getModule(question, questionDTO))
                 .isAvailable(true)
                 .build();
+        if (questionDTO.getAnswers() != null) {
+            questionService.addAnswers(result, questionDTO.getAnswers());
+        }
+        return result;
     }
 
     public Question convertToEntity(QuestionDTO questionDTO) {
-        return Question.builder()
+        Question result = Question.builder()
                 .body(questionDTO.getQuestionBody())
                 .creator(usersService.getUserById(JwtTokenUtil.extractUserDetails().getId()))
                 .level(levelService.getLevelByName(questionDTO.getLevel()))
                 .module(moduleService.getModuleByName(questionDTO.getModule()))
                 .build();
+        if (questionDTO.getAnswers() != null) {
+            questionService.addAnswers(result, questionDTO.getAnswers());
+        }
+        return result;
     }
 
     private String getQuestionBody(Question question, QuestionDTO questionDTO) {

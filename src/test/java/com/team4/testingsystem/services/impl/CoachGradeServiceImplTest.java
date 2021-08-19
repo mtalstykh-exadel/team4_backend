@@ -6,6 +6,7 @@ import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +31,9 @@ class CoachGradeServiceImplTest {
 
     @Mock
     private QuestionService questionService;
+
+    @Mock
+    RestrictionsService restrictionsService;
 
     @InjectMocks
     private CoachGradeServiceImpl gradeService;

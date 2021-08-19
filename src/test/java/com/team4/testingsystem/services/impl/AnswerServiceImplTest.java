@@ -3,6 +3,7 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.FileAnswer;
 import com.team4.testingsystem.exceptions.AnswerNotFoundException;
+import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.services.FileAnswerService;
 import org.junit.jupiter.api.Assertions;
@@ -61,6 +62,18 @@ class AnswerServiceImplTest {
     }
 
     @Test
+    void tryDownloadEssayNotFound() {
+        Mockito.when(fileAnswerService.downloadEssay(TEST_ID)).thenThrow(FileAnswerNotFoundException.class);
+        Assertions.assertTrue(answerService.tryDownloadEssay(TEST_ID).isEmpty());
+    }
+
+    @Test
+    void tryDownloadEssaySuccess() {
+        Mockito.when(fileAnswerService.downloadEssay(TEST_ID)).thenReturn(ESSAY_TEXT);
+        Assertions.assertEquals(ESSAY_TEXT, answerService.tryDownloadEssay(TEST_ID).orElseThrow());
+    }
+
+    @Test
     void uploadEssay() {
         Mockito.when(fileAnswerService.uploadEssay(TEST_ID, ESSAY_TEXT)).thenReturn(fileAnswer);
         Mockito.when(fileAnswer.getUrl()).thenReturn(URL);
@@ -71,6 +84,18 @@ class AnswerServiceImplTest {
     void downloadSpeaking() {
         Mockito.when(fileAnswerService.downloadSpeaking(TEST_ID)).thenReturn(URL);
         Assertions.assertEquals(URL, answerService.downloadSpeaking(TEST_ID));
+    }
+
+    @Test
+    void tryDownloadSpeakingNotFound() {
+        Mockito.when(fileAnswerService.downloadSpeaking(TEST_ID)).thenThrow(FileAnswerNotFoundException.class);
+        Assertions.assertTrue(answerService.tryDownloadSpeaking(TEST_ID).isEmpty());
+    }
+
+    @Test
+    void tryDownloadSpeakingSuccess() {
+        Mockito.when(fileAnswerService.downloadSpeaking(TEST_ID)).thenReturn(ESSAY_TEXT);
+        Assertions.assertEquals(ESSAY_TEXT, answerService.tryDownloadSpeaking(TEST_ID).orElseThrow());
     }
 
     @Test

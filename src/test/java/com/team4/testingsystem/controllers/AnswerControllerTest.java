@@ -1,8 +1,5 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.enums.Modules;
-import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
-import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.exceptions.FileSavingFailedException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
@@ -34,37 +31,6 @@ class AnswerControllerTest {
     private static final Long TEST_ID = 1L;
     private static final String ESSAY_TEXT = "text";
     private static final String URL = "some url";
-
-    @Test
-    void downloadEssayQuestionNotFound() {
-        Mockito.when(answerService.downloadEssay(TEST_ID)).thenThrow(QuestionNotFoundException.class);
-
-        Assertions.assertThrows(QuestionNotFoundException.class,
-                () -> answerController.downloadEssay(TEST_ID));
-    }
-
-    @Test
-    void downloadEssayFileAnswerNotFound() {
-        Mockito.when(answerService.downloadEssay(TEST_ID)).thenThrow(FileAnswerNotFoundException.class);
-
-        Assertions.assertThrows(FileAnswerNotFoundException.class,
-                () -> answerController.downloadEssay(TEST_ID));
-    }
-
-    @Test
-    void downloadEssayLoadingError() {
-        Mockito.when(answerService.downloadEssay(TEST_ID)).thenThrow(FileLoadingFailedException.class);
-
-        Assertions.assertThrows(FileLoadingFailedException.class,
-                () -> answerController.downloadEssay(TEST_ID));
-    }
-
-    @Test
-    void downloadEssaySuccess() {
-        Mockito.when(answerService.downloadEssay(TEST_ID)).thenReturn(ESSAY_TEXT);
-
-        Assertions.assertEquals(ESSAY_TEXT, answerController.downloadEssay(TEST_ID));
-    }
 
     @Test
     void uploadEssayTestNotFound() {
@@ -119,27 +85,5 @@ class AnswerControllerTest {
                 .when(answerService).uploadSpeaking(file, TEST_ID);
         Assertions.assertThrows(QuestionNotFoundException.class,
                 () -> answerController.uploadSpeaking(file, TEST_ID));
-    }
-
-    @Test
-    void downloadSpeaking() {
-        Mockito.when(answerService.downloadSpeaking(any())).thenReturn(URL);
-        Assertions.assertEquals(URL, answerController.downloadSpeaking(TEST_ID));
-    }
-
-    @Test
-    void downloadSpeakingQuestionNotFound() {
-        Mockito.doThrow(QuestionNotFoundException.class)
-                .when(answerService).downloadSpeaking(TEST_ID);
-        Assertions.assertThrows(QuestionNotFoundException.class,
-                () -> answerController.downloadSpeaking(TEST_ID));
-    }
-
-    @Test
-    void downloadSpeakingFileNotFound() {
-        Mockito.doThrow(FileAnswerNotFoundException.class)
-                .when(answerService).downloadSpeaking(TEST_ID);
-        Assertions.assertThrows(FileAnswerNotFoundException.class,
-                () -> answerController.downloadSpeaking(TEST_ID));
     }
 }

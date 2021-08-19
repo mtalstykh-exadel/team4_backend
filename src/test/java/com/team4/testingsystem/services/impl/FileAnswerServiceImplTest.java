@@ -12,17 +12,20 @@ import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TooLongEssayException;
 import com.team4.testingsystem.repositories.FileAnswerRepository;
+import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
+import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.InputStreamResource;
@@ -60,6 +63,9 @@ class FileAnswerServiceImplTest {
 
     @Mock
     private MultipartFile file;
+
+    @Mock
+    private CustomUserDetails userDetails;
 
     @Mock
     private RestrictionsService restrictionsService;
@@ -209,66 +215,91 @@ class FileAnswerServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void uploadEssayQuestionNotFound() {
-        Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
-        Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY))
-            .thenThrow(QuestionNotFoundException.class);
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(1L);
 
-        Assertions.assertThrows(QuestionNotFoundException.class,
-            () -> fileAnswerService.uploadEssay(TEST_ID, ESSAY_TEXT));
+            Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
+            Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY))
+                .thenThrow(QuestionNotFoundException.class);
+
+            Assertions.assertThrows(QuestionNotFoundException.class,
+                () -> fileAnswerService.uploadEssay(TEST_ID, ESSAY_TEXT));
+        }
     }
 
     @org.junit.jupiter.api.Test
     void uploadEssaySavingError() {
-        Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
-        Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY)).thenReturn(question);
-        Mockito.when(resourceStorageService.upload(Mockito.any(), Mockito.eq(Modules.ESSAY), Mockito.eq(TEST_ID)))
-            .thenThrow(FileSavingFailedException.class);
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(1L);
 
-        Assertions.assertThrows(FileSavingFailedException.class,
-            () -> fileAnswerService.uploadEssay(TEST_ID, ESSAY_TEXT));
+            Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
+            Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY)).thenReturn(question);
+            Mockito.when(resourceStorageService.upload(Mockito.any(), Mockito.eq(Modules.ESSAY), Mockito.eq(TEST_ID)))
+                .thenThrow(FileSavingFailedException.class);
+
+            Assertions.assertThrows(FileSavingFailedException.class,
+                () -> fileAnswerService.uploadEssay(TEST_ID, ESSAY_TEXT));
+        }
     }
 
     @org.junit.jupiter.api.Test
     void uploadEssayFailTooLong() {
-        Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
-        Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY)).thenReturn(question);
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(1L);
 
-        Assertions.assertThrows(TooLongEssayException.class,
-            () -> fileAnswerService.uploadEssay(TEST_ID, "1".repeat(513)));
+            Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
+            Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY)).thenReturn(question);
+
+            Assertions.assertThrows(TooLongEssayException.class,
+                () -> fileAnswerService.uploadEssay(TEST_ID, "1".repeat(513)));
+        }
     }
 
     @org.junit.jupiter.api.Test
     void uploadEssaySuccess() {
-        Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
-        Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY)).thenReturn(question);
-        Mockito.when(resourceStorageService.upload(Mockito.any(), Mockito.eq(Modules.ESSAY), Mockito.eq(TEST_ID)))
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(1L);
+
+            Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
+            Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.ESSAY)).thenReturn(question);
+            Mockito.when(resourceStorageService.upload(Mockito.any(), Mockito.eq(Modules.ESSAY), Mockito.eq(TEST_ID)))
                 .thenReturn(URL);
 
-        fileAnswerService.uploadEssay(TEST_ID, ESSAY_TEXT);
+            fileAnswerService.uploadEssay(TEST_ID, ESSAY_TEXT);
 
-        ArgumentCaptor<FileAnswer> captor = ArgumentCaptor.forClass(FileAnswer.class);
-        Mockito.verify(fileAnswerRepository).save(captor.capture());
+            ArgumentCaptor<FileAnswer> captor = ArgumentCaptor.forClass(FileAnswer.class);
+            Mockito.verify(fileAnswerRepository).save(captor.capture());
 
-        Assertions.assertEquals(test, captor.getValue().getId().getTest());
-        Assertions.assertEquals(question, captor.getValue().getId().getQuestion());
-        Assertions.assertEquals(URL, captor.getValue().getUrl());
+            Assertions.assertEquals(test, captor.getValue().getId().getTest());
+            Assertions.assertEquals(question, captor.getValue().getId().getQuestion());
+            Assertions.assertEquals(URL, captor.getValue().getUrl());
+        }
     }
 
     @org.junit.jupiter.api.Test
     void uploadSpeakingSuccess() {
-        Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(1L);
+
+            Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
             Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.SPEAKING)).thenReturn(question);
-        Mockito.when(resourceStorageService.upload(Mockito.any(), Mockito.eq(Modules.SPEAKING), Mockito.eq(TEST_ID)))
-            .thenReturn(URL);
+            Mockito.when(resourceStorageService.upload(Mockito.any(), Mockito.eq(Modules.SPEAKING), Mockito.eq(TEST_ID)))
+                .thenReturn(URL);
 
-        fileAnswerService.uploadSpeaking(file, TEST_ID);
+            fileAnswerService.uploadSpeaking(file, TEST_ID);
 
-        ArgumentCaptor<FileAnswer> captor = ArgumentCaptor.forClass(FileAnswer.class);
-        Mockito.verify(fileAnswerRepository).save(captor.capture());
+            ArgumentCaptor<FileAnswer> captor = ArgumentCaptor.forClass(FileAnswer.class);
+            Mockito.verify(fileAnswerRepository).save(captor.capture());
 
-        Assertions.assertEquals(test, captor.getValue().getId().getTest());
-        Assertions.assertEquals(question, captor.getValue().getId().getQuestion());
-        Assertions.assertEquals(URL, captor.getValue().getUrl());
+            Assertions.assertEquals(test, captor.getValue().getId().getTest());
+            Assertions.assertEquals(question, captor.getValue().getId().getQuestion());
+            Assertions.assertEquals(URL, captor.getValue().getUrl());
+        }
     }
 
     @org.junit.jupiter.api.Test
@@ -281,11 +312,16 @@ class FileAnswerServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void uploadSpeakingQuestionNotFound() {
-        Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
-        Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.SPEAKING))
-            .thenThrow(QuestionNotFoundException.class);
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(1L);
 
-        Assertions.assertThrows(QuestionNotFoundException.class,
-            () ->fileAnswerService.uploadSpeaking(file, TEST_ID));
+            Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
+            Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.SPEAKING))
+                .thenThrow(QuestionNotFoundException.class);
+
+            Assertions.assertThrows(QuestionNotFoundException.class,
+                () -> fileAnswerService.uploadSpeaking(file, TEST_ID));
+        }
     }
 }

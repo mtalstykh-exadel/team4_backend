@@ -47,6 +47,7 @@ public class ModuleGradesServiceImpl implements ModuleGradesService {
 
     @Override
     public Map<String, ModuleGrade> getGradesByTest(Test test) {
+
         List<ModuleGrade> grades = (List<ModuleGrade>) moduleGradesRepository.findAllById_Test(test);
         return grades
                 .stream()

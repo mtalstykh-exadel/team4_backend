@@ -66,4 +66,10 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     public ErrorResponse handleDoNotHaveRightsException(AccessControlException e) {
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler(value = {IllegalGradeException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIllegalGradeException(IllegalGradeException e) {
+        return new ErrorResponse(e.getMessage());
+    }
 }

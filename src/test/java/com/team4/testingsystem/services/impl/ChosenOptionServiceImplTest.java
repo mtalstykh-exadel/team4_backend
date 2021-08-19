@@ -4,12 +4,15 @@ import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.exceptions.ChosenOptionBadRequestException;
 import com.team4.testingsystem.exceptions.ChosenOptionNotFoundException;
 import com.team4.testingsystem.repositories.ChosenOptionRepository;
+import com.team4.testingsystem.security.CustomUserDetails;
+import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -25,6 +28,9 @@ public class ChosenOptionServiceImplTest {
 
     @Mock
     com.team4.testingsystem.entities.Test test;
+
+    @Mock
+    CustomUserDetails userDetails;
 
     @Mock
     ChosenOptionRepository chosenOptionRepository;
@@ -72,10 +78,15 @@ public class ChosenOptionServiceImplTest {
 
     @Test
     void saveAllSuccess(){
-        List<ChosenOption> chosenOptions = Lists.emptyList();
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(1L);
 
-        chosenOptionService.saveAll(chosenOptions);
+            List<ChosenOption> chosenOptions = Lists.emptyList();
 
-        Mockito.verify(chosenOptionRepository).saveAll(chosenOptions);
+            chosenOptionService.saveAll(chosenOptions);
+
+            Mockito.verify(chosenOptionRepository).saveAll(chosenOptions);
+        }
     }
 }
