@@ -121,7 +121,7 @@ public class TestsServiceImpl implements TestsService {
                 .filter(test -> test.getLevel().getName().equals(level.name()))
                 .collect(Collectors.toList());
     }
-    
+
     @Override
     public Test startTestVerification(long testId) {
         testsRepository.updateStatusByTestId(testId, Status.IN_VERIFICATION);
@@ -218,7 +218,7 @@ public class TestsServiceImpl implements TestsService {
 
         java.util.Timer timer = new java.util.Timer(String.valueOf(testId));
         long delay = test.getFinishTime().plus(2L, ChronoUnit.MINUTES).toEpochMilli()
-                     - Instant.now().toEpochMilli();
+                - Instant.now().toEpochMilli();
         if (delay <= 0) {
             finish(testId, test.getFinishTime());
             timer.cancel();
@@ -259,11 +259,13 @@ public class TestsServiceImpl implements TestsService {
     public void assignCoach(long id, long coachId) {
         User coach = usersService.getUserById(coachId);
 
-        if (getById(id).getUser().getId() == coachId) {
+        Test test = getById(id);
+        if (test.getUser().getId() == coachId) {
             throw new CoachAssignmentFailException();
         }
 
         testsRepository.assignCoach(coach, id);
+        notificationService.create(NotificationType.COACH_ASSIGNED, coach, test);
     }
 
     @Override
@@ -272,5 +274,4 @@ public class TestsServiceImpl implements TestsService {
             throw new TestNotFoundException();
         }
     }
-
 }
