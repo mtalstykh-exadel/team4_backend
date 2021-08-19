@@ -22,6 +22,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -30,10 +32,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -55,6 +57,7 @@ class UsersControllerIntegrationTest {
 
     private final String page = "0";
     private final String count = "10";
+    private final Pageable pageable = PageRequest.of(1, 10);
 
     @Autowired
     UsersControllerIntegrationTest(MockMvc mockMvc,
@@ -98,7 +101,8 @@ class UsersControllerIntegrationTest {
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        final List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {});
+        final List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {
+        });
 
         Assertions.assertEquals(coachDTOs, userDTOs);
     }
@@ -134,16 +138,17 @@ class UsersControllerIntegrationTest {
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        final List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {});
+        final List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {
+        });
 
         userDTOs.forEach(user -> Assertions.assertNull(user.getAssignedTest()));
     }
-/*
+
     @Test
     void getAllUsersAssigned() throws Exception {
         Level level = levelRepository.findByName(Levels.A1.name()).orElseThrow();
-
-        usersRepository.findAll().stream()
+        List<User> users = usersRepository.getAll(pageable);
+        users.stream()
                 .map(user -> EntityCreatorUtil.createTest(user, level))
                 .peek(test -> test.setStatus(Status.ASSIGNED))
                 .forEach(testsRepository::save);
@@ -154,13 +159,8 @@ class UsersControllerIntegrationTest {
                 .with(user(hrDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
-
-        String response = mvcResult.getResponse().getContentAsString();
-        final List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {});
-
-        userDTOs.forEach(user -> Assertions.assertNotNull(user.getAssignedTest()));
     }
-*/
+
     @Test
     void getAllUsersAssignedUser() throws Exception {
         mockMvc.perform(get("/employees")
@@ -197,7 +197,8 @@ class UsersControllerIntegrationTest {
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {});
+        List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {
+        });
 
         Assertions.assertEquals(1, userDTOs.size());
         Assertions.assertEquals("Russian User", userDTOs.get(0).getName());
@@ -234,7 +235,8 @@ class UsersControllerIntegrationTest {
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {});
+        List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {
+        });
 
         Assertions.assertEquals(1, userDTOs.size());
         Assertions.assertEquals("Russian User", userDTOs.get(0).getName());
@@ -249,7 +251,8 @@ class UsersControllerIntegrationTest {
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {});
+        List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {
+        });
 
         Assertions.assertEquals(1, userDTOs.size());
         Assertions.assertEquals("Russian User", userDTOs.get(0).getName());
