@@ -9,7 +9,6 @@ import com.team4.testingsystem.exceptions.ModuleGradeNotFoundException;
 import com.team4.testingsystem.repositories.ModuleGradesRepository;
 import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.ModuleService;
-import com.team4.testingsystem.services.RestrictionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
