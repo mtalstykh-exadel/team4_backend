@@ -6,8 +6,10 @@ import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.enums.Status;
+import com.team4.testingsystem.exceptions.AssignmentFailException;
 import com.team4.testingsystem.exceptions.IllegalGradeException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
+import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.assertj.core.util.Lists;
@@ -39,6 +41,9 @@ public class RestrictionsServiceImplTest {
     User user;
 
     @Mock
+    TestsRepository testsRepository;
+
+    @Mock
     CustomUserDetails userDetails;
 
     @InjectMocks
@@ -49,9 +54,9 @@ public class RestrictionsServiceImplTest {
         Mockito.when(test.getUser()).thenReturn(user);
         Mockito.when(user.getId()).thenReturn(GOOD_USER_ID);
 
-            Assertions.assertThrows(AccessControlException.class,
-                () -> restrictionsService.checkOwnerIsCurrentUser(test, GOOD_USER_ID + 1));
-        }
+        Assertions.assertThrows(AccessControlException.class,
+            () -> restrictionsService.checkOwnerIsCurrentUser(test, GOOD_USER_ID + 1));
+    }
 
     @org.junit.jupiter.api.Test
     void checkStatus() {
@@ -61,7 +66,7 @@ public class RestrictionsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void checkTestContainsQuestion(){
+    void checkTestContainsQuestion() {
         Mockito.when(test.getQuestions()).thenReturn(Lists.emptyList());
 
         Assertions.assertThrows(QuestionNotFoundException.class,
@@ -69,14 +74,14 @@ public class RestrictionsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void checkGradeIsCorrect(){
+    void checkGradeIsCorrect() {
 
         Assertions.assertThrows(IllegalGradeException.class,
             () -> restrictionsService.checkGradeIsCorrect(-42));
     }
 
     @org.junit.jupiter.api.Test
-    void checkModuleIsEssayOrSpeaking(){
+    void checkModuleIsEssayOrSpeaking() {
         Mockito.when(question.getModule()).thenReturn(module);
         Mockito.when(module.getName()).thenReturn(Modules.GRAMMAR.getName());
         Assertions.assertThrows(AccessControlException.class,
@@ -84,7 +89,7 @@ public class RestrictionsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void checkCoachIsCurrentUser(){
+    void checkCoachIsCurrentUser() {
         Mockito.when(test.getCoach()).thenReturn(user);
         Mockito.when(user.getId()).thenReturn(GOOD_USER_ID);
 
@@ -96,4 +101,48 @@ public class RestrictionsServiceImplTest {
                 () -> restrictionsService.checkCoachIsCurrentUser(test));
         }
     }
+
+    @org.junit.jupiter.api.Test
+    void checkIsAssigned() {
+        Mockito.when(test.getAssignedAt()).thenReturn(null);
+
+        Assertions.assertThrows(AssignmentFailException.class,
+            () -> restrictionsService.checkIsAssigned(test));
+    }
+
+    @org.junit.jupiter.api.Test
+    void checkHasNoAssignedTests() {
+        Mockito.when(testsRepository.hasAssignedTests(user)).thenReturn(true);
+
+        Assertions.assertThrows(AssignmentFailException.class,
+            () -> restrictionsService.checkHasNoAssignedTests(user));
+    }
+
+    @org.junit.jupiter.api.Test
+    void checkNotSelfAssign(){
+        Mockito.when(user.getId()).thenReturn(GOOD_USER_ID);
+
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID);
+
+            Assertions.assertThrows(AccessControlException.class,
+                () -> restrictionsService.checkNotSelfAssign(user));
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void checkNotSelfDeassign(){
+
+        Mockito.when(user.getId()).thenReturn(GOOD_USER_ID);
+
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID);
+
+            Assertions.assertThrows(AccessControlException.class,
+                () -> restrictionsService.checkNotSelfDeassign(user));
+        }
+    }
+
 }
