@@ -733,5 +733,9 @@
                                  referencedTableName="question" referencedColumnNames="id"/>
 
     </changeSet>
-    
+
+    <changeSet id="add_primary_key_to_coach_answer_table" author="SemyonKorostik">
+        <addPrimaryKey tableName="coach_answer" columnNames="test_id, question_id"/>
+    </changeSet>
+
 </databaseChangeLog>
