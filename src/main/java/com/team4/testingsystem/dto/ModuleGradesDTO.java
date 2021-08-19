@@ -1,21 +1,22 @@
 package com.team4.testingsystem.dto;
 
+import com.team4.testingsystem.enums.Status;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 public class ModuleGradesDTO implements Serializable {
 
     private int grammar;
-
     private int listening;
-
     private int essay;
-
     private int speaking;
 
     private String essayComment;
-
     private String speakingComment;
+
+    private String level;
+    private Status status;
 
     public ModuleGradesDTO() {
     }
@@ -68,6 +69,22 @@ public class ModuleGradesDTO implements Serializable {
         this.speakingComment = speakingComment;
     }
 
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public static ModuleGradesDTO.Builder builder() {
         return new ModuleGradesDTO.Builder();
     }
@@ -111,6 +128,16 @@ public class ModuleGradesDTO implements Serializable {
             return this;
         }
 
+        public ModuleGradesDTO.Builder level(String level) {
+            moduleGradesDTO.setLevel(level);
+            return this;
+        }
+
+        public ModuleGradesDTO.Builder status(Status status) {
+            moduleGradesDTO.setStatus(status);
+            return this;
+        }
+
         public ModuleGradesDTO build() {
             return moduleGradesDTO;
         }
@@ -130,11 +157,13 @@ public class ModuleGradesDTO implements Serializable {
                 && Objects.equals(essay, that.essay)
                 && Objects.equals(speaking, that.speaking)
                 && Objects.equals(essayComment, that.essayComment)
-                && Objects.equals(speakingComment, that.speakingComment);
+                && Objects.equals(speakingComment, that.speakingComment)
+                && Objects.equals(level, that.level)
+                && Objects.equals(status, that.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(grammar, listening, essay, speaking, essayComment, speakingComment);
+        return Objects.hash(grammar, listening, essay, speaking, essayComment, speakingComment, level, status);
     }
 }

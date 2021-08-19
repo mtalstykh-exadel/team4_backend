@@ -142,9 +142,7 @@ class TestsControllerTest {
 
             Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
 
-            Mockito.when(moduleGradesService.getGradesByTest(test)).thenReturn(gradesMap);
-
-            Mockito.when(gradesConverter.convertListOfGradesToDTO(gradesMap)).thenReturn(moduleGradesDTO);
+            Mockito.when(gradesConverter.convertListOfGradesToDTO(test)).thenReturn(moduleGradesDTO);
 
             Assertions.assertEquals(moduleGradesDTO, testsController.getGrades(GOOD_TEST_ID));
         }
