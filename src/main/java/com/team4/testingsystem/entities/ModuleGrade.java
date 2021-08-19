@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class ModuleGrade implements Serializable {
 
     @EmbeddedId
-    TestModuleID id;
+    private TestModuleID id;
 
     @Column(name = "grade")
     private Integer grade;

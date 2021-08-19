@@ -14,7 +14,6 @@ public class CoachGrade implements Serializable {
     @EmbeddedId
     private TestQuestionID id;
 
-
     @Column(name = "grade")
     private Integer grade;
 

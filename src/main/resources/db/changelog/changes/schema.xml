@@ -688,4 +688,29 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="module_grade_add_not_null" author="maxim12321">
+        <addNotNullConstraint tableName="module_grade" columnName="test_id"/>
+        <addNotNullConstraint tableName="module_grade" columnName="module_id"/>
+    </changeSet>
+
+    <changeSet id="add_composite_pk" author="maxim12321">
+        <addPrimaryKey tableName="chosen_option" columnNames="test_id, question_id"/>
+
+        <dropPrimaryKey tableName="coach_grade"/>
+        <addPrimaryKey tableName="coach_grade" columnNames="test_id, question_id"/>
+        <dropColumn tableName="coach_grade" columnName="id"/>
+
+        <dropPrimaryKey tableName="error_report"/>
+        <addPrimaryKey tableName="error_report" columnNames="test_id, question_id"/>
+        <dropColumn tableName="error_report" columnName="id"/>
+
+        <addPrimaryKey tableName="file_answer" columnNames="test_id, question_id"/>
+
+        <addPrimaryKey tableName="module_grade" columnNames="test_id, module_id"/>
+
+        <addPrimaryKey tableName="question_content_file" columnNames="question_id, content_file_id"/>
+
+        <addPrimaryKey tableName="test_question" columnNames="test_id, question_id"/>
+    </changeSet>
+
 </databaseChangeLog>
