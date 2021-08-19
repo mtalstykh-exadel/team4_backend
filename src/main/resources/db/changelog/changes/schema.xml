@@ -713,4 +713,25 @@
         <addPrimaryKey tableName="test_question" columnNames="test_id, question_id"/>
     </changeSet>
 
+    <changeSet id="add_coach_answer_table" author="SemyonKorostik">
+        <createTable tableName="coach_answer">
+            <column name="question_id" type="int" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="test_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment" type="text"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="coach_answer" baseColumnNames="test_id"
+                                 constraintName="coach_answer_test_id_fk"
+                                 referencedTableName="test" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="coach_answer" baseColumnNames="question_id"
+                                 constraintName="coach_answer_question_id_fk"
+                                 referencedTableName="question" referencedColumnNames="id"/>
+
+    </changeSet>
+    
 </databaseChangeLog>
