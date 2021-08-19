@@ -13,6 +13,7 @@ public class TestVerificationDTO implements Serializable {
     private QuestionDTO speakingQuestion;
     private String speakingUrl;
     private List<CoachGradeDTO> grades;
+    private List<CoachAnswerDTO> coachAnswers;
 
     public TestVerificationDTO() {
     }
@@ -83,6 +84,14 @@ public class TestVerificationDTO implements Serializable {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public List<CoachAnswerDTO> getCoachAnswers() {
+        return coachAnswers;
+    }
+
+    public void setCoachAnswers(List<CoachAnswerDTO> coachAnswers) {
+        this.coachAnswers = coachAnswers;
     }
 
     public static class Builder {
