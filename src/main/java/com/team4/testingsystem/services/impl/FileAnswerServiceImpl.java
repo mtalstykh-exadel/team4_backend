@@ -5,6 +5,7 @@ import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.exceptions.TooLongEssayException;
@@ -14,6 +15,7 @@ import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
+import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -56,9 +58,11 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     public FileAnswer uploadSpeaking(MultipartFile file, Long testId) {
         Test test = testsService.getById(testId);
 
-        restrictionsService.checkOwnerIsCurrentUser(test);
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
 
-        restrictionsService.checkStartedStatus(test);
+        restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
+
+        restrictionsService.checkStatus(test, Status.STARTED);
 
         String url = storageService.upload(file.getResource(), Modules.SPEAKING, testId);
 
@@ -105,9 +109,11 @@ public class FileAnswerServiceImpl implements FileAnswerService {
     public FileAnswer uploadEssay(Long testId, String text) {
         Test test = testsService.getById(testId);
 
-        restrictionsService.checkOwnerIsCurrentUser(test);
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
 
-        restrictionsService.checkStartedStatus(test);
+        restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
+
+        restrictionsService.checkStatus(test, Status.STARTED);
 
         Question question = questionService.getQuestionByTestIdAndModule(testId, Modules.ESSAY);
 

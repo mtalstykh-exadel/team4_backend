@@ -8,11 +8,13 @@ import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.LevelRepository;
+import com.team4.testingsystem.repositories.NotificationRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
@@ -51,6 +53,7 @@ class CoachGradeControllerIntegrationTest {
     private final CoachGradeRepository gradeRepository;
     private final AnswerRepository answerRepository;
     private final ContentFilesRepository contentFilesRepository;
+    private final NotificationRepository notificationRepository;
     private final ObjectMapper objectMapper;
 
     private User user;
@@ -70,6 +73,7 @@ class CoachGradeControllerIntegrationTest {
                                         CoachGradeRepository gradeRepository,
                                         AnswerRepository answerRepository,
                                         ContentFilesRepository contentFilesRepository,
+                                        NotificationRepository notificationRepository,
                                         ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.levelRepository = levelRepository;
@@ -79,6 +83,8 @@ class CoachGradeControllerIntegrationTest {
         this.gradeRepository = gradeRepository;
         this.answerRepository = answerRepository;
         this.contentFilesRepository = contentFilesRepository;
+        this.notificationRepository = notificationRepository;
+
         this.objectMapper = objectMapper;
     }
 
@@ -97,11 +103,12 @@ class CoachGradeControllerIntegrationTest {
 
     @AfterEach
     void destroy() {
+        notificationRepository.deleteAll();
         gradeRepository.deleteAll();
         contentFilesRepository.deleteAll();
         answerRepository.deleteAll();
-        questionRepository.deleteAll();
         testsRepository.deleteAll();
+        questionRepository.deleteAll();
     }
 
     @Test
@@ -115,6 +122,10 @@ class CoachGradeControllerIntegrationTest {
     void getGradesEmptyList() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
+
+        testsRepository.assignCoach(user, test.getId());
+
+        testsRepository.updateStatusByTestId(test.getId(), Status.IN_VERIFICATION);
 
         MvcResult mvcResult = mockMvc.perform(get("/grades/{testId}", test.getId())
                 .with(user(coachDetails)))
@@ -131,6 +142,10 @@ class CoachGradeControllerIntegrationTest {
     void getGradesOneGrade() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
+
+        testsRepository.assignCoach(user, test.getId());
+
+        testsRepository.updateStatusByTestId(test.getId(), Status.IN_VERIFICATION);
 
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);
@@ -155,6 +170,11 @@ class CoachGradeControllerIntegrationTest {
     void getGradesTwoGrades() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
+
+        testsRepository.assignCoach(user, test.getId());
+
+        testsRepository.updateStatusByTestId(test.getId(), Status.IN_VERIFICATION);
+
 
         Question question1 = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question1);
@@ -243,10 +263,25 @@ class CoachGradeControllerIntegrationTest {
     @Test
     void addGradeSuccess() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
-        testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);
+
+        testsRepository.save(test);
+
+
+        question.setTests(List.of(test));
+
+        questionRepository.save(question);
+
+        test.setQuestions(List.of(question));
+
+        testsRepository.save(test);
+
+
+        testsRepository.assignCoach(user, test.getId());
+
+        testsRepository.updateStatusByTestId(test.getId(), Status.IN_VERIFICATION);
 
         TestQuestionID testQuestionID = new TestQuestionID(test, question);
 
@@ -298,11 +333,22 @@ class CoachGradeControllerIntegrationTest {
 
     @Test
     void updateGradeSuccess() throws Exception {
+
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
-        testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);
+
+        testsRepository.save(test);
+
+        test.setQuestion(question);
+
+        testsRepository.save(test);
+
+        testsRepository.assignCoach(user, test.getId());
+
+        testsRepository.updateStatusByTestId(test.getId(), Status.IN_VERIFICATION);
+
 
         CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
                 .testId(test.getId())

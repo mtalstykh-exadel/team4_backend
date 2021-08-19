@@ -1,6 +1,5 @@
 package com.team4.testingsystem.utils;
 
-import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
@@ -28,6 +27,8 @@ public class EntityCreatorUtil {
     public static final String LANGUAGE = "en";
     public static final String AVATAR = "avatar_url";
     public static final Long ID = 1L;
+
+    public static final Long MODULE_ID = 3L;
 
     private static Long answerId = 1L;
 
@@ -69,10 +70,11 @@ public class EntityCreatorUtil {
 
     public static Module createModule() {
         Module module = new Module();
-        module.setId(ID);
-        module.setName(Modules.GRAMMAR.getName());
+        module.setId(MODULE_ID);
+        module.setName(Modules.ESSAY.getName());
         return module;
     }
+
 
     public static Level createLevel() {
         Level level = new Level();
