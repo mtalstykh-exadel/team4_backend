@@ -9,6 +9,7 @@ import com.team4.testingsystem.exceptions.ModuleGradeNotFoundException;
 import com.team4.testingsystem.repositories.ModuleGradesRepository;
 import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.ModuleService;
+import com.team4.testingsystem.services.RestrictionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +23,15 @@ public class ModuleGradesServiceImpl implements ModuleGradesService {
 
     private final ModuleGradesRepository moduleGradesRepository;
     private final ModuleService moduleService;
+    private final RestrictionsService restrictionsService;
 
     @Autowired
     public ModuleGradesServiceImpl(ModuleGradesRepository moduleGradesRepository,
-                                   ModuleService moduleService) {
+                                   ModuleService moduleService,
+                                   RestrictionsService restrictionsService) {
         this.moduleGradesRepository = moduleGradesRepository;
         this.moduleService = moduleService;
+        this.restrictionsService = restrictionsService;
     }
 
     @Override
@@ -47,6 +51,7 @@ public class ModuleGradesServiceImpl implements ModuleGradesService {
 
     @Override
     public Map<String, ModuleGrade> getGradesByTest(Test test) {
+
         List<ModuleGrade> grades = (List<ModuleGrade>) moduleGradesRepository.findAllById_Test(test);
         return grades
                 .stream()
