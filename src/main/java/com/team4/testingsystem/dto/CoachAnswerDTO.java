@@ -1,8 +1,9 @@
 package com.team4.testingsystem.dto;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class CoachAnswerDTO {
+public class CoachAnswerDTO implements Serializable {
     private Long questionId;
     private Long testId;
     private String comment;
