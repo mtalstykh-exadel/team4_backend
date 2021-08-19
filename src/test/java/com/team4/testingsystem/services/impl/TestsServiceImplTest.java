@@ -36,6 +36,8 @@ import org.springframework.data.domain.Pageable;
 
 import java.security.AccessControlException;
 import java.time.Instant;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -125,10 +127,7 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void getAllUsersAndAssignedTestsNoTests() {
         User user = EntityCreatorUtil.createUser();
-
-        Mockito.when(usersService.getAll()).thenReturn(Lists.list(user));
-        Mockito.when(testsRepository.getByStatuses(new Status[]{Status.ASSIGNED}, pageable))
-                .thenReturn(Lists.emptyList());
+        Mockito.when(usersService.getAll(pageable)).thenReturn(Lists.list(user));
 
         Assertions.assertEquals(Lists.list(new UserTest(user, null)), testsService.getAllUsersAndAssignedTests(pageable));
     }
@@ -137,12 +136,12 @@ class TestsServiceImplTest {
     void getAllUsersAndAssignedTestsSuccess() {
         User user = EntityCreatorUtil.createUser();
         Test test = EntityCreatorUtil.createTest(user, EntityCreatorUtil.createLevel());
+        Mockito.when(testsRepository.getAssignedTestByUserId(user.getId()))
+                .thenReturn(Optional.ofNullable(test));
+        Mockito.when(usersService.getAll(pageable)).thenReturn(Lists.list(user));
 
-        Mockito.when(usersService.getAll()).thenReturn(Lists.list(user));
-        Mockito.when(testsRepository.getByStatuses(new Status[]{Status.ASSIGNED}, pageable))
-                .thenReturn(Lists.list(test));
-
-        Assertions.assertEquals(Lists.list(new UserTest(user, test)), testsService.getAllUsersAndAssignedTests(pageable));
+        Assertions.assertEquals(Lists.list(new UserTest(user, test)),
+                testsService.getAllUsersAndAssignedTests(pageable));
     }
 
     @org.junit.jupiter.api.Test

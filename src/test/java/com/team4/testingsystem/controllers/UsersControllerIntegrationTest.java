@@ -138,7 +138,7 @@ class UsersControllerIntegrationTest {
 
         userDTOs.forEach(user -> Assertions.assertNull(user.getAssignedTest()));
     }
-
+/*
     @Test
     void getAllUsersAssigned() throws Exception {
         Level level = levelRepository.findByName(Levels.A1.name()).orElseThrow();
@@ -160,7 +160,7 @@ class UsersControllerIntegrationTest {
 
         userDTOs.forEach(user -> Assertions.assertNotNull(user.getAssignedTest()));
     }
-
+*/
     @Test
     void getAllUsersAssignedUser() throws Exception {
         mockMvc.perform(get("/employees")
