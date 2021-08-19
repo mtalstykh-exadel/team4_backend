@@ -31,9 +31,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
 import java.util.TimerTask;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -102,12 +100,9 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public List<UserTest> getAllUsersAndAssignedTests(Pageable pageable) {
-        Status[] statuses = {Status.ASSIGNED};
-        Map<User, Test> assignedTests = getByStatuses(statuses, pageable).stream()
-                .collect(Collectors.toMap(Test::getUser, Function.identity()));
-
-        return usersService.getAll().stream()
-                .map(user -> new UserTest(user, assignedTests.getOrDefault(user, null)))
+        return usersService.getAll(pageable).stream()
+                .map(user -> new UserTest(user,
+                        testsRepository.getAssignedTestByUserId(user.getId()).orElse(null)))
                 .collect(Collectors.toList());
     }
 
