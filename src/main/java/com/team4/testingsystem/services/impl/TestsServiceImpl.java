@@ -121,7 +121,7 @@ public class TestsServiceImpl implements TestsService {
         }
         return testsRepository.getAllByUserId(userId, pageable);
     }
-    
+
     @Override
     public Test startTestVerification(long testId) {
         Test test = getById(testId);
@@ -215,6 +215,8 @@ public class TestsServiceImpl implements TestsService {
         test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
         save(test);
         createTimer(test);
+
+        notificationService.create(NotificationType.TEST_STARTED, test.getUser(), test);
         return test;
     }
 
@@ -235,7 +237,7 @@ public class TestsServiceImpl implements TestsService {
 
         java.util.Timer timer = new java.util.Timer(String.valueOf(testId));
         long delay = test.getFinishTime().plus(2L, ChronoUnit.MINUTES).toEpochMilli()
-                     - Instant.now().toEpochMilli();
+                - Instant.now().toEpochMilli();
         if (delay <= 0) {
             finish(testId, test.getFinishTime());
             timer.cancel();
@@ -276,18 +278,23 @@ public class TestsServiceImpl implements TestsService {
     public void assignCoach(long id, long coachId) {
         User coach = usersService.getUserById(coachId);
 
-        if (getById(id).getUser().getId() == coachId) {
+        Test test = getById(id);
+        if (test.getUser().getId() == coachId) {
             throw new CoachAssignmentFailException();
         }
 
         testsRepository.assignCoach(coach, id);
+        notificationService.create(NotificationType.COACH_ASSIGNED, coach, test);
     }
 
     @Override
     public void deassignCoach(long id) {
+        Test test = getById(id);
+        User coach = test.getCoach();
+
         if (testsRepository.deassignCoach(id) == 0) {
             throw new TestNotFoundException();
         }
+        notificationService.create(NotificationType.COACH_DEASSIGNED, coach, test);
     }
-
 }
