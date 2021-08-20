@@ -1,10 +1,12 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.enums.Status;
+import com.team4.testingsystem.exceptions.AnswersAreBadException;
 import com.team4.testingsystem.exceptions.AssignmentFailException;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.IllegalGradeException;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.AccessControlException;
+import java.util.List;
 
 @Service
 public class RestrictionsServiceImpl implements RestrictionsService {
@@ -166,4 +169,21 @@ public class RestrictionsServiceImpl implements RestrictionsService {
         }
     }
 
+    @Override
+    public void checkModuleIsNotListening(Question question) {
+        if (question.getModule().getName().equals(Modules.LISTENING.getName())) {
+            throw new AccessControlException("You can't add one listening question to archive");
+        }
+    }
+
+    @Override
+    public void checkAnswersAreCorrect(List<Answer> answers) {
+        if (answers.size() != 4) {
+            throw new AnswersAreBadException("Question must have 4 answers");
+        }
+
+        if (answers.stream().filter(Answer::isCorrect).count() != 1) {
+            throw new AnswersAreBadException("Question must have 1 correct answer");
+        }
+    }
 }
