@@ -1,6 +1,7 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.dto.CoachGradeDTO;
+import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.services.CoachGradeService;
 import com.team4.testingsystem.services.TestsService;
 import io.swagger.annotations.ApiOperation;
@@ -35,7 +36,8 @@ public class CoachGradeController {
     @GetMapping("/{testId}")
     @Secured("ROLE_COACH")
     public List<CoachGradeDTO> getGrades(@PathVariable Long testId) {
-        return gradeService.getGradesByTest(testId).stream()
+        Test test = testsService.getById(testId);
+        return gradeService.getGradesByTest(test).stream()
                 .map(CoachGradeDTO::new)
                 .collect(Collectors.toList());
     }

@@ -39,7 +39,7 @@ public class TestVerificationConverter {
         String essayText = answerService.tryDownloadEssay(test.getId()).orElse(null);
         String speakingUrl = answerService.tryDownloadSpeaking(test.getId()).orElse(null);
 
-        List<CoachGradeDTO> grades = gradeService.getGradesByTest(test.getId()).stream()
+        List<CoachGradeDTO> grades = gradeService.getGradesByTest(test).stream()
                 .map(CoachGradeDTO::new)
                 .collect(Collectors.toList());
 

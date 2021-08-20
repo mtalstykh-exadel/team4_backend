@@ -84,7 +84,6 @@ public class TestsController {
     @ApiOperation(value = "Use it to get test grades for a test by modules")
     @GetMapping(path = "/grades/{testId}")
     public ModuleGradesDTO getGrades(@PathVariable("testId") long testId) {
-
         Test test = testsService.getById(testId);
         return gradesConverter.convertListOfGradesToDTO(test);
     }

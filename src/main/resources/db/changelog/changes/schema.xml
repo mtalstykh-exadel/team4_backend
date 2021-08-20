@@ -781,4 +781,11 @@
         </update>
     </changeSet>
 
+    <changeSet id="update_admin_avatars" author="Darina">
+        <update tableName="user">
+            <column name="avatar" value="https://mykaleidoscope.ru/uploads/posts/2016-03/1459156672_modnyye-muzhskiye-pricheski-2-016-13.jpg"/>
+            <where>user_login='rus_admin@northsixty.com'</where>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>
