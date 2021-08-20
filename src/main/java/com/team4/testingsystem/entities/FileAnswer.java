@@ -1,6 +1,9 @@
 package com.team4.testingsystem.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -13,6 +16,9 @@ import javax.persistence.Table;
 @Table(name = "file_answer")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class FileAnswer implements Serializable {
 
     @EmbeddedId
@@ -25,7 +31,7 @@ public class FileAnswer implements Serializable {
         return id;
     }
 
-    public static Builder builder() {
+    /*public static Builder builder() {
         return new Builder();
     }
 
@@ -49,5 +55,5 @@ public class FileAnswer implements Serializable {
         public FileAnswer build() {
             return fileAnswer;
         }
-    }
+    }*/
 }

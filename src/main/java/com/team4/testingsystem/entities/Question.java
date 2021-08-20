@@ -1,7 +1,10 @@
 package com.team4.testingsystem.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -25,6 +28,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @EqualsAndHashCode
+
 public class Question implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

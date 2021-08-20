@@ -1,6 +1,8 @@
 package com.team4.testingsystem.entities;
 
 import com.team4.testingsystem.dto.AnswerDTO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,8 +22,10 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "answer")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Answer implements Serializable {
 
     @Id
@@ -50,11 +54,11 @@ public class Answer implements Serializable {
         this.question = question;
     }
 
-    public static Builder builder() {
+    /*public static Builder builder() {
         return new Builder();
-    }
+    }*/
 
-    public static class Builder {
+    /*public static class Builder {
 
         private final Answer answer;
 
@@ -85,5 +89,5 @@ public class Answer implements Serializable {
         public Answer build() {
             return answer;
         }
-    }
+    }*/
 }

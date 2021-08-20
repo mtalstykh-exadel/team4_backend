@@ -3,8 +3,12 @@ package com.team4.testingsystem.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -31,6 +35,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @EqualsAndHashCode
+@NoArgsConstructor
 public class Test implements Serializable {
 
     @Id

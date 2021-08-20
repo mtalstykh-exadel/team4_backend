@@ -1,7 +1,10 @@
 package com.team4.testingsystem.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -21,6 +24,9 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @EqualsAndHashCode
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,11 +55,11 @@ public class User implements Serializable {
     @Column(name = "avatar")
     private String avatar;
 
-    public static Builder builder() {
+    /*public static Builder builder() {
         return new Builder();
-    }
+    }*/
 
-    public static class Builder {
+    /*public static class Builder {
         private final User user;
 
         public Builder() {
@@ -103,6 +109,6 @@ public class User implements Serializable {
         public User build() {
             return user;
         }
-    }
+    }*/
 
 }
