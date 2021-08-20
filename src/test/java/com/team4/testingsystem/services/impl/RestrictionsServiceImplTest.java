@@ -1,6 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Answer;
+import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
@@ -12,6 +13,7 @@ import com.team4.testingsystem.exceptions.AssignmentFailException;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.IllegalGradeException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
+import com.team4.testingsystem.exceptions.QuestionOrTopicEditingException;
 import com.team4.testingsystem.exceptions.TestAlreadyStartedException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
@@ -38,6 +40,9 @@ public class RestrictionsServiceImplTest {
 
     @Mock
     Test test;
+
+    @Mock
+    ContentFile contentFile;
 
     @Mock
     Stream<Answer> stream;
@@ -251,4 +256,20 @@ public class RestrictionsServiceImplTest {
                 () -> restrictionsService.checkAnswersAreCorrect(answers));
     }
 
+    @org.junit.jupiter.api.Test
+    void checkNotArchivedQuestion(){
+        Mockito.when(question.isAvailable()).thenReturn(false);
+
+        Assertions.assertThrows(QuestionOrTopicEditingException.class,
+                () -> restrictionsService.checkNotArchivedQuestion(question));
+    }
+
+
+    @org.junit.jupiter.api.Test
+    void checkNotArchivedContentFile(){
+        Mockito.when(contentFile.isAvailable()).thenReturn(false);
+
+        Assertions.assertThrows(QuestionOrTopicEditingException.class,
+                () -> restrictionsService.checkNotArchivedContentFile(contentFile));
+    }
 }

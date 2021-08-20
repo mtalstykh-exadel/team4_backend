@@ -112,12 +112,16 @@ class QuestionServiceImplTest {
 
     @Test
     void updateQuestion() {
-        Question question = EntityCreatorUtil.createQuestion();
-        Mockito.when(questionRepository.save(question)).thenReturn(question);
-        Question result = questionService.updateQuestion(question, ID);
+        Mockito.when(questionRepository.findById(ID)).thenReturn(Optional.of(question));
 
+
+        Question question1 = EntityCreatorUtil.createQuestion();
+        Mockito.when(questionRepository.save(question1)).thenReturn(question1);
+        Question result = questionService.updateQuestion(question1, ID);
+
+        verify(restrictionsService).checkNotArchivedQuestion(question);
         verify(questionRepository).updateAvailability(ID, UNAVAILABLE);
-        Assertions.assertEquals(question, result);
+        Assertions.assertEquals(question1, result);
     }
 
     @Test
