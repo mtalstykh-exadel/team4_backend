@@ -94,7 +94,10 @@ public class QuestionController {
                                                       @RequestParam("status") QuestionStatus status,
                                                       @RequestParam int pageNumb,
                                                       @RequestParam int pageSize) {
-        return convertToDTO(questionService.getListening(level, status, PageRequest.of(pageNumb, pageSize)));
+        return questionService
+                .getListening(level, status, PageRequest.of(pageNumb, pageSize)).stream()
+                .map(ListeningTopicDTO::new)
+                .collect(Collectors.toList());
     }
 
     @ApiOperation(value = "Add content file with questions")
@@ -141,9 +144,5 @@ public class QuestionController {
         Question resultQuestion = questionService
                 .updateQuestion(questionConverter.convertToEntity(questionDTO, id), id);
         return QuestionDTO.createWithCorrectAnswers(resultQuestion);
-    }
-
-    private List<ListeningTopicDTO> convertToDTO(List<ContentFile> contentFiles) {
-        return contentFiles.stream().map(ListeningTopicDTO::new).collect(Collectors.toList());
     }
 }

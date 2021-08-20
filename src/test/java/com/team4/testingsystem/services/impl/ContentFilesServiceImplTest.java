@@ -106,7 +106,8 @@ class ContentFilesServiceImplTest {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
             contentFilesService.add(file, contentFile);
 
-            verify(contentFilesRepository).save(any());
+            verify(contentFile).setUrl(URL);
+            verify(contentFilesRepository).save(contentFile);
         }
     }
 
@@ -118,6 +119,16 @@ class ContentFilesServiceImplTest {
         verify(contentFilesRepository).changeUrl(URL, ID);
         Assertions.assertDoesNotThrow(() -> contentFilesService.updateURL(ID, URL));
     }
+
+    @Test
+    void update() {
+        Mockito.when(contentFilesRepository.save(contentFile)).thenReturn(contentFile);
+        contentFilesService.update(null, ID, contentFile);
+
+        Mockito.verify(questionService).archiveQuestionsByContentFileId(ID);
+        Assertions.assertEquals(contentFile, contentFilesService.update(null, ID, contentFile));
+    }
+
 
     @Test
     void updateUrlFail() {

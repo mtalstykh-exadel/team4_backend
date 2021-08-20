@@ -62,11 +62,9 @@ public class ModuleGradesServiceImplTest {
     @Mock
     private ModuleService moduleService;
 
-
     @Test
     void getGradeByModuleSuccess(){
         Mockito.when(gradesMap.get(Modules.GRAMMAR.getName())).thenReturn(moduleGrade);
-
         Mockito.when(moduleGrade.getGrade()).thenReturn((GRAMMAR_SCORE));
 
         Assertions.assertEquals(GRAMMAR_SCORE, moduleGradesService.getGradeByModule(gradesMap, Modules.GRAMMAR));

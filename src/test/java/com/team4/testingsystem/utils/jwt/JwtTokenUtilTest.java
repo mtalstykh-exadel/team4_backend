@@ -1,6 +1,8 @@
 package com.team4.testingsystem.utils.jwt;
 
 import com.team4.testingsystem.security.CustomUserDetails;
+import com.team4.testingsystem.utils.EntityCreatorUtil;
+import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Date;
 
 @ExtendWith(MockitoExtension.class)
 class JwtTokenUtilTest {
@@ -65,5 +69,24 @@ class JwtTokenUtilTest {
 
         String token = jwtTokenUtil.generateToken(userDetails);
         Assertions.assertFalse(jwtTokenUtil.validateToken(token, incorrectUserDetails));
+    }
+
+    @Test
+    void isTokenExpired() {
+        String token = jwtTokenUtil.generateToken(userDetails);
+
+        Assertions.assertFalse(jwtTokenUtil.isTokenExpired(token));
+    }
+
+
+    @Test
+    void validateToken() {
+        userDetails = new CustomUserDetails(EntityCreatorUtil.createUser());
+        JwtTokenUtil jwtTokenUtil = Mockito.spy(new JwtTokenUtil());
+        String token = jwtTokenUtil.generateToken(userDetails);
+        Mockito.doThrow(JwtException.class)
+                .when(jwtTokenUtil).extractUsername(token);
+
+        Assertions.assertFalse(jwtTokenUtil.validateToken(token, userDetails));
     }
 }
