@@ -4,6 +4,6 @@ import com.team4.testingsystem.entities.CoachAnswer;
 
 import java.util.List;
 
-public interface CoachAnswerService {
-    List<CoachAnswer> getAnswersByTest(Long testId);
+public interface ModuleCoachAnswersService {
+    void add(String moduleName, List<CoachAnswer> coachAnswers);
 }

@@ -20,7 +20,7 @@ public class CoachAnswerDTO implements Serializable {
         this.comment = comment;
     }
 
-    public CoachAnswerDTO(CoachAnswer coachAnswer){
+    public CoachAnswerDTO(CoachAnswer coachAnswer) {
         this.questionId = coachAnswer.getId().getQuestion().getId();
         this.testId = coachAnswer.getId().getTest().getId();
         this.comment = coachAnswer.getComment();

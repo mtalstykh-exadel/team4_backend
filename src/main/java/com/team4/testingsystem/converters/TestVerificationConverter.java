@@ -1,6 +1,10 @@
 package com.team4.testingsystem.converters;
 
-import com.team4.testingsystem.dto.*;
+import com.team4.testingsystem.dto.CoachAnswerDTO;
+import com.team4.testingsystem.dto.CoachGradeDTO;
+import com.team4.testingsystem.dto.QuestionDTO;
+import com.team4.testingsystem.dto.ReportedQuestionDTO;
+import com.team4.testingsystem.dto.TestVerificationDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;

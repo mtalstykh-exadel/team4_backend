@@ -14,7 +14,13 @@ import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.TimerRepository;
-import com.team4.testingsystem.services.*;
+import com.team4.testingsystem.services.LevelService;
+import com.team4.testingsystem.services.NotificationService;
+import com.team4.testingsystem.services.RestrictionsService;
+import com.team4.testingsystem.services.TestEvaluationService;
+import com.team4.testingsystem.services.TestGeneratingService;
+import com.team4.testingsystem.services.TestsService;
+import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +42,6 @@ public class TestsServiceImpl implements TestsService {
     private final TestGeneratingService testGeneratingService;
     private final TestEvaluationService testEvaluationService;
     private final NotificationService notificationService;
-    private final CoachAnswerService coachAnswerService;
 
     private final LevelService levelService;
     private final UsersService usersService;
@@ -52,7 +57,6 @@ public class TestsServiceImpl implements TestsService {
                             TestGeneratingService testGeneratingService,
                             TestEvaluationService testEvaluationService,
                             NotificationService notificationService,
-                            CoachAnswerService coachAnswerService,
                             LevelService levelService,
                             UsersService usersService,
                             RestrictionsService restrictionsService,
@@ -61,7 +65,6 @@ public class TestsServiceImpl implements TestsService {
         this.testGeneratingService = testGeneratingService;
         this.testEvaluationService = testEvaluationService;
         this.notificationService = notificationService;
-        this.coachAnswerService = coachAnswerService;
         this.levelService = levelService;
         this.usersService = usersService;
         this.restrictionsService = restrictionsService;
