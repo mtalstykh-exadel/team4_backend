@@ -42,7 +42,6 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
             + "t.assignedAt desc nulls last ")
     List<Test> getAllByUserAndLevel(Long userId, String level, Pageable pageable);
 
-
     @Query(value = "select t from Test t where t.status in ?1 and t.isAvailable = true "
             + "order by case "
             + "when t.priority = 'High' then 'A' "

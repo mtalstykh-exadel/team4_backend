@@ -135,6 +135,7 @@ public class TestsServiceImpl implements TestsService {
         restrictionsService.checkCoachIsCurrentUser(test);
 
         testsRepository.updateStatusByTestId(testId, Status.IN_VERIFICATION);
+        test.setStatus(Status.IN_VERIFICATION);
 
         return test;
     }

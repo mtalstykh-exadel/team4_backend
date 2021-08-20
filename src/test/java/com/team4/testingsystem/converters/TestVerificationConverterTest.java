@@ -78,7 +78,7 @@ class TestVerificationConverterTest {
         Mockito.when(errorReportsService.getReportsByTest(TEST_ID)).thenReturn(List.of());
         Mockito.when(answerService.tryDownloadEssay(TEST_ID)).thenReturn(Optional.of(ESSAY_TEXT));
         Mockito.when(answerService.tryDownloadSpeaking(TEST_ID)).thenReturn(Optional.of(SPEAKING_URL));
-        Mockito.when(gradeService.getGradesByTest(test.getId()).stream()
+        Mockito.when(gradeService.getGradesByTest(test).stream()
                 .map(CoachGradeDTO::new)
                 .collect(Collectors.toList())).thenReturn(coachGradeDTOS);
 
