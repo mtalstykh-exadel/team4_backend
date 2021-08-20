@@ -41,6 +41,7 @@ public interface TestsService {
     Test startAssigned(long testId);
 
     void deassign(long id);
+
     void selfFinish(long id);
 
     void coachSubmit(long id);

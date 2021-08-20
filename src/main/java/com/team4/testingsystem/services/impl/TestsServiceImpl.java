@@ -76,7 +76,7 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public Test getByIdWithRestrictions(long id){
+    public Test getByIdWithRestrictions(long id) {
         Test test = getById(id);
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
         restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
@@ -233,7 +233,7 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public Test startNotAssigned(long testId) {
         Test test = getById(testId);
-        
+
         return start(test);
     }
 
@@ -269,7 +269,7 @@ public class TestsServiceImpl implements TestsService {
 
         java.util.Timer timer = new java.util.Timer(String.valueOf(testId));
         long delay = test.getFinishTime().plus(2L, ChronoUnit.MINUTES).toEpochMilli()
-            - Instant.now().toEpochMilli();
+                - Instant.now().toEpochMilli();
 
         if (delay <= 0) {
             finish(testId, test.getFinishTime());
@@ -297,7 +297,7 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public void selfFinish(long id){
+    public void selfFinish(long id) {
 
         Test test = getById(id);
 
