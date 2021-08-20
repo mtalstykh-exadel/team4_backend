@@ -1,6 +1,5 @@
 package com.team4.testingsystem.converters;
 
-import com.team4.testingsystem.dto.CoachAnswerDTO;
 import com.team4.testingsystem.dto.CoachGradeDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.dto.ReportedQuestionDTO;
@@ -9,7 +8,6 @@ import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.services.AnswerService;
-import com.team4.testingsystem.services.CoachAnswerService;
 import com.team4.testingsystem.services.CoachGradeService;
 import com.team4.testingsystem.services.ErrorReportsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +21,14 @@ public class TestVerificationConverter {
     private final AnswerService answerService;
     private final ErrorReportsService errorReportsService;
     private final CoachGradeService gradeService;
-    private final CoachAnswerService coachAnswerService;
 
     @Autowired
     public TestVerificationConverter(AnswerService answerService,
                                      ErrorReportsService errorReportsService,
-                                     CoachGradeService gradeService,
-                                     CoachAnswerService coachAnswerService) {
+                                     CoachGradeService gradeService) {
         this.answerService = answerService;
         this.errorReportsService = errorReportsService;
         this.gradeService = gradeService;
-        this.coachAnswerService = coachAnswerService;
     }
 
     public TestVerificationDTO convertToVerificationDTO(Test test) {
@@ -48,11 +43,6 @@ public class TestVerificationConverter {
                 .map(CoachGradeDTO::new)
                 .collect(Collectors.toList());
 
-        List<CoachAnswerDTO> coachAnswers = coachAnswerService.getAnswersByTest(test.getId())
-                .stream()
-                .map(CoachAnswerDTO::new)
-                .collect(Collectors.toList());
-
         return TestVerificationDTO.builder()
                 .testId(test.getId())
                 .testLevel(test.getLevel().getName())
@@ -62,7 +52,6 @@ public class TestVerificationConverter {
                 .speakingQuestion(extractQuestionDTO(test, Modules.SPEAKING))
                 .speakingUrl(speakingUrl)
                 .grades(grades)
-                .coachAnswers(coachAnswers)
                 .build();
     }
 
