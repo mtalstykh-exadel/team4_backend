@@ -101,11 +101,15 @@ public class TestEvaluationServiceImpl implements TestEvaluationService {
                 coachGrade -> coachGrade.getId().getQuestion().getModule().getName(),
                 coachGrade -> coachGrade));
 
+        saveScoreCoachCheck(test, Modules.ESSAY, gradeMap);
+        saveScoreCoachCheck(test, Modules.SPEAKING, gradeMap);
+    }
+
+    @Override
+    public void updateCoachAnswersAfterCheck(Test test) {
         List<CoachAnswer> allCoachAnswers = coachAnswerRepository.findAllById_Test(test);
 
         saveAnswersCoachCheck(Modules.GRAMMAR, allCoachAnswers);
         saveAnswersCoachCheck(Modules.LISTENING, allCoachAnswers);
-        saveScoreCoachCheck(test, Modules.ESSAY, gradeMap);
-        saveScoreCoachCheck(test, Modules.SPEAKING, gradeMap);
     }
 }

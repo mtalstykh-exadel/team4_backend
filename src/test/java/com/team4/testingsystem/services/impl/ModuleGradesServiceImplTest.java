@@ -1,7 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.dto.ModuleGradesDTO;
-import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.ModuleGrade;
 import com.team4.testingsystem.enums.Modules;
@@ -14,13 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
