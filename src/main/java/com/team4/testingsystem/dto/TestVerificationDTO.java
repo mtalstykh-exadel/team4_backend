@@ -141,6 +141,11 @@ public class TestVerificationDTO implements Serializable {
             return this;
         }
 
+        public Builder coachAnswers(List<CoachAnswerDTO> coachAnswersDTO) {
+            dto.coachAnswers = coachAnswersDTO;
+            return this;
+        }
+
         public TestVerificationDTO build() {
             return dto;
         }

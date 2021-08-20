@@ -1,5 +1,7 @@
 package com.team4.testingsystem.dto;
 
+import com.team4.testingsystem.entities.CoachAnswer;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -8,10 +10,20 @@ public class CoachAnswerDTO implements Serializable {
     private Long testId;
     private String comment;
 
+    public CoachAnswerDTO(){
+
+    }
+
     public CoachAnswerDTO(Long questionId, Long testId, String comment) {
         this.questionId = questionId;
         this.testId = testId;
         this.comment = comment;
+    }
+
+    public CoachAnswerDTO(CoachAnswer coachAnswer){
+        this.questionId = coachAnswer.getId().getQuestion().getId();
+        this.testId = coachAnswer.getId().getTest().getId();
+        this.comment = coachAnswer.getComment();
     }
 
     public Long getQuestionId() {
