@@ -7,6 +7,7 @@ import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
+import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,14 +19,17 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     private final QuestionService questionService;
     private final ContentFilesRepository contentFilesRepository;
     private final ResourceStorageService storageService;
+    private final RestrictionsService restrictionsService;
 
     @Autowired
     public ContentFilesServiceImpl(QuestionService questionService,
                                    ContentFilesRepository contentFilesRepository,
-                                   ResourceStorageService storageService) {
+                                   ResourceStorageService storageService,
+                                   RestrictionsService restrictionsService) {
         this.questionService = questionService;
         this.contentFilesRepository = contentFilesRepository;
         this.storageService = storageService;
+        this.restrictionsService = restrictionsService;
     }
 
     @Override
@@ -48,14 +52,18 @@ public class ContentFilesServiceImpl implements ContentFilesService {
 
     @Transactional
     @Override
-    public ContentFile update(MultipartFile file, Long id, ContentFile contentFile) {
+    public ContentFile update(MultipartFile file, Long id, ContentFile editedContentFile) {
+        ContentFile contentFile = getById(id);
+
+        restrictionsService.checkNotArchivedContentFile(contentFile);
+
         if (file == null) {
             contentFilesRepository.updateAvailable(id, false);
             questionService.archiveQuestionsByContentFileId(id);
-            return contentFilesRepository.save(contentFile);
+            return contentFilesRepository.save(editedContentFile);
         }
         contentFilesRepository.updateAvailable(id, false);
-        return add(file, contentFile);
+        return add(file, editedContentFile);
     }
 
     @Override
