@@ -45,9 +45,6 @@ class QuestionControllerTest {
     private ContentFileConverter contentFileConverter;
 
     @Mock
-    private MultipartFile multipartFile;
-
-    @Mock
     private ContentFile contentFile;
 
     @Mock
@@ -189,9 +186,9 @@ class QuestionControllerTest {
         request.setQuestions(List.of());
         Mockito.when(contentFileConverter.convertToEntity(request))
                 .thenReturn(contentFile);
-        Mockito.when(contentFilesService.add(multipartFile, contentFile))
+        Mockito.when(contentFilesService.add(contentFile))
                 .thenReturn(contentFile);
-        ContentFileDTO result = questionController.addListening(multipartFile, request);
+        ContentFileDTO result = questionController.addListening(request);
         result.setTopic(TOPIC);
 
         Assertions.assertEquals(request, result);
@@ -205,9 +202,9 @@ class QuestionControllerTest {
         request.setQuestions(List.of());
         Mockito.when(contentFileConverter.convertToEntity(request))
                 .thenReturn(contentFile);
-        Mockito.when(contentFilesService.update(multipartFile, ID, contentFile))
+        Mockito.when(contentFilesService.update(ID, contentFile))
                 .thenReturn(contentFile);
-        ContentFileDTO result = questionController.updateListening(multipartFile, ID, request);
+        ContentFileDTO result = questionController.updateListening(ID, request);
         result.setTopic(TOPIC);
 
         Assertions.assertEquals(request, result);

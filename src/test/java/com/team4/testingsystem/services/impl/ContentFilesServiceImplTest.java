@@ -1,41 +1,27 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
-import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
-import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.QuestionService;
-import com.team4.testingsystem.services.ResourceStorageService;
-import com.team4.testingsystem.utils.EntityCreatorUtil;
-import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
-import liquibase.pro.packaged.I;
-import liquibase.pro.packaged.U;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ContentFilesServiceImplTest {
-
-    @Mock
-    private MultipartFile file;
 
     @Mock
     private ContentFile contentFile;
@@ -44,19 +30,13 @@ class ContentFilesServiceImplTest {
     private ContentFilesRepository contentFilesRepository;
 
     @Mock
-    private ResourceStorageService storageService;
-
-    @Mock
     private QuestionService questionService;
-
-    @Mock
-    private CustomUserDetails userDetails;
 
     @InjectMocks
     private ContentFilesServiceImpl contentFilesService;
 
     private static final String URL = "https://best_listening_audios.com/";
-    private static final Long USER_ID = 1L;
+    private static final String OLD_URL = "https://best_listening_audios.com/old";
     private static final boolean UNAVAILABLE = false;
     private static final Long ID = 1L;
     private static final Long BAD_ID = 42L;
@@ -64,16 +44,17 @@ class ContentFilesServiceImplTest {
 
     @Test
     void updateWithFile() {
-        Mockito.when(userDetails.getId()).thenReturn(USER_ID);
-        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
-            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
-            Mockito.when(contentFilesRepository.save(any())).thenReturn(contentFile);
-            Mockito.when(contentFilesRepository.updateAvailable(ID, UNAVAILABLE)).thenReturn(1);
-            ContentFile result = contentFilesService.update(file, ID, contentFile);
+        ContentFile oldContentFile = Mockito.mock(ContentFile.class);
+        Mockito.when(contentFilesRepository.findById(ID)).thenReturn(Optional.of(oldContentFile));
 
-            verify(contentFilesRepository).updateAvailable(ID, false);
-            Assertions.assertEquals(contentFile, result);
-        }
+        Mockito.when(oldContentFile.getUrl()).thenReturn(OLD_URL);
+        Mockito.when(contentFile.getUrl()).thenReturn(URL);
+
+        Mockito.when(contentFilesRepository.save(contentFile)).thenReturn(contentFile);
+        ContentFile result = contentFilesService.update(ID, contentFile);
+
+        verify(contentFilesRepository).updateAvailable(ID, false);
+        Assertions.assertEquals(contentFile, result);
     }
 
     @Test
@@ -100,15 +81,8 @@ class ContentFilesServiceImplTest {
 
     @Test
     void addSuccess() {
-        Mockito.when(userDetails.getId()).thenReturn(USER_ID);
-        Mockito.when(storageService.upload(file.getResource(), Modules.LISTENING, USER_ID)).thenReturn(URL);
-        try (final MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
-            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
-            contentFilesService.add(file, contentFile);
-
-            verify(contentFile).setUrl(URL);
-            verify(contentFilesRepository).save(contentFile);
-        }
+        contentFilesService.add(contentFile);
+        verify(contentFilesRepository).save(contentFile);
     }
 
     @Test
@@ -122,13 +96,15 @@ class ContentFilesServiceImplTest {
 
     @Test
     void update() {
+        Mockito.when(contentFilesRepository.findById(ID)).thenReturn(Optional.of(contentFile));
+        Mockito.when(contentFile.getUrl()).thenReturn(URL);
+
         Mockito.when(contentFilesRepository.save(contentFile)).thenReturn(contentFile);
-        contentFilesService.update(null, ID, contentFile);
+        contentFilesService.update(ID, contentFile);
 
         Mockito.verify(questionService).archiveQuestionsByContentFileId(ID);
-        Assertions.assertEquals(contentFile, contentFilesService.update(null, ID, contentFile));
+        Assertions.assertEquals(contentFile, contentFilesService.update(ID, contentFile));
     }
-
 
     @Test
     void updateUrlFail() {
@@ -152,7 +128,7 @@ class ContentFilesServiceImplTest {
         Mockito.when(contentFilesRepository.updateAvailable(BAD_ID, UNAVAILABLE)).thenReturn(0);
 
         Assertions.assertThrows(ContentFileNotFoundException.class,
-            () -> contentFilesService.updateAvailability(BAD_ID, UNAVAILABLE));
+                () -> contentFilesService.updateAvailability(BAD_ID, UNAVAILABLE));
     }
 
     @Test

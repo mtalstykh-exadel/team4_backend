@@ -1,31 +1,24 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
-import com.team4.testingsystem.services.ResourceStorageService;
-import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ContentFilesServiceImpl implements ContentFilesService {
     private final QuestionService questionService;
     private final ContentFilesRepository contentFilesRepository;
-    private final ResourceStorageService storageService;
 
     @Autowired
     public ContentFilesServiceImpl(QuestionService questionService,
-                                   ContentFilesRepository contentFilesRepository,
-                                   ResourceStorageService storageService) {
+                                   ContentFilesRepository contentFilesRepository) {
         this.questionService = questionService;
         this.contentFilesRepository = contentFilesRepository;
-        this.storageService = storageService;
     }
 
     @Override
@@ -39,23 +32,22 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     }
 
     @Override
-    public ContentFile add(MultipartFile file, ContentFile contentFile) {
-        Long creatorId = JwtTokenUtil.extractUserDetails().getId();
-        String url = storageService.upload(file.getResource(), Modules.LISTENING, creatorId);
-        contentFile.setUrl(url);
+    public ContentFile add(ContentFile contentFile) {
         return contentFilesRepository.save(contentFile);
     }
 
     @Transactional
     @Override
-    public ContentFile update(MultipartFile file, Long id, ContentFile contentFile) {
-        if (file == null) {
-            contentFilesRepository.updateAvailable(id, false);
+    public ContentFile update(Long id, ContentFile contentFile) {
+        ContentFile oldContentFile = getById(id);
+
+        if (contentFile.getUrl().equals(oldContentFile.getUrl())) {
             questionService.archiveQuestionsByContentFileId(id);
             return contentFilesRepository.save(contentFile);
         }
+
         contentFilesRepository.updateAvailable(id, false);
-        return add(file, contentFile);
+        return add(contentFile);
     }
 
     @Override
