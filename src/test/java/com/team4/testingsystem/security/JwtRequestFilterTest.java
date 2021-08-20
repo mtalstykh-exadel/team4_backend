@@ -18,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -50,9 +51,7 @@ class JwtRequestFilterTest {
     private JwtRequestFilter jwtRequestFilter;
 
     private CustomUserDetails userDetails;
-
     private static final String JWT_TOKEN = "token";
-
     private String username;
 
     @BeforeEach
@@ -66,7 +65,6 @@ class JwtRequestFilterTest {
         Mockito.when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(null);
 
         jwtRequestFilter.doFilterInternal(request, response, filterChain);
-
         Mockito.verify(filterChain).doFilter(request, response);
     }
 
@@ -75,7 +73,6 @@ class JwtRequestFilterTest {
         Mockito.when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Incorrect header");
 
         jwtRequestFilter.doFilterInternal(request, response, filterChain);
-
         Mockito.verify(filterChain).doFilter(request, response);
     }
 
@@ -87,13 +84,11 @@ class JwtRequestFilterTest {
         try (MockedStatic<SecurityContextHolder> mockContextHolder = Mockito.mockStatic(SecurityContextHolder.class)) {
             mockContextHolder.when(SecurityContextHolder::getContext).thenReturn(securityContext);
             Mockito.when(securityContext.getAuthentication())
-                    .thenReturn(new UsernamePasswordAuthenticationToken("",""));
+                    .thenReturn(new UsernamePasswordAuthenticationToken("", ""));
 
             jwtRequestFilter.doFilterInternal(request, response, filterChain);
-
             Mockito.verify(filterChain).doFilter(request, response);
         }
-
         Mockito.verify(securityContext, Mockito.never()).setAuthentication(Mockito.any());
     }
 

@@ -77,7 +77,8 @@ public class RestrictionsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void checkGradeIsCorrect() {
-
+        Assertions.assertDoesNotThrow(() -> restrictionsService.checkGradeIsCorrect(0));
+        Assertions.assertDoesNotThrow(() -> restrictionsService.checkGradeIsCorrect(10));
         Assertions.assertThrows(IllegalGradeException.class,
                 () -> restrictionsService.checkGradeIsCorrect(-42));
     }

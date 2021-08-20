@@ -113,6 +113,7 @@ public class QuestionServiceImpl implements QuestionService {
     public void archiveQuestionsByContentFileId(Long id) {
         ContentFile contentFile = contentFilesRepository.findById(id)
                 .orElseThrow(FileNotFoundException::new);
-        contentFile.getQuestions().forEach(question -> updateAvailability(question.getId(), false));
+        contentFile.getQuestions().forEach(question ->
+                questionRepository.updateAvailability(question.getId(), false));
     }
 }

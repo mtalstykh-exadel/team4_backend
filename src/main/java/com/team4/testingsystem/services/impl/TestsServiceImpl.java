@@ -222,6 +222,7 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public Test startNotAssigned(long testId) {
         Test test = getById(testId);
+        
         return start(test);
     }
 

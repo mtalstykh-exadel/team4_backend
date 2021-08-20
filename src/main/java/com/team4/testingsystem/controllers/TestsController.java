@@ -77,7 +77,6 @@ public class TestsController {
     @GetMapping(path = "/{id}")
     public TestDTO getById(@PathVariable("id") long id) {
         Test test = testsService.getById(id);
-
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
         restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
 
