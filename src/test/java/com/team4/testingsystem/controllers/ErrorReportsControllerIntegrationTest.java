@@ -101,17 +101,26 @@ class ErrorReportsControllerIntegrationTest {
         errorReportsRepository.deleteAll();
         contentFilesRepository.deleteAll();
         answerRepository.deleteAll();
-        questionRepository.deleteAll();
         testsRepository.deleteAll();
+        questionRepository.deleteAll();
     }
 
     @Test
     void addSuccess() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
-        testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);
+
+        testsRepository.save(test);
+
+        question.setTests(List.of(test));
+
+        questionRepository.save(question);
+
+        test.setQuestions(List.of(question));
+
+        testsRepository.save(test);
 
         TestQuestionID testQuestionID = new TestQuestionID(test, question);
 
@@ -146,10 +155,19 @@ class ErrorReportsControllerIntegrationTest {
     @Test
     void updateReportBodySuccess() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
-        testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);
+
+        testsRepository.save(test);
+
+        question.setTests(List.of(test));
+
+        questionRepository.save(question);
+
+        test.setQuestions(List.of(question));
+
+        testsRepository.save(test);
 
         TestQuestionID testQuestionID = new TestQuestionID(test, question);
 
@@ -173,10 +191,19 @@ class ErrorReportsControllerIntegrationTest {
     @Test
     void removeSuccess() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
-        testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);
+
+        testsRepository.save(test);
+
+        question.setTests(List.of(test));
+
+        questionRepository.save(question);
+
+        test.setQuestions(List.of(question));
+
+        testsRepository.save(test);
 
         TestQuestionID testQuestionID = new TestQuestionID(test, question);
 
