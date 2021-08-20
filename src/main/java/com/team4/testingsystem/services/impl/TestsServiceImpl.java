@@ -204,6 +204,8 @@ public class TestsServiceImpl implements TestsService {
 
     private Test start(Test test) {
 
+        test.setStatus(Status.STARTED);
+
         test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
         testsRepository.start(Instant.now(), test.getId());
 
