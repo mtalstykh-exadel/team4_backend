@@ -1,18 +1,17 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.exceptions.FileNotFoundException;
+import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
+import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Service
 public class ContentFilesServiceImpl implements ContentFilesService {
@@ -36,42 +35,41 @@ public class ContentFilesServiceImpl implements ContentFilesService {
 
     @Override
     public ContentFile getById(long id) {
-        return contentFilesRepository.findById(id).orElseThrow(FileNotFoundException::new);
+        return contentFilesRepository.findById(id).orElseThrow(ContentFileNotFoundException::new);
     }
 
     @Override
-    public ContentFile add(MultipartFile file, List<Question> questions) {
-        String url = storageService.upload(file.getResource());
-        return contentFilesRepository.save(new ContentFile(url, questions));
+    public ContentFile add(MultipartFile file, ContentFile contentFile) {
+        Long creatorId = JwtTokenUtil.extractUserDetails().getId();
+        String url = storageService.upload(file.getResource(), Modules.LISTENING, creatorId);
+        contentFile.setUrl(url);
+        return contentFilesRepository.save(contentFile);
     }
 
     @Transactional
     @Override
-    public ContentFile update(MultipartFile file, Long id, List<Question> questions) {
+    public ContentFile update(MultipartFile file, Long id, ContentFile contentFile) {
         if (file == null) {
             questionService.archiveQuestionsByContentFileId(id);
-            ContentFile contentFile = contentFilesRepository
-                    .findById(id).orElseThrow(FileNotFoundException::new);
-            contentFile.getQuestions().addAll(questions);
             return contentFilesRepository.save(contentFile);
         }
-        contentFilesRepository.archiveContentFile(id);
-        questionService.archiveQuestionsByContentFileId(id);
-        return add(file, questions);
+        updateAvailability(id, false);
+        return add(file, contentFile);
     }
 
     @Override
     public void updateURL(Long id, String newUrl) {
         if (contentFilesRepository.changeUrl(newUrl, id) == 0) {
-            throw new FileNotFoundException();
+            throw new ContentFileNotFoundException();
         }
     }
 
     @Override
-    public void removeById(Long id) {
-        if (contentFilesRepository.removeById(id) == 0) {
-            throw new FileNotFoundException();
+    public void updateAvailability(Long id, boolean available) {
+        if (contentFilesRepository.updateAvailable(id, available) == 0) {
+            throw new ContentFileNotFoundException();
         }
+        questionService.archiveQuestionsByContentFileId(id);
     }
 
     @Override

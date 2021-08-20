@@ -1,6 +1,5 @@
 package com.team4.testingsystem.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.testingsystem.entities.Question;
 
 import java.io.Serializable;
@@ -8,7 +7,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuestionDTO implements Serializable {
     private Long id;
     private String questionBody;
@@ -108,7 +106,8 @@ public class QuestionDTO implements Serializable {
             return false;
         }
         QuestionDTO that = (QuestionDTO) o;
-        return Objects.equals(questionBody, that.questionBody)
+        return Objects.equals(id, that.id)
+                && Objects.equals(questionBody, that.questionBody)
                 && Objects.equals(creator, that.creator)
                 && Objects.equals(level, that.level)
                 && Objects.equals(module, that.module)
@@ -117,6 +116,6 @@ public class QuestionDTO implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(questionBody, creator, level, module, answers);
+        return Objects.hash(id, questionBody, creator, level, module, answers);
     }
 }

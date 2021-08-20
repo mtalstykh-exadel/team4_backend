@@ -94,31 +94,6 @@ public class FileControllerIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
-    void uploadSuccess() throws Exception {
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", FILE_PATH,
-                MediaType.MULTIPART_FORM_DATA_VALUE, FILE_CONTENT.getBytes());
-
-        MockHttpServletRequestBuilder builder = multipart(PATH).file(mockMultipartFile)
-                .with(user(userDetails));
-
-        mockMvc.perform(builder).andExpect(status().isOk());
-    }
-
-    @Test
-    void uploadNotFound() throws Exception {
-        saveFile();
-
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", FILE_PATH,
-                MediaType.MULTIPART_FORM_DATA_VALUE, FILE_CONTENT.getBytes());
-
-        MockHttpServletRequestBuilder builder = multipart(WRONG_PATH).file(mockMultipartFile)
-                .with(user(userDetails));
-
-        mockMvc.perform(builder).andExpect(status().isNotFound());
-    }
-
-
     @AfterEach
     void destroy() {
         fileStorage.delete(FILE_PATH);

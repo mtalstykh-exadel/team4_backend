@@ -1,27 +1,33 @@
 package com.team4.testingsystem.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.testingsystem.entities.Test;
 
-import java.time.LocalDateTime;
+import java.io.Serializable;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class TestDTO {
+public class TestDTO implements Serializable {
     private Long id;
     private String level;
-    private LocalDateTime assignedAt;
-    private LocalDateTime completedAt;
-    private LocalDateTime verifiedAt;
-    private LocalDateTime startedAt;
-    private LocalDateTime deadline;
+    private Instant assignedAt;
+    private Instant completedAt;
+    private Instant verifiedAt;
+    private Instant startedAt;
+    private Instant deadline;
+    private Instant finishTime;
+
     private String priority;
     private String status;
     private UserDTO coach;
     private Map<String, List<QuestionDTO>> questions;
-    private ContentFileDTO contentFile;
+    private ListeningTopicDTO contentFile;
+
+    private String essayText;
+    private String speakingUrl;
+
+    private List<ErrorReportDTO> errorReports;
 
     public TestDTO() {
     }
@@ -33,6 +39,7 @@ public class TestDTO {
         completedAt = test.getCompletedAt();
         verifiedAt = test.getVerifiedAt();
         startedAt = test.getStartedAt();
+        finishTime = test.getFinishTime();
         deadline = test.getDeadline();
         priority = test.getPriority().getName();
         status = test.getStatus().name();
@@ -49,22 +56,6 @@ public class TestDTO {
         this.id = id;
     }
 
-    public LocalDateTime getVerifiedAt() {
-        return verifiedAt;
-    }
-
-    public void setVerifiedAt(LocalDateTime verifiedAt) {
-        this.verifiedAt = verifiedAt;
-    }
-
-    public LocalDateTime getStartedAt() {
-        return startedAt;
-    }
-
-    public void setStartedAt(LocalDateTime startedAt) {
-        this.startedAt = startedAt;
-    }
-
     public Map<String, List<QuestionDTO>> getQuestions() {
         return questions;
     }
@@ -73,11 +64,59 @@ public class TestDTO {
         this.questions = questions;
     }
 
-    public ContentFileDTO getContentFile() {
+    public Instant getAssignedAt() {
+        return assignedAt;
+    }
+
+    public void setAssignedAt(Instant assignedAt) {
+        this.assignedAt = assignedAt;
+    }
+
+    public Instant getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(Instant finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    public Instant getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(Instant completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public Instant getVerifiedAt() {
+        return verifiedAt;
+    }
+
+    public void setVerifiedAt(Instant verifiedAt) {
+        this.verifiedAt = verifiedAt;
+    }
+
+    public Instant getStartedAt() {
+        return startedAt;
+    }
+
+    public void setStartedAt(Instant startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public Instant getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(Instant deadline) {
+        this.deadline = deadline;
+    }
+
+    public ListeningTopicDTO getContentFile() {
         return contentFile;
     }
 
-    public void setContentFile(ContentFileDTO contentFile) {
+    public void setContentFile(ListeningTopicDTO contentFile) {
         this.contentFile = contentFile;
     }
 
@@ -87,30 +126,6 @@ public class TestDTO {
 
     public void setLevel(String level) {
         this.level = level;
-    }
-
-    public LocalDateTime getAssignedAt() {
-        return assignedAt;
-    }
-
-    public void setAssignedAt(LocalDateTime assignedAt) {
-        this.assignedAt = assignedAt;
-    }
-
-    public LocalDateTime getCompletedAt() {
-        return completedAt;
-    }
-
-    public void setCompletedAt(LocalDateTime completedAt) {
-        this.completedAt = completedAt;
-    }
-
-    public LocalDateTime getDeadline() {
-        return deadline;
-    }
-
-    public void setDeadline(LocalDateTime deadline) {
-        this.deadline = deadline;
     }
 
     public String getPriority() {
@@ -137,6 +152,30 @@ public class TestDTO {
         this.coach = coach;
     }
 
+    public String getEssayText() {
+        return essayText;
+    }
+
+    public void setEssayText(String essayText) {
+        this.essayText = essayText;
+    }
+
+    public String getSpeakingUrl() {
+        return speakingUrl;
+    }
+
+    public void setSpeakingUrl(String speakingUrl) {
+        this.speakingUrl = speakingUrl;
+    }
+
+    public List<ErrorReportDTO> getErrorReports() {
+        return errorReports;
+    }
+
+    public void setErrorReports(List<ErrorReportDTO> errorReports) {
+        this.errorReports = errorReports;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -151,14 +190,19 @@ public class TestDTO {
                 && Objects.equals(completedAt, testDTO.completedAt)
                 && Objects.equals(verifiedAt, testDTO.verifiedAt)
                 && Objects.equals(startedAt, testDTO.startedAt)
+                && Objects.equals(finishTime, testDTO.finishTime)
                 && Objects.equals(deadline, testDTO.deadline)
                 && Objects.equals(priority, testDTO.priority)
                 && Objects.equals(status, testDTO.status)
-                && Objects.equals(coach, testDTO.coach);
+                && Objects.equals(coach, testDTO.coach)
+                && Objects.equals(essayText, testDTO.essayText)
+                && Objects.equals(speakingUrl, testDTO.speakingUrl)
+                && Objects.equals(errorReports, testDTO.errorReports);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(level, assignedAt, completedAt, verifiedAt, startedAt, deadline, priority, status, coach);
+        return Objects.hash(level, assignedAt, completedAt, verifiedAt, startedAt, deadline, finishTime,
+                priority, status, coach, essayText, speakingUrl, errorReports);
     }
 }

@@ -6,6 +6,7 @@ import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.enums.QuestionStatus;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
@@ -54,14 +55,14 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Transactional
     @Override
-    public void archiveQuestion(Long id) {
-        questionRepository.archiveQuestion(id);
+    public void updateAvailability(Long id, boolean available) {
+        questionRepository.updateAvailability(id, available);
     }
 
     @Transactional
     @Override
     public Question updateQuestion(Question question, Long id) {
-        questionRepository.archiveQuestion(id);
+        questionRepository.updateAvailability(id, false);
         return questionRepository.save(question);
     }
 
@@ -81,8 +82,15 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<Question> getQuestionsByLevelAndModuleName(Levels level, Modules module) {
-        return questionRepository.getQuestionsByLevelAndModuleName(level.name(), module.getName());
+    public List<Question> getQuestionsByLevelAndModuleName(Levels level,
+                                                           Modules module,
+                                                           QuestionStatus status,
+                                                           Pageable pageable) {
+        boolean isAvailable = status.getName().equals(QuestionStatus.UNARCHIVED.getName());
+        return questionRepository.getQuestionsByLevelAndModuleName(level.name(),
+                module.getName(),
+                isAvailable,
+                pageable);
     }
 
     @Override
@@ -91,11 +99,21 @@ public class QuestionServiceImpl implements QuestionService {
                 .orElseThrow(QuestionNotFoundException::new);
     }
 
+    @Override
+    public List<ContentFile> getListening(Levels level, QuestionStatus status, Pageable pageable) {
+        boolean isAvailable = status.getName().equals(QuestionStatus.UNARCHIVED.getName());
+        if (level == null) {
+            return contentFilesRepository.findAllByAvailableOrderByIdDesc(isAvailable, pageable);
+        }
+        return contentFilesRepository.getContentFiles(level.name(), isAvailable, pageable);
+    }
+
     @Transactional
     @Override
     public void archiveQuestionsByContentFileId(Long id) {
         ContentFile contentFile = contentFilesRepository.findById(id)
                 .orElseThrow(FileNotFoundException::new);
-        contentFile.getQuestions().forEach(question -> archiveQuestion(question.getId()));
+        contentFile.getQuestions().forEach(question ->
+                questionRepository.updateAvailability(question.getId(), false));
     }
 }

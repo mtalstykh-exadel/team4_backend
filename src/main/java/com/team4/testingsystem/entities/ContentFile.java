@@ -19,7 +19,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name = "content_file")
 @NoArgsConstructor
@@ -54,10 +53,9 @@ public class ContentFile implements Serializable {
         this.url = url;
     }
 
-    public ContentFile(String url, List<Question> questions) {
+    public ContentFile(String url, String topic, List<Question> questions) {
         this.questions = questions;
         this.url = url;
+        this.topic = topic;
     }
-
 }
-

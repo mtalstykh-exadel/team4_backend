@@ -610,15 +610,132 @@
     <changeSet id="remove_id_from_file_answer" author="Darina">
         <dropColumn tableName="file_answer" columnName="id"/>
     </changeSet>
+
     <changeSet id="add_priority" author="Anlord241">
         <addColumn tableName="test">
             <column name="priority" type="text"/>
         </addColumn>
     </changeSet>
 
-    <changeSet  id="add_default_priority" author="Anlord241">
+    <changeSet id="add_default_priority" author="Anlord241">
         <addNotNullConstraint tableName="test"
                               columnName="priority"
                               defaultNullValue="LOW"/>
     </changeSet>
+
+    <changeSet id="add_timer_table" author="Anlord241">
+        <createTable tableName="timer">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="test_id" type="int">
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="timer" baseColumnNames="test_id"
+                                 constraintName="timer_test_id_fk"
+                                 referencedTableName="test" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="add_finish_time" author="Anlord241">
+        <addColumn tableName="test">
+            <column name="finish_time" type="datetime"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_coach_commentary" author="Anlord241">
+        <addColumn tableName="coach_grade">
+            <column name="comment" type="text"/>
+        </addColumn>
+
+        <addColumn tableName="module_grade">
+            <column name="coach_comment" type="text"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_notifications" author="maxim12321">
+        <createTable tableName="notification">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="type" type="varchar(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="test_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="notification" baseColumnNames="user_id"
+                                 constraintName="notification_user_id_fk"
+                                 referencedTableName="user" referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="notification" baseColumnNames="test_id"
+                                 constraintName="notification_test_id_fk"
+                                 referencedTableName="test" referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="test_is_available" author="maxim12321">
+        <addColumn tableName="test">
+            <column name="is_available" type="boolean" defaultOnNull="true" defaultValue="true">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="module_grade_add_not_null" author="maxim12321">
+        <addNotNullConstraint tableName="module_grade" columnName="test_id"/>
+        <addNotNullConstraint tableName="module_grade" columnName="module_id"/>
+    </changeSet>
+
+    <changeSet id="add_composite_pk" author="maxim12321">
+        <addPrimaryKey tableName="chosen_option" columnNames="test_id, question_id"/>
+
+        <dropPrimaryKey tableName="coach_grade"/>
+        <addPrimaryKey tableName="coach_grade" columnNames="test_id, question_id"/>
+        <dropColumn tableName="coach_grade" columnName="id"/>
+
+        <dropPrimaryKey tableName="error_report"/>
+        <addPrimaryKey tableName="error_report" columnNames="test_id, question_id"/>
+        <dropColumn tableName="error_report" columnName="id"/>
+
+        <addPrimaryKey tableName="file_answer" columnNames="test_id, question_id"/>
+
+        <addPrimaryKey tableName="module_grade" columnNames="test_id, module_id"/>
+
+        <addPrimaryKey tableName="question_content_file" columnNames="question_id, content_file_id"/>
+
+        <addPrimaryKey tableName="test_question" columnNames="test_id, question_id"/>
+    </changeSet>
+
+    <changeSet id="add_coach_answer_table" author="SemyonKorostik">
+        <createTable tableName="coach_answer">
+            <column name="question_id" type="int" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="test_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment" type="text"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="coach_answer" baseColumnNames="test_id"
+                                 constraintName="coach_answer_test_id_fk"
+                                 referencedTableName="test" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="coach_answer" baseColumnNames="question_id"
+                                 constraintName="coach_answer_question_id_fk"
+                                 referencedTableName="question" referencedColumnNames="id"/>
+
+    </changeSet>
+
+    <changeSet id="add_primary_key_to_coach_answer_table" author="SemyonKorostik">
+        <addPrimaryKey tableName="coach_answer" columnNames="test_id, question_id"/>
+    </changeSet>
+
 </databaseChangeLog>

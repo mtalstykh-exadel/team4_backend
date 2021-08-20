@@ -3,23 +3,92 @@ package com.team4.testingsystem.dto;
 import com.team4.testingsystem.entities.Test;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Objects;
 
 public class TestInfo implements Serializable {
     private Long testId;
     private String level;
-    private LocalDateTime deadline;
+    private Instant assigned;
+    private Instant deadline;
+    private Instant verified;
+    private String status;
     private String priority;
+    private Instant completedAt;
+    private Instant startedAt;
+    private UserDTO coach;
+
+    private Integer totalScore = 0;
 
     public TestInfo() {
     }
 
     public TestInfo(Test test) {
-        this.testId = test.getId();
-        this.level = test.getLevel().getName();
-        this.deadline = test.getDeadline();
-        this.priority = test.getPriority().getName();
+        testId = test.getId();
+        level = test.getLevel().getName();
+        deadline = test.getDeadline();
+        priority = test.getPriority().getName();
+        assigned = test.getAssignedAt();
+        verified = test.getVerifiedAt();
+        status = test.getStatus().name();
+        completedAt = test.getCompletedAt();
+        startedAt = test.getStartedAt();
+        if (test.getCoach() != null) {
+            coach = new UserDTO(test.getCoach());
+        }
+    }
+
+    public TestInfo(Test test, Integer totalScore) {
+        this(test);
+        this.totalScore = totalScore;
+    }
+
+    public UserDTO getCoach() {
+        return coach;
+    }
+
+    public void setCoach(UserDTO coach) {
+        this.coach = coach;
+    }
+
+    public Instant getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(Instant completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public Instant getStartedAt() {
+        return startedAt;
+    }
+
+    public void setStartedAt(Instant startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public Instant getAssigned() {
+        return assigned;
+    }
+
+    public void setAssigned(Instant assigned) {
+        this.assigned = assigned;
+    }
+
+    public Instant getVerified() {
+        return verified;
+    }
+
+    public void setVerified(Instant verified) {
+        this.verified = verified;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Long getTestId() {
@@ -38,11 +107,11 @@ public class TestInfo implements Serializable {
         this.level = level;
     }
 
-    public LocalDateTime getDeadline() {
+    public Instant getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDateTime deadline) {
+    public void setDeadline(Instant deadline) {
         this.deadline = deadline;
     }
 
@@ -52,6 +121,14 @@ public class TestInfo implements Serializable {
 
     public void setPriority(String priority) {
         this.priority = priority;
+    }
+
+    public Integer getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(Integer totalScore) {
+        this.totalScore = totalScore;
     }
 
     @Override
@@ -65,12 +142,20 @@ public class TestInfo implements Serializable {
         TestInfo testInfo = (TestInfo) o;
         return Objects.equals(testId, testInfo.testId)
                 && Objects.equals(level, testInfo.level)
+                && Objects.equals(assigned, testInfo.assigned)
                 && Objects.equals(deadline, testInfo.deadline)
-                && Objects.equals(priority, testInfo.priority);
+                && Objects.equals(verified, testInfo.verified)
+                && Objects.equals(status, testInfo.status)
+                && Objects.equals(priority, testInfo.priority)
+                && Objects.equals(completedAt, testInfo.completedAt)
+                && Objects.equals(startedAt, testInfo.startedAt)
+                && Objects.equals(coach, testInfo.coach)
+                && Objects.equals(totalScore, testInfo.totalScore);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(testId, level, deadline, priority);
+        return Objects.hash(testId, level, assigned, deadline, verified,
+                status, priority, completedAt, startedAt, coach, totalScore);
     }
 }

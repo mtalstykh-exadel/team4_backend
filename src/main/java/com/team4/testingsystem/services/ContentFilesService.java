@@ -1,10 +1,7 @@
 package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.Question;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 public interface ContentFilesService {
 
@@ -12,13 +9,13 @@ public interface ContentFilesService {
 
     ContentFile getById(long id);
 
-    ContentFile add(MultipartFile file, List<Question> questions);
+    ContentFile add(MultipartFile file, ContentFile contentFile);
 
-    ContentFile update(MultipartFile file, Long id, List<Question> questions);
+    ContentFile update(MultipartFile file, Long id, ContentFile contentFile);
 
     void updateURL(Long id, String newUrl);
 
-    void removeById(Long id);
+    void updateAvailability(Long id, boolean available);
 
     ContentFile getRandomContentFile(String level);
 

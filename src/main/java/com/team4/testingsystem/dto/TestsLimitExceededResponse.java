@@ -1,8 +1,9 @@
 package com.team4.testingsystem.dto;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class TestsLimitExceededResponse {
+public class TestsLimitExceededResponse implements Serializable {
     private String message;
 
     private String comeBackAfter;

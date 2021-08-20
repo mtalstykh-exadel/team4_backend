@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -28,7 +28,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 
 @Entity
 @Table(name = "test")
@@ -53,28 +52,33 @@ public class Test implements Serializable {
     private Level level;
 
     @Column(name = "assigned_at")
-    private LocalDateTime assignedAt;
+    private Instant assignedAt;
 
     @Column(name = "verified_at")
-    private LocalDateTime verifiedAt;
+    private Instant verifiedAt;
 
     @Column(name = "started_at")
-    private LocalDateTime startedAt;
+    private Instant startedAt;
 
     @Column(name = "completed_at")
-    private LocalDateTime completedAt;
+    private Instant completedAt;
+
+    @Column(name = "finish_time")
+    private Instant finishTime;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "priority")
     private Priority priority;
 
     @Column(name = "deadline")
-    private LocalDateTime deadline;
+    private Instant deadline;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
 
+    @Column(name = "is_available")
+    private Boolean isAvailable = true;
 
     @ManyToOne
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
@@ -117,27 +121,32 @@ public class Test implements Serializable {
             return this;
         }
 
-        public Builder assignedAt(LocalDateTime assignedAt) {
+        public Builder assignedAt(Instant assignedAt) {
             test.assignedAt = assignedAt;
             return this;
         }
 
-        public Builder verifiedAt(LocalDateTime verifiedAt) {
+        public Builder verifiedAt(Instant verifiedAt) {
             test.verifiedAt = verifiedAt;
             return this;
         }
 
-        public Builder startedAt(LocalDateTime startedAt) {
+        public Builder startedAt(Instant startedAt) {
             test.startedAt = startedAt;
             return this;
         }
 
-        public Builder completedAt(LocalDateTime completedAt) {
+        public Builder completedAt(Instant completedAt) {
             test.completedAt = completedAt;
             return this;
         }
 
-        public Builder deadline(LocalDateTime deadline) {
+        public Builder finishTime(Instant finishTime) {
+            test.finishTime = finishTime;
+            return this;
+        }
+
+        public Builder deadline(Instant deadline) {
             test.deadline = deadline;
             return this;
         }
@@ -152,7 +161,6 @@ public class Test implements Serializable {
             return this;
         }
 
-
         public Builder coach(User coach) {
             test.coach = coach;
             return this;
@@ -160,6 +168,11 @@ public class Test implements Serializable {
 
         public Builder level(Level level) {
             test.level = level;
+            return this;
+        }
+
+        public Builder isAvailable(Boolean isAvailable) {
+            test.isAvailable = isAvailable;
             return this;
         }
 

@@ -1,7 +1,5 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.dto.ErrorReportDTO;
-import com.team4.testingsystem.entities.ErrorReport;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.exceptions.ErrorReportNotFoundException;
@@ -14,11 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -50,43 +44,8 @@ public class ErrorReportsControllerTest {
     @Mock
     TestQuestionID testQuestionID;
 
-    @Mock
-    ErrorReport errorReport;
-
     @InjectMocks
     ErrorReportsController errorReportsController;
-
-    @Test
-    void getAllSuccess() {
-
-        Mockito.when(test.getId()).thenReturn(GOOD_TEST_ID);
-        Mockito.when(question.getId()).thenReturn(GOOD_QUESTION_ID);
-
-        Mockito.when(errorReport.getId()).thenReturn(testQuestionID);
-
-        Mockito.when(testQuestionID.getTest()).thenReturn(test);
-
-        Mockito.when(testQuestionID.getQuestion()).thenReturn(question);
-
-        Mockito.when(errorReport.getReportBody()).thenReturn(GOOD_REPORT_BODY);
-
-        Mockito.when(errorReportsService.getReportsByTest(GOOD_TEST_ID))
-                .thenReturn(Collections.singletonList(errorReport));
-
-        List<ErrorReportDTO> reports = errorReportsController.getReports(GOOD_TEST_ID);
-
-        Assertions.assertEquals(1, reports.size());
-        Assertions.assertEquals(GOOD_TEST_ID, reports.get(0).getTestId());
-        Assertions.assertEquals(GOOD_QUESTION_ID, reports.get(0).getQuestionId());
-        Assertions.assertEquals(GOOD_REPORT_BODY, reports.get(0).getReportBody());
-    }
-
-    @Test
-    void getAllFail() {
-        Mockito.when(errorReportsService.getReportsByTest(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
-        Assertions.assertThrows(TestNotFoundException.class,
-                () -> errorReportsController.getReports(BAD_TEST_ID));
-    }
 
     @Test
     void addSuccess() {

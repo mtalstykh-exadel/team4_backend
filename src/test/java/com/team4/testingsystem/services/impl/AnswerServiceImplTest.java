@@ -2,8 +2,8 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.FileAnswer;
-import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.AnswerNotFoundException;
+import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.services.FileAnswerService;
 import org.junit.jupiter.api.Assertions;
@@ -62,9 +62,22 @@ class AnswerServiceImplTest {
     }
 
     @Test
+    void tryDownloadEssayNotFound() {
+        Mockito.when(fileAnswerService.downloadEssay(TEST_ID)).thenThrow(FileAnswerNotFoundException.class);
+        Assertions.assertTrue(answerService.tryDownloadEssay(TEST_ID).isEmpty());
+    }
+
+    @Test
+    void tryDownloadEssaySuccess() {
+        Mockito.when(fileAnswerService.downloadEssay(TEST_ID)).thenReturn(ESSAY_TEXT);
+        Assertions.assertEquals(ESSAY_TEXT, answerService.tryDownloadEssay(TEST_ID).orElseThrow());
+    }
+
+    @Test
     void uploadEssay() {
-        answerService.uploadEssay(TEST_ID, ESSAY_TEXT);
-        Mockito.verify(fileAnswerService).uploadEssay(TEST_ID, ESSAY_TEXT);
+        Mockito.when(fileAnswerService.uploadEssay(TEST_ID, ESSAY_TEXT)).thenReturn(fileAnswer);
+        Mockito.when(fileAnswer.getUrl()).thenReturn(URL);
+        Assertions.assertEquals(URL, answerService.uploadEssay(TEST_ID, ESSAY_TEXT));
    }
 
     @Test
@@ -74,9 +87,23 @@ class AnswerServiceImplTest {
     }
 
     @Test
+    void tryDownloadSpeakingNotFound() {
+        Mockito.when(fileAnswerService.downloadSpeaking(TEST_ID)).thenThrow(FileAnswerNotFoundException.class);
+        Assertions.assertTrue(answerService.tryDownloadSpeaking(TEST_ID).isEmpty());
+    }
+
+    @Test
+    void tryDownloadSpeakingSuccess() {
+        Mockito.when(fileAnswerService.downloadSpeaking(TEST_ID)).thenReturn(ESSAY_TEXT);
+        Assertions.assertEquals(ESSAY_TEXT, answerService.tryDownloadSpeaking(TEST_ID).orElseThrow());
+    }
+
+    @Test
     void uploadSpeaking() {
-        Mockito.when(fileAnswerService.uploadSpeaking(file, TEST_ID, Modules.SPEAKING)).thenReturn(fileAnswer);
-        Mockito.when(fileAnswer.getUrl()).thenReturn(URL);
-        Assertions.assertEquals(URL, fileAnswerService.uploadSpeaking(file, TEST_ID, Modules.SPEAKING).getUrl());
+        FileAnswer fileAnswer = new FileAnswer();
+        fileAnswer.setUrl(URL);
+        Mockito.when(fileAnswerService.uploadSpeaking(file, TEST_ID)).thenReturn(fileAnswer);
+
+        Assertions.assertEquals(URL, answerService.uploadSpeaking(file, TEST_ID));
     }
 }

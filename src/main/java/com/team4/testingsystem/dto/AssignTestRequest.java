@@ -3,17 +3,18 @@ package com.team4.testingsystem.dto;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Priority;
 
-import java.time.LocalDateTime;
+import java.io.Serializable;
+import java.time.Instant;
 
-public class AssignTestRequest {
+public class AssignTestRequest implements Serializable {
     private Levels level;
-    private LocalDateTime deadline;
+    private Instant deadline;
     private Priority priority;
 
     public AssignTestRequest() {
     }
 
-    public AssignTestRequest(Levels level, LocalDateTime deadline, Priority priority) {
+    public AssignTestRequest(Levels level, Instant deadline, Priority priority) {
         this.level = level;
         this.deadline = deadline;
         this.priority = priority;
@@ -27,11 +28,11 @@ public class AssignTestRequest {
         this.level = level;
     }
 
-    public LocalDateTime getDeadline() {
+    public Instant getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDateTime deadline) {
+    public void setDeadline(Instant deadline) {
         this.deadline = deadline;
     }
 

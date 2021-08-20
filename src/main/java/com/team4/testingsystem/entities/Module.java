@@ -22,6 +22,7 @@ import javax.persistence.Table;
 @Setter
 @EqualsAndHashCode
 public class Module implements Serializable {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

@@ -1,10 +1,12 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.dto.AnswerDTO;
+import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.enums.QuestionStatus;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
@@ -16,31 +18,42 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class QuestionServiceImplTest {
 
     @Mock
-    Question question;
+    private Question question;
 
     @Mock
-    ContentFile contentFile;
+    private ContentFile contentFile;
+
+    @Mock
+    private List<ContentFile> contentFiles;
 
     @Mock
     private QuestionRepository questionRepository;
 
     @Mock
-    ContentFilesRepository contentFilesRepository;
+    private ContentFilesRepository contentFilesRepository;
 
     @InjectMocks
     private QuestionServiceImpl questionService;
+
+    private static final boolean UNAVAILABLE = false;
+    private static final Pageable PAGE_REQUEST = PageRequest.of(1, 10);
+    private static final Modules SPEAKING = Modules.SPEAKING;
+    private static final Levels A1 = Levels.A1;
+    private static final QuestionStatus UNARCHIVED = QuestionStatus.UNARCHIVED;
+    private static final long ID = 1L;
 
     @Test
     void getQuestionById() {
@@ -52,8 +65,8 @@ class QuestionServiceImplTest {
 
     @Test
     void questionByIdNotFoundException() {
-        Mockito.when(questionRepository.findById(1L)).thenThrow(new QuestionNotFoundException());
-        Assertions.assertThrows(QuestionNotFoundException.class, () -> questionService.getById(1L));
+        Mockito.when(questionRepository.findById(ID)).thenThrow(new QuestionNotFoundException());
+        Assertions.assertThrows(QuestionNotFoundException.class, () -> questionService.getById(ID));
     }
 
     @Test
@@ -66,81 +79,107 @@ class QuestionServiceImplTest {
 
     @Test
     void addAnswers() {
-        Question question = EntityCreatorUtil.createQuestion();
+        question = EntityCreatorUtil.createQuestion();
+        question.setAnswers(List.of(new Answer()));
         Mockito.when(questionRepository.save(question)).thenReturn(question);
         List<AnswerDTO> textAnswers = new ArrayList<>();
         Question result = questionService.addAnswers(question, textAnswers);
+
+        Assertions.assertEquals(question.getAnswers(), result.getAnswers());
         Assertions.assertEquals(question, result);
     }
 
     @Test
     void archiveQuestion() {
-        questionService.archiveQuestion(1L);
-        verify(questionRepository).archiveQuestion(1L);
+        questionService.updateAvailability(ID, UNAVAILABLE);
+        verify(questionRepository).updateAvailability(ID, UNAVAILABLE);
     }
 
     @Test
     void updateQuestion() {
-        questionService.updateQuestion(question, 1L);
-        verify(questionRepository).archiveQuestion(1L);
-        verify(questionRepository).save(question);
+        Question question = EntityCreatorUtil.createQuestion();
+        Mockito.when(questionRepository.save(question)).thenReturn(question);
+        Question result = questionService.updateQuestion(question, ID);
+        verify(questionRepository).updateAvailability(ID, UNAVAILABLE);
+        Assertions.assertEquals(question, result);
     }
 
     @Test
     void getRandomQuestions() {
-        List<Question> questions = new ArrayList<>();
+        List<Question> questions = List.of(EntityCreatorUtil.createQuestion());
         Mockito.when(questionRepository
-                .getRandomQuestions(any(), any(), any())).thenReturn(questions);
-        Assertions.assertEquals(questions, questionService.getRandomQuestions(any(), any(), any()));
+                .getRandomQuestions(A1.name(), SPEAKING.getName(), PAGE_REQUEST)).thenReturn(questions);
+        Assertions
+                .assertEquals(questions, questionService.getRandomQuestions(A1.name(), SPEAKING.getName(), PAGE_REQUEST));
     }
 
     @Test
     void getRandomQuestionsByContentFile() {
-        List<Question> questions = new ArrayList<>();
+        List<Question> questions = List.of(EntityCreatorUtil.createQuestion());
         Mockito.when(questionRepository
-                .getRandomQuestionByContentFile(any(), any())).thenReturn(questions);
-        Assertions.assertEquals(questions, questionService.getRandomQuestionsByContentFile(any(), any()));
+                .getRandomQuestionByContentFile(ID, PAGE_REQUEST)).thenReturn(questions);
+        Assertions.assertEquals(questions, questionService.getRandomQuestionsByContentFile(ID, PAGE_REQUEST));
     }
 
     @Test
     void getQuestionsByTestIdAndModule() {
-        List<Question> questions = new ArrayList<>();
+        List<Question> questions = List.of(EntityCreatorUtil.createQuestion());
         Mockito.when(questionRepository
-                .getQuestionsByTestId(any())).thenReturn(questions);
-        Assertions.assertEquals(questions, questionService.getQuestionsByTestId(any()));
+                .getQuestionsByTestId(ID)).thenReturn(questions);
+        Assertions.assertEquals(questions, questionService.getQuestionsByTestId(ID));
     }
 
     @Test
     void archiveQuestionsByContentFileId() {
-        Mockito.when(contentFilesRepository.findById(EntityCreatorUtil.ID))
-                .thenReturn(Optional.ofNullable(contentFile));
-        questionService.archiveQuestionsByContentFileId(EntityCreatorUtil.ID);
-        verify(contentFilesRepository).findById(EntityCreatorUtil.ID);
+        ContentFile contentFile = new ContentFile();
+        Question question = EntityCreatorUtil.createQuestion();
+        contentFile.setQuestions(List.of(question));
+        Mockito.when(contentFilesRepository.findById(ID))
+                .thenReturn(Optional.of(contentFile));
+        questionService.archiveQuestionsByContentFileId(ID);
+        verify(contentFilesRepository).findById(ID);
+        verify(questionRepository).updateAvailability(question.getId(), UNAVAILABLE);
     }
 
     @Test
     void getQuestionsByLevelAndModuleName() {
-        List<Question> questions = new ArrayList<>();
-        Mockito.when(questionRepository.getQuestionsByLevelAndModuleName(Levels.A1.name(), Modules.ESSAY.getName()))
+        List<Question> questions = List.of(EntityCreatorUtil.createQuestion());
+        Mockito.when(questionRepository.getQuestionsByLevelAndModuleName(A1.name(),
+                SPEAKING.getName(), true, PAGE_REQUEST))
                 .thenReturn(questions);
+
         Assertions.assertEquals(questions,
-                questionService.getQuestionsByLevelAndModuleName(Levels.A1, Modules.ESSAY));
+                questionService.getQuestionsByLevelAndModuleName(A1, SPEAKING, UNARCHIVED, PAGE_REQUEST));
     }
 
     @Test
     void getQuestionByTestIdAndModuleNotFound() {
-        Mockito.when(questionRepository.getQuestionByTestIdAndModule(1L, Modules.ESSAY.getName()))
+        Mockito.when(questionRepository.getQuestionByTestIdAndModule(ID, SPEAKING.getName()))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThrows(QuestionNotFoundException.class,
-                () -> questionService.getQuestionByTestIdAndModule(1L, Modules.ESSAY));
+                () -> questionService.getQuestionByTestIdAndModule(ID, SPEAKING));
     }
 
     @Test
     void getQuestionByTestIdAndModuleSuccess() {
-        Mockito.when(questionRepository.getQuestionByTestIdAndModule(1L, Modules.ESSAY.getName()))
+        Mockito.when(questionRepository.getQuestionByTestIdAndModule(ID, SPEAKING.getName()))
                 .thenReturn(Optional.of(question));
 
-        Assertions.assertEquals(question, questionService.getQuestionByTestIdAndModule(1L, Modules.ESSAY));
+        Assertions.assertEquals(question, questionService.getQuestionByTestIdAndModule(ID, SPEAKING));
+    }
+
+    @Test
+    void getListening() {
+        Mockito.when(contentFilesRepository.findAllByAvailableOrderByIdDesc(true, PAGE_REQUEST))
+                .thenReturn(contentFiles);
+        Assertions.assertEquals(contentFiles, questionService.getListening(null, UNARCHIVED, PAGE_REQUEST));
+    }
+
+    @Test
+    void getListeningByLevel() {
+        Mockito.when(contentFilesRepository.getContentFiles(A1.name(), true, PAGE_REQUEST))
+                .thenReturn(contentFiles);
+        Assertions.assertEquals(contentFiles, questionService.getListening(A1, UNARCHIVED, PAGE_REQUEST));
     }
 }

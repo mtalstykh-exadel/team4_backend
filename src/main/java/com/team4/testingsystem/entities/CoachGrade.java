@@ -27,4 +27,7 @@ public class CoachGrade implements Serializable {
     @Column(name = "grade")
     private Integer grade;
 
+    @Column (name = "comment")
+    private String comment;
+
 }

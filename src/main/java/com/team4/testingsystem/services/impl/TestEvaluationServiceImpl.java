@@ -33,8 +33,8 @@ public class TestEvaluationServiceImpl implements TestEvaluationService {
         this.coachGradeRepository = coachGradeRepository;
     }
 
-    private void saveModuleGrade(Test test, String moduleName, Integer grade) {
-        moduleGradesService.add(test, moduleName, grade);
+    private void saveModuleGrade(Test test, String moduleName, Integer grade, String coachComment) {
+        moduleGradesService.add(test, moduleName, grade, coachComment);
     }
 
     private void saveScoreAutomaticCheck(Test test, Modules module, List<ChosenOption> allChosenOptions) {
@@ -45,22 +45,23 @@ public class TestEvaluationServiceImpl implements TestEvaluationService {
                 .map(ChosenOption::getAnswer)
                 .filter(Answer::isCorrect)
                 .count();
-        saveModuleGrade(test, module.getName(), score);
+        saveModuleGrade(test, module.getName(), score, null);
 
     }
 
-    private void saveScoreCoachCheck(Test test, Modules module, Map<String, Integer> gradeMap) {
-        int score = Optional.ofNullable(gradeMap.get(module.getName()))
+    private void saveScoreCoachCheck(Test test, Modules module, Map<String, CoachGrade> gradeMap) {
+        CoachGrade grade = Optional.ofNullable(gradeMap.get(module.getName()))
                 .orElseThrow(CoachGradeNotFoundException::new);
-        saveModuleGrade(test, module.getName(), score);
+
+        saveModuleGrade(test, module.getName(), grade.getGrade(), grade.getComment());
     }
 
     @Override
     public void countScoreBeforeCoachCheck(Test test) {
-        List<ChosenOption> chosenOptions = chosenOptionService.getAllByTest(test);
+        List<ChosenOption> chosenOptions = chosenOptionService.getAllByTestId(test.getId());
 
-        moduleGradesService.add(test, Modules.ESSAY.getName(), 0);
-        moduleGradesService.add(test, Modules.SPEAKING.getName(), 0);
+        moduleGradesService.add(test, Modules.ESSAY.getName(), 0, null);
+        moduleGradesService.add(test, Modules.SPEAKING.getName(), 0, null);
 
         saveScoreAutomaticCheck(test, Modules.GRAMMAR, chosenOptions);
         saveScoreAutomaticCheck(test, Modules.LISTENING, chosenOptions);
@@ -70,10 +71,11 @@ public class TestEvaluationServiceImpl implements TestEvaluationService {
     public void updateScoreAfterCoachCheck(Test test) {
         List<CoachGrade> allCoachGrades = (List<CoachGrade>) coachGradeRepository.findAllById_Test(test);
 
-        Map<String, Integer> gradeMap = allCoachGrades
-                .stream()
-                .collect(Collectors.toMap(coachGrade -> coachGrade.getId().getQuestion().getModule().getName(),
-                        CoachGrade::getGrade));
+        Map<String, CoachGrade> gradeMap = allCoachGrades
+            .stream()
+            .collect(Collectors.toMap(
+                coachGrade -> coachGrade.getId().getQuestion().getModule().getName(),
+                coachGrade -> coachGrade));
 
         saveScoreCoachCheck(test, Modules.ESSAY, gradeMap);
         saveScoreCoachCheck(test, Modules.SPEAKING, gradeMap);

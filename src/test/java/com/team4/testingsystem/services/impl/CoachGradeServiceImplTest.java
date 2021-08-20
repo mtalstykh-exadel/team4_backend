@@ -2,10 +2,12 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,9 +33,11 @@ class CoachGradeServiceImplTest {
     @Mock
     private QuestionService questionService;
 
+    @Mock
+    private RestrictionsService restrictionsService;
+
     @InjectMocks
     private CoachGradeServiceImpl gradeService;
-
 
     @Mock
     private Question question;
@@ -57,7 +61,10 @@ class CoachGradeServiceImplTest {
         Mockito.when(testsService.getById(1L)).thenReturn(test);
         ArrayList<CoachGrade> grades = new ArrayList<>();
         Mockito.when(gradeRepository.findAllById_Test(test)).thenReturn(grades);
+        gradeService.getGradesByTest(1L);
 
+        Mockito.verify(restrictionsService).checkStatus(test, Status.IN_VERIFICATION);
+        Mockito.verify(restrictionsService).checkCoachIsCurrentUser(test);
         Assertions.assertEquals(grades, gradeService.getGradesByTest(1L));
     }
 
@@ -67,9 +74,13 @@ class CoachGradeServiceImplTest {
         Mockito.when(testsService.getById(testId)).thenReturn(test);
         Mockito.when(questionService.getById(questionId)).thenReturn(question);
 
+        gradeService.add(testId, questionId, grade, "Comment");
 
-        gradeService.add(testId, questionId, grade);
-
+        Mockito.verify(restrictionsService).checkStatus(test, Status.IN_VERIFICATION);
+        Mockito.verify(restrictionsService).checkCoachIsCurrentUser(test);
+        Mockito.verify(restrictionsService).checkTestContainsQuestion(test, question);
+        Mockito.verify(restrictionsService).checkModuleIsEssayOrSpeaking(question);
+        Mockito.verify(restrictionsService).checkGradeIsCorrect(grade);
         Mockito.verify(gradeRepository).save(any());
 
     }
@@ -79,7 +90,7 @@ class CoachGradeServiceImplTest {
         Mockito.when(testsService.getById(testId)).thenThrow(TestNotFoundException.class);
 
         Assertions.assertThrows(TestNotFoundException.class,
-                () -> gradeService.add(testId, questionId, grade));
+                () -> gradeService.add(testId, questionId, grade, null));
     }
 
     @Test
@@ -88,7 +99,7 @@ class CoachGradeServiceImplTest {
         Mockito.when(questionService.getById(questionId)).thenThrow(QuestionNotFoundException.class);
 
         Assertions.assertThrows(QuestionNotFoundException.class,
-                () -> gradeService.add(testId, questionId, grade));
+                () -> gradeService.add(testId, questionId, grade, null));
     }
 
 

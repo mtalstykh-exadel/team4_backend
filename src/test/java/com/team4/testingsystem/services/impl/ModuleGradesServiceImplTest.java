@@ -1,6 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.dto.ModuleGradesDTO;
+import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.entities.ModuleGrade;
 import com.team4.testingsystem.enums.Modules;
@@ -53,7 +54,7 @@ public class ModuleGradesServiceImplTest {
     private ModuleGrade moduleGrade;
 
     @Mock
-    private Map<String, Integer> gradesMap;
+    private Map<String, ModuleGrade> gradesMap;
 
     @Mock
     private Module module;
@@ -61,10 +62,10 @@ public class ModuleGradesServiceImplTest {
     @Mock
     private ModuleService moduleService;
 
-
     @Test
     void getGradeByModuleSuccess(){
-        Mockito.when(gradesMap.get(Modules.GRAMMAR.getName())).thenReturn(GRAMMAR_SCORE);
+        Mockito.when(gradesMap.get(Modules.GRAMMAR.getName())).thenReturn(moduleGrade);
+        Mockito.when(moduleGrade.getGrade()).thenReturn((GRAMMAR_SCORE));
 
         Assertions.assertEquals(GRAMMAR_SCORE, moduleGradesService.getGradeByModule(gradesMap, Modules.GRAMMAR));
     }
@@ -92,7 +93,7 @@ public class ModuleGradesServiceImplTest {
     void addSuccess() {
         Mockito.when(moduleService.getModuleByName(anyString())).thenReturn(module);
 
-        moduleGradesService.add(test, Modules.GRAMMAR.getName(), 1);
+        moduleGradesService.add(test, Modules.GRAMMAR.getName(), 1, null);
         verify(moduleGradesRepository).save(any(ModuleGrade.class));
     }
 
@@ -101,7 +102,7 @@ public class ModuleGradesServiceImplTest {
         Mockito.when(moduleService.getModuleByName(anyString())).thenThrow(ModuleNotFoundException.class);
 
         Assertions.assertThrows(ModuleNotFoundException.class,
-                ()->moduleGradesService.add(test, "12345", 0));
+                ()->moduleGradesService.add(test, "12345", 0, null));
     }
 
 }

@@ -1,6 +1,8 @@
 package com.team4.testingsystem.converters;
 
 import com.team4.testingsystem.dto.ModuleGradesDTO;
+import com.team4.testingsystem.entities.ModuleGrade;
+import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.services.ModuleGradesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +20,17 @@ public class GradesConverter {
         this.moduleGradesService = moduleGradesService;
     }
 
-    public ModuleGradesDTO convertListOfGradesToDTO(Map<String, Integer> allGrades) {
+    public ModuleGradesDTO convertListOfGradesToDTO(Test test) {
+        Map<String, ModuleGrade> allGrades = moduleGradesService.getGradesByTest(test);
         return ModuleGradesDTO.builder()
                 .grammar(moduleGradesService.getGradeByModule(allGrades, Modules.GRAMMAR))
                 .listening(moduleGradesService.getGradeByModule(allGrades, Modules.LISTENING))
                 .essay(moduleGradesService.getGradeByModule(allGrades, Modules.ESSAY))
                 .speaking(moduleGradesService.getGradeByModule(allGrades, Modules.SPEAKING))
+                .essayComment(moduleGradesService.getCoachCommentByModule(allGrades, Modules.ESSAY))
+                .speakingComment(moduleGradesService.getCoachCommentByModule(allGrades, Modules.SPEAKING))
+                .level(test.getLevel().getName())
+                .status(test.getStatus())
                 .build();
     }
 }

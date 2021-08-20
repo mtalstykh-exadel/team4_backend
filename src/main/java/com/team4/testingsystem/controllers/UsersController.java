@@ -9,6 +9,8 @@ import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,20 +32,24 @@ public class UsersController {
 
     @ApiOperation("Get list of all coaches in the system")
     @GetMapping("/coaches")
+    @Secured("ROLE_ADMIN")
     public List<UserDTO> getCoaches() {
         return convertToDTO(usersService.getUsersByRole(Role.COACH));
     }
 
     @ApiOperation("Get all users and their assigned tests (if exist)")
     @GetMapping("/employees")
-    public List<UserDTO> getAllUsersAndAssignedTests() {
-        return testsService.getAllUsersAndAssignedTests().stream()
+    @Secured("ROLE_HR")
+    public List<UserDTO> getAllUsersAndAssignedTests(@RequestParam int pageNumb,
+                                                     @RequestParam int pageSize) {
+        return testsService.getAllUsersAndAssignedTests(PageRequest.of(pageNumb, pageSize)).stream()
                 .map(UserTest::toUserDTO)
                 .collect(Collectors.toList());
     }
 
     @ApiOperation("Get users by name substring (ignoring case)")
     @GetMapping("/users")
+    @Secured("ROLE_HR")
     public List<UserDTO> getAllUsersByNameLike(@RequestParam String name) {
         return convertToDTO(usersService.getByNameLike(name));
     }

@@ -71,15 +71,18 @@ class TestEvaluationServiceImplTest {
     private CoachGrade coachGrade;
 
     @Mock
-    private Map<String, Integer> gradeMap;
+    private Map<String, CoachGrade> gradeMap;
 
     @Mock
     private com.team4.testingsystem.entities.Test test;
 
+    private static final Long TEST_ID = 1L;
+
     @Test
     public void countScoreBeforeCoachCheckSuccess() {
 
-        Mockito.when(chosenOptionService.getAllByTest(test)).thenReturn(chosenOptionList);
+        Mockito.when(test.getId()).thenReturn(TEST_ID);
+        Mockito.when(chosenOptionService.getAllByTestId(TEST_ID)).thenReturn(chosenOptionList);
         Mockito.when(chosenOptionList.stream()).thenReturn(streamChosenOption);
         Mockito.when(streamChosenOption.filter(any())).thenReturn(streamChosenOption);
         Mockito.when(streamChosenOption.map(any())).thenAnswer(invocation -> streamAnswer);
@@ -88,13 +91,15 @@ class TestEvaluationServiceImplTest {
 
         testEvaluationService.countScoreBeforeCoachCheck(test);
 
-        verify(moduleGradesService).add(test, Modules.ESSAY.getName(), ESSAY_SCORE_BEFORE_COACH_CHECK);
+        verify(moduleGradesService)
+                .add(test, Modules.ESSAY.getName(), ESSAY_SCORE_BEFORE_COACH_CHECK, null);
 
-        verify(moduleGradesService).add(test, Modules.SPEAKING.getName(), SPEAKING_SCORE_BEFORE_COACH_CHECK);
+        verify(moduleGradesService)
+                .add(test, Modules.SPEAKING.getName(), SPEAKING_SCORE_BEFORE_COACH_CHECK, null);
 
-        verify(moduleGradesService).add(test, Modules.GRAMMAR.getName(), GRAMMAR_SCORE);
+        verify(moduleGradesService).add(test, Modules.GRAMMAR.getName(), GRAMMAR_SCORE, null);
 
-        verify(moduleGradesService).add(test, Modules.LISTENING.getName(), LISTENING_SCORE);
+        verify(moduleGradesService).add(test, Modules.LISTENING.getName(), LISTENING_SCORE, null);
 
     }
     @Test
@@ -106,15 +111,19 @@ class TestEvaluationServiceImplTest {
 
         Mockito.when(streamCoachGrade.collect(any())).thenReturn(gradeMap);
 
-        Mockito.when(gradeMap.get(Modules.ESSAY.getName())).thenReturn(ESSAY_SCORE);
+        Mockito.when(gradeMap.get(Modules.ESSAY.getName())).thenReturn(coachGrade);
 
-        Mockito.when(gradeMap.get(Modules.SPEAKING.getName())).thenReturn(SPEAKING_SCORE);
+        Mockito.when(gradeMap.get(Modules.SPEAKING.getName())).thenReturn(coachGrade);
+
+        Mockito.when(coachGrade.getGrade()).thenReturn(ESSAY_SCORE);
+
+        Mockito.when(coachGrade.getComment()).thenReturn("Cool");
 
         testEvaluationService.updateScoreAfterCoachCheck(test);
 
-        verify(moduleGradesService).add(test, Modules.ESSAY.getName(), ESSAY_SCORE);
+        verify(moduleGradesService).add(test, Modules.ESSAY.getName(), ESSAY_SCORE, "Cool");
 
-        verify(moduleGradesService).add(test, Modules.SPEAKING.getName(), SPEAKING_SCORE);
+        verify(moduleGradesService).add(test, Modules.SPEAKING.getName(), ESSAY_SCORE, "Cool");
     }
 
     @Test

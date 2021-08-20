@@ -1,10 +1,8 @@
 package com.team4.testingsystem.utils;
 
-import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.dto.ErrorReportDTO;
 import com.team4.testingsystem.dto.ModuleGradesDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
-import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.entities.Level;
@@ -19,12 +17,6 @@ import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static java.util.stream.Collectors.groupingBy;
-
 public class EntityCreatorUtil {
 
     public static final String QUESTION_TEXT = "some text";
@@ -35,6 +27,10 @@ public class EntityCreatorUtil {
     public static final String LANGUAGE = "en";
     public static final String AVATAR = "avatar_url";
     public static final Long ID = 1L;
+
+    public static final Long MODULE_ID = 3L;
+
+    private static Long answerId = 1L;
 
     public static Question createQuestion() {
         return Question.builder()
@@ -74,23 +70,17 @@ public class EntityCreatorUtil {
 
     public static Module createModule() {
         Module module = new Module();
-        module.setId(ID);
-        module.setName(Modules.GRAMMAR.getName());
+        module.setId(MODULE_ID);
+        module.setName(Modules.ESSAY.getName());
         return module;
     }
+
 
     public static Level createLevel() {
         Level level = new Level();
         level.setId(ID);
         level.setName(Levels.A1.name());
         return level;
-    }
-
-    public static ContentFileDTO createContentFileRequest(Long questionId, String url) {
-        ContentFileDTO cfr = new ContentFileDTO();
-        cfr.setId(questionId);
-        cfr.setUrl(url);
-        return cfr;
     }
 
     public static ErrorReportDTO createErrorReportDTO(String reportBody, long questionId, long testId) {
@@ -110,29 +100,16 @@ public class EntityCreatorUtil {
                 .build();
     }
 
-    public static TestDTO createTestDTO(Test test) {
-        List<Question> questions = new ArrayList<>();
-        for (Modules module : Modules.values()) {
-            Question question = EntityCreatorUtil.createQuestion(createUser());
-            Module module1 = new Module();
-            module1.setName(module.getName());
-            question.setModule(module1);
-            questions.add(question);
-        }
-        Map<String, List<QuestionDTO>> questionsDTO = questions.stream()
-                .map(QuestionDTO::create)
-                .collect(groupingBy(QuestionDTO::getModule));
-        TestDTO testDTO = new TestDTO(test);
-        testDTO.setQuestions(questionsDTO);
-        return testDTO;
-    }
-
     public static ModuleGradesDTO createModuleGradesDTO() {
         return ModuleGradesDTO.builder()
                 .grammar(1)
                 .listening(2)
                 .essay(3)
                 .speaking(4)
+                .essayComment("Cool essay")
+                .speakingComment("Cool speaking")
+                .level(Levels.A1.name())
+                .status(Status.COMPLETED)
                 .build();
     }
 
@@ -151,6 +128,16 @@ public class EntityCreatorUtil {
                 .id(7L)
                 .answerBody("answer body")
                 .question(createQuestion())
+                .isCorrect(false)
+                .build();
+    }
+
+    public static Answer createAnswer(Question question) {
+        answerId++;
+        return Answer.builder()
+                .id(answerId)
+                .answerBody("answer body")
+                .question(question)
                 .isCorrect(false)
                 .build();
     }
