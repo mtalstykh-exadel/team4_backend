@@ -1,14 +1,15 @@
 package com.team4.testingsystem.services.impl;
 
 
-import com.team4.testingsystem.entities.Answer;
-import com.team4.testingsystem.entities.ChosenOption;
-import com.team4.testingsystem.entities.CoachGrade;
+import com.team4.testingsystem.entities.*;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.CoachGradeNotFoundException;
+import com.team4.testingsystem.repositories.CoachAnswerRepository;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.services.ChosenOptionService;
+import com.team4.testingsystem.services.CoachAnswerService;
 import com.team4.testingsystem.services.ModuleGradesService;
+import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,6 +50,9 @@ class TestEvaluationServiceImplTest {
     @Mock
     private CoachGradeRepository coachGradeRepository;
 
+    @Mock
+    private CoachAnswerRepository coachAnswerRepository;
+
     @InjectMocks
     private TestEvaluationServiceImpl testEvaluationService;
 
@@ -62,10 +66,19 @@ class TestEvaluationServiceImplTest {
     private Stream<CoachGrade> streamCoachGrade;
 
     @Mock
+    private Stream<CoachAnswer> streamCoachAnswer;
+
+    @Mock
+    private List<CoachAnswer> filteredCoachAnswers;
+
+    @Mock
     private List<ChosenOption> chosenOptionList;
 
     @Mock
     private List<CoachGrade> coachGrades;
+
+    @Mock
+    private List<CoachAnswer> coachAnswers;
 
     @Mock
     private CoachGrade coachGrade;
@@ -136,6 +149,11 @@ class TestEvaluationServiceImplTest {
         Mockito.when(streamCoachGrade.collect(any())).thenReturn(gradeMap);
 
         Mockito.when(gradeMap.get(Modules.ESSAY.getName())).thenReturn(null);
+
+        coachAnswers.add(new CoachAnswer(
+                new TestQuestionID(test, EntityCreatorUtil.createQuestion()), "comment"));
+
+        Mockito.when(coachAnswerRepository.findAllById_Test(test)).thenReturn(coachAnswers);
 
         Assertions.assertThrows(CoachGradeNotFoundException.class,
                 ()->testEvaluationService.updateScoreAfterCoachCheck(test));

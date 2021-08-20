@@ -1,16 +1,10 @@
 package com.team4.testingsystem.converters;
 
-import com.team4.testingsystem.dto.CoachGradeDTO;
-import com.team4.testingsystem.dto.QuestionDTO;
-import com.team4.testingsystem.dto.ReportedQuestionDTO;
-import com.team4.testingsystem.dto.TestVerificationDTO;
-import com.team4.testingsystem.entities.ErrorReport;
-import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.dto.*;
+import com.team4.testingsystem.entities.*;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.services.AnswerService;
+import com.team4.testingsystem.services.CoachAnswerService;
 import com.team4.testingsystem.services.CoachGradeService;
 import com.team4.testingsystem.services.ErrorReportsService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
@@ -40,27 +34,37 @@ class TestVerificationConverterTest {
     @Mock
     private List<CoachGradeDTO> coachGradeDTOS;
 
+    @Mock
+    private CoachAnswerService coachAnswerService;
+
     @InjectMocks
     private TestVerificationConverter converter;
 
     private static final Long TEST_ID = 1L;
     private static final Long ESSAY_QUESTION_ID = 2L;
     private static final Long SPEAKING_QUESTION_ID = 3L;
+    private static final Long GRAMMAR_QUESTION_ID = 4L;
     private static final String ESSAY_TEXT = "essay";
     private static final String SPEAKING_URL = "url";
     private static final String ERROR_REPORT_BODY = "error here!!!";
+    private static final String COACH_ANSWER_BODY = "coach comment";
 
     private Test test;
     private Level level;
+    private Question grammarQuestion;
     private Question essayQuestion;
     private Question speakingQuestion;
     private ErrorReport errorReport;
+    private CoachAnswer coachAnswer;
 
     @BeforeEach
     void init() {
         level = EntityCreatorUtil.createLevel();
         test = EntityCreatorUtil.createTest(EntityCreatorUtil.createUser(), level);
         test.setId(TEST_ID);
+
+        grammarQuestion = EntityCreatorUtil.createQuestion(Modules.GRAMMAR);
+        grammarQuestion.setId(GRAMMAR_QUESTION_ID);
 
         essayQuestion = EntityCreatorUtil.createQuestion(Modules.ESSAY);
         essayQuestion.setId(ESSAY_QUESTION_ID);
@@ -71,11 +75,13 @@ class TestVerificationConverterTest {
         test.setQuestions(List.of(essayQuestion, speakingQuestion));
 
         errorReport = new ErrorReport(new TestQuestionID(test, essayQuestion), ERROR_REPORT_BODY);
+        coachAnswer = new CoachAnswer(new TestQuestionID(test, grammarQuestion), COACH_ANSWER_BODY);
     }
 
     @org.junit.jupiter.api.Test
     void convertToVerificationDTONoReports() {
         Mockito.when(errorReportsService.getReportsByTest(TEST_ID)).thenReturn(List.of());
+        Mockito.when(coachAnswerService.getAnswersByTest(TEST_ID)).thenReturn(List.of());
         Mockito.when(answerService.tryDownloadEssay(TEST_ID)).thenReturn(Optional.of(ESSAY_TEXT));
         Mockito.when(answerService.tryDownloadSpeaking(TEST_ID)).thenReturn(Optional.of(SPEAKING_URL));
         Mockito.when(gradeService.getGradesByTest(test.getId()).stream()
@@ -96,6 +102,7 @@ class TestVerificationConverterTest {
     @org.junit.jupiter.api.Test
     void convertToVerificationDTONoEssay() {
         Mockito.when(errorReportsService.getReportsByTest(TEST_ID)).thenReturn(List.of(errorReport));
+        Mockito.when(coachAnswerService.getAnswersByTest(TEST_ID)).thenReturn(List.of(coachAnswer));
         Mockito.when(answerService.tryDownloadEssay(TEST_ID)).thenReturn(Optional.empty());
         Mockito.when(answerService.tryDownloadSpeaking(TEST_ID)).thenReturn(Optional.of(SPEAKING_URL));
 
@@ -105,6 +112,7 @@ class TestVerificationConverterTest {
         Assertions.assertEquals(level.getName(), dto.getTestLevel());
         Assertions.assertEquals(1, dto.getReportedQuestions().size());
         Assertions.assertEquals(new ReportedQuestionDTO(errorReport), dto.getReportedQuestions().get(0));
+        Assertions.assertEquals(new CoachAnswerDTO(coachAnswer), dto.getCoachAnswers().get(0));
         Assertions.assertEquals(QuestionDTO.create(essayQuestion), dto.getEssayQuestion());
         Assertions.assertNull(dto.getEssayText());
         Assertions.assertEquals(QuestionDTO.create(speakingQuestion), dto.getSpeakingQuestion());
@@ -114,6 +122,7 @@ class TestVerificationConverterTest {
     @org.junit.jupiter.api.Test
     void convertToVerificationDTONoSpeaking() {
         Mockito.when(errorReportsService.getReportsByTest(TEST_ID)).thenReturn(List.of(errorReport));
+        Mockito.when(coachAnswerService.getAnswersByTest(TEST_ID)).thenReturn(List.of(coachAnswer));
         Mockito.when(answerService.tryDownloadEssay(TEST_ID)).thenReturn(Optional.of(ESSAY_TEXT));
         Mockito.when(answerService.tryDownloadSpeaking(TEST_ID)).thenReturn(Optional.empty());
 
@@ -123,6 +132,7 @@ class TestVerificationConverterTest {
         Assertions.assertEquals(level.getName(), dto.getTestLevel());
         Assertions.assertEquals(1, dto.getReportedQuestions().size());
         Assertions.assertEquals(new ReportedQuestionDTO(errorReport), dto.getReportedQuestions().get(0));
+        Assertions.assertEquals(new CoachAnswerDTO(coachAnswer), dto.getCoachAnswers().get(0));
         Assertions.assertEquals(QuestionDTO.create(essayQuestion), dto.getEssayQuestion());
         Assertions.assertEquals(ESSAY_TEXT, dto.getEssayText());
         Assertions.assertEquals(QuestionDTO.create(speakingQuestion), dto.getSpeakingQuestion());
@@ -132,6 +142,7 @@ class TestVerificationConverterTest {
     @org.junit.jupiter.api.Test
     void convertToVerificationDTOFull() {
         Mockito.when(errorReportsService.getReportsByTest(TEST_ID)).thenReturn(List.of(errorReport));
+        Mockito.when(coachAnswerService.getAnswersByTest(TEST_ID)).thenReturn(List.of(coachAnswer));
         Mockito.when(answerService.tryDownloadEssay(TEST_ID)).thenReturn(Optional.of(ESSAY_TEXT));
         Mockito.when(answerService.tryDownloadSpeaking(TEST_ID)).thenReturn(Optional.of(SPEAKING_URL));
 
@@ -141,6 +152,7 @@ class TestVerificationConverterTest {
         Assertions.assertEquals(level.getName(), dto.getTestLevel());
         Assertions.assertEquals(1, dto.getReportedQuestions().size());
         Assertions.assertEquals(new ReportedQuestionDTO(errorReport), dto.getReportedQuestions().get(0));
+        Assertions.assertEquals(new CoachAnswerDTO(coachAnswer), dto.getCoachAnswers().get(0));
         Assertions.assertEquals(QuestionDTO.create(essayQuestion), dto.getEssayQuestion());
         Assertions.assertEquals(ESSAY_TEXT, dto.getEssayText());
         Assertions.assertEquals(QuestionDTO.create(speakingQuestion), dto.getSpeakingQuestion());
