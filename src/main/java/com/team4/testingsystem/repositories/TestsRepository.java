@@ -69,7 +69,7 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     List<Test> getAllByAssignedCoachAndStatuses(Long coachId, Status[] status, Pageable pageable);
 
     @Transactional
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query(value = "update Test t set t.status = ?2 where t.id = ?1 and t.isAvailable = true")
     int updateStatusByTestId(Long testId, Status newStatus);
 

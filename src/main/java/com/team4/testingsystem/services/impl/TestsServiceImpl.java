@@ -130,7 +130,6 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    @Transactional
     public Test startTestVerification(long testId) {
         Test test = getById(testId);
 
