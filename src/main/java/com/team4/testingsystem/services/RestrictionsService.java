@@ -1,6 +1,7 @@
 package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.Answer;
+import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
@@ -47,6 +48,10 @@ public interface RestrictionsService {
     void checkModuleIsNotListening(Question question);
 
     void checkAnswersAreCorrect(List<Answer> answers);
+
+    void checkNotArchivedQuestion(Question question);
+
+    void checkNotArchivedContentFile(ContentFile contentFile);
 
 
 }

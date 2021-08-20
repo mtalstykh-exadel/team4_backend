@@ -68,9 +68,13 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Transactional
     @Override
-    public Question updateQuestion(Question question, Long id) {
+    public Question updateQuestion(Question editedQuestion, Long id) {
+        Question question = getById(id);
+
+        restrictionsService.checkNotArchivedQuestion(question);
+
         questionRepository.updateAvailability(id, false);
-        return questionRepository.save(question);
+        return questionRepository.save(editedQuestion);
     }
 
     @Override

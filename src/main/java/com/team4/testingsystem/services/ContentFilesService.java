@@ -11,7 +11,7 @@ public interface ContentFilesService {
 
     ContentFile add(MultipartFile file, ContentFile contentFile);
 
-    ContentFile update(MultipartFile file, Long id, ContentFile contentFile);
+    ContentFile update(MultipartFile file, Long id, ContentFile editedContentFile);
 
     void updateURL(Long id, String newUrl);
 

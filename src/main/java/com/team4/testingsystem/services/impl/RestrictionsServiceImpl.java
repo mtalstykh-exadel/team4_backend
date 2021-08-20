@@ -1,6 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Answer;
+import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
@@ -11,6 +12,7 @@ import com.team4.testingsystem.exceptions.AssignmentFailException;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.IllegalGradeException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
+import com.team4.testingsystem.exceptions.QuestionOrTopicEditingException;
 import com.team4.testingsystem.exceptions.TestAlreadyStartedException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.RestrictionsService;
@@ -184,6 +186,20 @@ public class RestrictionsServiceImpl implements RestrictionsService {
 
         if (answers.stream().filter(Answer::isCorrect).count() != 1) {
             throw new AnswersAreBadException("Question must have 1 correct answer");
+        }
+    }
+
+    @Override
+    public void checkNotArchivedQuestion(Question question) {
+        if (!question.isAvailable()) {
+            throw new QuestionOrTopicEditingException("You can't edit unavailable question");
+        }
+    }
+
+    @Override
+    public void checkNotArchivedContentFile(ContentFile contentFile) {
+        if (!contentFile.isAvailable()) {
+            throw new QuestionOrTopicEditingException("You can't edit unavailable topic");
         }
     }
 }
