@@ -24,8 +24,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(value = "test")
@@ -41,16 +39,14 @@ public class FileControllerIntegrationTest {
 
     private static final String FILE_PATH = "file.txt";
 
-    private static final String PATH = "/files/";
-
     private static final String FILE_CONTENT = "test data";
 
     private static final String WRONG_FILE_NAME = "non-existent file.txt";
 
-    private static final String WRONG_PATH = "/";
-
     @Autowired
-    FileControllerIntegrationTest(MockMvc mockMvc, FileStorageForTests fileStorage, UsersRepository usersRepository) {
+    FileControllerIntegrationTest(MockMvc mockMvc,
+                                  FileStorageForTests fileStorage,
+                                  UsersRepository usersRepository) {
         this.mockMvc = mockMvc;
         this.fileStorage = fileStorage;
         this.usersRepository = usersRepository;
@@ -60,38 +56,41 @@ public class FileControllerIntegrationTest {
     void init() {
         User user = usersRepository.findAll().iterator().next();
         userDetails = new CustomUserDetails(user);
-    }
 
-    void saveFile() {
         Resource resource = new ByteArrayResource(FILE_CONTENT.getBytes());
         fileStorage.save(FILE_PATH, resource);
     }
 
     @Test
     void downloadSuccess() throws Exception {
-        saveFile();
-
-        mockMvc.perform(get(PATH + "{url}", FILE_PATH)
+        mockMvc.perform(get("/files/{url}", FILE_PATH)
                 .with(user(userDetails)))
                 .andExpect(status().isOk());
     }
 
     @Test
     void downloadInternalServerError() throws Exception {
-        saveFile();
-
-        mockMvc.perform(get(PATH + "{url}", WRONG_FILE_NAME)
+        mockMvc.perform(get("/files/{url}", WRONG_FILE_NAME)
                 .with(user(userDetails)))
                 .andExpect(status().isExpectationFailed());
     }
 
     @Test
     void downloadNotFound() throws Exception {
-        saveFile();
-
-        mockMvc.perform(get(WRONG_PATH + "{url}", WRONG_FILE_NAME)
+        mockMvc.perform(get("/files/{url}", WRONG_FILE_NAME)
                 .with(user(userDetails)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isExpectationFailed());
+    }
+
+    @Test
+    void uploadSuccess() throws Exception {
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", FILE_PATH,
+                MediaType.MULTIPART_FORM_DATA_VALUE, FILE_CONTENT.getBytes());
+
+        mockMvc.perform(multipart("/files/listening")
+                .file(mockMultipartFile)
+                .with(user(userDetails)))
+                .andExpect(status().isOk());
     }
 
     @AfterEach
