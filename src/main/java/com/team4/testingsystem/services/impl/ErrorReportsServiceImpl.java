@@ -4,11 +4,14 @@ import com.team4.testingsystem.entities.ErrorReport;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.ErrorReportNotFoundException;
 import com.team4.testingsystem.repositories.ErrorReportsRepository;
 import com.team4.testingsystem.services.ErrorReportsService;
 import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
+import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +26,17 @@ public class ErrorReportsServiceImpl implements ErrorReportsService {
 
     private final TestsService testsService;
 
+    private final RestrictionsService restrictionsService;
+
     @Autowired
     public ErrorReportsServiceImpl(ErrorReportsRepository errorReportsRepository,
                                    QuestionService questionService,
-                                   TestsService testsService) {
+                                   TestsService testsService,
+                                   RestrictionsService restrictionsService) {
         this.errorReportsRepository = errorReportsRepository;
         this.questionService = questionService;
         this.testsService = testsService;
+        this.restrictionsService = restrictionsService;
     }
 
     @Override
@@ -43,6 +50,14 @@ public class ErrorReportsServiceImpl implements ErrorReportsService {
 
         Test test = testsService.getById(testId);
 
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+
+        restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
+
+        restrictionsService.checkStatus(test, Status.STARTED);
+
+        restrictionsService.checkTestContainsQuestion(test, question);
+
         TestQuestionID errorReportId = new TestQuestionID(test, question);
 
         errorReportsRepository.save(new ErrorReport(errorReportId, reportBody));
@@ -55,6 +70,14 @@ public class ErrorReportsServiceImpl implements ErrorReportsService {
         Test test = testsService.getById(testId);
 
         TestQuestionID errorReportId = new TestQuestionID(test, question);
+
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+
+        restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
+
+        restrictionsService.checkStatus(test, Status.STARTED);
+
+        restrictionsService.checkTestContainsQuestion(test, question);
 
         if (errorReportsRepository.removeById(errorReportId) == 0) {
             throw new ErrorReportNotFoundException();
