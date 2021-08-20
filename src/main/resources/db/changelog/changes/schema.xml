@@ -738,4 +738,47 @@
         <addPrimaryKey tableName="coach_answer" columnNames="test_id, question_id"/>
     </changeSet>
 
+    <changeSet id="update_user_avatars" author="maxim12321">
+        <update tableName="user">
+            <column name="avatar" value="https://bigpicture.ru/wp-content/uploads/2019/04/grandbeauty00.jpg"/>
+            <column name="user_name" value="Katie Murphy"/>
+            <where>user_login='rus_user@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://intrigue.dating/wp-content/uploads/2020/09/4346343-105.jpg"/>
+            <column name="user_name" value="Michelle Phillips"/>
+            <where>user_login='rus_hr@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://pbs.twimg.com/profile_images/1101474856284155905/CNBTOxPX.png"/>
+            <column name="user_name" value="Valerie Rivera"/>
+            <where>user_login='rus_coach@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://lh3.googleusercontent.com/proxy/uJ3PVXfB9ELPGcVDU1xXUwXEgcDwZWow_qnMg-ByuX2nGl2jPoCh1y92Y2YcDOc6bXRb_lFnq0_p37q52XT2Gu7fc9EwlN5qfF-qUttUbQBy"/>
+            <column name="user_name" value="William Vega"/>
+            <where>user_login='rus_admin@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://lifestylewomens.ru/wp-content/uploads/2021/05/14-jamie-dornan-2.jpg"/>
+            <column name="user_name" value="Roger Bell"/>
+            <where>user_login='eng_user@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://the-steppe.com/pictures/files/Alua%20Shymkent/WhatsApp%20Image%202019-09-06%20at%2010.37.49.jpeg"/>
+            <column name="user_name" value="Vanessa Clark"/>
+            <where>user_login='eng_hr@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://www.womanhit.ru/media/CACHE/images/articleimage2/2019/2/2_jFpCK6q/c4d51a5a07fbfa5bd23d0d5c8052e3ee.png"/>
+            <column name="user_name" value="Tom Fields"/>
+            <where>user_login='eng_coach@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://classpic.ru/wp-content/uploads/2016/02/14272/Kris-Hemsvort.jpg"/>
+            <column name="user_name" value="James Berry"/>
+            <where>user_login='eng_admin@northsixty.com'</where>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>
