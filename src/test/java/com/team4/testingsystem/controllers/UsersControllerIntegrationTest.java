@@ -192,7 +192,7 @@ class UsersControllerIntegrationTest {
     void getAllUsersByNameLikeExactName() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/users")
                 .with(user(hrDetails))
-                .param("name", "Russian User"))
+                .param("name", "Katie Murphy"))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -201,7 +201,7 @@ class UsersControllerIntegrationTest {
         });
 
         Assertions.assertEquals(1, userDTOs.size());
-        Assertions.assertEquals("Russian User", userDTOs.get(0).getName());
+        Assertions.assertEquals("Katie Murphy", userDTOs.get(0).getName());
     }
 
     @Test
@@ -230,7 +230,7 @@ class UsersControllerIntegrationTest {
     void getAllUsersByNameLikeSubstring() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/users")
                 .with(user(hrDetails))
-                .param("name", "an U"))
+                .param("name", "e Mu"))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -239,14 +239,14 @@ class UsersControllerIntegrationTest {
         });
 
         Assertions.assertEquals(1, userDTOs.size());
-        Assertions.assertEquals("Russian User", userDTOs.get(0).getName());
+        Assertions.assertEquals("Katie Murphy", userDTOs.get(0).getName());
     }
 
     @Test
     void getAllUsersByNameLikeSubstringIgnoreCase() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/users")
                 .with(user(hrDetails))
-                .param("name", "An u"))
+                .param("name", "lle Ph"))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -255,7 +255,7 @@ class UsersControllerIntegrationTest {
         });
 
         Assertions.assertEquals(1, userDTOs.size());
-        Assertions.assertEquals("Russian User", userDTOs.get(0).getName());
+        Assertions.assertEquals("Michelle Phillips", userDTOs.get(0).getName());
     }
 
     @Test
