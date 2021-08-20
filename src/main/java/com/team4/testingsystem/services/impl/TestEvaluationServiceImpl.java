@@ -10,7 +10,7 @@ import com.team4.testingsystem.exceptions.CoachGradeNotFoundException;
 import com.team4.testingsystem.repositories.CoachAnswerRepository;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.services.ChosenOptionService;
-import com.team4.testingsystem.services.ModuleCoachAnswersService;
+import com.team4.testingsystem.services.ModuleCoachAnswerService;
 import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.TestEvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,19 +25,19 @@ import java.util.stream.Collectors;
 public class TestEvaluationServiceImpl implements TestEvaluationService {
     private final ChosenOptionService chosenOptionService;
     private final ModuleGradesService moduleGradesService;
-    private final ModuleCoachAnswersService moduleCoachAnswersService;
+    private final ModuleCoachAnswerService moduleCoachAnswerService;
     private final CoachGradeRepository coachGradeRepository;
     private final CoachAnswerRepository coachAnswerRepository;
 
     @Autowired
     public TestEvaluationServiceImpl(ChosenOptionService chosenOptionService,
                                      ModuleGradesService moduleGradesService,
-                                     ModuleCoachAnswersService moduleCoachAnswersService,
+                                     ModuleCoachAnswerService moduleCoachAnswerService,
                                      CoachGradeRepository coachGradeRepository,
                                      CoachAnswerRepository coachAnswerRepository) {
         this.chosenOptionService = chosenOptionService;
         this.moduleGradesService = moduleGradesService;
-        this.moduleCoachAnswersService = moduleCoachAnswersService;
+        this.moduleCoachAnswerService = moduleCoachAnswerService;
         this.coachGradeRepository = coachGradeRepository;
         this.coachAnswerRepository = coachAnswerRepository;
     }
@@ -47,7 +47,7 @@ public class TestEvaluationServiceImpl implements TestEvaluationService {
     }
 
     private void saveModuleCoachAnswer(String moduleName, List<CoachAnswer> coachAnswers) {
-        moduleCoachAnswersService.add(moduleName, coachAnswers);
+        moduleCoachAnswerService.addAnswers(moduleName, coachAnswers);
     }
 
     private void saveScoreAutomaticCheck(Test test, Modules module, List<ChosenOption> allChosenOptions) {
