@@ -17,6 +17,9 @@ import java.util.Optional;
 @Repository
 public interface TestsRepository extends CrudRepository<Test, Long> {
 
+    @Transactional
+    Optional<Test> findById(Long testId);
+
     @Query(value = "select t from Test t "
             + "where t.user.id = ?1 "
             + "and t.isAvailable = true "
@@ -41,7 +44,6 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
             + "t.deadline desc nulls last, "
             + "t.assignedAt desc nulls last ")
     List<Test> getAllByUserAndLevel(Long userId, String level, Pageable pageable);
-
 
     @Query(value = "select t from Test t where t.status in ?1 and t.isAvailable = true "
             + "order by case "
@@ -69,7 +71,7 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     List<Test> getAllByAssignedCoachAndStatuses(Long coachId, Status[] status, Pageable pageable);
 
     @Transactional
-    @Modifying(clearAutomatically = true)
+    @Modifying
     @Query(value = "update Test t set t.status = ?2 where t.id = ?1 and t.isAvailable = true")
     int updateStatusByTestId(Long testId, Status newStatus);
 
