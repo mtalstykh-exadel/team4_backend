@@ -54,6 +54,14 @@ public class ContentFile implements Serializable {
         this.topic = topic;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getTopic() {
         return topic;
     }
@@ -68,10 +76,6 @@ public class ContentFile implements Serializable {
 
     public void setAvailable(boolean available) {
         this.available = available;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public List<Question> getQuestions() {

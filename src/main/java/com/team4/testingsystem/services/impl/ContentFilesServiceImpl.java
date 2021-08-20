@@ -43,10 +43,12 @@ public class ContentFilesServiceImpl implements ContentFilesService {
 
         if (contentFile.getUrl().equals(oldContentFile.getUrl())) {
             questionService.archiveQuestionsByContentFileId(id);
+            contentFile.setId(id);
             return contentFilesRepository.save(contentFile);
         }
 
         contentFilesRepository.updateAvailable(id, false);
+        contentFile.setId(null);
         return add(contentFile);
     }
 
