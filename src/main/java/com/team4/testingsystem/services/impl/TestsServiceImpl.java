@@ -90,8 +90,8 @@ public class TestsServiceImpl implements TestsService {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
         return getByStatuses(statuses, pageable).stream()
-            .filter(test -> !test.getUser().getId().equals(currentUserId))
-            .collect(Collectors.toList());
+                .filter(test -> !test.getUser().getId().equals(currentUserId))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -134,30 +134,30 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public long startForUser(long userId, Levels levelName) {
+    public long createNotAssigned(long userId, Levels levelName) {
         User user = usersService.getUserById(userId);
 
         restrictionsService.checkHasNoStartedTests(userId);
 
         List<Test> selfStarted = testsRepository
-            .getSelfStartedByUserAfter(user, Instant.now().minus(1, ChronoUnit.DAYS));
+                .getSelfStartedByUserAfter(user, Instant.now().minus(1, ChronoUnit.DAYS));
 
         if (selfStarted.size() >= testsLimit) {
             throw new TestsLimitExceededException(selfStarted.get(0)
-                .getStartedAt().plus(1, ChronoUnit.DAYS).toString());
+                    .getStartedAt().plus(1, ChronoUnit.DAYS).toString());
         }
-        Test test = createForUser(user, levelName)
-            .startedAt(Instant.now())
-            .status(Status.STARTED)
-            .priority(Priority.LOW)
-            .build();
+        Test test = create(user, levelName)
+                .startedAt(Instant.now())
+                .status(Status.STARTED)
+                .priority(Priority.LOW)
+                .build();
 
         testsRepository.save(test);
         return test.getId();
     }
 
     @Override
-    public long assignForUser(long userId, Levels levelName, Instant deadline, Priority priority) {
+    public long createAssigned(long userId, Levels levelName, Instant deadline, Priority priority) {
 
         User user = usersService.getUserById(userId);
 
@@ -165,12 +165,12 @@ public class TestsServiceImpl implements TestsService {
 
         restrictionsService.checkHasNoAssignedTests(user);
 
-        Test test = createForUser(user, levelName)
-            .assignedAt(Instant.now())
-            .deadline(deadline)
-            .status(Status.ASSIGNED)
-            .priority(priority)
-            .build();
+        Test test = create(user, levelName)
+                .assignedAt(Instant.now())
+                .deadline(deadline)
+                .status(Status.ASSIGNED)
+                .priority(priority)
+                .build();
 
         testsRepository.save(test);
 
@@ -195,28 +195,48 @@ public class TestsServiceImpl implements TestsService {
         notificationService.create(NotificationType.TEST_DEASSIGNED, test.getUser(), test);
     }
 
-    private Test.Builder createForUser(User user, Levels levelName) {
+    private Test.Builder create(User user, Levels levelName) {
         Level level = levelService.getLevelByName(levelName.name());
         return Test.builder()
-            .user(user)
-            .level(level);
+                .user(user)
+                .level(level);
     }
 
-    @Override
-    public Test start(long id) {
-
-        if (testsRepository.start(Instant.now(), id) == 0) {
-            throw new TestNotFoundException();
-        }
-        Test test = testGeneratingService.formTest(getById(id));
+    private Test start(Test test) {
 
         test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
+        testsRepository.start(Instant.now(), test.getId());
+
+        test = testGeneratingService.formTest(getById(test.getId()));
+
         save(test);
+
         createTimer(test);
 
         notificationService.create(NotificationType.TEST_STARTED, test.getUser(), test);
         return test;
     }
+
+    @Override
+    public Test startNotAssigned(long testId) {
+        Test test = getById(testId);
+        return start(test);
+    }
+
+    @Override
+    public Test startAssigned(long testId) {
+        Test test = getById(testId);
+
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+
+        restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
+
+        restrictionsService.checkStatus(test, Status.ASSIGNED);
+
+        restrictionsService.checkHasNoStartedTests(currentUserId);
+        return start(test);
+    }
+
 
     private void createTimer(Test test) {
         Timer timer = new Timer(test);

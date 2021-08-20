@@ -30,11 +30,13 @@ public interface TestsService {
 
     Test save(Test test);
 
-    long startForUser(long userId, Levels level);
+    long createNotAssigned(long userId, Levels level);
 
-    long assignForUser(long userId, Levels level, Instant deadline, Priority priority);
+    long createAssigned(long userId, Levels level, Instant deadline, Priority priority);
 
-    Test start(long id);
+    Test startNotAssigned(long testId);
+
+    Test startAssigned(long testId);
 
     void deassign(long id);
 

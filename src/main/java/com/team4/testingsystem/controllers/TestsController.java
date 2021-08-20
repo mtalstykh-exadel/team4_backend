@@ -130,7 +130,7 @@ public class TestsController {
     @PostMapping(path = "/assign/{userId}")
     @Secured("ROLE_HR")
     public long assign(@PathVariable("userId") long userId, @RequestBody AssignTestRequest request) {
-        return testsService.assignForUser(userId, request.getLevel(), request.getDeadline(), request.getPriority());
+        return testsService.createAssigned(userId, request.getLevel(), request.getDeadline(), request.getPriority());
     }
 
     @ApiOperation(value = "Is used when to deassign tests (HR)")
@@ -146,24 +146,15 @@ public class TestsController {
     @PostMapping(path = "/start")
     public TestDTO startNotAssigned(@RequestParam Levels level) {
         long userId = JwtTokenUtil.extractUserDetails().getId();
-        long createdTestId = testsService.startForUser(userId, level);
-        return testConverter.convertToDTO(testsService.start(createdTestId));
+        long createdTestId = testsService.createNotAssigned(userId, level);
+        return testConverter.convertToDTO(testsService.startNotAssigned(createdTestId));
     }
 
     @ApiOperation(value = "Is used when the user starts the test which was assigned by an HR")
     @PostMapping(path = "/start/{testId}")
     public TestDTO startAssigned(@PathVariable("testId") long testId) {
-        Test test = testsService.getById(testId);
 
-        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
-
-        restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
-
-        restrictionsService.checkStatus(test, Status.ASSIGNED);
-
-        restrictionsService.checkHasNoStartedTests(currentUserId);
-
-        return testConverter.convertToDTO(testsService.start(testId));
+        return testConverter.convertToDTO(testsService.startAssigned(testId));
     }
 
     @ApiOperation(value = "Is used to finish tests")

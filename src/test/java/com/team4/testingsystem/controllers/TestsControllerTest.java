@@ -225,7 +225,7 @@ class TestsControllerTest {
     void assignSuccess() {
         AssignTestRequest request = new AssignTestRequest(Levels.A1, Instant.now(), Priority.MEDIUM);
 
-        Mockito.when(testsService.assignForUser(GOOD_USER_ID, Levels.A1, request.getDeadline(), Priority.MEDIUM))
+        Mockito.when(testsService.createAssigned(GOOD_USER_ID, Levels.A1, request.getDeadline(), Priority.MEDIUM))
                 .thenReturn(1L);
 
         Assertions.assertEquals(1L, testsController.assign(GOOD_USER_ID, request));
@@ -235,7 +235,7 @@ class TestsControllerTest {
     void assignFail() {
         AssignTestRequest request = new AssignTestRequest(Levels.A1, Instant.now(), Priority.LOW);
 
-        Mockito.when(testsService.assignForUser(BAD_USER_ID, Levels.A1, request.getDeadline(), Priority.LOW))
+        Mockito.when(testsService.createAssigned(BAD_USER_ID, Levels.A1, request.getDeadline(), Priority.LOW))
                 .thenThrow(UserNotFoundException.class);
 
         Assertions.assertThrows(UserNotFoundException.class, () -> testsController.assign(BAD_USER_ID, request));
@@ -263,8 +263,8 @@ class TestsControllerTest {
         try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
             builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
             Mockito.when(customUserDetails.getId()).thenReturn(1L);
-            Mockito.when(testsService.startForUser(1L, Levels.A1)).thenReturn(1L);
-            Mockito.when(testsService.start(1L)).thenReturn(test);
+            Mockito.when(testsService.createNotAssigned(1L, Levels.A1)).thenReturn(1L);
+            Mockito.when(testsService.startNotAssigned(1L)).thenReturn(test);
             Mockito.when(testConverter.convertToDTO(test)).thenReturn(testDTO);
 
             Assertions.assertEquals(testDTO, testsController.startNotAssigned(Levels.A1));
@@ -276,7 +276,7 @@ class TestsControllerTest {
         try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
             builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
             Mockito.when(customUserDetails.getId()).thenReturn(1L);
-            Mockito.when(testsService.startForUser(1L, Levels.A1)).thenThrow(TestsLimitExceededException.class);
+            Mockito.when(testsService.createNotAssigned(1L, Levels.A1)).thenThrow(TestsLimitExceededException.class);
 
             Assertions.assertThrows(TestsLimitExceededException.class,
                     () -> testsController.startNotAssigned(Levels.A1));
@@ -285,26 +285,17 @@ class TestsControllerTest {
 
     @org.junit.jupiter.api.Test
     void startAssignedSuccess() {
-        try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
-            builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
-            Mockito.when(customUserDetails.getId()).thenReturn(1L);
+        testsController.startAssigned(GOOD_TEST_ID);
 
-            testsController.startAssigned(GOOD_TEST_ID);
-
-            verify(testsService).start(GOOD_TEST_ID);
-        }
+        verify(testsService).startAssigned(GOOD_TEST_ID);
     }
 
     @org.junit.jupiter.api.Test
     void startAssignedFail() {
-        try (MockedStatic<JwtTokenUtil> builderMockedStatic = Mockito.mockStatic(JwtTokenUtil.class)) {
-            builderMockedStatic.when(JwtTokenUtil::extractUserDetails).thenReturn(customUserDetails);
-            Mockito.when(customUserDetails.getId()).thenReturn(1L);
 
-            doThrow(TestNotFoundException.class).when(testsService).start(BAD_TEST_ID);
+            doThrow(TestNotFoundException.class).when(testsService).startAssigned(BAD_TEST_ID);
 
             Assertions.assertThrows(TestNotFoundException.class, () -> testsController.startAssigned(BAD_TEST_ID));
-        }
     }
 
     @org.junit.jupiter.api.Test
