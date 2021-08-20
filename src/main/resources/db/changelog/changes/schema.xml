@@ -738,7 +738,7 @@
         <addPrimaryKey tableName="coach_answer" columnNames="test_id, question_id"/>
     </changeSet>
 
-    <changeSet id="update_user_avatars_and_photos" author="maxim12321">
+    <changeSet id="update_user_avatars_and_photos" author="Darina">
         <update tableName="user">
             <column name="avatar" value="https://bigpicture.ru/wp-content/uploads/2019/04/grandbeauty00.jpg"/>
             <column name="user_name" value="Katie Murphy"/>
