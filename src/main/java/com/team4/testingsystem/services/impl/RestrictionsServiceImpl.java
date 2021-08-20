@@ -172,7 +172,7 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     @Override
     public void checkModuleIsNotListening(Question question) {
         if (question.getModule().getName().equals(Modules.LISTENING.getName())) {
-            throw new AccessControlException("You can't add one listening question to archive");
+            throw new AccessControlException("You can't archive one listening question");
         }
     }
 
