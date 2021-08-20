@@ -142,18 +142,13 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void getAllUnverifiedTestsSuccess() {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
-
         Mockito.when(userDetails.getId()).thenReturn(1L);
-
         try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
-
             Mockito.when(testsRepository.getByStatuses(statuses, pageable))
                     .thenReturn(tests);
             Mockito.when(tests.stream()).thenReturn(stream);
-
             Mockito.when(stream.filter(any())).thenReturn(stream);
-
             Mockito.when(stream.collect(any())).thenReturn(tests);
 
             Assertions.assertEquals(tests, testsService.getAllUnverifiedTests(pageable));
@@ -172,18 +167,12 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void startForUserSuccess() {
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
-
         Mockito.when(testsRepository.getSelfStartedByUserAfter(any(), any())).thenReturn(tests);
-
         Mockito.when(tests.size()).thenReturn(-1);
-
         Level level = EntityCreatorUtil.createLevel();
         Mockito.when(levelService.getLevelByName(level.getName())).thenReturn(level);
-
         try (MockedStatic<Test> builderMockedStatic = Mockito.mockStatic(Test.class)) {
-
             builderMockedStatic.when(Test::builder).thenReturn(builder);
-
             Mockito.when(builder.user(any())).thenReturn(builder);
             Mockito.when(builder.startedAt(any())).thenReturn(builder);
             Mockito.when(builder.status(any())).thenReturn(builder);
@@ -208,29 +197,25 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void startForUserFailTestsLimit() {
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
-
         Mockito.when(testsRepository.getSelfStartedByUserAfter(any(), any())).thenReturn(tests);
-
         Mockito.when(tests.size()).thenReturn(1000000007);
-
         Mockito.when(tests.get(0)).thenReturn(test);
-
         Mockito.when(test.getStartedAt()).thenReturn(Instant.now());
 
+        Assertions.assertThrows(
+                TestsLimitExceededException.class, () -> testsService.startForUser(GOOD_USER_ID, Levels.A1));
+        Mockito.when(tests.size()).thenReturn(0);
         Assertions.assertThrows(
                 TestsLimitExceededException.class, () -> testsService.startForUser(GOOD_USER_ID, Levels.A1));
     }
 
     @org.junit.jupiter.api.Test
     void assignFail() {
-        Level level = EntityCreatorUtil.createLevel();
         Instant deadline = Instant.now();
         Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
 
-
         Assertions.assertThrows(UserNotFoundException.class,
                 () -> testsService.assignForUser(BAD_USER_ID, Levels.A1, deadline, Priority.LOW));
-
         Mockito.verify(notificationService, Mockito.never()).create(any(), any(), any());
     }
 
@@ -238,14 +223,10 @@ class TestsServiceImplTest {
     void assignForUserSuccess() {
         Level level = EntityCreatorUtil.createLevel();
         Instant deadline = Instant.now();
-
         Mockito.when(levelService.getLevelByName(level.getName())).thenReturn(level);
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
-
         try (MockedStatic<Test> builderMockedStatic = Mockito.mockStatic(Test.class)) {
-
             builderMockedStatic.when(Test::builder).thenReturn(builder);
-
             Mockito.when(builder.user(any())).thenReturn(builder);
             Mockito.when(builder.assignedAt(any())).thenReturn(builder);
             Mockito.when(builder.deadline(deadline)).thenReturn(builder);
@@ -253,7 +234,6 @@ class TestsServiceImplTest {
             Mockito.when(builder.priority(any())).thenReturn(builder);
             Mockito.when(builder.level(any())).thenReturn(builder);
             Mockito.when(builder.build()).thenReturn(test);
-
             Mockito.when(test.getId()).thenReturn(1L);
             Mockito.when(test.getUser()).thenReturn(user);
 
@@ -261,6 +241,8 @@ class TestsServiceImplTest {
                     testsService.assignForUser(GOOD_USER_ID, Levels.A1, deadline, Priority.HIGH));
 
             Mockito.verify(notificationService).create(NotificationType.TEST_ASSIGNED, user, test);
+            Mockito.verify(restrictionsService).checkNotSelfAssign(user);
+            Mockito.verify(restrictionsService).checkHasNoAssignedTests(user);
         }
     }
 
@@ -268,7 +250,6 @@ class TestsServiceImplTest {
     void deassignSuccessTestWasStarted() {
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
         Mockito.when(test.getUser()).thenReturn(user);
-
         Mockito.when(test.getStartedAt()).thenReturn(Instant.now());
 
         testsService.deassign(GOOD_TEST_ID);
@@ -281,11 +262,12 @@ class TestsServiceImplTest {
     void deassignSuccessTestWasNotStarted() {
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
         Mockito.when(test.getUser()).thenReturn(user);
-
         Mockito.when(test.getStartedAt()).thenReturn(null);
 
         testsService.deassign(GOOD_TEST_ID);
 
+        Mockito.verify(restrictionsService).checkNotSelfDeassign(test.getUser());
+        Mockito.verify(restrictionsService).checkIsAssigned(test);
         Mockito.verify(testsRepository).archiveById(GOOD_TEST_ID);
         Mockito.verify(notificationService).create(NotificationType.TEST_DEASSIGNED, user, test);
     }
@@ -304,13 +286,11 @@ class TestsServiceImplTest {
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
         Mockito.when(testGeneratingService.formTest(any())).thenReturn(test);
         Mockito.when(test.getUser()).thenReturn(user);
-
         try (MockedConstruction<Timer> mocked = Mockito.mockConstruction(Timer.class,
                 (mock, context) -> {
                     Mockito.when(mock.getTest()).thenReturn(test);
                 })) {
             Mockito.when(test.getId()).thenReturn(GOOD_TEST_ID);
-
             Mockito.when(test.getFinishTime()).thenReturn(Instant.now());
 
             Test result = testsService.start(GOOD_TEST_ID);
@@ -340,15 +320,13 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void finishSuccess() {
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
-
         Mockito.when(test.getStatus()).thenReturn(Status.STARTED);
 
         testsService.finish(GOOD_TEST_ID, Instant.now());
 
         Mockito.verify(testEvaluationService).countScoreBeforeCoachCheck(test);
-
         Mockito.verify(testsRepository).finish(any(Instant.class), anyLong());
-
+        Mockito.verify(timerRepository).deleteByTestId(GOOD_TEST_ID);
         Assertions.assertDoesNotThrow(() -> testsService.finish(GOOD_TEST_ID, Instant.now()));
     }
 
@@ -368,6 +346,8 @@ class TestsServiceImplTest {
 
         Mockito.verify(testsRepository).coachSubmit(any(Instant.class), anyLong());
         Mockito.verify(testEvaluationService).updateScoreAfterCoachCheck(test);
+        Mockito.verify(restrictionsService).checkCoachIsCurrentUser(test);
+        Mockito.verify(restrictionsService).checkStatus(test, Status.IN_VERIFICATION);
         Mockito.verify(notificationService).create(NotificationType.TEST_VERIFIED, user, test);
     }
 
@@ -393,6 +373,7 @@ class TestsServiceImplTest {
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
 
         Assertions.assertEquals(test, testsService.startTestVerification(GOOD_TEST_ID));
+        Mockito.verify(restrictionsService).checkCoachIsCurrentUser(test);
     }
 
     @org.junit.jupiter.api.Test
@@ -410,11 +391,8 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void assignCoachSuccess() {
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
-
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
-
         Mockito.when(test.getUser()).thenReturn(user);
-
         Mockito.when(user.getId()).thenReturn(GOOD_USER_ID + 1);
 
         Assertions.assertDoesNotThrow(() -> testsService.assignCoach(GOOD_TEST_ID, GOOD_USER_ID));
@@ -435,11 +413,8 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void assignCoachFailTestNotFound() {
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
-
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
-
         Mockito.when(test.getUser()).thenReturn(user);
-
         Mockito.when(user.getId()).thenReturn(GOOD_USER_ID);
 
         Assertions.assertThrows(CoachAssignmentFailException.class,
@@ -450,7 +425,6 @@ class TestsServiceImplTest {
     @org.junit.jupiter.api.Test
     void assignCoachFailSelfAssignment() {
         Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
-
         Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
 
         Assertions.assertThrows(TestNotFoundException.class,
@@ -487,5 +461,20 @@ class TestsServiceImplTest {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
         Mockito.when(testsRepository.getByStatuses(statuses, pageable)).thenReturn(tests);
         Assertions.assertEquals(tests, testsService.getByStatuses(statuses, pageable));
+    }
+
+    @org.junit.jupiter.api.Test
+    void getTestsByUserIdAndLevel(){
+        List<Test> tests = List.of(new Test());
+        Mockito.when(testsRepository.getAllByUserAndLevel(GOOD_USER_ID, Levels.A1.name(), pageable))
+                .thenReturn(tests);
+        Assertions.assertEquals(tests, testsService
+                .getTestsByUserIdAndLevel(GOOD_USER_ID, Levels.A1, pageable));
+    }
+
+     @org.junit.jupiter.api.Test
+    void startAllTimers(){
+        testsService.startAllTimers();
+        Mockito.verify(timerRepository).findAll();
     }
 }
