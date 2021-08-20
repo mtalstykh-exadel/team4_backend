@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -101,7 +100,7 @@ public class QuestionController {
     @ApiOperation(value = "Add content file with questions")
     @PostMapping(value = "/listening")
     @Secured("ROLE_COACH")
-    public ContentFileDTO addListening(@RequestPart ContentFileDTO data) {
+    public ContentFileDTO addListening(@RequestBody ContentFileDTO data) {
         ContentFile contentFile = contentFilesService.add(contentFileConverter.convertToEntity(data));
         return new ContentFileDTO(contentFile);
     }
@@ -110,7 +109,7 @@ public class QuestionController {
     @PutMapping(value = "/update/listening/{contentFileId}")
     @Secured("ROLE_COACH")
     public ContentFileDTO updateListening(@PathVariable("contentFileId") Long id,
-                                          @RequestPart ContentFileDTO data) {
+                                          @RequestBody ContentFileDTO data) {
         ContentFile contentFile = contentFilesService.update(id, contentFileConverter.convertToEntity(data));
         return new ContentFileDTO(contentFile);
     }
