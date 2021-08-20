@@ -27,7 +27,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -136,6 +135,7 @@ public class TestsServiceImpl implements TestsService {
         restrictionsService.checkCoachIsCurrentUser(test);
 
         testsRepository.updateStatusByTestId(testId, Status.IN_VERIFICATION);
+        test.setStatus(Status.IN_VERIFICATION);
 
         return test;
     }
