@@ -148,7 +148,7 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     }
 
     @Override
-    public void checkNotSelfAssignAdmin(Test test){
+    public void checkNotSelfAssignAdmin(Test test) {
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
 
         if (test.getUser().getId().equals(currentUserId)) {

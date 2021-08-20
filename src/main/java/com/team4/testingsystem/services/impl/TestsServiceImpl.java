@@ -299,7 +299,6 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public void assignCoach(long id, long coachId) {
-        User coach = usersService.getUserById(coachId);
 
         Test test = getById(id);
 
@@ -310,6 +309,8 @@ public class TestsServiceImpl implements TestsService {
         restrictionsService.checkStatus(test, Status.COMPLETED);
 
         restrictionsService.checkNotSelfAssignAdmin(test);
+
+        User coach = usersService.getUserById(coachId);
 
         testsRepository.assignCoach(coach, id);
         notificationService.create(NotificationType.COACH_ASSIGNED, coach, test);

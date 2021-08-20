@@ -4,7 +4,6 @@ import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Status;
-import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 
 public interface RestrictionsService {
 
