@@ -50,10 +50,11 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     @Override
     public ContentFile update(MultipartFile file, Long id, ContentFile contentFile) {
         if (file == null) {
+            contentFilesRepository.updateAvailable(id, false);
             questionService.archiveQuestionsByContentFileId(id);
             return contentFilesRepository.save(contentFile);
         }
-        updateAvailability(id, false);
+        contentFilesRepository.updateAvailable(id, false);
         return add(file, contentFile);
     }
 

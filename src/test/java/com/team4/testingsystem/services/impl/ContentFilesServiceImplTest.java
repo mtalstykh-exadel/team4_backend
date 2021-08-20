@@ -71,7 +71,7 @@ class ContentFilesServiceImplTest {
             Mockito.when(contentFilesRepository.updateAvailable(ID, UNAVAILABLE)).thenReturn(1);
             ContentFile result = contentFilesService.update(file, ID, contentFile);
 
-            verify(questionService).archiveQuestionsByContentFileId(ID);
+            verify(contentFilesRepository).updateAvailable(ID, false);
             Assertions.assertEquals(contentFile, result);
         }
     }
