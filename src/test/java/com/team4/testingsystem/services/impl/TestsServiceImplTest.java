@@ -418,19 +418,18 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void assignCoachFailUserNotFound() {
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
         Mockito.when(usersService.getUserById(BAD_USER_ID)).thenThrow(UserNotFoundException.class);
 
         Assertions.assertThrows(UserNotFoundException.class,
-                () -> testsService.assignCoach(BAD_TEST_ID, BAD_USER_ID));
+                () -> testsService.assignCoach(GOOD_TEST_ID, BAD_USER_ID));
         Mockito.verify(notificationService, Mockito.never()).create(any(), any(), any());
     }
 
     @org.junit.jupiter.api.Test
     void assignCoachFailTestNotFound() {
-        Mockito.when(usersService.getUserById(GOOD_USER_ID)).thenReturn(user);
 
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.empty());
-
 
         Assertions.assertThrows(TestNotFoundException.class,
                 () -> testsService.assignCoach(GOOD_TEST_ID, GOOD_USER_ID));
