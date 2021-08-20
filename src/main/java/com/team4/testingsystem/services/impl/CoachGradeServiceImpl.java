@@ -35,9 +35,7 @@ public class CoachGradeServiceImpl implements CoachGradeService {
     }
 
     @Override
-    public Collection<CoachGrade> getGradesByTest(Long testId) {
-        Test test = testsService.getById(testId);
-
+    public Collection<CoachGrade> getGradesByTest(Test test) {
         restrictionsService.checkStatus(test, Status.IN_VERIFICATION);
 
         restrictionsService.checkCoachIsCurrentUser(test);

@@ -50,24 +50,15 @@ class CoachGradeServiceImplTest {
     private final Integer grade = 10;
 
     @Test
-    void getGradesByTestNotFound() {
-        Mockito.when(testsService.getById(1L)).thenThrow(TestNotFoundException.class);
-
-        Assertions.assertThrows(TestNotFoundException.class, () -> gradeService.getGradesByTest(1L));
-    }
-
-    @Test
     void getGradesByTestSuccess() {
-        Mockito.when(testsService.getById(1L)).thenReturn(test);
         ArrayList<CoachGrade> grades = new ArrayList<>();
         Mockito.when(gradeRepository.findAllById_Test(test)).thenReturn(grades);
-        gradeService.getGradesByTest(1L);
+        gradeService.getGradesByTest(test);
 
         Mockito.verify(restrictionsService).checkStatus(test, Status.IN_VERIFICATION);
         Mockito.verify(restrictionsService).checkCoachIsCurrentUser(test);
-        Assertions.assertEquals(grades, gradeService.getGradesByTest(1L));
+        Assertions.assertEquals(grades, gradeService.getGradesByTest(test));
     }
-
 
     @Test
     void addGradeSuccess() {
@@ -101,6 +92,4 @@ class CoachGradeServiceImplTest {
         Assertions.assertThrows(QuestionNotFoundException.class,
                 () -> gradeService.add(testId, questionId, grade, null));
     }
-
-
 }

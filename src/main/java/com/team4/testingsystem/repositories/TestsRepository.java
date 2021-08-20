@@ -17,9 +17,6 @@ import java.util.Optional;
 @Repository
 public interface TestsRepository extends CrudRepository<Test, Long> {
 
-    @Transactional
-    Optional<Test> findById(Long testId);
-
     @Query(value = "select t from Test t "
             + "where t.user.id = ?1 "
             + "and t.isAvailable = true "
