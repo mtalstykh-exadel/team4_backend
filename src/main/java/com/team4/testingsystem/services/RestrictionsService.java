@@ -17,6 +17,10 @@ public interface RestrictionsService {
 
     void checkTestContainsQuestion(Test test, Question question);
 
+    void checkHasAssignedCoach(Test test);
+
+    void checkHasNoAssignedCoaches(Test test);
+
     void checkCoachIsCurrentUser(Test test);
 
     void checkHasNoAssignedTests(User user);
@@ -26,5 +30,15 @@ public interface RestrictionsService {
     void checkNotSelfAssign(User user);
 
     void checkNotSelfDeassign(User user);
+
+    void checkHasNoStartedTests(Long userId);
+
+    void checkNotSelfAssignmentCoach(Test test, Long coachId);
+
+    void checkNotVerifiedForCoachDeassign(Test test);
+
+    void checkNotSelfAssignAdmin(Test test);
+
+    void checkNotSelfDeassignAdmin(Test test);
 
 }
