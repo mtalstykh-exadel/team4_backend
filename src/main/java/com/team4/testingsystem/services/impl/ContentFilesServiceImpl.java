@@ -40,6 +40,9 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     @Override
     public ContentFile update(Long id, ContentFile contentFile) {
         ContentFile oldContentFile = getById(id);
+        if (contentFile.getUrl() == null) {
+            contentFile.setUrl(oldContentFile.getUrl());
+        }
 
         if (contentFile.getUrl().equals(oldContentFile.getUrl())) {
             questionService.archiveQuestionsByContentFileId(id);
