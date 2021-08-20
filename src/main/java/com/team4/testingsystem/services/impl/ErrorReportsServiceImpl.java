@@ -69,8 +69,6 @@ public class ErrorReportsServiceImpl implements ErrorReportsService {
 
         Test test = testsService.getById(testId);
 
-        TestQuestionID errorReportId = new TestQuestionID(test, question);
-
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
 
         restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
@@ -78,6 +76,8 @@ public class ErrorReportsServiceImpl implements ErrorReportsService {
         restrictionsService.checkStatus(test, Status.STARTED);
 
         restrictionsService.checkTestContainsQuestion(test, question);
+
+        TestQuestionID errorReportId = new TestQuestionID(test, question);
 
         if (errorReportsRepository.removeById(errorReportId) == 0) {
             throw new ErrorReportNotFoundException();
