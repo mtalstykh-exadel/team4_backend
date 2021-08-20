@@ -105,6 +105,26 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
+    void getByIdWithRestrictions(){
+
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID);
+
+            Test result = testsService.getByIdWithRestrictions(GOOD_TEST_ID);
+
+            verify(restrictionsService).checkOwnerIsCurrentUser(test, GOOD_USER_ID);
+
+            verify(restrictionsService).checkStatus(test, Status.STARTED);
+
+            Assertions.assertEquals(test, result);
+        }
+
+    }
+
+    @org.junit.jupiter.api.Test
     void getByIdFail() {
         Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.getById(BAD_TEST_ID));
@@ -369,23 +389,33 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void finishSuccess() {
-        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
-        Mockito.when(test.getStatus()).thenReturn(Status.STARTED);
+    void selfFinishSuccess() {
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID);
 
-        testsService.finish(GOOD_TEST_ID, Instant.now());
+            Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+            Mockito.when(test.getStatus()).thenReturn(Status.STARTED);
 
-        verify(testEvaluationService).countScoreBeforeCoachCheck(test);
-        verify(testsRepository).finish(any(Instant.class), anyLong());
-        verify(timerRepository).deleteByTestId(GOOD_TEST_ID);
-        Assertions.assertDoesNotThrow(() -> testsService.finish(GOOD_TEST_ID, Instant.now()));
+            testsService.selfFinish(GOOD_TEST_ID);
+
+            restrictionsService.checkOwnerIsCurrentUser(test, GOOD_USER_ID);
+
+            restrictionsService.checkStatus(test, Status.STARTED);
+
+            verify(testEvaluationService).countScoreBeforeCoachCheck(test);
+            verify(testsRepository).finish(any(Instant.class), anyLong());
+            verify(timerRepository).deleteByTestId(GOOD_TEST_ID);
+            Assertions.assertDoesNotThrow(() -> testsService.selfFinish(GOOD_TEST_ID));
+        }
     }
 
     @org.junit.jupiter.api.Test
-    void finishFail() {
+    void selfFinishFail() {
         Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenThrow(TestNotFoundException.class);
 
-        Assertions.assertThrows(TestNotFoundException.class, () -> testsService.finish(BAD_TEST_ID, Instant.now()));
+        Assertions.assertThrows(TestNotFoundException.class,
+                () -> testsService.selfFinish(BAD_TEST_ID));
     }
 
     @org.junit.jupiter.api.Test

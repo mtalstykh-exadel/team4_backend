@@ -10,7 +10,6 @@ import com.team4.testingsystem.dto.TestInfo;
 import com.team4.testingsystem.dto.TestVerificationDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
-import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,19 +34,16 @@ import java.util.stream.Collectors;
 public class TestsController {
 
     private final TestsService testsService;
-    public final RestrictionsService restrictionsService;
     private final GradesConverter gradesConverter;
     private final TestConverter testConverter;
     private final TestVerificationConverter verificationConverter;
 
     @Autowired
     public TestsController(TestsService testsService,
-                           RestrictionsService restrictionsService,
                            GradesConverter gradesConverter,
                            TestConverter testConverter,
                            TestVerificationConverter verificationConverter) {
         this.testsService = testsService;
-        this.restrictionsService = restrictionsService;
         this.gradesConverter = gradesConverter;
         this.testConverter = testConverter;
         this.verificationConverter = verificationConverter;
@@ -76,13 +71,7 @@ public class TestsController {
     @ApiOperation(value = "Use it to get a single test from the database by its id")
     @GetMapping(path = "/{id}")
     public TestDTO getById(@PathVariable("id") long id) {
-        Test test = testsService.getById(id);
-        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
-        restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
-
-        restrictionsService.checkStatus(test, Status.STARTED);
-
-        return testConverter.convertToDTO(test);
+        return testConverter.convertToDTO(testsService.getByIdWithRestrictions(id));
     }
 
     @ApiOperation(value = "Get test for coach verification")
@@ -98,10 +87,6 @@ public class TestsController {
     public ModuleGradesDTO getGrades(@PathVariable("testId") long testId) {
 
         Test test = testsService.getById(testId);
-
-        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
-        restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
-
         return gradesConverter.convertListOfGradesToDTO(test);
     }
 
@@ -159,16 +144,7 @@ public class TestsController {
     @ApiOperation(value = "Is used to finish tests")
     @PostMapping(path = "/finish/{testId}")
     public void finish(@PathVariable("testId") long testId) {
-        Test test = testsService.getById(testId);
-
-        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
-
-        restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
-
-        restrictionsService.checkStatus(test, Status.STARTED);
-
-
-        testsService.finish(testId, Instant.now());
+        testsService.selfFinish(testId);
     }
 
     @ApiOperation(value = "Use it to assign a test for the coach")

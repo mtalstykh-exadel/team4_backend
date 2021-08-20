@@ -14,6 +14,8 @@ public interface TestsService {
 
     Test getById(long id);
 
+    Test getByIdWithRestrictions(long id);
+
     List<Test> getByUserId(long userId, Pageable pageable);
 
     List<Test> getByStatuses(Status[] status, Pageable pageable);
@@ -39,8 +41,7 @@ public interface TestsService {
     Test startAssigned(long testId);
 
     void deassign(long id);
-
-    void finish(long id, Instant finishDate);
+    void selfFinish(long id);
 
     void coachSubmit(long id);
 

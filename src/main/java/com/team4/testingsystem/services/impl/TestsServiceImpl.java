@@ -76,6 +76,17 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
+    public Test getByIdWithRestrictions(long id){
+        Test test = getById(id);
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+        restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
+
+        restrictionsService.checkStatus(test, Status.STARTED);
+
+        return test;
+    }
+
+    @Override
     public List<Test> getByUserId(long userId, Pageable pageable) {
         return testsRepository.getAllByUserId(userId, pageable);
     }
@@ -273,8 +284,8 @@ public class TestsServiceImpl implements TestsService {
         timerRepository.findAll().forEach(this::startTimer);
     }
 
-    @Override
-    public void finish(long id, Instant finishDate) {
+
+    private void finish(long id, Instant finishDate) {
 
         Test test = getById(id);
 
@@ -283,6 +294,20 @@ public class TestsServiceImpl implements TestsService {
             testEvaluationService.countScoreBeforeCoachCheck(test);
             testsRepository.finish(finishDate, id);
         }
+    }
+
+    @Override
+    public void selfFinish(long id){
+
+        Test test = getById(id);
+
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+
+        restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
+
+        restrictionsService.checkStatus(test, Status.STARTED);
+
+        finish(id, Instant.now());
     }
 
     @Override
