@@ -192,14 +192,14 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     @Override
     public void checkNotArchivedQuestion(Question question) {
         if (!question.isAvailable()) {
-            throw new QuestionOrTopicEditingException("You can't edit unavailable question");
+            throw new QuestionOrTopicEditingException("You can't edit archived questions");
         }
     }
 
     @Override
     public void checkNotArchivedContentFile(ContentFile contentFile) {
         if (!contentFile.isAvailable()) {
-            throw new QuestionOrTopicEditingException("You can't edit unavailable topic");
+            throw new QuestionOrTopicEditingException("You can't edit archived topics");
         }
     }
 }
