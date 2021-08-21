@@ -6,6 +6,7 @@ import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.CoachGradeNotFoundException;
+import com.team4.testingsystem.repositories.CoachAnswerRepository;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.services.ChosenOptionService;
 import com.team4.testingsystem.services.ModuleGradesService;
@@ -49,6 +50,9 @@ class TestEvaluationServiceImplTest {
     @Mock
     private CoachGradeRepository coachGradeRepository;
 
+    @Mock
+    private CoachAnswerRepository coachAnswerRepository;
+
     @InjectMocks
     private TestEvaluationServiceImpl testEvaluationService;
 
@@ -77,6 +81,7 @@ class TestEvaluationServiceImplTest {
     private com.team4.testingsystem.entities.Test test;
 
     private static final Long TEST_ID = 1L;
+    private final String COACH_COMMENT = "comment";
 
     @Test
     public void countScoreBeforeCoachCheckSuccess() {
