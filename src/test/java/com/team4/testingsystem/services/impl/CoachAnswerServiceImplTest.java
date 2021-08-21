@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.dto.CoachAnswerDTO;
 import com.team4.testingsystem.entities.CoachAnswer;
 import com.team4.testingsystem.repositories.CoachAnswerRepository;
 import com.team4.testingsystem.services.TestsService;
@@ -12,7 +13,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-
 
 @ExtendWith(MockitoExtension.class)
 class CoachAnswerServiceImplTest {
@@ -28,10 +28,13 @@ class CoachAnswerServiceImplTest {
     @Mock
     private List<CoachAnswer> coachAnswers;
 
+
     @InjectMocks
     private CoachAnswerServiceImpl coachAnswerService;
 
     private final Long TEST_ID = 1L;
+    private final Long QUESTION_ID = 1L;
+    private final String COACH_COMMENT = "comment";
 
     @Test
     void getAnswersByTest() {
@@ -44,5 +47,13 @@ class CoachAnswerServiceImplTest {
 
         Assertions.assertEquals(coachAnswers,
                 coachAnswerService.getAnswersByTest(test.getId()));
+    }
+
+    @Test void addAll() {
+        List<CoachAnswerDTO> coachAnswersDTO = List.of(new CoachAnswerDTO(TEST_ID, QUESTION_ID, COACH_COMMENT));
+
+        coachAnswerService.addAll(coachAnswersDTO);
+
+        Mockito.verify(coachAnswerRepository).saveAll(Mockito.any());
     }
 }
