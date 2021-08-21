@@ -10,6 +10,7 @@ import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.ResourceStorageService;
+import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import liquibase.pro.packaged.I;
@@ -44,6 +45,9 @@ class ContentFilesServiceImplTest {
     private ContentFilesRepository contentFilesRepository;
 
     @Mock
+    private RestrictionsService restrictionsService;
+
+    @Mock
     private ResourceStorageService storageService;
 
     @Mock
@@ -64,6 +68,10 @@ class ContentFilesServiceImplTest {
 
     @Test
     void updateWithFile() {
+
+        Mockito.when(contentFilesRepository.findById(ID)).thenReturn(Optional.of(contentFile));
+
+
         Mockito.when(userDetails.getId()).thenReturn(USER_ID);
         try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
@@ -71,6 +79,7 @@ class ContentFilesServiceImplTest {
             Mockito.when(contentFilesRepository.updateAvailable(ID, UNAVAILABLE)).thenReturn(1);
             ContentFile result = contentFilesService.update(file, ID, contentFile);
 
+            verify(restrictionsService).checkNotArchivedContentFile(contentFile);
             verify(contentFilesRepository).updateAvailable(ID, false);
             Assertions.assertEquals(contentFile, result);
         }
@@ -122,9 +131,12 @@ class ContentFilesServiceImplTest {
 
     @Test
     void update() {
+        Mockito.when(contentFilesRepository.findById(ID)).thenReturn(Optional.of(contentFile));
+
         Mockito.when(contentFilesRepository.save(contentFile)).thenReturn(contentFile);
         contentFilesService.update(null, ID, contentFile);
 
+        verify(restrictionsService).checkNotArchivedContentFile(contentFile);
         Mockito.verify(questionService).archiveQuestionsByContentFileId(ID);
         Assertions.assertEquals(contentFile, contentFilesService.update(null, ID, contentFile));
     }
