@@ -247,6 +247,9 @@
                 <version>${pmd.version}</version>
                 <configuration>
                     <printFailingErrors>true</printFailingErrors>
+                    <rulesets>
+                        <ruleset>pmd-ruleset.xml</ruleset>
+                    </rulesets>
                 </configuration>
             </plugin>
 
