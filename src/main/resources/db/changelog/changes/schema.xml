@@ -738,42 +738,4 @@
         <addPrimaryKey tableName="coach_answer" columnNames="test_id, question_id"/>
     </changeSet>
 
-    <changeSet id="add_module_coach_answer_table" author="SemyonKorostik">
-        <createTable tableName="module_coach_answer">
-            <column name="module_id" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="test_id" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="coach_comment" type="text"/>
-        </createTable>
-
-        <addForeignKeyConstraint baseTableName="module_coach_answer" baseColumnNames="module_id"
-                                 constraintName="module_coach_answer_module_id_fk"
-                                 referencedTableName="module" referencedColumnNames="id"/>
-        <addForeignKeyConstraint baseTableName="module_coach_answer" baseColumnNames="test_id"
-                                 constraintName="module_coach_answer_test_id_fk"
-                                 referencedTableName="test" referencedColumnNames="id"/>
-
-        <addPrimaryKey tableName="module_coach_answer" columnNames="module_id, test_id"/>
-    </changeSet>
-
-    <changeSet id="fix_module_coach_answer_table" author="SemyonKorostik">
-        <addColumn tableName="module_coach_answer">
-            <column name="question_id" type="int">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-
-        <addForeignKeyConstraint baseTableName="module_coach_answer" baseColumnNames="question_id"
-                                 constraintName="module_coach_answer_question_id_fk"
-                                 referencedTableName="question" referencedColumnNames="id"/>
-
-        <dropPrimaryKey tableName="module_coach_answer"/>
-        <addPrimaryKey tableName="module_coach_answer" columnNames="test_id, question_id, module_id"/>
-
-    </changeSet>
-
-
 </databaseChangeLog>

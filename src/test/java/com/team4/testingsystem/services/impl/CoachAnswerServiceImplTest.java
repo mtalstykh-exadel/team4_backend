@@ -3,6 +3,7 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.dto.CoachAnswerDTO;
 import com.team4.testingsystem.entities.CoachAnswer;
 import com.team4.testingsystem.repositories.CoachAnswerRepository;
+import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.TestsService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,8 @@ class CoachAnswerServiceImplTest {
     @Mock
     private TestsService testsService;
 
+    @Mock
+    private QuestionService questionService;
     @Mock
     private com.team4.testingsystem.entities.Test test;
 

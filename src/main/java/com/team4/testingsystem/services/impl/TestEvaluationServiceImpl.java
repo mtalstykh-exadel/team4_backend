@@ -2,15 +2,12 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ChosenOption;
-import com.team4.testingsystem.entities.CoachAnswer;
 import com.team4.testingsystem.entities.CoachGrade;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.CoachGradeNotFoundException;
-import com.team4.testingsystem.repositories.CoachAnswerRepository;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.services.ChosenOptionService;
-import com.team4.testingsystem.services.ModuleCoachAnswerService;
 import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.TestEvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,29 +22,19 @@ import java.util.stream.Collectors;
 public class TestEvaluationServiceImpl implements TestEvaluationService {
     private final ChosenOptionService chosenOptionService;
     private final ModuleGradesService moduleGradesService;
-    private final ModuleCoachAnswerService moduleCoachAnswerService;
     private final CoachGradeRepository coachGradeRepository;
-    private final CoachAnswerRepository coachAnswerRepository;
 
     @Autowired
     public TestEvaluationServiceImpl(ChosenOptionService chosenOptionService,
                                      ModuleGradesService moduleGradesService,
-                                     ModuleCoachAnswerService moduleCoachAnswerService,
-                                     CoachGradeRepository coachGradeRepository,
-                                     CoachAnswerRepository coachAnswerRepository) {
+                                     CoachGradeRepository coachGradeRepository) {
         this.chosenOptionService = chosenOptionService;
         this.moduleGradesService = moduleGradesService;
-        this.moduleCoachAnswerService = moduleCoachAnswerService;
         this.coachGradeRepository = coachGradeRepository;
-        this.coachAnswerRepository = coachAnswerRepository;
     }
 
     private void saveModuleGrade(Test test, String moduleName, Integer grade, String coachComment) {
         moduleGradesService.add(test, moduleName, grade, coachComment);
-    }
-
-    private void saveModuleCoachAnswer(String moduleName, List<CoachAnswer> coachAnswers) {
-        moduleCoachAnswerService.addAnswers(moduleName, coachAnswers);
     }
 
     private void saveScoreAutomaticCheck(Test test, Modules module, List<ChosenOption> allChosenOptions) {
@@ -60,17 +47,6 @@ public class TestEvaluationServiceImpl implements TestEvaluationService {
                 .count();
         saveModuleGrade(test, module.getName(), score, null);
 
-    }
-
-    private void saveAnswersCoachCheck(Modules module, List<CoachAnswer> allCoachAnswers) {
-        List<CoachAnswer> coachAnswers = allCoachAnswers.stream()
-                .filter(coachAnswer ->
-                        coachAnswer.getId().getQuestion().getModule().getName().equals(module.getName()))
-                .collect(Collectors.toList());
-
-        if (!coachAnswers.isEmpty()) {
-            saveModuleCoachAnswer(module.getName(), coachAnswers);
-        }
     }
 
     private void saveScoreCoachCheck(Test test, Modules module, Map<String, CoachGrade> gradeMap) {
@@ -105,11 +81,4 @@ public class TestEvaluationServiceImpl implements TestEvaluationService {
         saveScoreCoachCheck(test, Modules.SPEAKING, gradeMap);
     }
 
-    @Override
-    public void updateCoachAnswersAfterCheck(Test test) {
-        List<CoachAnswer> allCoachAnswers = coachAnswerRepository.findAllById_Test(test);
-
-        saveAnswersCoachCheck(Modules.GRAMMAR, allCoachAnswers);
-        saveAnswersCoachCheck(Modules.LISTENING, allCoachAnswers);
-    }
 }

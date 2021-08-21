@@ -3,18 +3,13 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ChosenOption;
-import com.team4.testingsystem.entities.CoachAnswer;
 import com.team4.testingsystem.entities.CoachGrade;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.CoachGradeNotFoundException;
 import com.team4.testingsystem.repositories.CoachAnswerRepository;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.services.ChosenOptionService;
-import com.team4.testingsystem.services.ModuleCoachAnswerService;
 import com.team4.testingsystem.services.ModuleGradesService;
-import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -58,9 +52,6 @@ class TestEvaluationServiceImplTest {
 
     @Mock
     private CoachAnswerRepository coachAnswerRepository;
-
-    @Mock
-    private ModuleCoachAnswerService moduleCoachAnswerService;
 
     @InjectMocks
     private TestEvaluationServiceImpl testEvaluationService;
@@ -153,33 +144,6 @@ class TestEvaluationServiceImplTest {
 
         Assertions.assertThrows(CoachGradeNotFoundException.class,
                 ()->testEvaluationService.updateScoreAfterCoachCheck(test));
-    }
-
-    @Test
-    void updateCoachAnswersAfterCheck(){
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil
-                .createTest(EntityCreatorUtil.createUser(),
-                        EntityCreatorUtil.createLevel());
-
-        Question question = EntityCreatorUtil.createQuestion(Modules.GRAMMAR);
-
-        TestQuestionID testQuestionID = new TestQuestionID(test,question);
-
-        List<CoachAnswer> coachAnswers = new ArrayList<>();
-        coachAnswers.add(new CoachAnswer(testQuestionID, COACH_COMMENT));
-
-        question = EntityCreatorUtil.createQuestion(Modules.LISTENING);
-
-        testQuestionID = new TestQuestionID(test, question);
-
-        coachAnswers.add(new CoachAnswer(testQuestionID, COACH_COMMENT));
-
-        Mockito.when(coachAnswerRepository.findAllById_Test(test)).thenReturn(coachAnswers);
-
-        testEvaluationService.updateCoachAnswersAfterCheck(test);
-
-        Mockito.verify(moduleCoachAnswerService).addAnswers(Modules.GRAMMAR.getName(), List.of(coachAnswers.get(0)));
-        Mockito.verify(moduleCoachAnswerService).addAnswers(Modules.LISTENING.getName(), List.of(coachAnswers.get(1)));
     }
 
 }

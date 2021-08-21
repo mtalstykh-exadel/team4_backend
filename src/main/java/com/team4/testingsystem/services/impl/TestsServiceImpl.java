@@ -265,7 +265,6 @@ public class TestsServiceImpl implements TestsService {
         restrictionsService.checkStatus(test, Status.IN_VERIFICATION);
 
         testEvaluationService.updateScoreAfterCoachCheck(test);
-        testEvaluationService.updateCoachAnswersAfterCheck(test);
 
         testsRepository.coachSubmit(Instant.now(), id);
         notificationService.create(NotificationType.TEST_VERIFIED, test.getUser(), test);
