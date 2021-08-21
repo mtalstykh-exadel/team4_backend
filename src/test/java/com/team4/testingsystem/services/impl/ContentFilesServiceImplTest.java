@@ -6,6 +6,7 @@ import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.RestrictionsService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +29,9 @@ class ContentFilesServiceImplTest {
 
     @Mock
     private ContentFilesRepository contentFilesRepository;
+
+    @Mock
+    private RestrictionsService restrictionsService;
 
     @Mock
     private QuestionService questionService;
@@ -53,7 +57,8 @@ class ContentFilesServiceImplTest {
         Mockito.when(contentFilesRepository.save(contentFile)).thenReturn(contentFile);
         ContentFile result = contentFilesService.update(ID, contentFile);
 
-        verify(contentFilesRepository).updateAvailable(ID, false);
+        Mockito.verify(restrictionsService).checkNotArchivedContentFile(contentFile);
+        Mockito.verify(contentFilesRepository).updateAvailable(ID, false);
         Assertions.assertEquals(contentFile, result);
     }
 
@@ -102,6 +107,7 @@ class ContentFilesServiceImplTest {
         Mockito.when(contentFilesRepository.save(contentFile)).thenReturn(contentFile);
         contentFilesService.update(ID, contentFile);
 
+        verify(restrictionsService).checkNotArchivedContentFile(contentFile);
         Mockito.verify(questionService).archiveQuestionsByContentFileId(ID);
         Assertions.assertEquals(contentFile, contentFilesService.update(ID, contentFile));
     }

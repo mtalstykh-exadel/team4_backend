@@ -72,4 +72,12 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     public ErrorResponse handleIllegalGradeException(IllegalGradeException e) {
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler(value = {AnswersAreBadException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleAnswersAreBadException(AnswersAreBadException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+
 }

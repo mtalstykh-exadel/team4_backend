@@ -10,7 +10,7 @@ public interface ContentFilesService {
 
     ContentFile add(ContentFile contentFile);
 
-    ContentFile update(Long id, ContentFile contentFile);
+    ContentFile update(Long id, ContentFile editedContentFile);
 
     void updateURL(Long id, String newUrl);
 

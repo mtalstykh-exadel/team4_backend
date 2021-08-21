@@ -5,6 +5,7 @@ import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.RestrictionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,12 +14,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class ContentFilesServiceImpl implements ContentFilesService {
     private final QuestionService questionService;
     private final ContentFilesRepository contentFilesRepository;
+    private final RestrictionsService restrictionsService;
 
     @Autowired
     public ContentFilesServiceImpl(QuestionService questionService,
-                                   ContentFilesRepository contentFilesRepository) {
+                                   ContentFilesRepository contentFilesRepository,
+                                   RestrictionsService restrictionsService) {
         this.questionService = questionService;
         this.contentFilesRepository = contentFilesRepository;
+        this.restrictionsService = restrictionsService;
     }
 
     @Override
@@ -38,21 +42,23 @@ public class ContentFilesServiceImpl implements ContentFilesService {
 
     @Transactional
     @Override
-    public ContentFile update(Long id, ContentFile contentFile) {
+    public ContentFile update(Long id, ContentFile editedContentFile) {
         ContentFile oldContentFile = getById(id);
-        if (contentFile.getUrl() == null) {
-            contentFile.setUrl(oldContentFile.getUrl());
+        restrictionsService.checkNotArchivedContentFile(editedContentFile);
+
+        if (editedContentFile.getUrl() == null) {
+            editedContentFile.setUrl(oldContentFile.getUrl());
         }
 
-        if (contentFile.getUrl().equals(oldContentFile.getUrl())) {
+        if (editedContentFile.getUrl().equals(oldContentFile.getUrl())) {
             questionService.archiveQuestionsByContentFileId(id);
-            contentFile.setId(id);
-            return contentFilesRepository.save(contentFile);
+            editedContentFile.setId(id);
+            return contentFilesRepository.save(editedContentFile);
         }
 
         contentFilesRepository.updateAvailable(id, false);
-        contentFile.setId(null);
-        return add(contentFile);
+        editedContentFile.setId(null);
+        return add(editedContentFile);
     }
 
     @Override
