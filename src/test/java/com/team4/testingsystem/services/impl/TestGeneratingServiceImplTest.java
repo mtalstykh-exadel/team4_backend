@@ -3,6 +3,8 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Level;
 import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.exceptions.NotEnoughQuestionsException;
+import com.team4.testingsystem.exceptions.NotFoundException;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import org.junit.jupiter.api.Assertions;
@@ -56,6 +58,9 @@ public class TestGeneratingServiceImplTest {
         Mockito.when(questionRepository.
                 getRandomQuestions(anyString(), anyString(), any(Pageable.class)))
                 .thenReturn(questions);
+
+        Mockito.when(questions.size()).thenReturn(10);
+
         Mockito.when(test.getLevel()).thenReturn(level);
         Mockito.when(level.getName()).thenReturn("Name");
         Mockito.when(contentFilesService.getRandomContentFile("Name")).thenReturn(contentFile);
@@ -68,4 +73,44 @@ public class TestGeneratingServiceImplTest {
         verify(questions, times(4)).forEach(any());
         Assertions.assertEquals(test, testGeneratingService.formTest(test));
         }
+
+    @Test
+    void formTestNotEnoughQuestions() {
+        ReflectionTestUtils.setField(testGeneratingService, "count", 10);
+
+        Mockito.when(questionRepository.
+                getRandomQuestions(anyString(), anyString(), any(Pageable.class)))
+                .thenReturn(questions);
+
+        Mockito.when(questions.size()).thenReturn(9);
+
+        Mockito.when(test.getLevel()).thenReturn(level);
+        Mockito.when(level.getName()).thenReturn("Name");
+
+        Assertions.assertThrows(NotEnoughQuestionsException.class,
+                () -> testGeneratingService.formTest(test));
+
+    }
+
+    @Test
+    void formTestNoContentFiles() {
+        ReflectionTestUtils.setField(testGeneratingService, "count", 10);
+
+        Mockito.when(questionRepository.
+                getRandomQuestions(anyString(), anyString(), any(Pageable.class)))
+                .thenReturn(questions);
+
+        Mockito.when(questions.size()).thenReturn(10);
+
+        Mockito.when(test.getLevel()).thenReturn(level);
+        Mockito.when(level.getName()).thenReturn("Name");
+
+        Mockito.when(contentFilesService.getRandomContentFile("Name")).thenThrow(NotFoundException.class);
+
+        Assertions.assertThrows(NotEnoughQuestionsException.class,
+                () -> testGeneratingService.formTest(test));
+
+    }
+
+
 }
