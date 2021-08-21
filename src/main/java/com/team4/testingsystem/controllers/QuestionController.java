@@ -23,9 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,8 +61,7 @@ public class QuestionController {
                                           @RequestParam("module") Modules module,
                                           @RequestParam("status") QuestionStatus status,
                                           @RequestParam int pageNumb,
-                                          @RequestParam int pageSize
-    ) {
+                                          @RequestParam int pageSize) {
         return questionService.getQuestionsByLevelAndModuleName(
                 level, module, status, PageRequest.of(pageNumb, pageSize)).stream()
                 .map(QuestionDTO::create)
@@ -94,27 +91,26 @@ public class QuestionController {
                                                       @RequestParam("status") QuestionStatus status,
                                                       @RequestParam int pageNumb,
                                                       @RequestParam int pageSize) {
-        return convertToDTO(questionService.getListening(level, status, PageRequest.of(pageNumb, pageSize)));
+        return questionService
+                .getListening(level, status, PageRequest.of(pageNumb, pageSize)).stream()
+                .map(ListeningTopicDTO::new)
+                .collect(Collectors.toList());
     }
 
     @ApiOperation(value = "Add content file with questions")
     @PostMapping(value = "/listening")
     @Secured("ROLE_COACH")
-    public ContentFileDTO addListening(@RequestPart MultipartFile file,
-                                       @RequestPart ContentFileDTO data) {
-        ContentFile contentFile = contentFilesService
-                .add(file, contentFileConverter.convertToEntity(data));
+    public ContentFileDTO addListening(@RequestBody ContentFileDTO data) {
+        ContentFile contentFile = contentFilesService.add(contentFileConverter.convertToEntity(data));
         return new ContentFileDTO(contentFile);
     }
 
     @ApiOperation(value = "Update content file with questions or just questions for content file")
     @PutMapping(value = "/update/listening/{contentFileId}")
     @Secured("ROLE_COACH")
-    public ContentFileDTO updateListening(@RequestPart(required = false) MultipartFile file,
-                                          @PathVariable("contentFileId") Long id,
-                                          @RequestPart ContentFileDTO data) {
-        ContentFile contentFile = contentFilesService
-                .update(file, id, contentFileConverter.convertToEntity(data));
+    public ContentFileDTO updateListening(@PathVariable("contentFileId") Long id,
+                                          @RequestBody ContentFileDTO data) {
+        ContentFile contentFile = contentFilesService.update(id, contentFileConverter.convertToEntity(data));
         return new ContentFileDTO(contentFile);
     }
 
@@ -141,9 +137,5 @@ public class QuestionController {
         Question resultQuestion = questionService
                 .updateQuestion(questionConverter.convertToEntity(questionDTO, id), id);
         return QuestionDTO.createWithCorrectAnswers(resultQuestion);
-    }
-
-    private List<ListeningTopicDTO> convertToDTO(List<ContentFile> contentFiles) {
-        return contentFiles.stream().map(ListeningTopicDTO::new).collect(Collectors.toList());
     }
 }

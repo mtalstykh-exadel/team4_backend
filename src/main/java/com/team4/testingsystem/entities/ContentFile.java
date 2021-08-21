@@ -39,7 +39,7 @@ public class ContentFile implements Serializable {
     private String topic;
 
     @Column(name = "is_available")
-    private boolean available;
+    private boolean available = true;
 
     public ContentFile() {
     }
@@ -52,6 +52,14 @@ public class ContentFile implements Serializable {
         this.questions = questions;
         this.url = url;
         this.topic = topic;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTopic() {
@@ -68,10 +76,6 @@ public class ContentFile implements Serializable {
 
     public void setAvailable(boolean available) {
         this.available = available;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public List<Question> getQuestions() {

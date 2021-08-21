@@ -4,6 +4,7 @@ import com.team4.testingsystem.converters.ContentFileConverter;
 import com.team4.testingsystem.converters.QuestionConverter;
 import com.team4.testingsystem.dto.AnswerDTO;
 import com.team4.testingsystem.dto.ContentFileDTO;
+import com.team4.testingsystem.dto.ListeningTopicDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
@@ -25,13 +26,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class QuestionControllerTest {
@@ -45,9 +44,6 @@ class QuestionControllerTest {
     private ContentFileConverter contentFileConverter;
 
     @Mock
-    private MultipartFile multipartFile;
-
-    @Mock
     private ContentFile contentFile;
 
     @Mock
@@ -55,6 +51,9 @@ class QuestionControllerTest {
 
     @InjectMocks
     private QuestionController questionController;
+
+    private final Question question = EntityCreatorUtil.createQuestion();
+    private final QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
 
     private static final Long ID = 1L;
     private static final Long BAD_ID = 42L;
@@ -64,20 +63,16 @@ class QuestionControllerTest {
     private static final Pageable PAGE_REQUEST = PageRequest.of(1, 10);
     private static final Modules SPEAKING = Modules.SPEAKING;
     private static final Levels A1 = Levels.A1;
-    private static final QuestionStatus ARCHIVED = QuestionStatus.ARCHIVED;
     private static final QuestionStatus UNARCHIVED = QuestionStatus.UNARCHIVED;
     private static final int PAGE = 1;
     private static final int COUNT = 10;
+    private static final String URL = "https://best_listening_audios.com/";
 
     @Test
     void getQuestion() {
-        Question question = EntityCreatorUtil.createQuestion();
-        QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
         Mockito.when(questionService.getById(question.getId())).thenReturn(question);
-
         try (MockedStatic<QuestionDTO> mockQuestionDTO = Mockito.mockStatic(QuestionDTO.class)) {
             mockQuestionDTO.when(() -> QuestionDTO.createWithCorrectAnswers(question)).thenReturn(questionDTO);
-
             QuestionDTO result = questionController.getQuestion(question.getId());
 
             Assertions.assertEquals(questionDTO, result);
@@ -86,22 +81,21 @@ class QuestionControllerTest {
 
     @Test
     void getQuestionsByLevelAndModuleName() {
-        List<Question> questions = Lists.list(EntityCreatorUtil.createQuestion());
+        List<Question> questions = Lists.list(question);
         Mockito.when(questionService.getQuestionsByLevelAndModuleName(A1, SPEAKING, UNARCHIVED, PAGE_REQUEST))
                 .thenReturn(questions);
         List<QuestionDTO> expectedQuestions = questions.stream()
                 .map(QuestionDTO::create)
                 .collect(Collectors.toList());
 
-        Assertions
-                .assertEquals(expectedQuestions, questionController.getQuestions(A1, SPEAKING, UNARCHIVED, PAGE, COUNT));
+        Assertions.assertEquals(expectedQuestions,
+                questionController.getQuestions(A1, SPEAKING, UNARCHIVED, PAGE, COUNT));
 
     }
 
     @Test
     void getListening() {
         ContentFile contentFile = new ContentFile();
-        Question question = EntityCreatorUtil.createQuestion();
         contentFile.setQuestions(List.of(question));
         Mockito.when(contentFilesService.getById(ID)).thenReturn(contentFile);
         Assertions.assertEquals(new ContentFileDTO(contentFile, question.getLevel().getName()),
@@ -110,8 +104,6 @@ class QuestionControllerTest {
 
     @Test
     void addQuestionWithoutAnswers() {
-        Question question = EntityCreatorUtil.createQuestion();
-        QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
         Mockito.when(questionConverter.convertToEntity(questionDTO)).thenReturn(question);
         Mockito.when(questionService.createQuestion(question)).thenReturn(question);
         QuestionDTO result = questionController.addQuestion(questionDTO);
@@ -121,9 +113,7 @@ class QuestionControllerTest {
 
     @Test
     void addQuestionWithAnswers() {
-        Question question = EntityCreatorUtil.createQuestion();
         question.setAnswers(List.of(EntityCreatorUtil.createAnswer()));
-        QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
         questionDTO.setAnswers(List.of(AnswerDTO.createWithCorrect(EntityCreatorUtil.createAnswer())));
         Mockito.when(questionConverter.convertToEntity(questionDTO)).thenReturn(question);
         Mockito.when(questionService.createQuestion(question)).thenReturn(question);
@@ -146,7 +136,8 @@ class QuestionControllerTest {
 
     @Test
     void updateAvailabilityListeningFail() {
-        doThrow(ContentFileNotFoundException.class).when(contentFilesService).updateAvailability(BAD_ID, UNAVAILABLE);
+        doThrow(ContentFileNotFoundException.class).when(contentFilesService)
+                .updateAvailability(BAD_ID, UNAVAILABLE);
 
         Assertions.assertThrows(ContentFileNotFoundException.class,
                 () -> questionController.updateAvailabilityListening(BAD_ID, UNAVAILABLE));
@@ -155,9 +146,7 @@ class QuestionControllerTest {
 
     @Test
     void updateQuestionWithoutAnswers() {
-        QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
         questionDTO.setQuestionBody(NEW_QUESTION_BODY);
-        Question question = EntityCreatorUtil.createQuestion();
         question.setBody(questionDTO.getQuestionBody());
         Mockito.when(questionConverter.convertToEntity(questionDTO, question.getId())).thenReturn(question);
         Mockito.when(questionService.updateQuestion(question, question.getId())).thenReturn(question);
@@ -173,15 +162,12 @@ class QuestionControllerTest {
 
     @Test
     void updateQuestionWithAnswers() {
-        QuestionDTO questionDTO = EntityCreatorUtil.createQuestionDto();
         questionDTO.setAnswers(List.of(AnswerDTO.createWithCorrect(EntityCreatorUtil.createAnswer())));
         questionDTO.setQuestionBody(NEW_QUESTION_BODY);
-        Question question = EntityCreatorUtil.createQuestion();
         question.setAnswers(List.of(EntityCreatorUtil.createAnswer()));
         question.setBody(questionDTO.getQuestionBody());
         Mockito.when(questionConverter.convertToEntity(questionDTO, question.getId())).thenReturn(question);
         Mockito.when(questionService.updateQuestion(question, question.getId())).thenReturn(question);
-
         try (MockedStatic<QuestionDTO> mockQuestionDTO = Mockito.mockStatic(QuestionDTO.class)) {
             mockQuestionDTO.when(() -> QuestionDTO.createWithCorrectAnswers(question))
                     .thenReturn(questionDTO);
@@ -199,9 +185,9 @@ class QuestionControllerTest {
         request.setQuestions(List.of());
         Mockito.when(contentFileConverter.convertToEntity(request))
                 .thenReturn(contentFile);
-        Mockito.when(contentFilesService.add(multipartFile, contentFile))
+        Mockito.when(contentFilesService.add(contentFile))
                 .thenReturn(contentFile);
-        ContentFileDTO result = questionController.addListening(multipartFile, request);
+        ContentFileDTO result = questionController.addListening(request);
         result.setTopic(TOPIC);
 
         Assertions.assertEquals(request, result);
@@ -215,9 +201,9 @@ class QuestionControllerTest {
         request.setQuestions(List.of());
         Mockito.when(contentFileConverter.convertToEntity(request))
                 .thenReturn(contentFile);
-        Mockito.when(contentFilesService.update(multipartFile, ID, contentFile))
+        Mockito.when(contentFilesService.update(ID, contentFile))
                 .thenReturn(contentFile);
-        ContentFileDTO result = questionController.updateListening(multipartFile, ID, request);
+        ContentFileDTO result = questionController.updateListening(ID, request);
         result.setTopic(TOPIC);
 
         Assertions.assertEquals(request, result);
@@ -225,13 +211,27 @@ class QuestionControllerTest {
 
     @Test
     void getListeningTopics() {
-        questionController.getListeningTopics(null, ARCHIVED, PAGE, COUNT);
-        verify(questionService).getListening(null, ARCHIVED, PAGE_REQUEST);
+        ContentFile contentFile = new ContentFile();
+        contentFile.setTopic(TOPIC);
+        contentFile.setUrl(URL);
+        contentFile.setQuestions(List.of());
+        Mockito.when(questionService.getListening(null, UNARCHIVED, PAGE_REQUEST))
+                .thenReturn(List.of(contentFile));
+
+        Assertions.assertEquals(List.of(new ListeningTopicDTO(contentFile)),
+                questionController.getListeningTopics(null, UNARCHIVED, PAGE, COUNT));
     }
 
     @Test
     void getListeningTopicsByLevel() {
-        questionController.getListeningTopics(A1, UNARCHIVED, PAGE, COUNT);
-        verify(questionService).getListening(A1, UNARCHIVED, PAGE_REQUEST);
+        ContentFile contentFile = new ContentFile();
+        contentFile.setTopic(TOPIC);
+        contentFile.setUrl(URL);
+        contentFile.setQuestions(List.of());
+        Mockito.when(questionService.getListening(A1, UNARCHIVED, PAGE_REQUEST))
+                .thenReturn(List.of(contentFile));
+
+        Assertions.assertEquals(List.of(new ListeningTopicDTO(contentFile)),
+                questionController.getListeningTopics(A1, UNARCHIVED, PAGE, COUNT));
     }
 }

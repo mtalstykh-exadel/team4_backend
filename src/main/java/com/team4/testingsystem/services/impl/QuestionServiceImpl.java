@@ -12,6 +12,7 @@ import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.QuestionService;
+import com.team4.testingsystem.services.RestrictionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,15 @@ public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
     private final ContentFilesRepository contentFilesRepository;
+    private final RestrictionsService restrictionsService;
 
     @Autowired
     QuestionServiceImpl(QuestionRepository questionRepository,
-                        ContentFilesRepository contentFilesRepository) {
+                        ContentFilesRepository contentFilesRepository,
+                        RestrictionsService restrictionsService) {
         this.questionRepository = questionRepository;
         this.contentFilesRepository = contentFilesRepository;
+        this.restrictionsService = restrictionsService;
     }
 
     @Override
@@ -49,6 +53,7 @@ public class QuestionServiceImpl implements QuestionService {
         List<Answer> answers = textAnswers.stream()
                 .map(answerDTO -> new Answer(answerDTO, question))
                 .collect(Collectors.toList());
+        restrictionsService.checkAnswersAreCorrect(answers);
         question.setAnswers(answers);
         return questionRepository.save(question);
     }
@@ -56,14 +61,20 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     @Override
     public void updateAvailability(Long id, boolean available) {
+        Question question = getById(id);
+        restrictionsService.checkModuleIsNotListening(question);
         questionRepository.updateAvailability(id, available);
     }
 
     @Transactional
     @Override
-    public Question updateQuestion(Question question, Long id) {
+    public Question updateQuestion(Question editedQuestion, Long id) {
+        Question question = getById(id);
+
+        restrictionsService.checkNotArchivedQuestion(question);
+
         questionRepository.updateAvailability(id, false);
-        return questionRepository.save(question);
+        return questionRepository.save(editedQuestion);
     }
 
     @Override
@@ -113,6 +124,7 @@ public class QuestionServiceImpl implements QuestionService {
     public void archiveQuestionsByContentFileId(Long id) {
         ContentFile contentFile = contentFilesRepository.findById(id)
                 .orElseThrow(FileNotFoundException::new);
-        contentFile.getQuestions().forEach(question -> updateAvailability(question.getId(), false));
+        contentFile.getQuestions().forEach(question ->
+                questionRepository.updateAvailability(question.getId(), false));
     }
 }
