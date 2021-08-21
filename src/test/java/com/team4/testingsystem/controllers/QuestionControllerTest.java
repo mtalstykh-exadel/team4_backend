@@ -26,7 +26,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,9 +42,6 @@ class QuestionControllerTest {
 
     @Mock
     private ContentFileConverter contentFileConverter;
-
-    @Mock
-    private MultipartFile multipartFile;
 
     @Mock
     private ContentFile contentFile;
@@ -189,9 +185,9 @@ class QuestionControllerTest {
         request.setQuestions(List.of());
         Mockito.when(contentFileConverter.convertToEntity(request))
                 .thenReturn(contentFile);
-        Mockito.when(contentFilesService.add(multipartFile, contentFile))
+        Mockito.when(contentFilesService.add(contentFile))
                 .thenReturn(contentFile);
-        ContentFileDTO result = questionController.addListening(multipartFile, request);
+        ContentFileDTO result = questionController.addListening(request);
         result.setTopic(TOPIC);
 
         Assertions.assertEquals(request, result);
@@ -205,9 +201,9 @@ class QuestionControllerTest {
         request.setQuestions(List.of());
         Mockito.when(contentFileConverter.convertToEntity(request))
                 .thenReturn(contentFile);
-        Mockito.when(contentFilesService.update(multipartFile, ID, contentFile))
+        Mockito.when(contentFilesService.update(ID, contentFile))
                 .thenReturn(contentFile);
-        ContentFileDTO result = questionController.updateListening(multipartFile, ID, request);
+        ContentFileDTO result = questionController.updateListening(ID, request);
         result.setTopic(TOPIC);
 
         Assertions.assertEquals(request, result);
