@@ -781,51 +781,44 @@
         </update>
     </changeSet>
 
-    <changeSet id="update_admin_avatars" author="Darina">
+    <changeSet id="fix_users_avatars" author="Darina">
         <update tableName="user">
-            <column name="avatar" value="https://mykaleidoscope.ru/uploads/posts/2016-03/1459156672_modnyye-muzhskiye-pricheski-2-016-13.jpg"/>
-            <where>user_login='rus_admin@northsixty.com'</where>
-        </update>
-    </changeSet>
-
-    <changeSet id="fix_user_avatars" author="Darina">
-        <update tableName="user">
-            <column name="avatar" value="https://drive.google.com/file/d/1I0auZ-BgW01jo1jT_d1Y-wsbdyFtuduq/view?usp=sharing"/>
+            <column name="avatar" value="https://bigpicture.ru/wp-content/uploads/2019/04/grandbeauty00.jpg"/>
             <column name="user_name" value="Katie Murphy"/>
             <where>user_login='rus_user@northsixty.com'</where>
         </update>
         <update tableName="user">
-            <column name="avatar" value="https://drive.google.com/file/d/1htDXVfe3KsTou6jbeIcDcFaG7XYu1uM-/view?usp=sharing"/>
+            <column name="avatar" value="https://lh3.googleusercontent.com/LW1ooYAY1LqlZByKuvNnHw13SE7oINACQxvqZCW3lXgoy8PMkKwdDPirvonaQb1Yp8x6OVwyaRGruY7j3OWz=w1920-h990-rw"/>
             <column name="user_name" value="Michelle Phillips"/>
             <where>user_login='rus_hr@northsixty.com'</where>
         </update>
         <update tableName="user">
-            <column name="avatar" value="https://drive.google.com/file/d/1G__uiV61ugOF01Ye80poD_ZGFVIQbcQi/view?usp=sharing"/>
+            <column name="avatar" value="https://lh4.googleusercontent.com/I1I8xDG1zaYCUJkCFATtXvNbPPkZMEoXOGqGSoLcgmB8CLSzEGkR7xJ5FBSp72iAJx4EVohQ-BOzLlgKdVdm=w1920-h990"/>
             <column name="user_name" value="Valerie Rivera"/>
             <where>user_login='rus_coach@northsixty.com'</where>
         </update>
         <update tableName="user">
-            <column name="avatar" value="https://drive.google.com/file/d/10MRLmmDWAUItY-puqaHVjqAiOX9gYtbC/view?usp=sharing"/>
+            <column name="avatar" value="https://lh5.googleusercontent.com/Wn4-3FOlPAuUEy1Hp3MX9MmE39rK0oy-22pk42_d244A0Vxf9te_XF7BqtsNBItS8zWGLVBrAnp0r0DeShuG=w1920-h990"/>
             <column name="user_name" value="William Vega"/>
             <where>user_login='rus_admin@northsixty.com'</where>
         </update>
         <update tableName="user">
-            <column name="avatar" value="https://drive.google.com/file/d/1s5Ivn3shDY-UDXmAUkoxedeiFGytDguB/view?usp=sharing"/>
+            <column name="avatar" value="https://lh5.googleusercontent.com/3nAIw1OCrPo2lfXEWYK2ySpwCtmtRm5ZNN6J9qIVHGL_kb8SLJzNk0c_5qS9vbXT3DmPw0MYXJE1aNt3YRCF=w1920-h990"/>
             <column name="user_name" value="Roger Bell"/>
             <where>user_login='eng_user@northsixty.com'</where>
         </update>
         <update tableName="user">
-            <column name="avatar" value="https://drive.google.com/file/d/1suYX8sIxdnmBLEyYz3qKj4gR3qZ-NJPH/view?usp=sharing"/>
+            <column name="avatar" value="https://lh3.googleusercontent.com/xF3kb2GN_mz6Pts3fvMmCVZ6ecfD_JWh6GiMW5ba0KPwDfG_JHu1q8qX_cDeTpy6RQiXeOqSB6kNBXf1WmWD=w2940-h5226-rw"/>
             <column name="user_name" value="Vanessa Clark"/>
             <where>user_login='eng_hr@northsixty.com'</where>
         </update>
         <update tableName="user">
-            <column name="avatar" value="https://drive.google.com/file/d/1q4eN2Rv_yoxCGJEjTsZ_rWdYTeunmu0L/view?usp=sharing"/>
+            <column name="avatar" value="https://lh6.googleusercontent.com/apaUU2KoJfulhzIbFNTio_OCLHgUOur78peEltHwN4G_4bliBCXkdKgsezJC6tRZ6aQdQXG8zI8jYyPtodRm=w1920-h990"/>
             <column name="user_name" value="Tom Fields"/>
             <where>user_login='eng_coach@northsixty.com'</where>
         </update>
         <update tableName="user">
-            <column name="avatar" value="https://drive.google.com/file/d/1-Vne1qSwlRSztxtyiFYnCbDBE_-mUsY_/view?usp=sharing"/>
+            <column name="avatar" value="https://lh6.googleusercontent.com/bSaf3LMNkQSUU0OEVA_pTYemTj_ffB_UXTeceWqoQB_mZvhN4UEyuGZ_ztvABtPWdLS2GyejOGoGNnYJIRIw=w1920-h990"/>
             <column name="user_name" value="James Berry"/>
             <where>user_login='eng_admin@northsixty.com'</where>
         </update>
