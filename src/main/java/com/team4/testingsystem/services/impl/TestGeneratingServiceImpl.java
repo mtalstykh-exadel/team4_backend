@@ -4,6 +4,8 @@ import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Modules;
+import com.team4.testingsystem.exceptions.NotEnoughQuestionsException;
+import com.team4.testingsystem.exceptions.NotFoundException;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.TestGeneratingService;
@@ -43,19 +45,31 @@ public class TestGeneratingServiceImpl implements TestGeneratingService {
         setQuestionsByModules(test, Modules.SPEAKING.getName(), Pageable.ofSize(oneElement));
         return test;
     }
-    
+
     private void setQuestionsByModules(Test test, String module, Pageable pageable) {
         Collection<Question> questions = questionRepository
                 .getRandomQuestions(test.getLevel().getName(), module, pageable);
+
+        if (questions.size() < pageable.getPageSize()) {
+            throw new NotEnoughQuestionsException("Not enough questions for " + module + " " + test.getLevel());
+        }
+
         questions.forEach(test::setQuestion);
     }
 
     private void setQuestionsByContentFile(Test test) {
-        ContentFile contentFile = contentFilesService
-                .getRandomContentFile(test.getLevel().getName());
-        Collection<Question> questions = questionRepository
-                .getRandomQuestionByContentFile(contentFile.getId(), Pageable.ofSize(count));
-        questions.forEach(test::setQuestion);
+
+        try {
+            ContentFile contentFile = contentFilesService
+                    .getRandomContentFile(test.getLevel().getName());
+
+            Collection<Question> questions = questionRepository
+                    .getRandomQuestionByContentFile(contentFile.getId(), Pageable.ofSize(count));
+
+            questions.forEach(test::setQuestion);
+        } catch (NotFoundException e) {
+            throw new NotEnoughQuestionsException("There are no content files in the database for this level");
+        }
     }
 
 }

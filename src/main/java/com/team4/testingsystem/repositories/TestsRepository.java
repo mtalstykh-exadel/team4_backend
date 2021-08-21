@@ -55,7 +55,8 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
             + "where t.user = ?1 "
             + "and t.isAvailable = true "
             + "and t.assignedAt is null "
-            + "and t.startedAt >= ?2 ")
+            + "and t.startedAt >= ?2 "
+            + "and t.isAvailable = true ")
     List<Test> getSelfStartedByUserAfter(User user, Instant date);
 
     @Query(value = "select t from Test t where t.coach.id = ?1 and t.status in ?2 and t.isAvailable = true "
@@ -98,7 +99,7 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.isAvailable = false where t.id = ?1")
+    @Query(value = "UPDATE Test t SET t.isAvailable = false where t.id = ?1 ")
     int archiveById(Long id);
 
     @Transactional
@@ -122,7 +123,8 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     @Query(value = " select case when count(t) > 0 then true else false end "
             + "from Test t where t.user.id = ?1 "
-            + "and t.status = 'STARTED' ")
+            + "and t.status = 'STARTED' "
+            + "and t.isAvailable = true ")
     boolean hasStartedTests(Long userId);
 
 }
