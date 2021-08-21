@@ -11,7 +11,9 @@ public abstract class SingleNotificationConverter {
                 .id(notification.getId())
                 .type(notification.getType())
                 .testId(notification.getTest().getId())
-                .createdAt(notification.getCreatedAt());
+                .createdAt(notification.getCreatedAt())
+                .userEmail(notification.getUser().getLogin())
+                .userName(notification.getUser().getName());
     }
 
     public abstract NotificationDTO convertToDTO(Notification notification);

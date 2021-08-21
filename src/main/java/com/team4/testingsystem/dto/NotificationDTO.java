@@ -19,6 +19,9 @@ public class NotificationDTO {
     private Instant deadline;
     private Priority priority;
 
+    private String userEmail;
+    private String userName;
+
     public Long getId() {
         return id;
     }
@@ -83,6 +86,22 @@ public class NotificationDTO {
         this.priority = priority;
     }
 
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -134,6 +153,16 @@ public class NotificationDTO {
             return this;
         }
 
+        public Builder userEmail(String userEmail) {
+            notificationDTO.setUserEmail(userEmail);
+            return this;
+        }
+
+        public Builder userName(String userName) {
+            notificationDTO.setUserName(userName);
+            return this;
+        }
+
         public NotificationDTO build() {
             return notificationDTO;
         }
@@ -154,11 +183,13 @@ public class NotificationDTO {
                 && Objects.equals(level, that.level)
                 && Objects.equals(finishTime, that.finishTime)
                 && Objects.equals(deadline, that.deadline)
-                && Objects.equals(priority, that.priority);
+                && Objects.equals(priority, that.priority)
+                && Objects.equals(userEmail, that.userEmail)
+                && Objects.equals(userName, that.userName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type, testId, level, finishTime, deadline, priority);
+        return Objects.hash(id, type, testId, level, finishTime, deadline, priority, userEmail, userName);
     }
 }

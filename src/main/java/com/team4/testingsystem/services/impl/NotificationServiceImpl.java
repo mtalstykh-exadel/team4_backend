@@ -1,5 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.converters.NotificationConverter;
 import com.team4.testingsystem.entities.Notification;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
@@ -9,6 +10,7 @@ import com.team4.testingsystem.repositories.NotificationRepository;
 import com.team4.testingsystem.services.NotificationService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.security.AccessControlException;
@@ -18,10 +20,16 @@ import java.util.List;
 @Service
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
+    private final NotificationConverter notificationConverter;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    public NotificationServiceImpl(NotificationRepository notificationRepository) {
+    public NotificationServiceImpl(NotificationRepository notificationRepository,
+                                   NotificationConverter notificationConverter,
+                                   ApplicationEventPublisher eventPublisher) {
         this.notificationRepository = notificationRepository;
+        this.notificationConverter = notificationConverter;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -32,7 +40,9 @@ public class NotificationServiceImpl implements NotificationService {
                 .test(test)
                 .createdAt(Instant.now())
                 .build();
-        notificationRepository.save(notification);
+        notification = notificationRepository.save(notification);
+
+        eventPublisher.publishEvent(notificationConverter.convertToDTO(notification));
     }
 
     @Override
