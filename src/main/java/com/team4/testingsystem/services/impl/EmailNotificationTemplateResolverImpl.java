@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -43,7 +42,7 @@ public class EmailNotificationTemplateResolverImpl implements EmailNotificationT
 
     @PostConstruct
     private void init() {
-        Arrays.stream(NotificationType.values()).forEach(this::registerTemplate);
+        properties.getTemplatePath().keySet().forEach(this::registerTemplate);
     }
 
     @Override
@@ -61,10 +60,6 @@ public class EmailNotificationTemplateResolverImpl implements EmailNotificationT
     }
 
     public void registerTemplate(NotificationType type) {
-        if (!properties.getTemplatePath().containsKey(type)) {
-            throw new EmailTemplateNotFoundException(type);
-        }
-
         String templatePath = properties.getTemplatePath().get(type);
         try {
             notificationTemplates.put(type, freemarkerConfiguration.getTemplate(templatePath));

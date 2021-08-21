@@ -11,6 +11,7 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "email-notifications")
 public class EmailConfigurationProperties {
     private Boolean enabled;
+    private String fromEmail;
     private Map<NotificationType, String> templatePath = new HashMap<>();
 
     public Boolean getEnabled() {
@@ -19,6 +20,14 @@ public class EmailConfigurationProperties {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getFromEmail() {
+        return fromEmail;
+    }
+
+    public void setFromEmail(String fromEmail) {
+        this.fromEmail = fromEmail;
     }
 
     public Map<NotificationType, String> getTemplatePath() {

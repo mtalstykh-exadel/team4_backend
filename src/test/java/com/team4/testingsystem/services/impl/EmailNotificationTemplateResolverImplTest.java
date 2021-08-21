@@ -44,14 +44,6 @@ class EmailNotificationTemplateResolverImplTest {
     private static final String RESOLVED_VALUE = "resolved";
 
     @Test
-    void resolveKeyNotFound() {
-        Mockito.when(properties.getTemplatePath()).thenReturn(Map.of());
-
-        Assertions.assertThrows(EmailTemplateNotFoundException.class,
-                () -> templateResolver.registerTemplate(NotificationType.TEST_ASSIGNED));
-    }
-
-    @Test
     void resolveTemplateNotFound() throws IOException {
         Mockito.when(properties.getTemplatePath())
                 .thenReturn(Map.of(NotificationType.TEST_ASSIGNED, TEMPLATE_PATH));
