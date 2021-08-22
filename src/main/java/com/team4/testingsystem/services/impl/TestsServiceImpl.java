@@ -9,6 +9,7 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
+import com.team4.testingsystem.exceptions.NotEnoughQuestionsException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.repositories.TestsRepository;
@@ -216,19 +217,27 @@ public class TestsServiceImpl implements TestsService {
 
     private Test start(Test test) {
 
-        test.setStatus(Status.STARTED);
+        try {
 
-        test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
-        testsRepository.start(Instant.now(), test.getId());
+            test = testGeneratingService.formTest(test);
 
-        test = testGeneratingService.formTest(getById(test.getId()));
+            test.setStatus(Status.STARTED);
 
-        save(test);
+            test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
+            testsRepository.start(Instant.now(), test.getId());
 
-        createTimer(test);
+            save(test);
 
-        notificationService.create(NotificationType.TEST_STARTED, test.getUser(), test);
-        return test;
+            createTimer(test);
+
+            notificationService.create(NotificationType.TEST_STARTED, test.getUser(), test);
+            return test;
+        } catch (NotEnoughQuestionsException e) {
+            if (test.getStatus().equals(Status.STARTED)) {
+                testsRepository.archiveById(test.getId());
+            }
+            throw e;
+        }
     }
 
     @Override
@@ -362,4 +371,5 @@ public class TestsServiceImpl implements TestsService {
         notificationService.create(NotificationType.COACH_DEASSIGNED, coach, test);
 
     }
+
 }

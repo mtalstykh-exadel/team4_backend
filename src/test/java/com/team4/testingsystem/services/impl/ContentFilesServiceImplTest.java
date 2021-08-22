@@ -4,6 +4,7 @@ import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
+import com.team4.testingsystem.exceptions.NotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.RestrictionsService;
@@ -138,11 +139,19 @@ class ContentFilesServiceImplTest {
     }
 
     @Test
-    void getRandomContentFiles() {
+    void getRandomContentFileSuccess() {
         ContentFile contentFile = new ContentFile();
-        Mockito.when(contentFilesRepository.getRandomFiles(A1.name())).thenReturn(contentFile);
+        Mockito.when(contentFilesRepository.getRandomFile(A1.name())).thenReturn(Optional.of(contentFile));
 
         Assertions.assertEquals(contentFile, contentFilesService.getRandomContentFile(A1.name()));
+    }
+
+    @Test
+    void getRandomContentFileFail() {
+        Mockito.when(contentFilesRepository.getRandomFile(A1.name())).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(NotFoundException.class,
+                () -> contentFilesService.getRandomContentFile(A1.name()));
     }
 
     @Test

@@ -126,8 +126,12 @@ public class Test implements Serializable {
         this.questions = questions;
     }
 
-    public void setQuestion(Question question) {
+    public void addQuestion(Question question) {
         this.questions.add(question);
+    }
+
+    public void addAllQuestions(List<Question> questions) {
+        this.questions.addAll(questions);
     }
 
     public Level getLevel() {

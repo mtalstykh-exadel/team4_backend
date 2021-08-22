@@ -9,6 +9,8 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
+import com.team4.testingsystem.exceptions.NotEnoughQuestionsException;
+import com.team4.testingsystem.exceptions.NotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
@@ -326,7 +328,24 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void startNotAssignedFail() {
+    void startNotAssignedFailNoQuestions() {
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+        Mockito.when(testGeneratingService.formTest(any(Test.class))).thenThrow(NotEnoughQuestionsException.class);
+
+        Mockito.when(test.getStatus()).thenReturn(Status.STARTED);
+
+        Mockito.when(test.getId()).thenReturn(GOOD_TEST_ID);
+
+
+
+        Assertions.assertThrows(NotEnoughQuestionsException.class,
+                () ->  testsService.startNotAssigned(GOOD_TEST_ID));
+
+        verify(testsRepository).archiveById(GOOD_TEST_ID);
+    }
+
+    @org.junit.jupiter.api.Test
+    void startNotAssignedFailTestNotFound() {
         Mockito.when(testsRepository.findById(BAD_TEST_ID)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.startNotAssigned(BAD_TEST_ID));
