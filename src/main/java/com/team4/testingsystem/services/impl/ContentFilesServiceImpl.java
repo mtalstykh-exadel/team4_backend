@@ -38,6 +38,8 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     @Override
     public ContentFile add(ContentFile contentFile) {
         restrictionsService.checkListeningHasAudio(contentFile);
+        restrictionsService.checkExistsOnS3(contentFile.getUrl());
+
         return contentFilesRepository.save(contentFile);
     }
 
@@ -46,6 +48,7 @@ public class ContentFilesServiceImpl implements ContentFilesService {
     public ContentFile update(Long id, ContentFile editedContentFile) {
         ContentFile oldContentFile = getById(id);
         restrictionsService.checkNotArchivedContentFile(editedContentFile);
+        restrictionsService.checkExistsOnS3(editedContentFile.getUrl());
 
         if (editedContentFile.getUrl() == null) {
             editedContentFile.setUrl(oldContentFile.getUrl());

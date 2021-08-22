@@ -10,6 +10,7 @@ import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.AnswersAreBadException;
 import com.team4.testingsystem.exceptions.AssignmentFailException;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
+import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.exceptions.IllegalGradeException;
 import com.team4.testingsystem.exceptions.NoAudioException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
@@ -18,9 +19,12 @@ import com.team4.testingsystem.exceptions.TestAlreadyStartedException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.AccessControlException;
 import java.util.List;
 
@@ -208,6 +212,14 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     public void checkListeningHasAudio(ContentFile contentFile) {
         if (contentFile.getUrl() == null) {
             throw new NoAudioException("You can't add listening topics without audios");
+        }
+    }
+
+    @Override
+    public void checkExistsOnS3(String fileName) {
+        Path filePath = Path.of(FileUtils.getTempDirectory() + "/testing-system/" + fileName);
+        if (Files.notExists(filePath)) {
+            throw new FileNotFoundException("File doesn't exist on S3");
         }
     }
 }

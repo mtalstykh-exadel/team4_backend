@@ -11,6 +11,7 @@ import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.AnswersAreBadException;
 import com.team4.testingsystem.exceptions.AssignmentFailException;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
+import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.exceptions.IllegalGradeException;
 import com.team4.testingsystem.exceptions.NoAudioException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
@@ -28,6 +29,8 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.AccessControlException;
 import java.util.List;
 import java.util.stream.Stream;
@@ -279,5 +282,14 @@ public class RestrictionsServiceImplTest {
         Mockito.when(contentFile.getUrl()).thenReturn(null);
         Assertions.assertThrows(NoAudioException.class,
                 () -> restrictionsService.checkListeningHasAudio(contentFile));
+    }
+
+    @org.junit.jupiter.api.Test
+    void checkExistsOnS3() {
+        try (MockedStatic<Files> mock = Mockito.mockStatic(Files.class)) {
+            mock.when(() -> Files.notExists(any(Path.class))).thenReturn(true);
+            Assertions.assertThrows(FileNotFoundException.class,
+                    () -> restrictionsService.checkExistsOnS3("Pirates of the Caribbean.mp3"));
+        }
     }
 }

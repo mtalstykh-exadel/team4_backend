@@ -86,8 +86,12 @@ class ContentFilesServiceImplTest {
 
     @Test
     void addSuccess() {
+
+        Mockito.when(contentFile.getUrl()).thenReturn(URL);
         contentFilesService.add(contentFile);
+
         verify(restrictionsService).checkListeningHasAudio(contentFile);
+        verify(restrictionsService).checkExistsOnS3(URL);
         verify(contentFilesRepository).save(contentFile);
     }
 
@@ -109,6 +113,8 @@ class ContentFilesServiceImplTest {
         contentFilesService.update(ID, contentFile);
 
         verify(restrictionsService).checkNotArchivedContentFile(contentFile);
+        verify(restrictionsService).checkExistsOnS3(URL);
+
         Mockito.verify(questionService).archiveQuestionsByContentFileId(ID);
         Assertions.assertEquals(contentFile, contentFilesService.update(ID, contentFile));
     }

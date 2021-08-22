@@ -55,6 +55,6 @@ public interface RestrictionsService {
 
     void checkListeningHasAudio(ContentFile contentFile);
 
-
+    void checkExistsOnS3(String fileName);
 
 }
