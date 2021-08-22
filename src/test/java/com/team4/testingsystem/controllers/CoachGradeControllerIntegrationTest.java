@@ -341,7 +341,7 @@ class CoachGradeControllerIntegrationTest {
 
         testsRepository.save(test);
 
-        test.setQuestion(question);
+        test.addQuestion(question);
 
         testsRepository.save(test);
 

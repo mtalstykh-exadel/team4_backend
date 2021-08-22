@@ -70,7 +70,7 @@ public class TestGeneratingServiceImplTest {
                 .thenReturn(questions);
 
         testGeneratingService.formTest(test);
-        verify(questions, times(4)).forEach(any());
+        verify(test, times(4)).addAllQuestions(any(List.class));
         Assertions.assertEquals(test, testGeneratingService.formTest(test));
         }
 

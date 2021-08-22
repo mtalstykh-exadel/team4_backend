@@ -55,8 +55,7 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
             + "where t.user = ?1 "
             + "and t.isAvailable = true "
             + "and t.assignedAt is null "
-            + "and t.startedAt >= ?2 "
-            + "and t.isAvailable = true ")
+            + "and t.startedAt >= ?2 ")
     List<Test> getSelfStartedByUserAfter(User user, Instant date);
 
     @Query(value = "select t from Test t where t.coach.id = ?1 and t.status in ?2 and t.isAvailable = true "
