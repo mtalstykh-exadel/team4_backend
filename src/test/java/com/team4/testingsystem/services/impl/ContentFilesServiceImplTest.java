@@ -87,6 +87,7 @@ class ContentFilesServiceImplTest {
     @Test
     void addSuccess() {
         contentFilesService.add(contentFile);
+        verify(restrictionsService).checkListeningHasAudio(contentFile);
         verify(contentFilesRepository).save(contentFile);
     }
 

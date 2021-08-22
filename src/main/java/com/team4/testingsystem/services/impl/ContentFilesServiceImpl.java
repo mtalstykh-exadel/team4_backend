@@ -37,6 +37,7 @@ public class ContentFilesServiceImpl implements ContentFilesService {
 
     @Override
     public ContentFile add(ContentFile contentFile) {
+        restrictionsService.checkListeningHasAudio(contentFile);
         return contentFilesRepository.save(contentFile);
     }
 

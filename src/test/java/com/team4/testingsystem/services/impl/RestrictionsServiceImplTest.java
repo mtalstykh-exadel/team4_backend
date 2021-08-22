@@ -12,6 +12,7 @@ import com.team4.testingsystem.exceptions.AnswersAreBadException;
 import com.team4.testingsystem.exceptions.AssignmentFailException;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.IllegalGradeException;
+import com.team4.testingsystem.exceptions.NoAudioException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionOrTopicEditingException;
 import com.team4.testingsystem.exceptions.TestAlreadyStartedException;
@@ -271,5 +272,12 @@ public class RestrictionsServiceImplTest {
 
         Assertions.assertThrows(QuestionOrTopicEditingException.class,
                 () -> restrictionsService.checkNotArchivedContentFile(contentFile));
+    }
+
+    @org.junit.jupiter.api.Test
+    void checkListeningHasAudio(){
+        Mockito.when(contentFile.getUrl()).thenReturn(null);
+        Assertions.assertThrows(NoAudioException.class,
+                () -> restrictionsService.checkListeningHasAudio(contentFile));
     }
 }

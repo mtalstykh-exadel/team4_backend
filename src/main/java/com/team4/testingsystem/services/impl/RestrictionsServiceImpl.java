@@ -11,6 +11,7 @@ import com.team4.testingsystem.exceptions.AnswersAreBadException;
 import com.team4.testingsystem.exceptions.AssignmentFailException;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.IllegalGradeException;
+import com.team4.testingsystem.exceptions.NoAudioException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionOrTopicEditingException;
 import com.team4.testingsystem.exceptions.TestAlreadyStartedException;
@@ -200,6 +201,13 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     public void checkNotArchivedContentFile(ContentFile contentFile) {
         if (!contentFile.isAvailable()) {
             throw new QuestionOrTopicEditingException("You can't edit archived topics");
+        }
+    }
+
+    @Override
+    public void checkListeningHasAudio(ContentFile contentFile) {
+        if (contentFile.getUrl() == null) {
+            throw new NoAudioException("You can't add listening topics without audios");
         }
     }
 }
