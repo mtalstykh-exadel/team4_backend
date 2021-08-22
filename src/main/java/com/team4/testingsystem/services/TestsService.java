@@ -24,7 +24,7 @@ public interface TestsService {
 
     List<Test> getAllUnverifiedTestsByCoach(long coachId, Pageable pageable);
 
-    List<UserTest> getAllUsersAndAssignedTests(Pageable pageable);
+    List<UserTest> getAllUsersAndAssignedTests(String nameSubstring, Pageable pageable);
 
     List<Test> getTestsByUserIdAndLevel(long userId, Levels level, Pageable pageable);
 
