@@ -16,7 +16,7 @@ public interface TestsService {
 
     Test getByIdWithRestrictions(long id);
 
-    List<Test> getByUserId(long userId, Pageable pageable);
+    List<Test> getByUserId(long userId, Levels level, Pageable pageable);
 
     List<Test> getByStatuses(Status[] status, Pageable pageable);
 

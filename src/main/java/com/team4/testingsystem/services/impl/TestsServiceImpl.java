@@ -85,7 +85,10 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public List<Test> getByUserId(long userId, Pageable pageable) {
+    public List<Test> getByUserId(long userId, Levels level, Pageable pageable) {
+        if (level != null) {
+            return testsRepository.getAllByUserAndLevel(userId, level.name(), pageable);
+        }
         return testsRepository.getAllByUserId(userId, pageable);
     }
 

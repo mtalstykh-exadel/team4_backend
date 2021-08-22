@@ -131,7 +131,7 @@ class TestsServiceImplTest {
     void getByUserIdSuccess() {
         Mockito.when(testsRepository.getAllByUserId(GOOD_USER_ID, pageable)).thenReturn(tests);
 
-        Assertions.assertEquals(tests, testsService.getByUserId(GOOD_USER_ID, pageable));
+        Assertions.assertEquals(tests, testsService.getByUserId(GOOD_USER_ID, null, pageable));
     }
 
     @org.junit.jupiter.api.Test
