@@ -31,29 +31,4 @@ public class FileAnswer implements Serializable {
         return id;
     }
 
-    /*public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private final FileAnswer fileAnswer;
-
-        public Builder() {
-            this.fileAnswer = new FileAnswer();
-        }
-
-        public Builder id(TestQuestionID id) {
-            fileAnswer.id = id;
-            return this;
-        }
-
-        public Builder url(String url) {
-            fileAnswer.url = url;
-            return this;
-        }
-
-        public FileAnswer build() {
-            return fileAnswer;
-        }
-    }*/
 }

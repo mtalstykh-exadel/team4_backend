@@ -5,7 +5,6 @@ import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +33,9 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @EqualsAndHashCode
-@NoArgsConstructor
+/*@NoArgsConstructor
+@AllArgsConstructor
+@Builder(builderClassName = "Builder")*/
 public class Test implements Serializable {
 
     @Id

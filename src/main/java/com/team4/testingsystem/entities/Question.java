@@ -28,7 +28,6 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @EqualsAndHashCode
-
 public class Question implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
