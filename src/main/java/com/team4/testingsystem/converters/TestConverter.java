@@ -27,6 +27,8 @@ import org.springframework.stereotype.Component;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Component
@@ -75,13 +77,12 @@ public class TestConverter {
         Map<Long, Answer> chosenAnswerByQuestionId = chosenOptionService.getAllByTestId(testDTO.getId())
                 .stream()
                 .collect(toMap(option -> option.getId().getQuestion().getId(), ChosenOption::getAnswer));
-
         Map<String, List<QuestionDTO>> questions = questionService.getQuestionsByTestId(testDTO.getId()).stream()
-                .peek(question -> Collections.shuffle(question.getAnswers()))
+                .peek(question -> Collections.shuffle(question.getAnswers(),
+                        new Random(Objects.hash(question.getId(), testDTO.getId()))))
                 .map(QuestionDTO::create)
                 .peek(question -> checkChosenAnswer(question, chosenAnswerByQuestionId))
                 .collect(groupingBy(QuestionDTO::getModule));
-
         testDTO.setQuestions(questions);
     }
 
@@ -92,7 +93,6 @@ public class TestConverter {
                 .map(contentFilesService::getContentFileByQuestionId)
                 .findFirst()
                 .orElseThrow(ContentFileNotFoundException::new);
-
         testDTO.setContentFile(new ListeningTopicDTO(contentFile));
     }
 
@@ -110,7 +110,6 @@ public class TestConverter {
         List<ErrorReportDTO> errorReports = errorReportsService.getReportsByTest(testDTO.getId()).stream()
                 .map(ErrorReportDTO::new)
                 .collect(Collectors.toList());
-
         testDTO.setErrorReports(errorReports);
     }
 
@@ -118,7 +117,6 @@ public class TestConverter {
         if (!chosenAnswerByQuestionId.containsKey(questionDTO.getId())) {
             return;
         }
-
         Long chosenAnswerId = chosenAnswerByQuestionId.get(questionDTO.getId()).getId();
         questionDTO.getAnswers().stream()
                 .filter(answer -> answer.getId().equals(chosenAnswerId))
