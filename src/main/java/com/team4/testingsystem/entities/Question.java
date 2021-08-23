@@ -22,7 +22,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name = "question")
 @Getter
@@ -35,7 +34,7 @@ public class Question implements Serializable {
     @Column(name = "question_body")
     private String body;
     @Column(name = "is_available")
-    private boolean isAvailable;
+    private boolean isAvailable = true;
 
     @ManyToOne
     @JoinColumn(name = "creator_user_id", referencedColumnName = "id")

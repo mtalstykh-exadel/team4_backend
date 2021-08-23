@@ -47,7 +47,7 @@ public class ContentFile implements Serializable {
     private String topic;
 
     @Column(name = "is_available")
-    private boolean available;
+    private boolean available = true;
 
     public ContentFile(String url) {
         this.url = url;
