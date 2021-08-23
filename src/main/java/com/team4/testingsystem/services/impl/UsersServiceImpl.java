@@ -9,6 +9,7 @@ import com.team4.testingsystem.repositories.UserRolesRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,13 +39,13 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public List<User> getAll() {
-        return usersRepository.findAll();
+    public List<User> getAll(Pageable pageable) {
+        return usersRepository.getAll(pageable);
     }
 
     @Override
-    public List<User> getByNameLike(String nameSubstring) {
-        return usersRepository.findAllByNameContainsIgnoreCase(nameSubstring);
+    public List<User> getByNameLike(String nameSubstring, Pageable pageable) {
+        return usersRepository.findAllByNameContainsIgnoreCaseOrderByName(nameSubstring, pageable);
     }
 
     @Override

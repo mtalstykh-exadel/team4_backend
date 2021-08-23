@@ -1,9 +1,13 @@
 package com.team4.testingsystem.entities;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +21,10 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "content_file")
+@NoArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
 public class ContentFile implements Serializable {
 
     @Id
@@ -39,10 +47,7 @@ public class ContentFile implements Serializable {
     private String topic;
 
     @Column(name = "is_available")
-    private boolean available;
-
-    public ContentFile() {
-    }
+    private boolean available = true;
 
     public ContentFile(String url) {
         this.url = url;
@@ -52,62 +57,5 @@ public class ContentFile implements Serializable {
         this.questions = questions;
         this.url = url;
         this.topic = topic;
-    }
-
-    public String getTopic() {
-        return topic;
-    }
-
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public List<Question> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ContentFile that = (ContentFile) o;
-        return available == that.available
-                && Objects.equals(id, that.id)
-                && Objects.equals(questions, that.questions)
-                && Objects.equals(url, that.url)
-                && Objects.equals(topic, that.topic);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, questions, url, topic, available);
     }
 }

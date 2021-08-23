@@ -2,6 +2,7 @@ package com.team4.testingsystem.repositories;
 
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.entities.UserRole;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -17,9 +18,11 @@ public interface UsersRepository extends CrudRepository<User, Long> {
 
     List<User> findAllByRole(UserRole role);
 
-    List<User> findAll();
+    @Query("select u from User u "
+           + "order by u.name")
+    List<User> getAll(Pageable pageable);
 
-    List<User> findAllByNameContainsIgnoreCase(String nameSubstring);
+    List<User> findAllByNameContainsIgnoreCaseOrderByName(String nameSubstring, Pageable pageable);
 
     @Transactional
     @Modifying

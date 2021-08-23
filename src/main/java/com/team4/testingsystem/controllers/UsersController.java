@@ -40,9 +40,11 @@ public class UsersController {
     @ApiOperation("Get all users and their assigned tests (if exist)")
     @GetMapping("/employees")
     @Secured("ROLE_HR")
-    public List<UserDTO> getAllUsersAndAssignedTests(@RequestParam int pageNumb,
+    public List<UserDTO> getAllUsersAndAssignedTests(@RequestParam(required = false) String name,
+                                                     @RequestParam int pageNumb,
                                                      @RequestParam int pageSize) {
-        return testsService.getAllUsersAndAssignedTests(PageRequest.of(pageNumb, pageSize)).stream()
+        return testsService
+                .getAllUsersAndAssignedTests(name, PageRequest.of(pageNumb, pageSize)).stream()
                 .map(UserTest::toUserDTO)
                 .collect(Collectors.toList());
     }
@@ -50,8 +52,10 @@ public class UsersController {
     @ApiOperation("Get users by name substring (ignoring case)")
     @GetMapping("/users")
     @Secured("ROLE_HR")
-    public List<UserDTO> getAllUsersByNameLike(@RequestParam String name) {
-        return convertToDTO(usersService.getByNameLike(name));
+    public List<UserDTO> getAllUsersByNameLike(@RequestParam String name,
+                                               @RequestParam int pageNumb,
+                                               @RequestParam int pageSize) {
+        return convertToDTO(usersService.getByNameLike(name, PageRequest.of(pageNumb, pageSize)));
     }
 
     @ApiOperation(value = "Update current user's language")

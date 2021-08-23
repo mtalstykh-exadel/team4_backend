@@ -100,8 +100,10 @@ class AnswerServiceImplTest {
 
     @Test
     void uploadSpeaking() {
+        FileAnswer fileAnswer = new FileAnswer();
+        fileAnswer.setUrl(URL);
         Mockito.when(fileAnswerService.uploadSpeaking(file, TEST_ID)).thenReturn(fileAnswer);
-        Mockito.when(fileAnswer.getUrl()).thenReturn(URL);
-        Assertions.assertEquals(URL, fileAnswerService.uploadSpeaking(file, TEST_ID).getUrl());
+
+        Assertions.assertEquals(URL, answerService.uploadSpeaking(file, TEST_ID));
     }
 }

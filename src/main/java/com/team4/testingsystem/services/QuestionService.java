@@ -17,7 +17,7 @@ public interface QuestionService {
 
     void updateAvailability(Long id, boolean available);
 
-    Question updateQuestion(Question question, Long id);
+    Question updateQuestion(Question editedQuestion, Long id);
 
     List<Question> getRandomQuestions(String level, String module, Pageable pageable);
 

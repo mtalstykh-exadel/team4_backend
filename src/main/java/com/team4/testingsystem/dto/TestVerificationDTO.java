@@ -13,6 +13,7 @@ public class TestVerificationDTO implements Serializable {
     private QuestionDTO speakingQuestion;
     private String speakingUrl;
     private List<CoachGradeDTO> grades;
+    private List<CoachAnswerDTO> coachAnswers;
 
     public TestVerificationDTO() {
     }
@@ -85,6 +86,14 @@ public class TestVerificationDTO implements Serializable {
         return new Builder();
     }
 
+    public List<CoachAnswerDTO> getCoachAnswers() {
+        return coachAnswers;
+    }
+
+    public void setCoachAnswers(List<CoachAnswerDTO> coachAnswers) {
+        this.coachAnswers = coachAnswers;
+    }
+
     public static class Builder {
         private final TestVerificationDTO dto;
 
@@ -132,6 +141,11 @@ public class TestVerificationDTO implements Serializable {
             return this;
         }
 
+        public Builder coachAnswers(List<CoachAnswerDTO> coachAnswersDTO) {
+            dto.coachAnswers = coachAnswersDTO;
+            return this;
+        }
+
         public TestVerificationDTO build() {
             return dto;
         }
@@ -147,12 +161,12 @@ public class TestVerificationDTO implements Serializable {
         }
         TestVerificationDTO that = (TestVerificationDTO) o;
         return Objects.equals(testId, that.testId)
-               && Objects.equals(testLevel, that.testLevel)
-               && Objects.equals(reportedQuestions, that.reportedQuestions)
-               && Objects.equals(essayQuestion, that.essayQuestion)
-               && Objects.equals(essayText, that.essayText)
-               && Objects.equals(speakingQuestion, that.speakingQuestion)
-               && Objects.equals(speakingUrl, that.speakingUrl);
+                && Objects.equals(testLevel, that.testLevel)
+                && Objects.equals(reportedQuestions, that.reportedQuestions)
+                && Objects.equals(essayQuestion, that.essayQuestion)
+                && Objects.equals(essayText, that.essayText)
+                && Objects.equals(speakingQuestion, that.speakingQuestion)
+                && Objects.equals(speakingUrl, that.speakingUrl);
     }
 
     @Override

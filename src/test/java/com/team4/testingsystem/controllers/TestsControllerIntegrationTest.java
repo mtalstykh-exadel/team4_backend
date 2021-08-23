@@ -14,6 +14,7 @@ import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.LevelRepository;
 import com.team4.testingsystem.repositories.ModuleRepository;
+import com.team4.testingsystem.repositories.NotificationRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
@@ -57,6 +58,7 @@ class TestsControllerIntegrationTest {
     private final UsersRepository usersRepository;
     private final ContentFilesRepository contentFilesRepository;
     private final QuestionRepository questionRepository;
+    private final NotificationRepository notificationRepository;
     private final ObjectMapper objectMapper;
 
     private User user;
@@ -76,6 +78,7 @@ class TestsControllerIntegrationTest {
                                    UsersRepository userRepository,
                                    ContentFilesRepository contentFilesRepository,
                                    QuestionRepository questionRepository,
+                                   NotificationRepository notificationRepository,
                                    ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.levelRepository = levelRepository;
@@ -84,6 +87,7 @@ class TestsControllerIntegrationTest {
         this.usersRepository = userRepository;
         this.contentFilesRepository = contentFilesRepository;
         this.questionRepository = questionRepository;
+        this.notificationRepository = notificationRepository;
         this.objectMapper = objectMapper;
     }
 
@@ -102,8 +106,10 @@ class TestsControllerIntegrationTest {
 
     @AfterEach
     void destroy() {
+        notificationRepository.deleteAll();
         testsRepository.deleteAll();
         contentFilesRepository.deleteAll();
+        testsRepository.deleteAll();
         questionRepository.deleteAll();
     }
 
@@ -142,15 +148,6 @@ class TestsControllerIntegrationTest {
 
         contentFile.setQuestions(null);
         contentFilesRepository.save(contentFile);
-    }
-
-    @Test
-    void getUsersTestsFailUserNotFound() throws Exception {
-        mockMvc.perform(get("/tests/history/{userId}", BAD_USER_ID)
-                .param("pageNumb", page)
-                .param("pageSize", count)
-                .with(user(hrDetails)))
-                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -247,6 +244,7 @@ class TestsControllerIntegrationTest {
     @Test
     void assignCoachSuccess() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        test.setStatus(Status.COMPLETED);
         testsRepository.save(test);
 
         User coach = usersRepository.findByLogin("rus_coach@northsixty.com").orElseThrow();
@@ -268,6 +266,8 @@ class TestsControllerIntegrationTest {
     @Test
     void assignCoachFailUserNotFound() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+
+        test.setStatus(Status.COMPLETED);
         testsRepository.save(test);
 
         long userId = BAD_USER_ID;
@@ -293,6 +293,9 @@ class TestsControllerIntegrationTest {
     @Test
     void assignCoachFailSelfAssignment() throws Exception {
         com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+
+        test.setStatus(Status.COMPLETED);
+
         testsRepository.save(test);
 
         long userId = user.getId();

@@ -14,7 +14,9 @@ public interface TestsService {
 
     Test getById(long id);
 
-    List<Test> getByUserId(long userId, Pageable pageable);
+    Test getByIdWithRestrictions(long id);
+
+    List<Test> getByUserId(long userId, Levels level, Pageable pageable);
 
     List<Test> getByStatuses(Status[] status, Pageable pageable);
 
@@ -22,7 +24,7 @@ public interface TestsService {
 
     List<Test> getAllUnverifiedTestsByCoach(long coachId, Pageable pageable);
 
-    List<UserTest> getAllUsersAndAssignedTests(Pageable pageable);
+    List<UserTest> getAllUsersAndAssignedTests(String nameSubstring, Pageable pageable);
 
     List<Test> getTestsByUserIdAndLevel(long userId, Levels level, Pageable pageable);
 
@@ -30,15 +32,17 @@ public interface TestsService {
 
     Test save(Test test);
 
-    long startForUser(long userId, Levels level);
+    long createNotAssigned(long userId, Levels level);
 
-    long assignForUser(long userId, Levels level, Instant deadline, Priority priority);
+    long createAssigned(long userId, Levels level, Instant deadline, Priority priority);
 
-    Test start(long id);
+    Test startNotAssigned(long testId);
+
+    Test startAssigned(long testId);
 
     void deassign(long id);
 
-    void finish(long id, Instant finishDate);
+    void selfFinish(long id);
 
     void coachSubmit(long id);
 

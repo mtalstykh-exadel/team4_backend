@@ -14,6 +14,7 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.LevelRepository;
+import com.team4.testingsystem.repositories.NotificationRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.repositories.UsersRepository;
@@ -52,6 +53,7 @@ class CoachGradeControllerIntegrationTest {
     private final CoachGradeRepository gradeRepository;
     private final AnswerRepository answerRepository;
     private final ContentFilesRepository contentFilesRepository;
+    private final NotificationRepository notificationRepository;
     private final ObjectMapper objectMapper;
 
     private User user;
@@ -71,6 +73,7 @@ class CoachGradeControllerIntegrationTest {
                                         CoachGradeRepository gradeRepository,
                                         AnswerRepository answerRepository,
                                         ContentFilesRepository contentFilesRepository,
+                                        NotificationRepository notificationRepository,
                                         ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.levelRepository = levelRepository;
@@ -80,6 +83,7 @@ class CoachGradeControllerIntegrationTest {
         this.gradeRepository = gradeRepository;
         this.answerRepository = answerRepository;
         this.contentFilesRepository = contentFilesRepository;
+        this.notificationRepository = notificationRepository;
 
         this.objectMapper = objectMapper;
     }
@@ -99,6 +103,7 @@ class CoachGradeControllerIntegrationTest {
 
     @AfterEach
     void destroy() {
+        notificationRepository.deleteAll();
         gradeRepository.deleteAll();
         contentFilesRepository.deleteAll();
         answerRepository.deleteAll();
@@ -336,7 +341,7 @@ class CoachGradeControllerIntegrationTest {
 
         testsRepository.save(test);
 
-        test.setQuestion(question);
+        test.addQuestion(question);
 
         testsRepository.save(test);
 

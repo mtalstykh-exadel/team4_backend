@@ -2,7 +2,6 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.exceptions.ModuleNotFoundException;
-import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.ModuleRepository;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;

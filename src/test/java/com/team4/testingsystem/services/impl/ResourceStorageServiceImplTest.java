@@ -91,7 +91,7 @@ class ResourceStorageServiceImplTest {
     @Test
     void loadSuccess() {
         Mockito.when(filesService.load(SOURCE_FILE_NAME)).thenReturn(sourceFile);
-        Assertions.assertEquals(sourceFile, filesService.load(SOURCE_FILE_NAME));
+        Assertions.assertEquals(sourceFile, fileStorage.load(SOURCE_FILE_NAME));
     }
 
     @Test

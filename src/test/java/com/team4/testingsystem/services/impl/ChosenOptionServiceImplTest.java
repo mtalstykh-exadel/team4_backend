@@ -1,12 +1,14 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.ChosenOption;
-import com.team4.testingsystem.exceptions.ChosenOptionBadRequestException;
+import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.ChosenOptionNotFoundException;
 import com.team4.testingsystem.repositories.ChosenOptionRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
+import com.team4.testingsystem.services.RestrictionsService;
+import com.team4.testingsystem.utils.EntityCreatorUtil;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +18,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,22 +25,29 @@ import java.util.Optional;
 public class ChosenOptionServiceImplTest {
 
     @Mock
-    ChosenOption chosenOption;
+    private ChosenOption chosenOption;
 
     @Mock
-    com.team4.testingsystem.entities.Test test;
+    private com.team4.testingsystem.entities.Test test;
 
     @Mock
-    CustomUserDetails userDetails;
+    private CustomUserDetails userDetails;
 
     @Mock
-    ChosenOptionRepository chosenOptionRepository;
+    private RestrictionsService restrictionsService;
+
+    @Mock
+    private ChosenOptionRepository chosenOptionRepository;
+
+    @Mock
+    private List<ChosenOption> chosenOptions;
 
     @InjectMocks
-    ChosenOptionServiceImpl chosenOptionService;
+    private ChosenOptionServiceImpl chosenOptionService;
 
     private static final Long TEST_ID = 1L;
     private static final Long QUESTION_ID = 2L;
+    private static final Long USER_ID = 2L;
 
     @Test
     void getByIdSuccess() {
@@ -77,15 +85,18 @@ public class ChosenOptionServiceImplTest {
     }
 
     @Test
-    void saveAllSuccess(){
+    void saveAllSuccess() {
         try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
-            Mockito.when(userDetails.getId()).thenReturn(1L);
-
-            List<ChosenOption> chosenOptions = Lists.emptyList();
-
+            Mockito.when(userDetails.getId()).thenReturn(QUESTION_ID);
+            chosenOptions = List.of(EntityCreatorUtil.createChosenOption());
             chosenOptionService.saveAll(chosenOptions);
+            test = chosenOptions.get(0).getId().getTest();
+            Question question = chosenOptions.get(0).getId().getQuestion();
 
+            Mockito.verify(restrictionsService).checkOwnerIsCurrentUser(test, USER_ID);
+            Mockito.verify(restrictionsService).checkStatus(test, Status.STARTED);
+            Mockito.verify(restrictionsService).checkTestContainsQuestion(test, question);
             Mockito.verify(chosenOptionRepository).saveAll(chosenOptions);
         }
     }

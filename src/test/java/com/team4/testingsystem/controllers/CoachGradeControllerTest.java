@@ -64,7 +64,7 @@ class CoachGradeControllerTest {
 
     @Test
     void getGradesTestNotFound() {
-        Mockito.when(gradeService.getGradesByTest(GOOD_TEST_ID)).thenThrow(TestNotFoundException.class);
+        Mockito.when(testsService.getById(GOOD_TEST_ID)).thenThrow(TestNotFoundException.class);
         Assertions.assertThrows(TestNotFoundException.class, () -> gradeController.getGrades(GOOD_TEST_ID));
     }
 
@@ -79,7 +79,8 @@ class CoachGradeControllerTest {
         Mockito.when(testQuestionID.getQuestion()).thenReturn(question);
         Mockito.when(coachGrade.getGrade()).thenReturn(grade);
 
-        Mockito.when(gradeService.getGradesByTest(GOOD_TEST_ID)).thenReturn(Collections.singletonList(coachGrade));
+        Mockito.when(testsService.getById(GOOD_TEST_ID)).thenReturn(test);
+        Mockito.when(gradeService.getGradesByTest(test)).thenReturn(Collections.singletonList(coachGrade));
 
         List<CoachGradeDTO> grades = gradeController.getGrades(GOOD_TEST_ID);
         Assertions.assertEquals(1, grades.size());

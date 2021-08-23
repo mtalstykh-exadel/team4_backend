@@ -1,6 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.dto.AnswerDTO;
+import com.team4.testingsystem.entities.Answer;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Levels;
@@ -9,6 +10,7 @@ import com.team4.testingsystem.enums.QuestionStatus;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
+import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,6 +37,9 @@ class QuestionServiceImplTest {
 
     @Mock
     private ContentFile contentFile;
+
+    @Mock
+    private RestrictionsService restrictionsService;
 
     @Mock
     private List<ContentFile> contentFiles;
@@ -78,29 +84,49 @@ class QuestionServiceImplTest {
 
     @Test
     void addAnswers() {
-        Question question = EntityCreatorUtil.createQuestion();
+        question = EntityCreatorUtil.createQuestion();
+
+        List<Answer> answers = List.of(new Answer());
+
+        question.setAnswers(answers);
+
         Mockito.when(questionRepository.save(question)).thenReturn(question);
         List<AnswerDTO> textAnswers = new ArrayList<>();
         Question result = questionService.addAnswers(question, textAnswers);
+
+        verify(restrictionsService).checkAnswersAreCorrect(any(List.class));
+
+        Assertions.assertEquals(question.getAnswers(), result.getAnswers());
         Assertions.assertEquals(question, result);
     }
 
     @Test
     void archiveQuestion() {
+        Mockito.when(questionRepository.findById(ID)).thenReturn(Optional.of(question));
+
         questionService.updateAvailability(ID, UNAVAILABLE);
+        verify(restrictionsService).checkModuleIsNotListening(question);
+
         verify(questionRepository).updateAvailability(ID, UNAVAILABLE);
     }
 
     @Test
     void updateQuestion() {
-        questionService.updateQuestion(question, ID);
+        Mockito.when(questionRepository.findById(ID)).thenReturn(Optional.of(question));
+
+
+        Question question1 = EntityCreatorUtil.createQuestion();
+        Mockito.when(questionRepository.save(question1)).thenReturn(question1);
+        Question result = questionService.updateQuestion(question1, ID);
+
+        verify(restrictionsService).checkNotArchivedQuestion(question);
         verify(questionRepository).updateAvailability(ID, UNAVAILABLE);
-        verify(questionRepository).save(question);
+        Assertions.assertEquals(question1, result);
     }
 
     @Test
     void getRandomQuestions() {
-        List<Question> questions = new ArrayList<>();
+        List<Question> questions = List.of(EntityCreatorUtil.createQuestion());
         Mockito.when(questionRepository
                 .getRandomQuestions(A1.name(), SPEAKING.getName(), PAGE_REQUEST)).thenReturn(questions);
         Assertions
@@ -109,7 +135,7 @@ class QuestionServiceImplTest {
 
     @Test
     void getRandomQuestionsByContentFile() {
-        List<Question> questions = new ArrayList<>();
+        List<Question> questions = List.of(EntityCreatorUtil.createQuestion());
         Mockito.when(questionRepository
                 .getRandomQuestionByContentFile(ID, PAGE_REQUEST)).thenReturn(questions);
         Assertions.assertEquals(questions, questionService.getRandomQuestionsByContentFile(ID, PAGE_REQUEST));
@@ -117,7 +143,7 @@ class QuestionServiceImplTest {
 
     @Test
     void getQuestionsByTestIdAndModule() {
-        List<Question> questions = new ArrayList<>();
+        List<Question> questions = List.of(EntityCreatorUtil.createQuestion());
         Mockito.when(questionRepository
                 .getQuestionsByTestId(ID)).thenReturn(questions);
         Assertions.assertEquals(questions, questionService.getQuestionsByTestId(ID));
@@ -125,15 +151,19 @@ class QuestionServiceImplTest {
 
     @Test
     void archiveQuestionsByContentFileId() {
+        ContentFile contentFile = new ContentFile();
+        Question question = EntityCreatorUtil.createQuestion();
+        contentFile.setQuestions(List.of(question));
         Mockito.when(contentFilesRepository.findById(ID))
                 .thenReturn(Optional.of(contentFile));
         questionService.archiveQuestionsByContentFileId(ID);
         verify(contentFilesRepository).findById(ID);
+        verify(questionRepository).updateAvailability(question.getId(), UNAVAILABLE);
     }
 
     @Test
     void getQuestionsByLevelAndModuleName() {
-        List<Question> questions = new ArrayList<>();
+        List<Question> questions = List.of(EntityCreatorUtil.createQuestion());
         Mockito.when(questionRepository.getQuestionsByLevelAndModuleName(A1.name(),
                 SPEAKING.getName(), true, PAGE_REQUEST))
                 .thenReturn(questions);

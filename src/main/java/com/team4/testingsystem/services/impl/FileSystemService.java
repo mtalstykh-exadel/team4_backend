@@ -53,6 +53,13 @@ public class FileSystemService implements FilesService {
         }
     }
 
+    @Override
+    public boolean doesFileExist(String fileName) {
+        Path filePath = generateFilePath(fileName);
+        return Files.exists(filePath);
+
+    }
+
     public Path generateFilePath(String fileName) {
         return Path.of(FileUtils.getTempDirectory() + "/testing-system/" + fileName);
     }

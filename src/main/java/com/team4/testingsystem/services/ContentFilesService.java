@@ -1,7 +1,6 @@
 package com.team4.testingsystem.services;
 
 import com.team4.testingsystem.entities.ContentFile;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface ContentFilesService {
 
@@ -9,9 +8,9 @@ public interface ContentFilesService {
 
     ContentFile getById(long id);
 
-    ContentFile add(MultipartFile file, ContentFile contentFile);
+    ContentFile add(ContentFile contentFile);
 
-    ContentFile update(MultipartFile file, Long id, ContentFile contentFile);
+    ContentFile update(Long id, ContentFile editedContentFile);
 
     void updateURL(Long id, String newUrl);
 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ContentFilesRepository extends CrudRepository<ContentFile, Long> {
@@ -24,7 +25,7 @@ public interface ContentFilesRepository extends CrudRepository<ContentFile, Long
                    + "join language_testing.level as l on l.id = q.level_id "
                    + "where l.level_name = ?1 and cf.is_available = true "
                    + "order by RANDOM() limit 1; ", nativeQuery = true)
-    ContentFile getRandomFiles(String level);
+    Optional<ContentFile> getRandomFile(String level);
 
     @Query("select cf from ContentFile cf "
            + "join cf.questions q "

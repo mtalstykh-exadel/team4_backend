@@ -10,7 +10,6 @@ import com.team4.testingsystem.dto.TestInfo;
 import com.team4.testingsystem.dto.TestVerificationDTO;
 import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.enums.Levels;
-import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import io.swagger.annotations.ApiOperation;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,19 +33,16 @@ import java.util.stream.Collectors;
 public class TestsController {
 
     private final TestsService testsService;
-    private final ModuleGradesService moduleGradesService;
     private final GradesConverter gradesConverter;
     private final TestConverter testConverter;
     private final TestVerificationConverter verificationConverter;
 
     @Autowired
     public TestsController(TestsService testsService,
-                           ModuleGradesService moduleGradesService,
                            GradesConverter gradesConverter,
                            TestConverter testConverter,
                            TestVerificationConverter verificationConverter) {
         this.testsService = testsService;
-        this.moduleGradesService = moduleGradesService;
         this.gradesConverter = gradesConverter;
         this.testConverter = testConverter;
         this.verificationConverter = verificationConverter;
@@ -55,10 +50,12 @@ public class TestsController {
 
     @ApiOperation(value = "Get all tests assigned to the current user")
     @GetMapping(path = "/")
-    public List<TestInfo> getCurrentUserTests(@RequestParam int pageNumb,
+    public List<TestInfo> getCurrentUserTests(@RequestParam(required = false) Levels level,
+                                              @RequestParam int pageNumb,
                                               @RequestParam int pageSize) {
         return convertToTestInfo(testsService
-                .getByUserId(JwtTokenUtil.extractUserDetails().getId(), PageRequest.of(pageNumb, pageSize)));
+                .getByUserId(JwtTokenUtil.extractUserDetails().getId(),
+                        level, PageRequest.of(pageNumb, pageSize)));
     }
 
     @ApiOperation(value = "Get all tests assigned to the user by by the optional parameter level")
@@ -68,17 +65,14 @@ public class TestsController {
                                         @RequestParam(required = false) Levels level,
                                         @RequestParam int pageNumb,
                                         @RequestParam int pageSize) {
-        if (level != null) {
-            return convertToTestInfo(testsService
-                    .getTestsByUserIdAndLevel(userId, level, PageRequest.of(pageNumb, pageSize)));
-        }
-        return convertToTestInfo(testsService.getByUserId(userId, PageRequest.of(pageNumb, pageSize)));
+        return convertToTestInfo(testsService
+                .getTestsByUserIdAndLevel(userId, level, PageRequest.of(pageNumb, pageSize)));
     }
 
     @ApiOperation(value = "Use it to get a single test from the database by its id")
     @GetMapping(path = "/{id}")
     public TestDTO getById(@PathVariable("id") long id) {
-        return testConverter.convertToDTO(testsService.getById(id));
+        return testConverter.convertToDTO(testsService.getByIdWithRestrictions(id));
     }
 
     @ApiOperation(value = "Get test for coach verification")
@@ -92,8 +86,8 @@ public class TestsController {
     @ApiOperation(value = "Use it to get test grades for a test by modules")
     @GetMapping(path = "/grades/{testId}")
     public ModuleGradesDTO getGrades(@PathVariable("testId") long testId) {
-        return gradesConverter.convertListOfGradesToDTO(moduleGradesService
-                .getGradesByTest(testsService.getById(testId)));
+        Test test = testsService.getById(testId);
+        return gradesConverter.convertListOfGradesToDTO(test);
     }
 
     @ApiOperation(value = "Is used to get all unverified tests")
@@ -120,7 +114,7 @@ public class TestsController {
     @PostMapping(path = "/assign/{userId}")
     @Secured("ROLE_HR")
     public long assign(@PathVariable("userId") long userId, @RequestBody AssignTestRequest request) {
-        return testsService.assignForUser(userId, request.getLevel(), request.getDeadline(), request.getPriority());
+        return testsService.createAssigned(userId, request.getLevel(), request.getDeadline(), request.getPriority());
     }
 
     @ApiOperation(value = "Is used when to deassign tests (HR)")
@@ -136,20 +130,20 @@ public class TestsController {
     @PostMapping(path = "/start")
     public TestDTO startNotAssigned(@RequestParam Levels level) {
         long userId = JwtTokenUtil.extractUserDetails().getId();
-        long createdTestId = testsService.startForUser(userId, level);
-        return testConverter.convertToDTO(testsService.start(createdTestId));
+        long createdTestId = testsService.createNotAssigned(userId, level);
+        return testConverter.convertToDTO(testsService.startNotAssigned(createdTestId));
     }
 
     @ApiOperation(value = "Is used when the user starts the test which was assigned by an HR")
     @PostMapping(path = "/start/{testId}")
     public TestDTO startAssigned(@PathVariable("testId") long testId) {
-        return testConverter.convertToDTO(testsService.start(testId));
+        return testConverter.convertToDTO(testsService.startAssigned(testId));
     }
 
     @ApiOperation(value = "Is used to finish tests")
     @PostMapping(path = "/finish/{testId}")
     public void finish(@PathVariable("testId") long testId) {
-        testsService.finish(testId, Instant.now());
+        testsService.selfFinish(testId);
     }
 
     @ApiOperation(value = "Use it to assign a test for the coach")

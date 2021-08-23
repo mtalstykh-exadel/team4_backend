@@ -16,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
@@ -35,6 +37,8 @@ class UsersServiceImplTest {
 
     @Mock
     private User user;
+
+    private final Pageable pageable = PageRequest.of(1, 10);
 
     @Test
     void getUserById() {
@@ -60,7 +64,6 @@ class UsersServiceImplTest {
     void getUsersByRoleEmpty() {
         Mockito.when(userRolesRepository.findByRoleName(Role.USER.getName())).thenReturn(Optional.of(userRole));
         Mockito.when(usersRepository.findAllByRole(userRole)).thenReturn(Lists.emptyList());
-
         Assertions.assertTrue(usersService.getUsersByRole(Role.USER).isEmpty());
     }
 
@@ -68,20 +71,19 @@ class UsersServiceImplTest {
     void getUserByRoleSuccess() {
         Mockito.when(userRolesRepository.findByRoleName(Role.USER.getName())).thenReturn(Optional.of(userRole));
         Mockito.when(usersRepository.findAllByRole(userRole)).thenReturn(Lists.list(user));
-
         Assertions.assertEquals(Lists.list(user), usersService.getUsersByRole(Role.USER));
     }
 
     @Test
     void getAllSuccess() {
-        Mockito.when(usersRepository.findAll()).thenReturn(Lists.list(user));
-        Assertions.assertEquals(Lists.list(user), usersService.getAll());
+        Mockito.when(usersRepository.getAll(pageable)).thenReturn(Lists.list(user));
+        Assertions.assertEquals(Lists.list(user), usersService.getAll(pageable));
     }
 
     @Test
     void getByNameLike() {
-        Mockito.when(usersRepository.findAllByNameContainsIgnoreCase("name")).thenReturn(Lists.list(user));
-        Assertions.assertEquals(Lists.list(user), usersService.getByNameLike("name"));
+        Mockito.when(usersRepository.findAllByNameContainsIgnoreCaseOrderByName("name", pageable)).thenReturn(Lists.list(user));
+        Assertions.assertEquals(Lists.list(user), usersService.getByNameLike("name", pageable));
     }
 
     @Test
