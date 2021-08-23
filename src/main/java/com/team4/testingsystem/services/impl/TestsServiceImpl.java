@@ -212,6 +212,28 @@ public class TestsServiceImpl implements TestsService {
         createTimer(test);
         notificationService.create(NotificationType.TEST_STARTED, test.getUser(), test);
         return test;
+
+        try {
+
+            test = testGeneratingService.formTest(test);
+
+            test.setStatus(Status.STARTED);
+
+            test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
+            testsRepository.start(Instant.now(), test.getId());
+
+            save(test);
+
+            createTimer(test);
+
+            notificationService.create(NotificationType.TEST_STARTED, test.getUser(), test);
+            return test;
+        } catch (NotEnoughQuestionsException e) {
+            if (test.getStatus().equals(Status.STARTED)) {
+                testsRepository.archiveById(test.getId());
+            }
+            throw e;
+        }
     }
 
     @Override
@@ -286,6 +308,7 @@ public class TestsServiceImpl implements TestsService {
         restrictionsService.checkCoachIsCurrentUser(test);
         restrictionsService.checkStatus(test, Status.IN_VERIFICATION);
         testEvaluationService.updateScoreAfterCoachCheck(test);
+
         testsRepository.coachSubmit(Instant.now(), id);
         notificationService.create(NotificationType.TEST_VERIFIED, test.getUser(), test);
     }
@@ -313,4 +336,5 @@ public class TestsServiceImpl implements TestsService {
         notificationService.create(NotificationType.COACH_DEASSIGNED, coach, test);
 
     }
+
 }
