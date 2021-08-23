@@ -600,10 +600,10 @@
                                                                     </#if>
                                                                     <a style="text-decoration: none;" target="_blank" href="https://untitled-testing-system-front.herokuapp.com/?redirect=true">
                                       <span style="color: #3e6dd7"
-                                      >Untitled Testing System</span
+                                      >Untitled Testing System.</span
                                       ><span style="color: null">
                                                                     </a>
-                                                                    .</span>
+                                                                    </span>
                                                                 </p>
                                                             </td>
                                                         </tr>
