@@ -32,6 +32,7 @@ public class TestDeassignedNotificationConverterTest {
     private static final Long TEST_ID = 2L;
     private static final String USER_EMAIL = "some@e.mail";
     private static final String USER_NAME = "user name";
+    private static final String LANGUAGE = "rus";
 
     @Test
     public void convertToDTO() {
@@ -45,6 +46,7 @@ public class TestDeassignedNotificationConverterTest {
         Mockito.when(notification.getUser()).thenReturn(user);
         Mockito.when(user.getLogin()).thenReturn(USER_EMAIL);
         Mockito.when(user.getName()).thenReturn(USER_NAME);
+        Mockito.when(user.getLanguage()).thenReturn(LANGUAGE);
 
         Mockito.when(test.getId()).thenReturn(TEST_ID);
 
@@ -56,6 +58,7 @@ public class TestDeassignedNotificationConverterTest {
         Assertions.assertEquals(createdAt, dto.getCreatedAt());
         Assertions.assertEquals(USER_EMAIL, dto.getUserEmail());
         Assertions.assertEquals(USER_NAME, dto.getUserName());
+        Assertions.assertEquals(LANGUAGE, dto.getLanguage());
 
         Assertions.assertNull(dto.getLevel());
         Assertions.assertNull(dto.getFinishTime());

@@ -42,6 +42,10 @@ public class EmailNotificationEventHandler {
 
     @EventListener
     public void onApplicationEvent(NotificationDTO notificationDTO) throws MessagingException {
+        if (!emailSubjects.containsKey(notificationDTO.getType())) {
+            return;
+        }
+
         MimeMessage mimeMessage = mailSender.createMimeMessage();
 
         MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");

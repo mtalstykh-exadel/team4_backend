@@ -557,23 +557,11 @@
                                       "
                                                                 >
                                                                     <#if language == "rus">
-                                                                        На Вас назначен новый тест по английскому языку уровня <b>${level}</b>.
-                                                                                                                                              Вы можете приступить к прохождению теста из своего
-                                                                        <a style="text-decoration: none;" target="_blank" href="https://untitled-testing-system-front.herokuapp.com/profile?redirect=true">
-                                        <span style="color: #3e6dd7">
-                                          личного кабинета
-                                        </span>
-                                                                        </a>
-                                                                        не позднее <b>${deadline}</b>.
+                                                                        С Вас был снят последний назначенный тест по английскому языку.
+                                                                        Если вы уже начали проходить данный тест, то не беспокойтесь, все результаты будут сохранены.
                                                                     <#else>
-                                                                        New english proficiency test of <b>${level}</b> level was assigned for you.
-                                                                                                                        You can start the test from your
-                                                                        <a style="text-decoration: none;" target="_blank" href="https://untitled-testing-system-front.herokuapp.com/profile?redirect=true">
-                                        <span style="color: #3e6dd7">
-                                          personal account
-                                        </span>
-                                                                        </a>
-                                                                        no later than <b>${deadline}</b>.
+                                                                        You were deassigned from the last english proficiency test.
+                                                                        If you have already started the test, don't worry, all results will be saved.
                                                                     </#if>
                                                                 </p>
                                                                 <p

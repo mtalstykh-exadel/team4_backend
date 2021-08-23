@@ -557,23 +557,35 @@
                                       "
                                                                 >
                                                                     <#if language == "rus">
-                                                                        На Вас назначен новый тест по английскому языку уровня <b>${level}</b>.
-                                                                                                                                              Вы можете приступить к прохождению теста из своего
-                                                                        <a style="text-decoration: none;" target="_blank" href="https://untitled-testing-system-front.herokuapp.com/profile?redirect=true">
+                                                                        На Вас была назначена проверка теста по английскому языку на уровень <b>${level}</b>, приоритет проверки -
+                                                                        <#if priority == "LOW">
+                                                                            <b>низкий</b>.
+                                                                        <#elseif priority == "MEDIUM">
+                                                                            <b>средний</b>.
+                                                                        <#else>
+                                                                            <b>высокий</b>.
+                                                                        </#if>
+                                                                        Перейти к проверке теста вы можете
+                                                                        <a style="text-decoration: none;" target="_blank" href="https://untitled-testing-system-front.herokuapp.com/tests-for-verification?redirect=true">
                                         <span style="color: #3e6dd7">
-                                          личного кабинета
+                                          с этой страницы.
                                         </span>
                                                                         </a>
-                                                                        не позднее <b>${deadline}</b>.
                                                                     <#else>
-                                                                        New english proficiency test of <b>${level}</b> level was assigned for you.
-                                                                                                                        You can start the test from your
-                                                                        <a style="text-decoration: none;" target="_blank" href="https://untitled-testing-system-front.herokuapp.com/profile?redirect=true">
+                                                                        You were assigned to verify english proficiency test of <b>${level}</b> level, verification priority -
+                                                                        <#if priority == "LOW">
+                                                                            <b>low</b>.
+                                                                        <#elseif priority == "MEDIUM">
+                                                                            <b>medium</b>.
+                                                                        <#else>
+                                                                            <b>high</b>.
+                                                                        </#if>
+                                                                        You can go to the test verification
+                                                                        <a style="text-decoration: none;" target="_blank" href="https://untitled-testing-system-front.herokuapp.com/tests-for-verification?redirect=true">
                                         <span style="color: #3e6dd7">
-                                          personal account
+                                          from this page.
                                         </span>
                                                                         </a>
-                                                                        no later than <b>${deadline}</b>.
                                                                     </#if>
                                                                 </p>
                                                                 <p

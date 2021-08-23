@@ -557,23 +557,21 @@
                                       "
                                                                 >
                                                                     <#if language == "rus">
-                                                                        На Вас назначен новый тест по английскому языку уровня <b>${level}</b>.
-                                                                                                                                              Вы можете приступить к прохождению теста из своего
-                                                                        <a style="text-decoration: none;" target="_blank" href="https://untitled-testing-system-front.herokuapp.com/profile?redirect=true">
+                                                                        Ваш тест по английскому языку на уровень <b>${level}</b> был проверен.
+                                                                                                                                 Просмотреть результаты с комментариями по последним двум модулям можно
+                                                                        <a style="text-decoration: none;" target="_blank" href="https://untitled-testing-system-front.herokuapp.com/result?id=${testId}&redirect=true">
                                         <span style="color: #3e6dd7">
-                                          личного кабинета
+                                          по этой ссылке.
                                         </span>
                                                                         </a>
-                                                                        не позднее <b>${deadline}</b>.
                                                                     <#else>
-                                                                        New english proficiency test of <b>${level}</b> level was assigned for you.
-                                                                                                                        You can start the test from your
-                                                                        <a style="text-decoration: none;" target="_blank" href="https://untitled-testing-system-front.herokuapp.com/profile?redirect=true">
+                                                                        Your english proficiency test of <b>${level}</b> level was verified by the coach.
+                                                                                                                         You can view the results with comments on the last two modules
+                                                                        <a style="text-decoration: none;" target="_blank" href="https://untitled-testing-system-front.herokuapp.com/result?id=${testId}&redirect=true">
                                         <span style="color: #3e6dd7">
-                                          personal account
+                                          here.
                                         </span>
                                                                         </a>
-                                                                        no later than <b>${deadline}</b>.
                                                                     </#if>
                                                                 </p>
                                                                 <p
