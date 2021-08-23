@@ -564,7 +564,7 @@
                                           личного кабинета
                                         </span>
                                                                         </a>
-                                                                        не позднее <b>${deadline}</b>.
+                                                                        не позднее <b>${(deadline/1000)?number_to_datetime}</b>.
                                                                     <#else>
                                                                         New english proficiency test of <b>${level}</b> level was assigned for you.
                                                                                                                         You can start the test from your
