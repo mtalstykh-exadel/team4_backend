@@ -9,6 +9,7 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
+import com.team4.testingsystem.exceptions.NotEnoughQuestionsException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.repositories.TestsRepository;
@@ -80,14 +81,15 @@ public class TestsServiceImpl implements TestsService {
         Test test = getById(id);
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
         restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
-
         restrictionsService.checkStatus(test, Status.STARTED);
-
         return test;
     }
 
     @Override
-    public List<Test> getByUserId(long userId, Pageable pageable) {
+    public List<Test> getByUserId(long userId, Levels level, Pageable pageable) {
+        if (level != null) {
+            return testsRepository.getAllByUserAndLevel(userId, level.name(), pageable);
+        }
         return testsRepository.getAllByUserId(userId, pageable);
     }
 
@@ -112,8 +114,13 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public List<UserTest> getAllUsersAndAssignedTests(Pageable pageable) {
-
+    public List<UserTest> getAllUsersAndAssignedTests(String nameSubstring, Pageable pageable) {
+        if (nameSubstring != null) {
+            return usersService.getByNameLike(nameSubstring, pageable).stream()
+                    .map(user -> new UserTest(user,
+                            testsRepository.getAssignedTestByUserId(user.getId()).orElse(null)))
+                    .collect(Collectors.toList());
+        }
         return usersService.getAll(pageable).stream()
                 .map(user -> new UserTest(user,
                         testsRepository.getAssignedTestByUserId(user.getId()).orElse(null)))
@@ -131,12 +138,9 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public Test startTestVerification(long testId) {
         Test test = getById(testId);
-
         restrictionsService.checkCoachIsCurrentUser(test);
-
         testsRepository.updateStatusByTestId(testId, Status.IN_VERIFICATION);
         test.setStatus(Status.IN_VERIFICATION);
-
         return test;
     }
 
@@ -148,12 +152,9 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public long createNotAssigned(long userId, Levels levelName) {
         User user = usersService.getUserById(userId);
-
         restrictionsService.checkHasNoStartedTests(userId);
-
         List<Test> selfStarted = testsRepository
                 .getSelfStartedByUserAfter(user, Instant.now().minus(1, ChronoUnit.DAYS));
-
         if (selfStarted.size() >= testsLimit) {
             throw new TestsLimitExceededException(selfStarted.get(0)
                     .getStartedAt().plus(1, ChronoUnit.DAYS).toString());
@@ -163,42 +164,31 @@ public class TestsServiceImpl implements TestsService {
                 .status(Status.STARTED)
                 .priority(Priority.LOW)
                 .build();
-
         testsRepository.save(test);
         return test.getId();
     }
 
     @Override
     public long createAssigned(long userId, Levels levelName, Instant deadline, Priority priority) {
-
         User user = usersService.getUserById(userId);
-
         restrictionsService.checkNotSelfAssign(user);
-
         restrictionsService.checkHasNoAssignedTests(user);
-
         Test test = create(user, levelName)
                 .assignedAt(Instant.now())
                 .deadline(deadline)
                 .status(Status.ASSIGNED)
                 .priority(priority)
                 .build();
-
         testsRepository.save(test);
-
         notificationService.create(NotificationType.TEST_ASSIGNED, test.getUser(), test);
-
         return test.getId();
     }
 
     @Override
     public void deassign(long id) {
         Test test = getById(id);
-
         restrictionsService.checkIsAssigned(test);
-
         restrictionsService.checkNotSelfDeassign(test.getUser());
-
         if (test.getStartedAt() == null) {
             testsRepository.archiveById(id);
         } else {
@@ -215,39 +205,37 @@ public class TestsServiceImpl implements TestsService {
     }
 
     private Test start(Test test) {
-
         test.setStatus(Status.STARTED);
-
         test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
-        testsRepository.start(Instant.now(), test.getId());
-
-        test = testGeneratingService.formTest(getById(test.getId()));
-
-        save(test);
-
-        createTimer(test);
-
-        notificationService.create(NotificationType.TEST_STARTED, test.getUser(), test);
-        return test;
+        try {
+            test = testGeneratingService.formTest(test);
+            test.setStatus(Status.STARTED);
+            test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
+            testsRepository.start(Instant.now(), test.getId());
+            save(test);
+            createTimer(test);
+            notificationService.create(NotificationType.TEST_STARTED, test.getUser(), test);
+            return test;
+        } catch (NotEnoughQuestionsException e) {
+            if (test.getStatus().equals(Status.STARTED)) {
+                testsRepository.archiveById(test.getId());
+            }
+            throw e;
+        }
     }
 
     @Override
     public Test startNotAssigned(long testId) {
         Test test = getById(testId);
-
         return start(test);
     }
 
     @Override
     public Test startAssigned(long testId) {
         Test test = getById(testId);
-
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
-
         restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
-
         restrictionsService.checkStatus(test, Status.ASSIGNED);
-
         restrictionsService.checkHasNoStartedTests(currentUserId);
         return start(test);
     }
@@ -267,11 +255,9 @@ public class TestsServiceImpl implements TestsService {
                 finish(testId, test.getFinishTime());
             }
         };
-
         java.util.Timer timer = new java.util.Timer(String.valueOf(testId));
         long delay = test.getFinishTime().plus(2L, ChronoUnit.MINUTES).toEpochMilli()
-                - Instant.now().toEpochMilli();
-
+                     - Instant.now().toEpochMilli();
         if (delay <= 0) {
             finish(testId, test.getFinishTime());
             timer.cancel();
@@ -287,9 +273,7 @@ public class TestsServiceImpl implements TestsService {
 
 
     private void finish(long id, Instant finishDate) {
-
         Test test = getById(id);
-
         if (test.getStatus().name().equals(Status.STARTED.name())) {
             timerRepository.deleteByTestId(id);
             testEvaluationService.countScoreBeforeCoachCheck(test);
@@ -299,67 +283,45 @@ public class TestsServiceImpl implements TestsService {
 
     @Override
     public void selfFinish(long id) {
-
         Test test = getById(id);
-
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
-
         restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
-
         restrictionsService.checkStatus(test, Status.STARTED);
-
         finish(id, Instant.now());
     }
 
     @Override
     public void coachSubmit(long id) {
         Test test = getById(id);
-
         restrictionsService.checkCoachIsCurrentUser(test);
-
         restrictionsService.checkStatus(test, Status.IN_VERIFICATION);
-
         testEvaluationService.updateScoreAfterCoachCheck(test);
-
         testsRepository.coachSubmit(Instant.now(), id);
         notificationService.create(NotificationType.TEST_VERIFIED, test.getUser(), test);
     }
 
     @Override
     public void assignCoach(long id, long coachId) {
-
         Test test = getById(id);
-
         restrictionsService.checkHasNoAssignedCoaches(test);
-
         restrictionsService.checkNotSelfAssignmentCoach(test, coachId);
-
         restrictionsService.checkStatus(test, Status.COMPLETED);
-
         restrictionsService.checkNotSelfAssignAdmin(test);
-
         User coach = usersService.getUserById(coachId);
-
         testsRepository.assignCoach(coach, id);
         notificationService.create(NotificationType.COACH_ASSIGNED, coach, test);
     }
 
     @Override
     public void deassignCoach(long id) {
-
         Test test = getById(id);
-
         restrictionsService.checkHasAssignedCoach(test);
-
         restrictionsService.checkNotVerifiedForCoachDeassign(test);
-
         restrictionsService.checkNotSelfDeassignAdmin(test);
-
         User coach = test.getCoach();
-
         testsRepository.deassignCoach(id);
-
         notificationService.create(NotificationType.COACH_DEASSIGNED, coach, test);
 
     }
+
 }

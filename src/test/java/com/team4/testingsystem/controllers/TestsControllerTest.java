@@ -119,12 +119,12 @@ class TestsControllerTest {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(mockUserDetails);
             Mockito.when(mockUserDetails.getId()).thenReturn(GOOD_USER_ID);
 
-            Mockito.when(testsService.getByUserId(GOOD_USER_ID, PAGE_REQUEST)).thenReturn(Lists.list(test));
+            Mockito.when(testsService.getByUserId(GOOD_USER_ID, A1, PAGE_REQUEST)).thenReturn(Lists.list(test));
             TestInfo expectedInfo = new TestInfo(test, 4);
             Mockito.when(testConverter.convertToInfo(test)).thenReturn(expectedInfo);
 
             Assertions.assertEquals(Lists.list(expectedInfo),
-                    testsController.getCurrentUserTests(PAGE, COUNT));
+                    testsController.getCurrentUserTests(A1, PAGE, COUNT));
         }
     }
 

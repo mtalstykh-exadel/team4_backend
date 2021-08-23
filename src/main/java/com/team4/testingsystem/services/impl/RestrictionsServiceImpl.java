@@ -10,11 +10,14 @@ import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.AnswersAreBadException;
 import com.team4.testingsystem.exceptions.AssignmentFailException;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
+import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.exceptions.IllegalGradeException;
+import com.team4.testingsystem.exceptions.NoAudioException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionOrTopicEditingException;
 import com.team4.testingsystem.exceptions.TestAlreadyStartedException;
 import com.team4.testingsystem.repositories.TestsRepository;
+import com.team4.testingsystem.services.FilesService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +30,13 @@ import java.util.List;
 public class RestrictionsServiceImpl implements RestrictionsService {
 
     private final TestsRepository testsRepository;
+    private final FilesService filesService;
 
     @Autowired
-    public RestrictionsServiceImpl(TestsRepository testsRepository) {
+    public RestrictionsServiceImpl(TestsRepository testsRepository,
+                                   FilesService filesService) {
         this.testsRepository = testsRepository;
+        this.filesService = filesService;
     }
 
     @Override
@@ -200,6 +206,20 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     public void checkNotArchivedContentFile(ContentFile contentFile) {
         if (!contentFile.isAvailable()) {
             throw new QuestionOrTopicEditingException("You can't edit archived topics");
+        }
+    }
+
+    @Override
+    public void checkListeningHasAudio(ContentFile contentFile) {
+        if (contentFile.getUrl() == null) {
+            throw new NoAudioException("You can't add listening topics without audios");
+        }
+    }
+
+    @Override
+    public void checkFileExists(String fileName) {
+        if (!filesService.doesFileExist(fileName)) {
+            throw new FileNotFoundException("File doesn't exist");
         }
     }
 }

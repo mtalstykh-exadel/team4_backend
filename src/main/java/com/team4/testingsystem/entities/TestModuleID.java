@@ -1,13 +1,23 @@
 package com.team4.testingsystem.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.io.Serializable;
-import java.util.Objects;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 
 @Embeddable
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
 public class TestModuleID implements Serializable {
 
     @ManyToOne
@@ -18,44 +28,4 @@ public class TestModuleID implements Serializable {
     @PrimaryKeyJoinColumn(name = "module_id", referencedColumnName = "id")
     private Module module;
 
-    public TestModuleID() {
-    }
-
-    public TestModuleID(Test test, Module module) {
-        this.test = test;
-        this.module = module;
-    }
-
-    public Test getTest() {
-        return test;
-    }
-
-    public void setTest(Test test) {
-        this.test = test;
-    }
-
-    public Module getModule() {
-        return module;
-    }
-
-    public void setModule(Module module) {
-        this.module = module;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        TestModuleID that = (TestModuleID) o;
-        return Objects.equals(test, that.test) && Objects.equals(module, that.module);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(test, module);
-    }
 }
