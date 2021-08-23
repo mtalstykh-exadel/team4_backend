@@ -52,13 +52,16 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.cors().and()
                 .authorizeRequests()
-                .antMatchers("/",
+                .antMatchers(
+                        "/",
                         "/health",
                         "/swagger-ui.html",
                         "/webjars/springfox-swagger-ui/**",
                         "/swagger-resources/**",
                         "/v2/api-docs",
-                        "/login").permitAll()
+                        "/login",
+                        "resources/avatars/**"
+                ).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
