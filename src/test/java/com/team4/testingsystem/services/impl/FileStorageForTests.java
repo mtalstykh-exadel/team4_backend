@@ -46,7 +46,7 @@ public class FileStorageForTests implements FilesService {
     }
 
     @Override
-    public boolean isFileExist(String fileName) {
+    public boolean doesFileExist(String fileName) {
         Path filePath = generateFilePath(fileName);
         return Files.exists(filePath);
 

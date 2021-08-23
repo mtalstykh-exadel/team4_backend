@@ -218,7 +218,7 @@ public class RestrictionsServiceImpl implements RestrictionsService {
 
     @Override
     public void checkFileExists(String fileName) {
-        if (!filesService.isFileExist(fileName)) {
+        if (!filesService.doesFileExist(fileName)) {
             throw new FileNotFoundException("File doesn't exist");
         }
     }

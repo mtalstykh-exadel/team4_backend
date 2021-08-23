@@ -12,5 +12,5 @@ public interface FilesService {
 
     void delete(String fileName) throws FileDeletingFailedException;
 
-    boolean isFileExist(String fileName);
+    boolean doesFileExist(String fileName);
 }

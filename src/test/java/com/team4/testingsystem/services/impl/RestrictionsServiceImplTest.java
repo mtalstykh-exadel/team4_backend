@@ -30,8 +30,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.AccessControlException;
 import java.util.List;
 import java.util.stream.Stream;
@@ -290,7 +288,7 @@ public class RestrictionsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void checkFileExists() {
-       Mockito.when(filesService.isFileExist("Pirates of the Caribbean.mp3")).thenReturn(false);
+       Mockito.when(filesService.doesFileExist("Pirates of the Caribbean.mp3")).thenReturn(false);
             Assertions.assertThrows(FileNotFoundException.class,
                     () -> restrictionsService.checkFileExists("Pirates of the Caribbean.mp3"));
         }
