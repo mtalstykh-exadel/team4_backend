@@ -19,6 +19,7 @@ import com.team4.testingsystem.exceptions.QuestionOrTopicEditingException;
 import com.team4.testingsystem.exceptions.TestAlreadyStartedException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
+import com.team4.testingsystem.services.FilesService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
@@ -68,6 +69,9 @@ public class RestrictionsServiceImplTest {
 
     @Mock
     CustomUserDetails userDetails;
+
+    @Mock
+    FilesService filesService;
 
     @InjectMocks
     RestrictionsServiceImpl restrictionsService;
@@ -285,11 +289,9 @@ public class RestrictionsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void checkExistsOnS3() {
-        try (MockedStatic<Files> mock = Mockito.mockStatic(Files.class)) {
-            mock.when(() -> Files.notExists(any(Path.class))).thenReturn(true);
+    void checkFileExists() {
+       Mockito.when(filesService.isFileExist("Pirates of the Caribbean.mp3")).thenReturn(false);
             Assertions.assertThrows(FileNotFoundException.class,
-                    () -> restrictionsService.checkExistsOnS3("Pirates of the Caribbean.mp3"));
+                    () -> restrictionsService.checkFileExists("Pirates of the Caribbean.mp3"));
         }
-    }
 }

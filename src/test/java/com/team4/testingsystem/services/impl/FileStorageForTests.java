@@ -4,10 +4,13 @@ import com.team4.testingsystem.exceptions.FileDeletingFailedException;
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.exceptions.FileSavingFailedException;
 import com.team4.testingsystem.services.FilesService;
+import org.apache.commons.io.FileUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,5 +43,16 @@ public class FileStorageForTests implements FilesService {
             throw new FileDeletingFailedException();
         }
         files.remove(fileUrl);
+    }
+
+    @Override
+    public boolean isFileExist(String fileName) {
+        Path filePath = generateFilePath(fileName);
+        return Files.exists(filePath);
+
+    }
+
+    public Path generateFilePath(String fileName) {
+        return Path.of(FileUtils.getTempDirectory() + "/testing-system/" + fileName);
     }
 }

@@ -11,4 +11,6 @@ public interface FilesService {
     Resource load(String fileName) throws FileLoadingFailedException;
 
     void delete(String fileName) throws FileDeletingFailedException;
+
+    boolean isFileExist(String fileName);
 }

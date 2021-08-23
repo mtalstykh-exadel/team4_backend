@@ -17,6 +17,7 @@ import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionOrTopicEditingException;
 import com.team4.testingsystem.exceptions.TestAlreadyStartedException;
 import com.team4.testingsystem.repositories.TestsRepository;
+import com.team4.testingsystem.services.FilesService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.apache.commons.io.FileUtils;
@@ -32,10 +33,13 @@ import java.util.List;
 public class RestrictionsServiceImpl implements RestrictionsService {
 
     private final TestsRepository testsRepository;
+    private final FilesService filesService;
 
     @Autowired
-    public RestrictionsServiceImpl(TestsRepository testsRepository) {
+    public RestrictionsServiceImpl(TestsRepository testsRepository,
+                                   FilesService filesService) {
         this.testsRepository = testsRepository;
+        this.filesService = filesService;
     }
 
     @Override
@@ -216,10 +220,9 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     }
 
     @Override
-    public void checkExistsOnS3(String fileName) {
-        Path filePath = Path.of(FileUtils.getTempDirectory() + "/testing-system/" + fileName);
-        if (Files.notExists(filePath)) {
-            throw new FileNotFoundException("File doesn't exist on S3");
+    public void checkFileExists(String fileName) {
+        if (!filesService.isFileExist(fileName)) {
+            throw new FileNotFoundException("File doesn't exist");
         }
     }
 }
