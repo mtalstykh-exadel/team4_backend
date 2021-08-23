@@ -44,8 +44,8 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public List<User> getByNameLike(String nameSubstring) {
-        return usersRepository.findAllByNameContainsIgnoreCase(nameSubstring);
+    public List<User> getByNameLike(String nameSubstring, Pageable pageable) {
+        return usersRepository.findAllByNameContainsIgnoreCaseOrderByName(nameSubstring, pageable);
     }
 
     @Override

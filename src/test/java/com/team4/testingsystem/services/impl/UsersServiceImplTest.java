@@ -64,7 +64,6 @@ class UsersServiceImplTest {
     void getUsersByRoleEmpty() {
         Mockito.when(userRolesRepository.findByRoleName(Role.USER.getName())).thenReturn(Optional.of(userRole));
         Mockito.when(usersRepository.findAllByRole(userRole)).thenReturn(Lists.emptyList());
-
         Assertions.assertTrue(usersService.getUsersByRole(Role.USER).isEmpty());
     }
 
@@ -72,7 +71,6 @@ class UsersServiceImplTest {
     void getUserByRoleSuccess() {
         Mockito.when(userRolesRepository.findByRoleName(Role.USER.getName())).thenReturn(Optional.of(userRole));
         Mockito.when(usersRepository.findAllByRole(userRole)).thenReturn(Lists.list(user));
-
         Assertions.assertEquals(Lists.list(user), usersService.getUsersByRole(Role.USER));
     }
 
@@ -84,8 +82,8 @@ class UsersServiceImplTest {
 
     @Test
     void getByNameLike() {
-        Mockito.when(usersRepository.findAllByNameContainsIgnoreCase("name")).thenReturn(Lists.list(user));
-        Assertions.assertEquals(Lists.list(user), usersService.getByNameLike("name"));
+        Mockito.when(usersRepository.findAllByNameContainsIgnoreCaseOrderByName("name", pageable)).thenReturn(Lists.list(user));
+        Assertions.assertEquals(Lists.list(user), usersService.getByNameLike("name", pageable));
     }
 
     @Test

@@ -13,7 +13,7 @@ public interface UsersService {
 
     List<User> getAll(Pageable pageable);
 
-    List<User> getByNameLike(String nameSubstring);
+    List<User> getByNameLike(String nameSubstring, Pageable pageable);
 
     void updateLanguage(Long userId, String language);
 }
