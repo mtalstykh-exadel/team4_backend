@@ -3,11 +3,8 @@ package com.team4.testingsystem.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -33,9 +30,6 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @EqualsAndHashCode
-/*@NoArgsConstructor
-@AllArgsConstructor
-@Builder(builderClassName = "Builder")*/
 public class Test implements Serializable {
 
     @Id
@@ -92,14 +86,6 @@ public class Test implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "question_id")
     )
     List<Question> questions = new ArrayList<>();
-
-    public List<Question> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
-    }
 
     public void addQuestion(Question question) {
         this.questions.add(question);

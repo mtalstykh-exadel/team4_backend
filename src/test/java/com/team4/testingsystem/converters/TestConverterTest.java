@@ -99,6 +99,7 @@ class TestConverterTest {
                 chosenOptions.add(new ChosenOption(new TestQuestionID(test, question), answers.get(0)));
 
                 question.setAnswers(answers);
+                /*questions.add(question);*/
             }
 
             questions.add(question);
