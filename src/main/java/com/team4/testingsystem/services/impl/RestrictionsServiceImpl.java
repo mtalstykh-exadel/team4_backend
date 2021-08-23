@@ -20,12 +20,9 @@ import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.FilesService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.AccessControlException;
 import java.util.List;
 

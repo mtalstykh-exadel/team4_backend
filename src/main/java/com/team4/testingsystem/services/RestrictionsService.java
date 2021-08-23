@@ -54,6 +54,7 @@ public interface RestrictionsService {
     void checkNotArchivedContentFile(ContentFile contentFile);
 
     void checkListeningHasAudio(ContentFile contentFile);
+
     void checkFileExists(String fileName);
 
 }
