@@ -1,6 +1,8 @@
 package com.team4.testingsystem.config;
 
 import com.team4.testingsystem.enums.NotificationType;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,32 +11,10 @@ import java.util.Map;
 
 @Configuration
 @ConfigurationProperties(prefix = "email-notifications")
+@Getter
+@Setter
 public class EmailConfigurationProperties {
     private Boolean enabled;
     private String fromEmail;
     private Map<NotificationType, String> templatePath = new HashMap<>();
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getFromEmail() {
-        return fromEmail;
-    }
-
-    public void setFromEmail(String fromEmail) {
-        this.fromEmail = fromEmail;
-    }
-
-    public Map<NotificationType, String> getTemplatePath() {
-        return templatePath;
-    }
-
-    public void setTemplatePath(Map<NotificationType, String> templatePath) {
-        this.templatePath = templatePath;
-    }
 }
