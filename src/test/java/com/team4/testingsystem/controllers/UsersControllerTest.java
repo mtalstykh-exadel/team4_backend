@@ -59,32 +59,33 @@ class UsersControllerTest {
 
     @Test
     void getAllUsersAndAssignedTestsNoAssignedTest() {
-        Mockito.when(testsService.getAllUsersAndAssignedTests(pageable))
+        Mockito.when(testsService.getAllUsersAndAssignedTests(null, pageable))
                 .thenReturn(Lists.list(new UserTest(user, null)));
 
-        List<UserDTO> users = usersController.getAllUsersAndAssignedTests(1, 10);
+        List<UserDTO> users = usersController.getAllUsersAndAssignedTests(null, 1, 10);
         Assertions.assertEquals(1, users.size());
         Assertions.assertEquals(new UserDTO(user), users.get(0));
     }
 
     @Test
     void getAllUsersAndAssignedTestsSuccess() {
-        Mockito.when(testsService.getAllUsersAndAssignedTests(pageable))
+        Mockito.when(testsService.getAllUsersAndAssignedTests(null, pageable))
                 .thenReturn(Lists.list(new UserTest(user, test)));
 
         UserDTO expectedUserDTO = new UserDTO(user);
         expectedUserDTO.setAssignedTest(new TestInfo(test));
 
-        List<UserDTO> users = usersController.getAllUsersAndAssignedTests(1, 10);
+        List<UserDTO> users = usersController.getAllUsersAndAssignedTests(null, 1, 10);
         Assertions.assertEquals(1, users.size());
         Assertions.assertEquals(expectedUserDTO, users.get(0));
     }
 
     @Test
     void getAllUsersByNameLikeSuccess() {
-        Mockito.when(usersService.getByNameLike("name")).thenReturn(Lists.list(user));
+        Mockito.when(usersService.getByNameLike("name",pageable)).thenReturn(Lists.list(user));
 
-        Assertions.assertEquals(Lists.list(new UserDTO(user)), usersController.getAllUsersByNameLike("name"));
+        Assertions.assertEquals(Lists.list(new UserDTO(user)),
+                usersController.getAllUsersByNameLike("name", 1, 10));
     }
 
     @Test

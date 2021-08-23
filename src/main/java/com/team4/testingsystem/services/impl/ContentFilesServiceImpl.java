@@ -2,6 +2,7 @@ package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
+import com.team4.testingsystem.exceptions.NotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
@@ -82,7 +83,7 @@ public class ContentFilesServiceImpl implements ContentFilesService {
 
     @Override
     public ContentFile getRandomContentFile(String level) {
-        return contentFilesRepository.getRandomFiles(level);
+        return contentFilesRepository.getRandomFile(level).orElseThrow(NotFoundException::new);
     }
 
     @Override

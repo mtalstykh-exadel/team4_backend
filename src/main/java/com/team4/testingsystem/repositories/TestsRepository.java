@@ -39,7 +39,9 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
             + "when t.status = 'ASSIGNED' then 'B' ELSE 'C' end, "
             + "t.verifiedAt desc nulls last, "
             + "t.deadline desc nulls last, "
-            + "t.assignedAt desc nulls last ")
+            + "t.assignedAt desc nulls last, "
+            + "t.completedAt asc nulls last, "
+            + "t.id desc nulls last")
     List<Test> getAllByUserAndLevel(Long userId, String level, Pageable pageable);
 
     @Query(value = "select t from Test t where t.status in ?1 and t.isAvailable = true "
@@ -48,7 +50,9 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
             + "when t.priority = 'Medium' then 'B' "
             + "when t.priority = 'Low' then 'C' ELSE 'D' end, "
             + "t.deadline asc nulls last, "
-            + "t.assignedAt desc nulls last ")
+            + "t.assignedAt desc nulls last, "
+            + "t.completedAt asc nulls last, "
+            + "t.id desc nulls last")
     List<Test> getByStatuses(Status[] statuses, Pageable pageable);
 
     @Query(value = "select t from Test t "
@@ -64,7 +68,9 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
             + "when t.priority = 'Medium' then 'B' "
             + "when t.priority = 'Low' then 'C' ELSE 'D' end, "
             + "t.deadline asc nulls last, "
-            + "t.assignedAt desc nulls last ")
+            + "t.assignedAt desc nulls last, "
+            + "t.completedAt asc nulls last, "
+            + "t.id desc nulls last")
     List<Test> getAllByAssignedCoachAndStatuses(Long coachId, Status[] status, Pageable pageable);
 
     @Transactional
@@ -98,7 +104,7 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.isAvailable = false where t.id = ?1")
+    @Query(value = "UPDATE Test t SET t.isAvailable = false where t.id = ?1 ")
     int archiveById(Long id);
 
     @Transactional
@@ -122,7 +128,8 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     @Query(value = " select case when count(t) > 0 then true else false end "
             + "from Test t where t.user.id = ?1 "
-            + "and t.status = 'STARTED' ")
+            + "and t.status = 'STARTED' "
+            + "and t.isAvailable = true ")
     boolean hasStartedTests(Long userId);
 
 }
