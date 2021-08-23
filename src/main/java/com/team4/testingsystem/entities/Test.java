@@ -3,12 +3,14 @@ package com.team4.testingsystem.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,6 +27,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "test")
+@Getter
+@Setter
+@EqualsAndHashCode
 public class Test implements Serializable {
 
     @Id
@@ -82,124 +87,12 @@ public class Test implements Serializable {
     )
     List<Question> questions = new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Priority getPriority() {
-        return priority;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public User getCoach() {
-        return coach;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setPriority(Priority priority) {
-        this.priority = priority;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public List<Question> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
-    }
-
     public void addQuestion(Question question) {
         this.questions.add(question);
     }
 
     public void addAllQuestions(List<Question> questions) {
         this.questions.addAll(questions);
-    }
-
-    public Level getLevel() {
-        return level;
-    }
-
-    public void setLevel(Level level) {
-        this.level = level;
-    }
-
-    public Instant getFinishTime() {
-        return finishTime;
-    }
-
-    public void setFinishTime(Instant finishTime) {
-        this.finishTime = finishTime;
-    }
-
-    public Instant getAssignedAt() {
-        return assignedAt;
-    }
-
-    public void setAssignedAt(Instant assignedAt) {
-        this.assignedAt = assignedAt;
-    }
-
-    public Instant getVerifiedAt() {
-        return verifiedAt;
-    }
-
-    public void setVerifiedAt(Instant verifiedAt) {
-        this.verifiedAt = verifiedAt;
-    }
-
-    public Instant getStartedAt() {
-        return startedAt;
-    }
-
-    public void setStartedAt(Instant startedAt) {
-        this.startedAt = startedAt;
-    }
-
-    public Instant getCompletedAt() {
-        return completedAt;
-    }
-
-    public void setCompletedAt(Instant completedAt) {
-        this.completedAt = completedAt;
-    }
-
-    public Instant getDeadline() {
-        return deadline;
-    }
-
-    public void setDeadline(Instant deadline) {
-        this.deadline = deadline;
-    }
-
-    public Boolean isAvailable() {
-        return isAvailable;
-    }
-
-    public void setAvailable(Boolean available) {
-        isAvailable = available;
-    }
-
-    public void setCoach(User coach) {
-        this.coach = coach;
     }
 
     public static Builder builder() {
@@ -279,35 +172,4 @@ public class Test implements Serializable {
         }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Test test = (Test) o;
-        return Objects.equals(id, test.id)
-                && Objects.equals(user, test.user)
-                && Objects.equals(level, test.level)
-                && Objects.equals(assignedAt, test.assignedAt)
-                && Objects.equals(verifiedAt, test.verifiedAt)
-                && Objects.equals(startedAt, test.startedAt)
-                && Objects.equals(completedAt, test.completedAt)
-                && Objects.equals(finishTime, test.finishTime)
-                && Objects.equals(deadline, test.deadline)
-                && Objects.equals(priority, test.priority)
-                && Objects.equals(status, test.status)
-                && Objects.equals(coach, test.coach)
-                && Objects.equals(isAvailable, test.isAvailable)
-                && Objects.equals(questions, test.questions);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, user, level, assignedAt, verifiedAt, startedAt, completedAt, finishTime,
-                priority, deadline, status, isAvailable, coach, questions);
-    }
 }
