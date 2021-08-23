@@ -9,6 +9,7 @@ import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
+import com.team4.testingsystem.exceptions.NotEnoughQuestionsException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.repositories.TestsRepository;
@@ -206,26 +207,13 @@ public class TestsServiceImpl implements TestsService {
     private Test start(Test test) {
         test.setStatus(Status.STARTED);
         test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
-        testsRepository.start(Instant.now(), test.getId());
-        test = testGeneratingService.formTest(getById(test.getId()));
-        save(test);
-        createTimer(test);
-        notificationService.create(NotificationType.TEST_STARTED, test.getUser(), test);
-        return test;
-
         try {
-
             test = testGeneratingService.formTest(test);
-
             test.setStatus(Status.STARTED);
-
             test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
             testsRepository.start(Instant.now(), test.getId());
-
             save(test);
-
             createTimer(test);
-
             notificationService.create(NotificationType.TEST_STARTED, test.getUser(), test);
             return test;
         } catch (NotEnoughQuestionsException e) {
@@ -308,7 +296,6 @@ public class TestsServiceImpl implements TestsService {
         restrictionsService.checkCoachIsCurrentUser(test);
         restrictionsService.checkStatus(test, Status.IN_VERIFICATION);
         testEvaluationService.updateScoreAfterCoachCheck(test);
-
         testsRepository.coachSubmit(Instant.now(), id);
         notificationService.create(NotificationType.TEST_VERIFIED, test.getUser(), test);
     }
