@@ -22,7 +22,7 @@ public interface UsersRepository extends CrudRepository<User, Long> {
            + "order by u.name")
     List<User> getAll(Pageable pageable);
 
-    List<User> findAllByNameContainsIgnoreCase(String nameSubstring);
+    List<User> findAllByNameContainsIgnoreCaseOrderByName(String nameSubstring, Pageable pageable);
 
     @Transactional
     @Modifying

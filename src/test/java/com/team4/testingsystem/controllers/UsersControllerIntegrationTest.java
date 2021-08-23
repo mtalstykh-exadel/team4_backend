@@ -91,19 +91,15 @@ class UsersControllerIntegrationTest {
     void getCoaches() throws Exception {
         Optional<UserRole> coachRole = userRolesRepository.findByRoleName(Role.COACH.getName());
         Assertions.assertTrue(coachRole.isPresent());
-
         final List<User> coaches = usersRepository.findAllByRole(coachRole.get());
         final List<UserDTO> coachDTOs = coaches.stream().map(UserDTO::new).collect(Collectors.toList());
-
         MvcResult mvcResult = mockMvc.perform(get("/coaches")
                 .with(user(adminDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
-
         String response = mvcResult.getResponse().getContentAsString();
         final List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {
         });
-
         Assertions.assertEquals(coachDTOs, userDTOs);
     }
 
@@ -136,11 +132,9 @@ class UsersControllerIntegrationTest {
                 .with(user(hrDetails)))
                 .andExpect(status().isOk())
                 .andReturn();
-
         String response = mvcResult.getResponse().getContentAsString();
         final List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {
         });
-
         userDTOs.forEach(user -> Assertions.assertNull(user.getAssignedTest()));
     }
 
@@ -152,7 +146,6 @@ class UsersControllerIntegrationTest {
                 .map(user -> EntityCreatorUtil.createTest(user, level))
                 .peek(test -> test.setStatus(Status.ASSIGNED))
                 .forEach(testsRepository::save);
-
         MvcResult mvcResult = mockMvc.perform(get("/employees")
                 .param("pageNumb", page)
                 .param("pageSize", count)
@@ -192,14 +185,14 @@ class UsersControllerIntegrationTest {
     void getAllUsersByNameLikeExactName() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/users")
                 .with(user(hrDetails))
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .param("name", "Katie Murphy"))
                 .andExpect(status().isOk())
                 .andReturn();
-
         String response = mvcResult.getResponse().getContentAsString();
         List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {
         });
-
         Assertions.assertEquals(1, userDTOs.size());
         Assertions.assertEquals("Katie Murphy", userDTOs.get(0).getName());
     }
@@ -207,6 +200,8 @@ class UsersControllerIntegrationTest {
     @Test
     void getAllUsersByNameLikeUser() throws Exception {
         mockMvc.perform(get("/users?name=", "an U")
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(userDetails)))
                 .andExpect(status().isForbidden());
     }
@@ -214,6 +209,8 @@ class UsersControllerIntegrationTest {
     @Test
     void getAllUsersByNameLikeCoach() throws Exception {
         mockMvc.perform(get("/users?name=", "an U")
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(coachDetails)))
                 .andExpect(status().isForbidden());
     }
@@ -221,23 +218,24 @@ class UsersControllerIntegrationTest {
     @Test
     void getAllUsersByNameLikeAdmin() throws Exception {
         mockMvc.perform(get("/users?name=", "an U")
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .with(user(adminDetails)))
                 .andExpect(status().isForbidden());
     }
-
 
     @Test
     void getAllUsersByNameLikeSubstring() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/users")
                 .with(user(hrDetails))
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .param("name", "e Mu"))
                 .andExpect(status().isOk())
                 .andReturn();
-
         String response = mvcResult.getResponse().getContentAsString();
         List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {
         });
-
         Assertions.assertEquals(1, userDTOs.size());
         Assertions.assertEquals("Katie Murphy", userDTOs.get(0).getName());
     }
@@ -246,14 +244,14 @@ class UsersControllerIntegrationTest {
     void getAllUsersByNameLikeSubstringIgnoreCase() throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/users")
                 .with(user(hrDetails))
+                .param("pageNumb", page)
+                .param("pageSize", count)
                 .param("name", "lle Ph"))
                 .andExpect(status().isOk())
                 .andReturn();
-
         String response = mvcResult.getResponse().getContentAsString();
         List<UserDTO> userDTOs = objectMapper.readValue(response, new TypeReference<>() {
         });
-
         Assertions.assertEquals(1, userDTOs.size());
         Assertions.assertEquals("Michelle Phillips", userDTOs.get(0).getName());
     }
@@ -264,9 +262,7 @@ class UsersControllerIntegrationTest {
                 .with(user(userDetails))
                 .param("language", "eng"))
                 .andExpect(status().isOk());
-
         Optional<User> user = usersRepository.findById(userDetails.getId());
-
         Assertions.assertTrue(user.isPresent());
         Assertions.assertEquals("eng", user.get().getLanguage());
     }

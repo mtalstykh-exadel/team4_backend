@@ -50,10 +50,12 @@ public class TestsController {
 
     @ApiOperation(value = "Get all tests assigned to the current user")
     @GetMapping(path = "/")
-    public List<TestInfo> getCurrentUserTests(@RequestParam int pageNumb,
+    public List<TestInfo> getCurrentUserTests(@RequestParam(required = false) Levels level,
+                                              @RequestParam int pageNumb,
                                               @RequestParam int pageSize) {
         return convertToTestInfo(testsService
-                .getByUserId(JwtTokenUtil.extractUserDetails().getId(), PageRequest.of(pageNumb, pageSize)));
+                .getByUserId(JwtTokenUtil.extractUserDetails().getId(),
+                        level, PageRequest.of(pageNumb, pageSize)));
     }
 
     @ApiOperation(value = "Get all tests assigned to the user by by the optional parameter level")
@@ -135,7 +137,6 @@ public class TestsController {
     @ApiOperation(value = "Is used when the user starts the test which was assigned by an HR")
     @PostMapping(path = "/start/{testId}")
     public TestDTO startAssigned(@PathVariable("testId") long testId) {
-
         return testConverter.convertToDTO(testsService.startAssigned(testId));
     }
 
