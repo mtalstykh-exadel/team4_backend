@@ -60,7 +60,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/swagger-resources/**",
                         "/v2/api-docs",
                         "/login",
-                        "resources/avatars/**"
+                        "/resources/avatars/**"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()
