@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Component
@@ -77,7 +78,7 @@ public class TestConverter {
                 .collect(toMap(option -> option.getId().getQuestion().getId(), ChosenOption::getAnswer));
 
         Map<String, List<QuestionDTO>> questions = questionService.getQuestionsByTestId(testDTO.getId()).stream()
-                .peek(question -> Collections.shuffle(question.getAnswers()))
+                .peek(question -> Collections.shuffle(question.getAnswers(), new Random(question.getId())))
                 .map(QuestionDTO::create)
                 .peek(question -> checkChosenAnswer(question, chosenAnswerByQuestionId))
                 .collect(groupingBy(QuestionDTO::getModule));
