@@ -11,12 +11,15 @@ import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.AnswersAreBadException;
 import com.team4.testingsystem.exceptions.AssignmentFailException;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
+import com.team4.testingsystem.exceptions.FileNotFoundException;
 import com.team4.testingsystem.exceptions.IllegalGradeException;
+import com.team4.testingsystem.exceptions.NoAudioException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionOrTopicEditingException;
 import com.team4.testingsystem.exceptions.TestAlreadyStartedException;
 import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
+import com.team4.testingsystem.services.FilesService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
@@ -64,6 +67,9 @@ public class RestrictionsServiceImplTest {
 
     @Mock
     CustomUserDetails userDetails;
+
+    @Mock
+    FilesService filesService;
 
     @InjectMocks
     RestrictionsServiceImpl restrictionsService;
@@ -272,4 +278,18 @@ public class RestrictionsServiceImplTest {
         Assertions.assertThrows(QuestionOrTopicEditingException.class,
                 () -> restrictionsService.checkNotArchivedContentFile(contentFile));
     }
+
+    @org.junit.jupiter.api.Test
+    void checkListeningHasAudio(){
+        Mockito.when(contentFile.getUrl()).thenReturn(null);
+        Assertions.assertThrows(NoAudioException.class,
+                () -> restrictionsService.checkListeningHasAudio(contentFile));
+    }
+
+    @org.junit.jupiter.api.Test
+    void checkFileExists() {
+       Mockito.when(filesService.doesFileExist("Pirates of the Caribbean.mp3")).thenReturn(false);
+            Assertions.assertThrows(FileNotFoundException.class,
+                    () -> restrictionsService.checkFileExists("Pirates of the Caribbean.mp3"));
+        }
 }

@@ -81,7 +81,14 @@ public class AmazonS3Service implements FilesService {
         return Files.createTempFile(null, fileName);
     }
 
+    @Override
+    public boolean doesFileExist(String fileName) {
+        return amazonS3.doesObjectExist(bucketName, fileNameToS3Key(fileName));
+    }
+
     private String fileNameToS3Key(String fileName) {
         return fileName.replace('-', '/');
     }
+
+
 }
