@@ -126,4 +126,9 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
             + "and t.isAvailable = true ")
     boolean hasStartedTests(Long userId);
 
+    @Transactional
+    @Modifying
+    @Query(value = "update Test t set t.listeningAttempts = ?1 where t.id = ?2 ")
+    void updateListeningAttempts(Integer attempts, Long testId);
+
 }

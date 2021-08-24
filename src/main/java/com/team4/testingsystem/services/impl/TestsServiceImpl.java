@@ -169,6 +169,7 @@ public class TestsServiceImpl implements TestsService {
                 .startedAt(Instant.now())
                 .status(Status.STARTED)
                 .priority(Priority.LOW)
+                .listeningAttempts(3)
                 .build();
         testsRepository.save(test);
         return test.getId();
@@ -184,6 +185,7 @@ public class TestsServiceImpl implements TestsService {
                 .deadline(deadline)
                 .status(Status.ASSIGNED)
                 .priority(priority)
+                .listeningAttempts(3)
                 .build();
         testsRepository.save(test);
         notificationService.create(NotificationType.TEST_ASSIGNED, test.getUser(), test);
@@ -333,7 +335,7 @@ public class TestsServiceImpl implements TestsService {
     }
 
     @Override
-    public void spendAttempt(long id){
+    public void spendAttempt(long id) {
         Test test = getById(id);
 
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
@@ -342,8 +344,8 @@ public class TestsServiceImpl implements TestsService {
         restrictionsService.checkStatus(test, Status.STARTED);
 
         int attempts = test.getListeningAttempts();
-        if (attempts > 0){
-            test.setListeningAttempts(attempts - 1);
+        if (attempts > 0) {
+            testsRepository.updateListeningAttempts(attempts - 1, id);
         }
     }
 }

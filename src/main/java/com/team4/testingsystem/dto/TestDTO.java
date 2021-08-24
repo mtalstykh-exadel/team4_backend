@@ -45,7 +45,7 @@ public class TestDTO implements Serializable {
         priority = test.getPriority().getName();
         status = test.getStatus().name();
         listeningAttempts = test.getListeningAttempts();
-        
+
         if (test.getCoach() != null) {
             coach = new UserDTO(test.getCoach());
         }

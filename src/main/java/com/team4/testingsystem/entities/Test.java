@@ -170,6 +170,11 @@ public class Test implements Serializable {
             return this;
         }
 
+        public Builder listeningAttempts(Integer listeningAttempts){
+            test.listeningAttempts = listeningAttempts;
+            return this;
+        }
+
         public Test build() {
             return test;
         }
