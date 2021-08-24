@@ -35,12 +35,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.security.AccessControlException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 
@@ -195,6 +197,7 @@ class TestsServiceImplTest {
             Mockito.when(builder.status(any())).thenReturn(builder);
             Mockito.when(builder.priority(Priority.LOW)).thenReturn(builder);
             Mockito.when(builder.level(any())).thenReturn(builder);
+            Mockito.when(builder.listeningAttempts(3)).thenReturn(builder);
             Mockito.when(builder.build()).thenReturn(test);
             Mockito.when(test.getId()).thenReturn(1L);
             testsService.createNotAssigned(GOOD_USER_ID, Levels.A1);
@@ -248,6 +251,7 @@ class TestsServiceImplTest {
             Mockito.when(builder.status(any())).thenReturn(builder);
             Mockito.when(builder.priority(any())).thenReturn(builder);
             Mockito.when(builder.level(any())).thenReturn(builder);
+            Mockito.when(builder.listeningAttempts(3)).thenReturn(builder);
             Mockito.when(builder.build()).thenReturn(test);
             Mockito.when(test.getId()).thenReturn(1L);
             Mockito.when(test.getUser()).thenReturn(user);
@@ -543,4 +547,36 @@ class TestsServiceImplTest {
         verify(timerRepository).findAll();
     }
 
+    @org.junit.jupiter.api.Test
+    void spendAttemptSuccess(){
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID);
+            Mockito.when(test.getListeningAttempts()).thenReturn(3);
+            Mockito.when(testsRepository.updateListeningAttempts(anyInt(), Mockito.eq(GOOD_TEST_ID))).thenReturn(1);
+
+            testsService.spendAttempt(GOOD_TEST_ID);
+
+            verify(testsRepository).updateListeningAttempts(2, GOOD_TEST_ID);
+            verify(restrictionsService).checkStatus(test, Status.STARTED);
+            verify(restrictionsService).checkOwnerIsCurrentUser(test, GOOD_USER_ID);
+
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void spendAttemptFail(){
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID);
+            Mockito.when(test.getListeningAttempts()).thenReturn(0);
+
+            Assertions.assertThrows(AccessControlException.class, () -> testsService.spendAttempt(GOOD_TEST_ID));
+
+        }
+    }
 }

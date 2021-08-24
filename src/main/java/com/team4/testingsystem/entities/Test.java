@@ -75,6 +75,9 @@ public class Test implements Serializable {
     @Column(name = "is_available")
     private Boolean isAvailable = true;
 
+    @Column(name = "listening_attempts")
+    private Integer listeningAttempts;
+
     @ManyToOne
     @JoinColumn(name = "coach_id", referencedColumnName = "id")
     private User coach;
@@ -167,9 +170,13 @@ public class Test implements Serializable {
             return this;
         }
 
+        public Builder listeningAttempts(Integer listeningAttempts) {
+            test.listeningAttempts = listeningAttempts;
+            return this;
+        }
+
         public Test build() {
             return test;
         }
     }
-
 }
