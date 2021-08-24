@@ -332,4 +332,18 @@ public class TestsServiceImpl implements TestsService {
 
     }
 
+    @Override
+    public void spendAttempt(long id){
+        Test test = getById(id);
+
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+
+        restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
+        restrictionsService.checkStatus(test, Status.STARTED);
+
+        int attempts = test.getListeningAttempts();
+        if (attempts > 0){
+            test.setListeningAttempts(attempts - 1);
+        }
+    }
 }
