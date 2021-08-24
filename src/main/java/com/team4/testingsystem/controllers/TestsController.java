@@ -161,6 +161,11 @@ public class TestsController {
         testsService.deassignCoach(testId);
     }
 
+    @ApiOperation(value = "Use it to spend listening attempts")
+    @PostMapping(path = "/playAudio/{testId}")
+    public void spendAttempt(@PathVariable("testId") long testId) {
+        testsService.spendAttempt(testId);
+    }
     private List<TestInfo> convertToTestInfo(List<Test> tests) {
         return tests.stream()
                 .map(testConverter::convertToInfo)
