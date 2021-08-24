@@ -170,7 +170,7 @@ public class Test implements Serializable {
             return this;
         }
 
-        public Builder listeningAttempts(Integer listeningAttempts){
+        public Builder listeningAttempts(Integer listeningAttempts) {
             test.listeningAttempts = listeningAttempts;
             return this;
         }
@@ -179,5 +179,4 @@ public class Test implements Serializable {
             return test;
         }
     }
-
 }

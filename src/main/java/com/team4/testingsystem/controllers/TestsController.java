@@ -166,6 +166,7 @@ public class TestsController {
     public void spendAttempt(@PathVariable("testId") long testId) {
         testsService.spendAttempt(testId);
     }
+
     private List<TestInfo> convertToTestInfo(List<Test> tests) {
         return tests.stream()
                 .map(testConverter::convertToInfo)
