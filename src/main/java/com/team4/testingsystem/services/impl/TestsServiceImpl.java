@@ -179,8 +179,11 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public long createAssigned(long userId, Levels levelName, Instant deadline, Priority priority) {
         User user = usersService.getUserById(userId);
+
         restrictionsService.checkNotSelfAssign(user);
         restrictionsService.checkHasNoAssignedTests(user);
+        restrictionsService.checkValidDeadline(deadline);
+
         Test test = create(user, levelName)
                 .assignedAt(Instant.now())
                 .deadline(deadline)

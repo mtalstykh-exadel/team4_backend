@@ -258,11 +258,13 @@ class TestsServiceImplTest {
 
             Assertions.assertEquals(1L,
                     testsService.createAssigned(GOOD_USER_ID, Levels.A1, deadline, Priority.HIGH));
+
             verify(restrictionsService).checkNotSelfAssign(user);
             verify(restrictionsService).checkHasNoAssignedTests(user);
             verify(notificationService).create(NotificationType.TEST_ASSIGNED, user, test);
             verify(restrictionsService).checkNotSelfAssign(user);
             verify(restrictionsService).checkHasNoAssignedTests(user);
+            verify(restrictionsService).checkValidDeadline(deadline);
         }
     }
 
