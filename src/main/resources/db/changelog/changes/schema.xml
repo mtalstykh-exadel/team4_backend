@@ -866,4 +866,12 @@
         </update>
     </changeSet>
 
+
+    <changeSet id="add_listening_attempts" author="Anlord241">
+        <addColumn tableName="test">
+            <column name="listening_attempts" type="int"/>
+        </addColumn>
+
+    </changeSet>
+
 </databaseChangeLog>
