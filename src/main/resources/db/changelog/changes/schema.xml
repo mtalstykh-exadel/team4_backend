@@ -830,5 +830,40 @@
             <where>user_login='eng_admin@northsixty.com'</where>
         </update>
     </changeSet>
-    
+
+    <changeSet id="fix_user_avatars_attempt_2" author="maxim12321">
+        <update tableName="user">
+            <column name="avatar" value="https://untitled-testing-system.herokuapp.com/resources/avatars/rus_user.jpg"/>
+            <where>user_login='rus_user@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://untitled-testing-system.herokuapp.com/resources/avatars/rus_hr.jpg"/>
+            <where>user_login='rus_hr@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://untitled-testing-system.herokuapp.com/resources/avatars/rus_coach.png"/>
+            <where>user_login='rus_coach@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://untitled-testing-system.herokuapp.com/resources/avatars/rus_admin.jpg"/>
+            <where>user_login='rus_admin@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://untitled-testing-system.herokuapp.com/resources/avatars/eng_user.jpg"/>
+            <where>user_login='eng_user@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://untitled-testing-system.herokuapp.com/resources/avatars/eng_hr.jpeg"/>
+            <where>user_login='eng_hr@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://untitled-testing-system.herokuapp.com/resources/avatars/eng_coach.png"/>
+            <where>user_login='eng_coach@northsixty.com'</where>
+        </update>
+        <update tableName="user">
+            <column name="avatar" value="https://untitled-testing-system.herokuapp.com/resources/avatars/eng_admin.jpg"/>
+            <where>user_login='eng_admin@northsixty.com'</where>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>
