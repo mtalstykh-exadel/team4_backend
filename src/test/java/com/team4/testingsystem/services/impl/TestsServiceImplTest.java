@@ -444,9 +444,11 @@ class TestsServiceImplTest {
     void startTestVerificationSuccess() {
         Mockito.when(testsRepository.updateStatusByTestId(GOOD_TEST_ID, Status.IN_VERIFICATION)).thenReturn(1);
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+        Mockito.when(test.getStatus()).thenReturn(Status.COMPLETED);
 
         Assertions.assertEquals(test, testsService.startTestVerification(GOOD_TEST_ID));
         verify(restrictionsService).checkCoachIsCurrentUser(test);
+        verify(restrictionsService).checkNotVerified(test);
     }
 
     @org.junit.jupiter.api.Test
