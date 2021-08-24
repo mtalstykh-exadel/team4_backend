@@ -1,18 +1,18 @@
 package com.team4.testingsystem.dto;
 
 import com.team4.testingsystem.entities.Answer;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Objects;
 
+@NoArgsConstructor
+@Data
 public class AnswerDTO implements Serializable {
     private Long id;
     private String answer;
     private Boolean correct;
     private Boolean checked;
-
-    public AnswerDTO() {
-    }
 
     private AnswerDTO(Answer answer) {
         this.id = answer.getId();
@@ -29,54 +29,4 @@ public class AnswerDTO implements Serializable {
         return answerDTO;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
-    public Boolean isCorrect() {
-        return correct;
-    }
-
-    public void setCorrect(Boolean correct) {
-        this.correct = correct;
-    }
-
-    public Boolean isChecked() {
-        return checked;
-    }
-
-    public void setChecked(Boolean checked) {
-        this.checked = checked;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        AnswerDTO answerDTO = (AnswerDTO) o;
-        return Objects.equals(answer, answerDTO.answer)
-                && Objects.equals(correct, answerDTO.correct)
-                && Objects.equals(checked, answerDTO.checked);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(answer, correct);
-    }
 }

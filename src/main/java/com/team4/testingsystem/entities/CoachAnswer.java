@@ -1,10 +1,8 @@
 package com.team4.testingsystem.entities;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -16,9 +14,7 @@ import javax.persistence.Table;
 @Table(name = "coach_answer")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 public class CoachAnswer implements Serializable {
 
     @EmbeddedId

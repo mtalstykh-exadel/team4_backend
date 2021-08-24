@@ -2,10 +2,9 @@ package com.team4.testingsystem.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -21,12 +20,11 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "user")
-@Getter
-@Setter
 @EqualsAndHashCode
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@Builder
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

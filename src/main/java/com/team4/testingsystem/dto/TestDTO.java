@@ -1,13 +1,16 @@
 package com.team4.testingsystem.dto;
 
 import com.team4.testingsystem.entities.Test;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
+@NoArgsConstructor
+@Data
 public class TestDTO implements Serializable {
     private Long id;
     private String level;
@@ -29,9 +32,6 @@ public class TestDTO implements Serializable {
 
     private List<ErrorReportDTO> errorReports;
 
-    public TestDTO() {
-    }
-
     public TestDTO(Test test) {
         id = test.getId();
         level = test.getLevel().getName();
@@ -48,161 +48,4 @@ public class TestDTO implements Serializable {
         }
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Map<String, List<QuestionDTO>> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(Map<String, List<QuestionDTO>> questions) {
-        this.questions = questions;
-    }
-
-    public Instant getAssignedAt() {
-        return assignedAt;
-    }
-
-    public void setAssignedAt(Instant assignedAt) {
-        this.assignedAt = assignedAt;
-    }
-
-    public Instant getFinishTime() {
-        return finishTime;
-    }
-
-    public void setFinishTime(Instant finishTime) {
-        this.finishTime = finishTime;
-    }
-
-    public Instant getCompletedAt() {
-        return completedAt;
-    }
-
-    public void setCompletedAt(Instant completedAt) {
-        this.completedAt = completedAt;
-    }
-
-    public Instant getVerifiedAt() {
-        return verifiedAt;
-    }
-
-    public void setVerifiedAt(Instant verifiedAt) {
-        this.verifiedAt = verifiedAt;
-    }
-
-    public Instant getStartedAt() {
-        return startedAt;
-    }
-
-    public void setStartedAt(Instant startedAt) {
-        this.startedAt = startedAt;
-    }
-
-    public Instant getDeadline() {
-        return deadline;
-    }
-
-    public void setDeadline(Instant deadline) {
-        this.deadline = deadline;
-    }
-
-    public ListeningTopicDTO getContentFile() {
-        return contentFile;
-    }
-
-    public void setContentFile(ListeningTopicDTO contentFile) {
-        this.contentFile = contentFile;
-    }
-
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
-
-    public String getPriority() {
-        return priority;
-    }
-
-    public void setPriority(String priority) {
-        this.priority = priority;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public UserDTO getCoach() {
-        return coach;
-    }
-
-    public void setCoach(UserDTO coach) {
-        this.coach = coach;
-    }
-
-    public String getEssayText() {
-        return essayText;
-    }
-
-    public void setEssayText(String essayText) {
-        this.essayText = essayText;
-    }
-
-    public String getSpeakingUrl() {
-        return speakingUrl;
-    }
-
-    public void setSpeakingUrl(String speakingUrl) {
-        this.speakingUrl = speakingUrl;
-    }
-
-    public List<ErrorReportDTO> getErrorReports() {
-        return errorReports;
-    }
-
-    public void setErrorReports(List<ErrorReportDTO> errorReports) {
-        this.errorReports = errorReports;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        TestDTO testDTO = (TestDTO) o;
-        return Objects.equals(level, testDTO.level)
-                && Objects.equals(assignedAt, testDTO.assignedAt)
-                && Objects.equals(completedAt, testDTO.completedAt)
-                && Objects.equals(verifiedAt, testDTO.verifiedAt)
-                && Objects.equals(startedAt, testDTO.startedAt)
-                && Objects.equals(finishTime, testDTO.finishTime)
-                && Objects.equals(deadline, testDTO.deadline)
-                && Objects.equals(priority, testDTO.priority)
-                && Objects.equals(status, testDTO.status)
-                && Objects.equals(coach, testDTO.coach)
-                && Objects.equals(essayText, testDTO.essayText)
-                && Objects.equals(speakingUrl, testDTO.speakingUrl)
-                && Objects.equals(errorReports, testDTO.errorReports);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(level, assignedAt, completedAt, verifiedAt, startedAt, deadline, finishTime,
-                priority, status, coach, essayText, speakingUrl, errorReports);
-    }
 }

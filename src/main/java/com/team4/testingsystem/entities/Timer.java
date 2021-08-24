@@ -1,9 +1,7 @@
 package com.team4.testingsystem.entities;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,9 +13,7 @@ import javax.persistence.OneToOne;
 
 @Entity
 @NoArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 public class Timer {
 
     @Id

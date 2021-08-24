@@ -2,10 +2,8 @@ package com.team4.testingsystem.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.io.Serializable;
 import javax.persistence.EmbeddedId;
@@ -19,9 +17,7 @@ import javax.persistence.Table;
 @Table(name = "chosen_option")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 public class ChosenOption implements Serializable {
 
     @EmbeddedId

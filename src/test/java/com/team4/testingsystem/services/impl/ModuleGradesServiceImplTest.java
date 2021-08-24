@@ -42,7 +42,7 @@ public class ModuleGradesServiceImplTest {
     private com.team4.testingsystem.entities.Test test;
 
     @Mock
-    private ModuleGradesDTO.Builder builder;
+    private ModuleGradesDTO.ModuleGradesDTOBuilder builder;
 
     @Mock
     private Stream<ModuleGrade> stream;

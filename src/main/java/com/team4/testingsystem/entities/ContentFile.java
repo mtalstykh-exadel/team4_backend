@@ -1,9 +1,7 @@
 package com.team4.testingsystem.entities;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,9 +20,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "content_file")
 @NoArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 public class ContentFile implements Serializable {
 
     @Id

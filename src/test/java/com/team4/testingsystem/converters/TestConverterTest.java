@@ -144,8 +144,8 @@ class TestConverterTest {
 
             if (module == Modules.GRAMMAR) {
                 actualQuestion.getAnswers().stream()
-                        .filter(answer -> answer.isChecked() != null)
-                        .filter(AnswerDTO::isChecked)
+                        .filter(answer -> answer.getChecked() != null)
+                        .filter(AnswerDTO::getChecked)
                         .findFirst()
                         .orElseThrow();
             }
