@@ -138,9 +138,15 @@ public class TestsServiceImpl implements TestsService {
     @Override
     public Test startTestVerification(long testId) {
         Test test = getById(testId);
+
         restrictionsService.checkCoachIsCurrentUser(test);
-        testsRepository.updateStatusByTestId(testId, Status.IN_VERIFICATION);
-        test.setStatus(Status.IN_VERIFICATION);
+        restrictionsService.checkNotVerified(test);
+
+        if (!test.getStatus().equals(Status.IN_VERIFICATION)) {
+            testsRepository.updateStatusByTestId(testId, Status.IN_VERIFICATION);
+            test.setStatus(Status.IN_VERIFICATION);
+        }
+
         return test;
     }
 
