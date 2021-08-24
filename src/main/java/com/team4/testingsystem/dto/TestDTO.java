@@ -20,6 +20,7 @@ public class TestDTO implements Serializable {
     private Instant startedAt;
     private Instant deadline;
     private Instant finishTime;
+    private Integer listeningAttempts;
 
     private String priority;
     private String status;
@@ -43,6 +44,8 @@ public class TestDTO implements Serializable {
         deadline = test.getDeadline();
         priority = test.getPriority().getName();
         status = test.getStatus().name();
+        listeningAttempts = test.getListeningAttempts();
+        
         if (test.getCoach() != null) {
             coach = new UserDTO(test.getCoach());
         }
