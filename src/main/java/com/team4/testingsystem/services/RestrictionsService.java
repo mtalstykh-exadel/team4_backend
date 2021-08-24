@@ -61,5 +61,5 @@ public interface RestrictionsService {
     void checkFileExists(String fileName);
 
     void checkValidDeadline(Instant deadline);
-    
+
 }
