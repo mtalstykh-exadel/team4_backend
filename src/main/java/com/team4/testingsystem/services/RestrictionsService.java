@@ -41,6 +41,8 @@ public interface RestrictionsService {
 
     void checkNotVerifiedForCoachDeassign(Test test);
 
+    void checkNotVerified(Test test);
+
     void checkNotSelfAssignAdmin(Test test);
 
     void checkNotSelfDeassignAdmin(Test test);

@@ -198,6 +198,13 @@ public class RestrictionsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
+    void checkNotVerified() {
+        Mockito.when(test.getStatus()).thenReturn(Status.VERIFIED);
+        Assertions.assertThrows(AccessControlException.class,
+                () -> restrictionsService.checkNotVerified(test));
+    }
+
+    @org.junit.jupiter.api.Test
     void checkNotSelfAssignAdmin() {
         Mockito.when(test.getUser()).thenReturn(user);
 
