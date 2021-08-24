@@ -196,6 +196,7 @@ class TestsServiceImplTest {
             Mockito.when(builder.status(any())).thenReturn(builder);
             Mockito.when(builder.priority(Priority.LOW)).thenReturn(builder);
             Mockito.when(builder.level(any())).thenReturn(builder);
+            Mockito.when(builder.listeningAttempts(3)).thenReturn(builder);
             Mockito.when(builder.build()).thenReturn(test);
             Mockito.when(test.getId()).thenReturn(1L);
             testsService.createNotAssigned(GOOD_USER_ID, Levels.A1);
@@ -249,6 +250,7 @@ class TestsServiceImplTest {
             Mockito.when(builder.status(any())).thenReturn(builder);
             Mockito.when(builder.priority(any())).thenReturn(builder);
             Mockito.when(builder.level(any())).thenReturn(builder);
+            Mockito.when(builder.listeningAttempts(3)).thenReturn(builder);
             Mockito.when(builder.build()).thenReturn(test);
             Mockito.when(test.getId()).thenReturn(1L);
             Mockito.when(test.getUser()).thenReturn(user);
@@ -544,4 +546,21 @@ class TestsServiceImplTest {
         verify(timerRepository).findAll();
     }
 
+    @org.junit.jupiter.api.Test
+    void spendAttempt(){
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID);
+            Mockito.when(test.getListeningAttempts()).thenReturn(3);
+
+            testsService.spendAttempt(GOOD_TEST_ID);
+
+            verify(testsRepository).updateListeningAttempts(2, GOOD_TEST_ID);
+            verify(restrictionsService).checkStatus(test, Status.STARTED);
+            verify(restrictionsService).checkOwnerIsCurrentUser(test, GOOD_USER_ID);
+
+        }
+    }
 }
