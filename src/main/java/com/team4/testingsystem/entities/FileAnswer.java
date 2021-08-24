@@ -2,9 +2,8 @@ package com.team4.testingsystem.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -12,10 +11,10 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+
 @Entity
 @Table(name = "file_answer")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

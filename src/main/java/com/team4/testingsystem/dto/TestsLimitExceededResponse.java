@@ -1,8 +1,11 @@
 package com.team4.testingsystem.dto;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+@Data
 public class TestsLimitExceededResponse implements Serializable {
     private String message;
 
@@ -16,27 +19,4 @@ public class TestsLimitExceededResponse implements Serializable {
         this.currentDate = LocalDateTime.now().toString();
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getComeBackAfter() {
-        return comeBackAfter;
-    }
-
-    public void setComeBackAfter(String comeBackAfter) {
-        this.comeBackAfter = comeBackAfter;
-    }
-
-    public String getCurrentDate() {
-        return currentDate;
-    }
-
-    public void setCurrentDate(String currentDate) {
-        this.currentDate = currentDate;
-    }
 }

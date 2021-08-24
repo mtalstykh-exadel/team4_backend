@@ -1,8 +1,11 @@
 package com.team4.testingsystem.dto;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+@Data
 public class ErrorResponse implements Serializable {
 
     private String message;
@@ -14,19 +17,4 @@ public class ErrorResponse implements Serializable {
         this.currentDate = LocalDateTime.now().toString();
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getDate() {
-        return currentDate;
-    }
-
-    public void setDate(String currentDate) {
-        this.currentDate = currentDate;
-    }
 }

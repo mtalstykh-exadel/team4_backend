@@ -3,9 +3,9 @@ package com.team4.testingsystem.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -27,9 +27,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "test")
-@Getter
-@Setter
-@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Test implements Serializable {
 
     @Id

@@ -4,17 +4,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.enums.Priority;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.Instant;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Getter
-@Setter
+@Data
 @Builder(builderClassName = "Builder")
-@EqualsAndHashCode
 public class NotificationDTO {
     private Long id;
     private NotificationType type;

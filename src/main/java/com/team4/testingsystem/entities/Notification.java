@@ -3,10 +3,8 @@ package com.team4.testingsystem.entities;
 import com.team4.testingsystem.enums.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.Instant;
 import javax.persistence.Column;
@@ -22,12 +20,10 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "notification")
-@Getter
-@Setter
-@EqualsAndHashCode
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@Builder
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

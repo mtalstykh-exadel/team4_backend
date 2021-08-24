@@ -3,9 +3,8 @@ package com.team4.testingsystem.entities;
 import com.team4.testingsystem.dto.AnswerDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -21,8 +20,7 @@ import javax.persistence.Table;
 @Table(name = "answer")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 public class Answer implements Serializable {
 
@@ -43,12 +41,12 @@ public class Answer implements Serializable {
 
     public Answer(AnswerDTO answerDTO) {
         this.answerBody = answerDTO.getAnswer();
-        this.isCorrect = answerDTO.isCorrect();
+        this.isCorrect = answerDTO.getCorrect();
     }
 
     public Answer(AnswerDTO answerDTO, Question question) {
         this.answerBody = answerDTO.getAnswer();
-        this.isCorrect = answerDTO.isCorrect();
+        this.isCorrect = answerDTO.getCorrect();
         this.question = question;
     }
 

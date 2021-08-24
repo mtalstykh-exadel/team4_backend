@@ -1,8 +1,6 @@
 package com.team4.testingsystem.entities;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,9 +16,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "module")
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 public class Module implements Serializable {
     
     @Id

@@ -1,9 +1,8 @@
 package com.team4.testingsystem.entities;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -15,8 +14,7 @@ import javax.persistence.Table;
 @Table(name = "error_report")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class ErrorReport implements Serializable {
 
     @EmbeddedId
