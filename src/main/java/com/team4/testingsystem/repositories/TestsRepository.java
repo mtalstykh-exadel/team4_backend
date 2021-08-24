@@ -129,6 +129,6 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     @Transactional
     @Modifying
     @Query(value = "update Test t set t.listeningAttempts = ?1 where t.id = ?2 ")
-    void updateListeningAttempts(Integer attempts, Long testId);
+    int updateListeningAttempts(Integer attempts, Long testId);
 
 }

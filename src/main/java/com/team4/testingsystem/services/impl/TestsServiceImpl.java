@@ -29,6 +29,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.security.AccessControlException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -344,8 +345,18 @@ public class TestsServiceImpl implements TestsService {
         restrictionsService.checkStatus(test, Status.STARTED);
 
         int attempts = test.getListeningAttempts();
-        if (attempts > 0) {
-            testsRepository.updateListeningAttempts(attempts - 1, id);
+        if (attempts <= 0) {
+            throw new AccessControlException("You have no listening attempts left");
+        }
+
+
+        while (testsRepository.updateListeningAttempts(attempts - 1, id) == 0) {
+            test = getById(id);
+            attempts = test.getListeningAttempts();
+
+            if (attempts <= 0) {
+                throw new AccessControlException("You have no listening attempts left");
+            }
         }
     }
 }
