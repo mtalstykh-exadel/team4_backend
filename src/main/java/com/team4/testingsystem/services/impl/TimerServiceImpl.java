@@ -5,7 +5,7 @@ import com.team4.testingsystem.entities.Timer;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.repositories.TimerRepository;
 import com.team4.testingsystem.services.TimerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -15,16 +15,10 @@ import java.time.Instant;
 import java.util.TimerTask;
 
 @Service
+@AllArgsConstructor
 public class TimerServiceImpl implements TimerService {
     private final TimerRepository timerRepository;
     private final ApplicationEventPublisher eventPublisher;
-
-    @Autowired
-    public TimerServiceImpl(TimerRepository timerRepository,
-                            ApplicationEventPublisher eventPublisher) {
-        this.timerRepository = timerRepository;
-        this.eventPublisher = eventPublisher;
-    }
 
     @Override
     public void createTimer(Test test, Status status, Instant scheduledTime) {
