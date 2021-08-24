@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 public class TestVerifiedNotificationConverter extends SingleNotificationConverter {
     @Override
     public NotificationDTO convertToDTO(Notification notification) {
-        return notificationBuilder(notification).build();
+        return notificationBuilder(notification)
+                .level(notification.getTest().getLevel().getName())
+                .build();
     }
 
     @Override

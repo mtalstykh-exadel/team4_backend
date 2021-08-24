@@ -1,5 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.converters.NotificationConverter;
+import com.team4.testingsystem.dto.NotificationDTO;
 import com.team4.testingsystem.entities.Notification;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.NotificationType;
@@ -21,12 +23,19 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 public class NotificationServiceImplTest {
 
     @Mock
     private NotificationRepository notificationRepository;
+
+    @Mock
+    private NotificationConverter notificationConverter;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private NotificationServiceImpl notificationService;
@@ -49,10 +58,14 @@ public class NotificationServiceImplTest {
 
     @Test
     public void create() {
+        NotificationDTO notificationDTO = NotificationDTO.builder().build();
+        Mockito.when(notificationConverter.convertToDTO(Mockito.any())).thenReturn(notificationDTO);
+
         notificationService.create(NotificationType.TEST_ASSIGNED, user, test);
 
         ArgumentCaptor<Notification> captor = ArgumentCaptor.forClass(Notification.class);
         Mockito.verify(notificationRepository).save(captor.capture());
+        Mockito.verify(eventPublisher).publishEvent(notificationDTO);
 
         Assertions.assertEquals(NotificationType.TEST_ASSIGNED, captor.getValue().getType());
         Assertions.assertEquals(user, captor.getValue().getUser());
