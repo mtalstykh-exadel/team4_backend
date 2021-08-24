@@ -270,6 +270,7 @@ public class TestsServiceImpl implements TestsService {
 
     private void testExpired(Test test) {
         testsRepository.updateStatusByTestId(test.getId(), Status.EXPIRED);
+        notificationService.create(NotificationType.TEST_EXPIRED, test.getUser(), test);
     }
 
     @Override

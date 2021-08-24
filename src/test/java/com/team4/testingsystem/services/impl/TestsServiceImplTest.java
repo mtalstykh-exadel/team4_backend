@@ -140,6 +140,18 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
+    void getAllUsersAndAssignedTestsNameLike() {
+        User user = EntityCreatorUtil.createUser();
+        Test test = EntityCreatorUtil.createTest(user, EntityCreatorUtil.createLevel());
+        Mockito.when(testsRepository.getAssignedTestByUserId(user.getId()))
+                .thenReturn(Optional.ofNullable(test));
+        Mockito.when(usersService.getByNameLike(user.getName(), pageable)).thenReturn(Lists.list(user));
+
+        Assertions.assertEquals(Lists.list(new UserTest(user, test)),
+                testsService.getAllUsersAndAssignedTests(user.getName(), pageable));
+    }
+
+    @org.junit.jupiter.api.Test
     void getAllUsersAndAssignedTestsNoTests() {
         User user = EntityCreatorUtil.createUser();
         Mockito.when(usersService.getAll(pageable)).thenReturn(Lists.list(user));
@@ -545,6 +557,7 @@ class TestsServiceImplTest {
 
         Mockito.verify(testsRepository, Mockito.never()).finish(any(), any());
         Mockito.verify(testsRepository, Mockito.never()).save(any());
+        Mockito.verify(notificationService, Mockito.never()).create(any(), any(), any());
     }
 
     @org.junit.jupiter.api.Test
@@ -566,6 +579,7 @@ class TestsServiceImplTest {
         Mockito.verify(testEvaluationService).countScoreBeforeCoachCheck(test);
         Mockito.verify(testsRepository).finish(finishTime, GOOD_TEST_ID);
         Mockito.verify(testsRepository, Mockito.never()).save(any());
+        Mockito.verify(notificationService, Mockito.never()).create(any(), any(), any());
     }
 
     @org.junit.jupiter.api.Test
@@ -575,10 +589,12 @@ class TestsServiceImplTest {
         Mockito.when(timer.getTest()).thenReturn(test);
         Mockito.when(timerService.existsById(TIMER_ID)).thenReturn(true);
         Mockito.when(test.getId()).thenReturn(GOOD_TEST_ID);
+        Mockito.when(test.getUser()).thenReturn(user);
 
         testsService.timerExpired(timer);
 
         Mockito.verify(testsRepository, Mockito.never()).finish(any(), any());
         Mockito.verify(testsRepository).updateStatusByTestId(GOOD_TEST_ID, Status.EXPIRED);
+        Mockito.verify(notificationService).create(NotificationType.TEST_EXPIRED, user, test);
     }
 }
