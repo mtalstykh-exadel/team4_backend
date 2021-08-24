@@ -28,6 +28,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.security.AccessControlException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -166,6 +167,7 @@ public class TestsServiceImpl implements TestsService {
                 .startedAt(Instant.now())
                 .status(Status.STARTED)
                 .priority(Priority.LOW)
+                .listeningAttempts(3)
                 .build();
         testsRepository.save(test);
         return test.getId();
@@ -181,6 +183,7 @@ public class TestsServiceImpl implements TestsService {
                 .deadline(deadline)
                 .status(Status.ASSIGNED)
                 .priority(priority)
+                .listeningAttempts(3)
                 .build();
         testsRepository.save(test);
 
@@ -313,5 +316,29 @@ public class TestsServiceImpl implements TestsService {
         User coach = test.getCoach();
         testsRepository.deassignCoach(id);
         notificationService.create(NotificationType.COACH_DEASSIGNED, coach, test);
+    }
+
+    @Override
+    public void spendAttempt(long id) {
+        Test test = getById(id);
+
+        Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
+
+        restrictionsService.checkOwnerIsCurrentUser(test, currentUserId);
+        restrictionsService.checkStatus(test, Status.STARTED);
+
+        int attempts = test.getListeningAttempts();
+        if (attempts <= 0) {
+            throw new AccessControlException("You have no listening attempts left");
+        }
+
+        while (testsRepository.updateListeningAttempts(attempts - 1, id) == 0) {
+            test = getById(id);
+
+            attempts = test.getListeningAttempts();
+            if (attempts <= 0) {
+                throw new AccessControlException("You have no listening attempts left");
+            }
+        }
     }
 }
