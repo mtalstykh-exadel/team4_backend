@@ -309,7 +309,6 @@ class TestsServiceImplTest {
             Test result = testsService.startNotAssigned(GOOD_TEST_ID);
 
             Assertions.assertEquals(test, result);
-            verify(testsRepository).start(any(Instant.class), anyLong());
             verify(timerRepository).save(any(Timer.class));
             verify(notificationService).create(NotificationType.TEST_STARTED, user, test);
         }
@@ -361,7 +360,6 @@ class TestsServiceImplTest {
                 verify(restrictionsService).checkOwnerIsCurrentUser(test, GOOD_USER_ID);
                 verify(restrictionsService).checkStatus(test, Status.ASSIGNED);
                 verify(restrictionsService).checkHasNoStartedTests(GOOD_USER_ID);
-                verify(testsRepository).start(any(Instant.class), anyLong());
                 verify(timerRepository).save(any(Timer.class));
                 verify(notificationService).create(NotificationType.TEST_STARTED, user, test);
             }

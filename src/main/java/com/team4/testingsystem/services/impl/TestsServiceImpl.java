@@ -215,9 +215,11 @@ public class TestsServiceImpl implements TestsService {
         test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
         try {
             test = testGeneratingService.formTest(test);
+
             test.setStatus(Status.STARTED);
             test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
-            testsRepository.start(Instant.now(), test.getId());
+            test.setStartedAt(Instant.now());
+
             save(test);
             createTimer(test);
             notificationService.create(NotificationType.TEST_STARTED, test.getUser(), test);

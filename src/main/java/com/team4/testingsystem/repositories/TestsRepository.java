@@ -80,12 +80,6 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE Test t SET t.startedAt = ?1 "
-            + "WHERE t.id = ?2 and t.isAvailable = true ")
-    int start(Instant startDate, Long id);
-
-    @Transactional
-    @Modifying
     @Query(value = "UPDATE Test t SET t.assignedAt = null, t.deadline = null "
             + "WHERE t.id = ?1 and t.isAvailable = true")
     int deassign(Long id);
