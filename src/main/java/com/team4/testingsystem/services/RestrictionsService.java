@@ -7,6 +7,7 @@ import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.User;
 import com.team4.testingsystem.enums.Status;
 
+import java.time.Instant;
 import java.util.List;
 
 public interface RestrictionsService {
@@ -59,4 +60,6 @@ public interface RestrictionsService {
 
     void checkFileExists(String fileName);
 
+    void checkValidDeadline(Instant deadline);
+    
 }
