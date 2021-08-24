@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends CrudRepository<Notification, Long> {
 
-    @Query(value = "select n from Notification n where n.user.id = ?1")
+    @Query(value = "select n from Notification n where n.user.id = ?1 "
+                   + "order by n.createdAt desc ")
     List<Notification> getAllByUserId(Long userId);
 }
