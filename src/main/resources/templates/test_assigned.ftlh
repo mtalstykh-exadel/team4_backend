@@ -573,7 +573,7 @@
                                           personal account
                                         </span>
                                                                         </a>
-                                                                        no later than <b>${deadline}</b>.
+                                                                        no later than <b>${deadline?number_to_datetime}</b>.
                                                                     </#if>
                                                                 </p>
                                                                 <p
