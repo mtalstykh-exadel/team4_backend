@@ -159,6 +159,13 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     }
 
     @Override
+    public void checkNotVerified(Test test) {
+        if (test.getStatus().equals(Status.VERIFIED)) {
+            throw new AccessControlException("The test is already verified");
+        }
+    }
+
+    @Override
     public void checkNotSelfAssignAdmin(Test test) {
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
 
