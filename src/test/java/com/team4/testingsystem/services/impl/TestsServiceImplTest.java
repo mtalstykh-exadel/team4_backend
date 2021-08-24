@@ -10,7 +10,6 @@ import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.NotEnoughQuestionsException;
-import com.team4.testingsystem.exceptions.NotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
