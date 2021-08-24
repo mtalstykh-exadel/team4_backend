@@ -55,7 +55,7 @@ public class CoachAnswerServiceImpl implements CoachAnswerService {
                 coachAnswerDTO.getComment());
     }
 
-    private void addCommentRestrictions(CoachAnswer coachAnswer){
+    private void addCommentRestrictions(CoachAnswer coachAnswer) {
         Test test = coachAnswer.getId().getTest();
         Question question = coachAnswer.getId().getQuestion();
 
