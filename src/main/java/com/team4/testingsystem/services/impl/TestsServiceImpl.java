@@ -349,11 +349,10 @@ public class TestsServiceImpl implements TestsService {
             throw new AccessControlException("You have no listening attempts left");
         }
 
-
         while (testsRepository.updateListeningAttempts(attempts - 1, id) == 0) {
             test = getById(id);
-            attempts = test.getListeningAttempts();
 
+            attempts = test.getListeningAttempts();
             if (attempts <= 0) {
                 throw new AccessControlException("You have no listening attempts left");
             }
