@@ -13,18 +13,17 @@ import com.team4.testingsystem.exceptions.NotEnoughQuestionsException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.repositories.TestsRepository;
-import com.team4.testingsystem.repositories.TimerRepository;
 import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.NotificationService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestEvaluationService;
 import com.team4.testingsystem.services.TestGeneratingService;
 import com.team4.testingsystem.services.TestsService;
+import com.team4.testingsystem.services.TimerService;
 import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,7 +32,6 @@ import java.security.AccessControlException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,8 +45,7 @@ public class TestsServiceImpl implements TestsService {
     private final LevelService levelService;
     private final UsersService usersService;
     private final RestrictionsService restrictionsService;
-
-    private final TimerRepository timerRepository;
+    private final TimerService timerService;
 
     @Value("${tests-limit:3}")
     private int testsLimit;
@@ -61,7 +58,7 @@ public class TestsServiceImpl implements TestsService {
                             LevelService levelService,
                             UsersService usersService,
                             RestrictionsService restrictionsService,
-                            TimerRepository timerRepository) {
+                            TimerService timerService) {
         this.testsRepository = testsRepository;
         this.testGeneratingService = testGeneratingService;
         this.testEvaluationService = testEvaluationService;
@@ -69,7 +66,7 @@ public class TestsServiceImpl implements TestsService {
         this.levelService = levelService;
         this.usersService = usersService;
         this.restrictionsService = restrictionsService;
-        this.timerRepository = timerRepository;
+        this.timerService = timerService;
     }
 
     @Override
@@ -192,6 +189,8 @@ public class TestsServiceImpl implements TestsService {
                 .listeningAttempts(3)
                 .build();
         testsRepository.save(test);
+
+        timerService.createTimer(test, Status.ASSIGNED, deadline);
         notificationService.create(NotificationType.TEST_ASSIGNED, test.getUser(), test);
         return test.getId();
     }
@@ -206,6 +205,8 @@ public class TestsServiceImpl implements TestsService {
         } else {
             testsRepository.deassign(id);
         }
+
+        timerService.deleteTimer(id, Status.ASSIGNED);
         notificationService.create(NotificationType.TEST_DEASSIGNED, test.getUser(), test);
     }
 
@@ -217,25 +218,22 @@ public class TestsServiceImpl implements TestsService {
     }
 
     private Test start(Test test) {
-        test.setStatus(Status.STARTED);
-        test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
         try {
             test = testGeneratingService.formTest(test);
-
-            test.setStatus(Status.STARTED);
-            test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
-            test.setStartedAt(Instant.now());
-
-            save(test);
-            createTimer(test);
-            notificationService.create(NotificationType.TEST_STARTED, test.getUser(), test);
-            return test;
         } catch (NotEnoughQuestionsException e) {
             if (test.getStatus().equals(Status.STARTED)) {
                 testsRepository.archiveById(test.getId());
             }
             throw e;
         }
+
+        test.setStatus(Status.STARTED);
+        test.setFinishTime(Instant.now().plus(40L, ChronoUnit.MINUTES));
+        test.setStartedAt(Instant.now());
+
+        timerService.createTimer(test, Status.STARTED, test.getFinishTime().plus(2L, ChronoUnit.MINUTES));
+        notificationService.create(NotificationType.TEST_STARTED, test.getUser(), test);
+        return save(test);
     }
 
     @Override
@@ -254,45 +252,31 @@ public class TestsServiceImpl implements TestsService {
         return start(test);
     }
 
+    @EventListener(Timer.class)
+    public void timerExpired(Timer timer) {
+        if (!timerService.existsById(timer.getId())) {
+            return;
+        }
 
-    private void createTimer(Test test) {
-        Timer timer = new Timer(test);
-        timerRepository.save(timer);
-        startTimer(timer);
-    }
-
-    private void startTimer(Timer databaseTimer) {
-        Test test = databaseTimer.getTest();
-        long testId = test.getId();
-        TimerTask task = new TimerTask() {
-            public void run() {
-                finish(testId, test.getFinishTime());
-            }
-        };
-        java.util.Timer timer = new java.util.Timer(String.valueOf(testId));
-        long delay = test.getFinishTime().plus(2L, ChronoUnit.MINUTES).toEpochMilli()
-                     - Instant.now().toEpochMilli();
-        if (delay <= 0) {
-            finish(testId, test.getFinishTime());
-            timer.cancel();
-        } else {
-            timer.schedule(task, delay);
+        if (timer.getStatus().equals(Status.STARTED)) {
+            finish(timer.getTest().getId(), timer.getTest().getFinishTime());
+        } else if (timer.getStatus().equals(Status.ASSIGNED)) {
+            testExpired(timer.getTest());
         }
     }
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void startAllTimers() {
-        timerRepository.findAll().forEach(this::startTimer);
-    }
-
 
     private void finish(long id, Instant finishDate) {
         Test test = getById(id);
-        if (test.getStatus().name().equals(Status.STARTED.name())) {
-            timerRepository.deleteByTestId(id);
+        if (test.getStatus().equals(Status.STARTED)) {
+            timerService.deleteTimer(id, Status.STARTED);
             testEvaluationService.countScoreBeforeCoachCheck(test);
             testsRepository.finish(finishDate, id);
         }
+    }
+
+    private void testExpired(Test test) {
+        testsRepository.updateStatusByTestId(test.getId(), Status.EXPIRED);
+        notificationService.create(NotificationType.TEST_EXPIRED, test.getUser(), test);
     }
 
     @Override
@@ -335,7 +319,6 @@ public class TestsServiceImpl implements TestsService {
         User coach = test.getCoach();
         testsRepository.deassignCoach(id);
         notificationService.create(NotificationType.COACH_DEASSIGNED, coach, test);
-
     }
 
     @Override

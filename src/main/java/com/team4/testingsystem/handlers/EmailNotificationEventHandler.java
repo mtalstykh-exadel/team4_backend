@@ -30,7 +30,8 @@ public class EmailNotificationEventHandler {
             NotificationType.TEST_DEASSIGNED, "Your were deassigned from the previous test",
             NotificationType.TEST_VERIFIED, "Your test was verified by the coach",
             NotificationType.COACH_ASSIGNED, "You were assigned for test verification",
-            NotificationType.COACH_DEASSIGNED, "You were deassigned from the test verification"
+            NotificationType.COACH_DEASSIGNED, "You were deassigned from the test verification",
+            NotificationType.TEST_EXPIRED, "Test, assigned for you, has expired"
     );
 
     @Autowired

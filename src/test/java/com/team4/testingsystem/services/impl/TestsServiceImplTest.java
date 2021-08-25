@@ -14,12 +14,12 @@ import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.exceptions.TestsLimitExceededException;
 import com.team4.testingsystem.exceptions.UserNotFoundException;
 import com.team4.testingsystem.repositories.TestsRepository;
-import com.team4.testingsystem.repositories.TimerRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.NotificationService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestEvaluationService;
+import com.team4.testingsystem.services.TimerService;
 import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
@@ -37,6 +37,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.security.AccessControlException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -49,10 +50,11 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class TestsServiceImplTest {
 
-    final long GOOD_TEST_ID = 1L;
-    final long GOOD_USER_ID = 111L;
-    final long BAD_TEST_ID = 42L;
-    final long BAD_USER_ID = 424242L;
+    private static final long GOOD_TEST_ID = 1L;
+    private static final long GOOD_USER_ID = 111L;
+    private static final long BAD_TEST_ID = 42L;
+    private static final long BAD_USER_ID = 424242L;
+    private static final long TIMER_ID = 3L;
 
     @Mock
     private Test test;
@@ -76,7 +78,7 @@ class TestsServiceImplTest {
     private NotificationService notificationService;
 
     @Mock
-    private TimerRepository timerRepository;
+    private TimerService timerService;
 
     @Mock
     private TestGeneratingServiceImpl testGeneratingService;
@@ -95,6 +97,9 @@ class TestsServiceImplTest {
 
     @Mock
     private RestrictionsService restrictionsService;
+
+    @Mock
+    private Timer timer;
 
     @InjectMocks
     private TestsServiceImpl testsService;
@@ -120,7 +125,6 @@ class TestsServiceImplTest {
             verify(restrictionsService).checkStatus(test, Status.STARTED);
             Assertions.assertEquals(test, result);
         }
-
     }
 
     @org.junit.jupiter.api.Test
@@ -135,6 +139,18 @@ class TestsServiceImplTest {
         Mockito.when(testsRepository.getAllByUserId(GOOD_USER_ID, pageable)).thenReturn(tests);
 
         Assertions.assertEquals(tests, testsService.getByUserId(GOOD_USER_ID, null, pageable));
+    }
+
+    @org.junit.jupiter.api.Test
+    void getAllUsersAndAssignedTestsNameLike() {
+        User user = EntityCreatorUtil.createUser();
+        Test test = EntityCreatorUtil.createTest(user, EntityCreatorUtil.createLevel());
+        Mockito.when(testsRepository.getAssignedTestByUserId(user.getId()))
+                .thenReturn(Optional.ofNullable(test));
+        Mockito.when(usersService.getByNameLike(user.getName(), pageable)).thenReturn(Lists.list(user));
+
+        Assertions.assertEquals(Lists.list(new UserTest(user, test)),
+                testsService.getAllUsersAndAssignedTests(user.getName(), pageable));
     }
 
     @org.junit.jupiter.api.Test
@@ -235,6 +251,7 @@ class TestsServiceImplTest {
         Assertions.assertThrows(UserNotFoundException.class,
                 () -> testsService.createAssigned(BAD_USER_ID, Levels.A1, deadline, Priority.LOW));
         verify(notificationService, Mockito.never()).create(any(), any(), any());
+        verify(timerService, Mockito.never()).createTimer(any(), any(), any());
     }
 
     @org.junit.jupiter.api.Test
@@ -264,6 +281,7 @@ class TestsServiceImplTest {
             verify(notificationService).create(NotificationType.TEST_ASSIGNED, user, test);
             verify(restrictionsService).checkNotSelfAssign(user);
             verify(restrictionsService).checkHasNoAssignedTests(user);
+            verify(timerService).createTimer(test, Status.ASSIGNED, deadline);
             verify(restrictionsService).checkValidDeadline(deadline);
         }
     }
@@ -302,19 +320,21 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void startNotAssignedSuccess() {
+        Instant finishTime = Instant.now();
+
         Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
-        Mockito.when(testGeneratingService.formTest(any())).thenReturn(test);
+        Mockito.when(testGeneratingService.formTest(test)).thenReturn(test);
         Mockito.when(test.getUser()).thenReturn(user);
         try (MockedConstruction<Timer> mocked = Mockito.mockConstruction(Timer.class,
-                (mock, context) -> {
-                    Mockito.when(mock.getTest()).thenReturn(test);
-                })) {
-            Mockito.when(test.getId()).thenReturn(GOOD_TEST_ID);
-            Mockito.when(test.getFinishTime()).thenReturn(Instant.now());
+                (mock, context) -> Mockito.when(mock.getTest()).thenReturn(test))) {
+
+            Mockito.when(test.getFinishTime()).thenReturn(finishTime);
+            Mockito.when(testsRepository.save(test)).thenReturn(test);
+
             Test result = testsService.startNotAssigned(GOOD_TEST_ID);
 
             Assertions.assertEquals(test, result);
-            verify(timerRepository).save(any(Timer.class));
+            verify(timerService).createTimer(test, Status.STARTED, finishTime.plus(2L, ChronoUnit.MINUTES));
             verify(notificationService).create(NotificationType.TEST_STARTED, user, test);
         }
     }
@@ -328,10 +348,8 @@ class TestsServiceImplTest {
 
         Mockito.when(test.getId()).thenReturn(GOOD_TEST_ID);
 
-
-
         Assertions.assertThrows(NotEnoughQuestionsException.class,
-                () ->  testsService.startNotAssigned(GOOD_TEST_ID));
+                () -> testsService.startNotAssigned(GOOD_TEST_ID));
 
         verify(testsRepository).archiveById(GOOD_TEST_ID);
     }
@@ -347,6 +365,8 @@ class TestsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void startAssignedSuccess() {
+        Instant finishTime = Instant.now();
+
         try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
             Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID);
@@ -354,18 +374,18 @@ class TestsServiceImplTest {
             Mockito.when(testGeneratingService.formTest(any())).thenReturn(test);
             Mockito.when(test.getUser()).thenReturn(user);
             try (MockedConstruction<Timer> mocked = Mockito.mockConstruction(Timer.class,
-                    (mock, context) -> {
-                        Mockito.when(mock.getTest()).thenReturn(test);
-                    })) {
-                Mockito.when(test.getId()).thenReturn(GOOD_TEST_ID);
-                Mockito.when(test.getFinishTime()).thenReturn(Instant.now());
+                    (mock, context) -> Mockito.when(mock.getTest()).thenReturn(test))) {
+
+                Mockito.when(test.getFinishTime()).thenReturn(finishTime);
+                Mockito.when(testsRepository.save(test)).thenReturn(test);
+
                 Test result = testsService.startAssigned(GOOD_TEST_ID);
 
                 Assertions.assertEquals(test, result);
                 verify(restrictionsService).checkOwnerIsCurrentUser(test, GOOD_USER_ID);
                 verify(restrictionsService).checkStatus(test, Status.ASSIGNED);
                 verify(restrictionsService).checkHasNoStartedTests(GOOD_USER_ID);
-                verify(timerRepository).save(any(Timer.class));
+                verify(timerService).createTimer(test, Status.STARTED, finishTime.plus(2L, ChronoUnit.MINUTES));
                 verify(notificationService).create(NotificationType.TEST_STARTED, user, test);
             }
         }
@@ -377,14 +397,6 @@ class TestsServiceImplTest {
 
         Assertions.assertThrows(TestNotFoundException.class, () -> testsService.startAssigned(BAD_TEST_ID));
         verify(notificationService, Mockito.never()).create(any(), any(), any());
-    }
-
-
-    @org.junit.jupiter.api.Test
-    void startAllTimersSuccess() {
-        testsService.startAllTimers();
-
-        verify(timerRepository).findAll();
     }
 
     @org.junit.jupiter.api.Test
@@ -400,7 +412,7 @@ class TestsServiceImplTest {
 
             verify(testEvaluationService).countScoreBeforeCoachCheck(test);
             verify(testsRepository).finish(any(Instant.class), anyLong());
-            verify(timerRepository).deleteByTestId(GOOD_TEST_ID);
+            verify(timerService).deleteTimer(GOOD_TEST_ID, Status.STARTED);
             Assertions.assertDoesNotThrow(() -> testsService.selfFinish(GOOD_TEST_ID));
         }
     }
@@ -543,10 +555,53 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void startAllTimers() {
-        testsService.startAllTimers();
+    void timerExpiredNotExists() {
+        Mockito.when(timer.getId()).thenReturn(TIMER_ID);
+        Mockito.when(timerService.existsById(TIMER_ID)).thenReturn(false);
 
-        verify(timerRepository).findAll();
+        testsService.timerExpired(timer);
+
+        Mockito.verify(testsRepository, Mockito.never()).finish(any(), any());
+        Mockito.verify(testsRepository, Mockito.never()).save(any());
+        Mockito.verify(notificationService, Mockito.never()).create(any(), any(), any());
+    }
+
+    @org.junit.jupiter.api.Test
+    void timerExpiredStarted() {
+        final Instant finishTime = Instant.now();
+        Mockito.when(timer.getId()).thenReturn(TIMER_ID);
+        Mockito.when(timer.getStatus()).thenReturn(Status.STARTED);
+        Mockito.when(timer.getTest()).thenReturn(test);
+        Mockito.when(timerService.existsById(TIMER_ID)).thenReturn(true);
+
+        Mockito.when(testsRepository.findById(GOOD_TEST_ID)).thenReturn(Optional.of(test));
+        Mockito.when(test.getId()).thenReturn(GOOD_TEST_ID);
+        Mockito.when(test.getFinishTime()).thenReturn(finishTime);
+        Mockito.when(test.getStatus()).thenReturn(Status.STARTED);
+
+        testsService.timerExpired(timer);
+
+        Mockito.verify(timerService).deleteTimer(GOOD_TEST_ID, Status.STARTED);
+        Mockito.verify(testEvaluationService).countScoreBeforeCoachCheck(test);
+        Mockito.verify(testsRepository).finish(finishTime, GOOD_TEST_ID);
+        Mockito.verify(testsRepository, Mockito.never()).save(any());
+        Mockito.verify(notificationService, Mockito.never()).create(any(), any(), any());
+    }
+
+    @org.junit.jupiter.api.Test
+    void timerExpiredAssigned() {
+        Mockito.when(timer.getId()).thenReturn(TIMER_ID);
+        Mockito.when(timer.getStatus()).thenReturn(Status.ASSIGNED);
+        Mockito.when(timer.getTest()).thenReturn(test);
+        Mockito.when(timerService.existsById(TIMER_ID)).thenReturn(true);
+        Mockito.when(test.getId()).thenReturn(GOOD_TEST_ID);
+        Mockito.when(test.getUser()).thenReturn(user);
+
+        testsService.timerExpired(timer);
+
+        Mockito.verify(testsRepository, Mockito.never()).finish(any(), any());
+        Mockito.verify(testsRepository).updateStatusByTestId(GOOD_TEST_ID, Status.EXPIRED);
+        Mockito.verify(notificationService).create(NotificationType.TEST_EXPIRED, user, test);
     }
 
     @org.junit.jupiter.api.Test

@@ -6,5 +6,6 @@ public enum NotificationType {
     TEST_VERIFIED,
     TEST_STARTED,
     COACH_ASSIGNED,
-    COACH_DEASSIGNED
+    COACH_DEASSIGNED,
+    TEST_EXPIRED
 }
