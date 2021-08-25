@@ -866,12 +866,23 @@
         </update>
     </changeSet>
 
-
     <changeSet id="add_listening_attempts" author="Anlord241">
         <addColumn tableName="test">
             <column name="listening_attempts" type="int"/>
         </addColumn>
+    </changeSet>
 
+    <changeSet id="add_timer_status" author="maxim12321">
+        <addColumn tableName="timer">
+            <column name="status" type="varchar(256)" defaultValue="STARTED">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="timer">
+            <column name="scheduled_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>
