@@ -142,4 +142,21 @@ class FileSystemServiceTest {
 
         Assertions.assertDoesNotThrow(() -> fileSystemService.delete(FILE_NAME));
     }
+
+    @Test
+    void doesExistTrue(){
+        Mockito.when(fileSystemService.generateFilePath(FILE_NAME)).thenReturn(FILE_PATH);
+        try {
+            Files.writeString(FILE_PATH, TEST_CONTENT + TEST_CONTENT);
+        } catch (IOException e) {
+            Assertions.fail();
+        }
+        Assertions.assertTrue(fileSystemService.doesFileExist(FILE_NAME));
+    }
+
+
+    @Test
+    void doesExistFalse(){
+        Assertions.assertFalse(fileSystemService.doesFileExist(FILE_NAME));
+    }
 }
