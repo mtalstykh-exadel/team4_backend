@@ -4,20 +4,16 @@ import com.team4.testingsystem.dto.ContentFileDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.entities.ContentFile;
 import com.team4.testingsystem.entities.Question;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@AllArgsConstructor
 public class ContentFileConverter {
     private final QuestionConverter questionConverter;
-
-    @Autowired
-    public ContentFileConverter(QuestionConverter questionConverter) {
-        this.questionConverter = questionConverter;
-    }
 
     public ContentFile convertToEntity(ContentFileDTO contentFileDTO) {
         ContentFile contentFile = new ContentFile();

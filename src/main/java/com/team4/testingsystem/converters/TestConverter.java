@@ -21,7 +21,7 @@ import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.ErrorReportsService;
 import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.QuestionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -32,6 +32,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 @Component
+@AllArgsConstructor
 public class TestConverter {
 
     private final QuestionService questionService;
@@ -40,21 +41,6 @@ public class TestConverter {
     private final ModuleGradesService moduleGradesService;
     private final AnswerService answerService;
     private final ErrorReportsService errorReportsService;
-
-    @Autowired
-    public TestConverter(QuestionService questionService,
-                         ContentFilesService contentFilesService,
-                         ChosenOptionService chosenOptionService,
-                         ModuleGradesService moduleGradesService,
-                         AnswerService answerService,
-                         ErrorReportsService errorReportsService) {
-        this.questionService = questionService;
-        this.contentFilesService = contentFilesService;
-        this.chosenOptionService = chosenOptionService;
-        this.moduleGradesService = moduleGradesService;
-        this.answerService = answerService;
-        this.errorReportsService = errorReportsService;
-    }
 
     public TestInfo convertToInfo(Test test) {
         Integer totalScore = moduleGradesService.getGradesByTest(test).values().stream()

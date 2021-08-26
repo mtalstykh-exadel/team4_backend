@@ -7,24 +7,16 @@ import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.services.ContentFilesService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.RestrictionsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@AllArgsConstructor
 public class ContentFilesServiceImpl implements ContentFilesService {
     private final QuestionService questionService;
     private final ContentFilesRepository contentFilesRepository;
     private final RestrictionsService restrictionsService;
-
-    @Autowired
-    public ContentFilesServiceImpl(QuestionService questionService,
-                                   ContentFilesRepository contentFilesRepository,
-                                   RestrictionsService restrictionsService) {
-        this.questionService = questionService;
-        this.contentFilesRepository = contentFilesRepository;
-        this.restrictionsService = restrictionsService;
-    }
 
     @Override
     public Iterable<ContentFile> getAll() {

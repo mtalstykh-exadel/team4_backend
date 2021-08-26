@@ -10,7 +10,7 @@ import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.services.ChosenOptionService;
 import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.TestEvaluationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,19 +19,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class TestEvaluationServiceImpl implements TestEvaluationService {
     private final ChosenOptionService chosenOptionService;
     private final ModuleGradesService moduleGradesService;
     private final CoachGradeRepository coachGradeRepository;
-
-    @Autowired
-    public TestEvaluationServiceImpl(ChosenOptionService chosenOptionService,
-                                     ModuleGradesService moduleGradesService,
-                                     CoachGradeRepository coachGradeRepository) {
-        this.chosenOptionService = chosenOptionService;
-        this.moduleGradesService = moduleGradesService;
-        this.coachGradeRepository = coachGradeRepository;
-    }
 
     private void saveModuleGrade(Test test, String moduleName, Integer grade, String coachComment) {
         moduleGradesService.add(test, moduleName, grade, coachComment);

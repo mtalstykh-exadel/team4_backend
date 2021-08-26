@@ -12,29 +12,19 @@ import com.team4.testingsystem.services.AnswerService;
 import com.team4.testingsystem.services.CoachAnswerService;
 import com.team4.testingsystem.services.CoachGradeService;
 import com.team4.testingsystem.services.ErrorReportsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@AllArgsConstructor
 public class TestVerificationConverter {
     private final AnswerService answerService;
     private final ErrorReportsService errorReportsService;
     private final CoachGradeService gradeService;
     private final CoachAnswerService coachAnswerService;
-
-    @Autowired
-    public TestVerificationConverter(AnswerService answerService,
-                                     ErrorReportsService errorReportsService,
-                                     CoachGradeService gradeService,
-                                     CoachAnswerService coachAnswerService) {
-        this.answerService = answerService;
-        this.errorReportsService = errorReportsService;
-        this.gradeService = gradeService;
-        this.coachAnswerService = coachAnswerService;
-    }
 
     public TestVerificationDTO convertToVerificationDTO(Test test) {
         List<ReportedQuestionDTO> reportedQuestions = errorReportsService.getReportsByTest(test.getId()).stream()

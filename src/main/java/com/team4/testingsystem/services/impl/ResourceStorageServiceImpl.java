@@ -3,20 +3,16 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.services.FilesService;
 import com.team4.testingsystem.services.ResourceStorageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class ResourceStorageServiceImpl implements ResourceStorageService {
     private final FilesService filesService;
-
-    @Autowired
-    public ResourceStorageServiceImpl(FilesService filesService) {
-        this.filesService = filesService;
-    }
 
     @Override
     public String upload(Resource file, Modules module, Long primaryId) {

@@ -9,27 +9,17 @@ import com.team4.testingsystem.services.ModuleService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.UsersService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class QuestionConverter {
 
     private final LevelService levelService;
     private final QuestionService questionService;
     private final ModuleService moduleService;
     private final UsersService usersService;
-
-    @Autowired
-    public QuestionConverter(LevelService levelService,
-                             QuestionService questionService,
-                             ModuleService moduleService,
-                             UsersService usersService) {
-        this.levelService = levelService;
-        this.questionService = questionService;
-        this.moduleService = moduleService;
-        this.usersService = usersService;
-    }
 
     public Question convertToEntity(QuestionDTO questionDTO, Long id) {
         Question question = questionService.getById(id);

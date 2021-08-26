@@ -1,6 +1,7 @@
 package com.team4.testingsystem.security;
 
 import com.team4.testingsystem.entities.User;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+@Getter
 public class CustomUserDetails implements UserDetails {
     private final Long id;
     private final String name;
@@ -65,23 +67,4 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
 }
