@@ -3,6 +3,7 @@ package com.team4.testingsystem.services.impl;
 import com.team4.testingsystem.entities.ChosenOption;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.enums.Status;
+import com.team4.testingsystem.exceptions.ChosenOptionBadRequestException;
 import com.team4.testingsystem.exceptions.ChosenOptionNotFoundException;
 import com.team4.testingsystem.repositories.ChosenOptionRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
@@ -18,6 +19,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,7 +71,6 @@ public class ChosenOptionServiceImplTest {
     @Test
     void getChosenOptionByTestSuccess() {
         List<ChosenOption> chosenOptions = List.of(new ChosenOption(), new ChosenOption());
-
         Mockito.when(chosenOptionRepository.findByTestId(TEST_ID)).thenReturn(chosenOptions);
 
         Assertions.assertEquals(chosenOptions, chosenOptionService.getAllByTestId(TEST_ID));
@@ -78,7 +79,6 @@ public class ChosenOptionServiceImplTest {
     @Test
     void getEmptyChosenOptionByTest() {
         List<ChosenOption> chosenOptions = List.of();
-
         Mockito.when(chosenOptionRepository.findByTestId(TEST_ID)).thenReturn(chosenOptions);
 
         Assertions.assertEquals(chosenOptions, chosenOptionService.getAllByTestId(TEST_ID));
@@ -98,6 +98,19 @@ public class ChosenOptionServiceImplTest {
             Mockito.verify(restrictionsService).checkStatus(test, Status.STARTED);
             Mockito.verify(restrictionsService).checkTestContainsQuestion(test, question);
             Mockito.verify(chosenOptionRepository).saveAll(chosenOptions);
+        }
+    }
+
+    @Test
+    void saveAllEntityNotFound() {
+        try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
+            mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
+            Mockito.when(userDetails.getId()).thenReturn(QUESTION_ID);
+            chosenOptions = List.of(EntityCreatorUtil.createChosenOption());
+            Mockito.when(chosenOptionRepository.saveAll(chosenOptions))
+                    .thenThrow(EntityNotFoundException.class);
+            Assertions.assertThrows(ChosenOptionBadRequestException.class,
+                    () -> chosenOptionService.saveAll(chosenOptions));
         }
     }
 }
