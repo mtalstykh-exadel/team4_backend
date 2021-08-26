@@ -75,6 +75,7 @@ public class TestStartedNotificationConverterTest {
 
         Assertions.assertNull(dto.getDeadline());
         Assertions.assertNull(dto.getPriority());
+        Assertions.assertNull(dto.getReportAnswers());
     }
 
     @Test

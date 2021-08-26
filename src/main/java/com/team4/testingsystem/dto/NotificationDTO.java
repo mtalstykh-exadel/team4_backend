@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.Instant;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
@@ -25,4 +26,6 @@ public class NotificationDTO {
     private String userEmail;
     private String userName;
     private String language;
+
+    private List<ErrorReportAnswerDTO> reportAnswers;
 }
