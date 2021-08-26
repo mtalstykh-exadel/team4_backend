@@ -34,7 +34,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.security.AccessControlException;
 import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import static java.time.temporal.ChronoUnit.HOURS;
@@ -82,7 +81,6 @@ public class RestrictionsServiceImplTest {
     void checkOwnerIsCurrentUser() {
         Mockito.when(test.getUser()).thenReturn(user);
         Mockito.when(user.getId()).thenReturn(GOOD_USER_ID);
-
         Assertions.assertThrows(AccessControlException.class,
                 () -> restrictionsService.checkOwnerIsCurrentUser(test, GOOD_USER_ID + 1));
     }
@@ -97,7 +95,6 @@ public class RestrictionsServiceImplTest {
     @org.junit.jupiter.api.Test
     void checkTestContainsQuestion() {
         Mockito.when(test.getQuestions()).thenReturn(Lists.emptyList());
-
         Assertions.assertThrows(QuestionNotFoundException.class,
                 () -> restrictionsService.checkTestContainsQuestion(test, question));
     }
@@ -135,7 +132,6 @@ public class RestrictionsServiceImplTest {
     @org.junit.jupiter.api.Test
     void checkIsAssigned() {
         Mockito.when(test.getAssignedAt()).thenReturn(null);
-
         Assertions.assertThrows(AssignmentFailException.class,
                 () -> restrictionsService.checkIsAssigned(test));
     }
@@ -143,7 +139,6 @@ public class RestrictionsServiceImplTest {
     @org.junit.jupiter.api.Test
     void checkHasNoAssignedTests() {
         Mockito.when(testsRepository.hasAssignedTests(user)).thenReturn(true);
-
         Assertions.assertThrows(AssignmentFailException.class,
                 () -> restrictionsService.checkHasNoAssignedTests(user));
     }
@@ -151,11 +146,9 @@ public class RestrictionsServiceImplTest {
     @org.junit.jupiter.api.Test
     void checkNotSelfAssign() {
         Mockito.when(user.getId()).thenReturn(GOOD_USER_ID);
-
         try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
             Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID);
-
             Assertions.assertThrows(AccessControlException.class,
                     () -> restrictionsService.checkNotSelfAssign(user));
         }
@@ -163,13 +156,10 @@ public class RestrictionsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void checkNotSelfDeassign() {
-
         Mockito.when(user.getId()).thenReturn(GOOD_USER_ID);
-
         try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
             Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID);
-
             Assertions.assertThrows(AccessControlException.class,
                     () -> restrictionsService.checkNotSelfDeassign(user));
         }
@@ -178,7 +168,6 @@ public class RestrictionsServiceImplTest {
     @org.junit.jupiter.api.Test
     void checkHasNoStartedTests() {
         Mockito.when(testsRepository.hasStartedTests(GOOD_USER_ID)).thenReturn(true);
-
         Assertions.assertThrows(TestAlreadyStartedException.class,
                 () -> restrictionsService.checkHasNoStartedTests(GOOD_USER_ID));
     }
@@ -186,9 +175,7 @@ public class RestrictionsServiceImplTest {
     @org.junit.jupiter.api.Test
     void checkNotSelfAssignmentCoach() {
         Mockito.when(test.getUser()).thenReturn(user);
-
         Mockito.when(user.getId()).thenReturn(GOOD_USER_ID);
-
         Assertions.assertThrows(CoachAssignmentFailException.class,
                 () -> restrictionsService.checkNotSelfAssignmentCoach(test, GOOD_USER_ID));
 
@@ -211,13 +198,10 @@ public class RestrictionsServiceImplTest {
     @org.junit.jupiter.api.Test
     void checkNotSelfAssignAdmin() {
         Mockito.when(test.getUser()).thenReturn(user);
-
         Mockito.when(user.getId()).thenReturn(GOOD_USER_ID);
-
         try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
             Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID);
-
             Assertions.assertThrows(AccessControlException.class,
                     () -> restrictionsService.checkNotSelfAssignAdmin(test));
 
@@ -227,13 +211,10 @@ public class RestrictionsServiceImplTest {
     @org.junit.jupiter.api.Test
     void checkNotSelfDeassignAdmin() {
         Mockito.when(test.getUser()).thenReturn(user);
-
         Mockito.when(user.getId()).thenReturn(GOOD_USER_ID);
-
         try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
             Mockito.when(userDetails.getId()).thenReturn(GOOD_USER_ID);
-
             Assertions.assertThrows(AccessControlException.class,
                     () -> restrictionsService.checkNotSelfDeassignAdmin(test));
 
@@ -243,9 +224,7 @@ public class RestrictionsServiceImplTest {
     @org.junit.jupiter.api.Test
     void checkModuleIsNotListening() {
         Mockito.when(question.getModule()).thenReturn(module);
-
         Mockito.when(module.getName()).thenReturn(Modules.LISTENING.getName());
-
         Assertions.assertThrows(AccessControlException.class,
                 () -> restrictionsService.checkModuleIsNotListening(question));
     }
@@ -253,22 +232,16 @@ public class RestrictionsServiceImplTest {
     @org.junit.jupiter.api.Test
     void checkAnswersAreCorrectNotFourAnswers() {
         Mockito.when(answers.size()).thenReturn(5);
-
         Assertions.assertThrows(AnswersAreBadException.class,
                 () -> restrictionsService.checkAnswersAreCorrect(answers));
     }
 
     @org.junit.jupiter.api.Test
     void checkAnswersAreCorrectNotOneCorrect() {
-
         Mockito.when(answers.size()).thenReturn(4);
-
         Mockito.when(answers.stream()).thenReturn(stream);
-
         Mockito.when(stream.filter(any())).thenReturn(stream);
-
         Mockito.when(stream.count()).thenReturn(0L);
-
         Assertions.assertThrows(AnswersAreBadException.class,
                 () -> restrictionsService.checkAnswersAreCorrect(answers));
     }
@@ -276,7 +249,6 @@ public class RestrictionsServiceImplTest {
     @org.junit.jupiter.api.Test
     void checkNotArchivedQuestion() {
         Mockito.when(question.isAvailable()).thenReturn(false);
-
         Assertions.assertThrows(QuestionOrTopicEditingException.class,
                 () -> restrictionsService.checkNotArchivedQuestion(question));
     }
@@ -285,7 +257,6 @@ public class RestrictionsServiceImplTest {
     @org.junit.jupiter.api.Test
     void checkNotArchivedContentFile() {
         Mockito.when(contentFile.isAvailable()).thenReturn(false);
-
         Assertions.assertThrows(QuestionOrTopicEditingException.class,
                 () -> restrictionsService.checkNotArchivedContentFile(contentFile));
     }
@@ -305,7 +276,7 @@ public class RestrictionsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void checkValidDeadline(){
+    void checkValidDeadline() {
         Assertions.assertThrows(IllegalDeadlineException.class,
                 () -> restrictionsService.checkValidDeadline(Instant.now().minus(2, HOURS)));
     }

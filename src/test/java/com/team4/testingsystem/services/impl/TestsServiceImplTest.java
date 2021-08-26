@@ -93,6 +93,7 @@ class TestsServiceImplTest {
     @Mock
     private CustomUserDetails userDetails;
 
+    @Mock
     private List<Test> tests;
 
     @Mock
@@ -105,12 +106,6 @@ class TestsServiceImplTest {
     private TestsServiceImpl testsService;
 
     private final Pageable pageable = PageRequest.of(1, 10);
-
-    @BeforeEach
-    void init(){
-        Test test = EntityCreatorUtil.createTest(EntityCreatorUtil.createUser(), EntityCreatorUtil.createLevel());
-        tests = List.of(test, test);
-    }
 
     @org.junit.jupiter.api.Test
     void getByIdSuccess() {

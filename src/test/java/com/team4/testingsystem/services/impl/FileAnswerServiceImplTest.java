@@ -297,13 +297,12 @@ class FileAnswerServiceImplTest {
         }
     }
 
-
     @org.junit.jupiter.api.Test
     void uploadSpeakingSuccess() {
         try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
             Mockito.when(userDetails.getId()).thenReturn(1L);
-
+            FileAnswer fileAnswer = new FileAnswer();
             Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
             Mockito.when(questionService.getQuestionByTestIdAndModule(TEST_ID, Modules.SPEAKING)).thenReturn(question);
             Mockito.when(resourceStorageService.upload(Mockito.any(), Mockito.eq(Modules.SPEAKING), Mockito.eq(TEST_ID)))
