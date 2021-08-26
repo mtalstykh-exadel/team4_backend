@@ -1,6 +1,7 @@
 package com.team4.testingsystem.converters;
 
 import com.team4.testingsystem.dto.AnswerDTO;
+import com.team4.testingsystem.dto.ListeningTopicDTO;
 import com.team4.testingsystem.dto.QuestionDTO;
 import com.team4.testingsystem.dto.TestDTO;
 import com.team4.testingsystem.dto.UserDTO;
@@ -102,11 +103,11 @@ class TestConverterTest {
 
             questions.add(question);
         }
-
+        ContentFile contentFile = new ContentFile("url");
         Mockito.when(questionService.getQuestionsByTestId(test.getId())).thenReturn(questions);
         Mockito.when(chosenOptionService.getAllByTestId(test.getId())).thenReturn(chosenOptions);
         Mockito.when(contentFilesService.getContentFileByQuestionId(any()))
-                .thenReturn(new ContentFile("url"));
+                .thenReturn(contentFile);
 
         Mockito.when(answerService.tryDownloadEssay(test.getId())).thenReturn(Optional.of(ESSAY_TEXT));
         Mockito.when(answerService.tryDownloadSpeaking(test.getId())).thenReturn(Optional.of(SPEAKING_URL));
@@ -130,7 +131,7 @@ class TestConverterTest {
         Assertions.assertEquals(ESSAY_TEXT, testDTO.getEssayText());
         Assertions.assertEquals(SPEAKING_URL, testDTO.getSpeakingUrl());
         Assertions.assertEquals(List.of(), testDTO.getErrorReports());
-
+        Assertions.assertEquals(new ListeningTopicDTO(contentFile), testDTO.getContentFile());
         for (Modules module : Modules.values()) {
             QuestionDTO expectedQuestion = questions.stream()
                     .filter(question -> question.getModule().getName().equals(module.getName()))
