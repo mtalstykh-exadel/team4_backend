@@ -6,23 +6,17 @@ import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.services.AnswerService;
 import com.team4.testingsystem.services.FileAnswerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
     private final FileAnswerService fileAnswerService;
-
-    @Autowired
-    public AnswerServiceImpl(AnswerRepository answerRepository,
-                             FileAnswerService fileAnswerService) {
-        this.answerRepository = answerRepository;
-        this.fileAnswerService = fileAnswerService;
-    }
 
     @Override
     public Answer getById(Long answerId) {

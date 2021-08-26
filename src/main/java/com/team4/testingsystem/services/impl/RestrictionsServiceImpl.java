@@ -11,6 +11,7 @@ import com.team4.testingsystem.exceptions.AnswersAreBadException;
 import com.team4.testingsystem.exceptions.AssignmentFailException;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
+import com.team4.testingsystem.exceptions.IllegalDeadlineException;
 import com.team4.testingsystem.exceptions.IllegalGradeException;
 import com.team4.testingsystem.exceptions.NoAudioException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
@@ -20,24 +21,19 @@ import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.FilesService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.security.AccessControlException;
+import java.time.Instant;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class RestrictionsServiceImpl implements RestrictionsService {
 
     private final TestsRepository testsRepository;
     private final FilesService filesService;
-
-    @Autowired
-    public RestrictionsServiceImpl(TestsRepository testsRepository,
-                                   FilesService filesService) {
-        this.testsRepository = testsRepository;
-        this.filesService = filesService;
-    }
 
     @Override
     public void checkOwnerIsCurrentUser(Test test, Long currentUserId) {
@@ -227,6 +223,13 @@ public class RestrictionsServiceImpl implements RestrictionsService {
     public void checkFileExists(String fileName) {
         if (!filesService.doesFileExist(fileName)) {
             throw new FileNotFoundException("File doesn't exist");
+        }
+    }
+
+    @Override
+    public void checkValidDeadline(Instant deadline) {
+        if (deadline.isBefore(Instant.now())) {
+            throw new IllegalDeadlineException("Deadline must be after current date");
         }
     }
 }

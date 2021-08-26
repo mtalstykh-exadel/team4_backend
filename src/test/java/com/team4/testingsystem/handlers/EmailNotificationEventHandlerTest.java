@@ -58,4 +58,13 @@ class EmailNotificationEventHandlerTest {
             Mockito.verify(mailSender).send(mimeMessage);
         }
     }
+
+    @Test
+    void sendEmailNoTopic() throws MessagingException {
+        Mockito.when(notificationDTO.getType()).thenReturn(NotificationType.TEST_STARTED);
+
+        notificationEventHandler.onApplicationEvent(notificationDTO);
+
+        Mockito.verify(mailSender, Mockito.never()).send(Mockito.any(MimeMessage.class));
+    }
 }

@@ -7,23 +7,17 @@ import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 @Component
+@AllArgsConstructor
 public class GradesConverter {
 
     private final ModuleGradesService moduleGradesService;
     private final RestrictionsService restrictionsService;
-
-    @Autowired
-    public GradesConverter(ModuleGradesService moduleGradesService,
-                           RestrictionsService restrictionsService) {
-        this.moduleGradesService = moduleGradesService;
-        this.restrictionsService = restrictionsService;
-    }
 
     public ModuleGradesDTO convertListOfGradesToDTO(Test test) {
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();

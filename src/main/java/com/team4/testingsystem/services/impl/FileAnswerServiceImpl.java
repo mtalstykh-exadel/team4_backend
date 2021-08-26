@@ -16,8 +16,8 @@ import com.team4.testingsystem.services.ResourceStorageService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
+import lombok.AllArgsConstructor;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,25 +27,13 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 @Service
+@AllArgsConstructor
 public class FileAnswerServiceImpl implements FileAnswerService {
     private final FileAnswerRepository fileAnswerRepository;
     private final QuestionService questionService;
     private final TestsService testsService;
     private final ResourceStorageService storageService;
     private final RestrictionsService restrictionsService;
-
-    @Autowired
-    public FileAnswerServiceImpl(FileAnswerRepository fileAnswerRepository,
-                                 QuestionService questionService,
-                                 TestsService testsService,
-                                 ResourceStorageService storageService,
-                                 RestrictionsService restrictionsService) {
-        this.fileAnswerRepository = fileAnswerRepository;
-        this.questionService = questionService;
-        this.testsService = testsService;
-        this.storageService = storageService;
-        this.restrictionsService = restrictionsService;
-    }
 
     @Override
     public String getUrl(Long testId, Long questionId) {

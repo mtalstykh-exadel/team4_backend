@@ -4,17 +4,13 @@ import com.team4.testingsystem.entities.Module;
 import com.team4.testingsystem.exceptions.ModuleNotFoundException;
 import com.team4.testingsystem.repositories.ModuleRepository;
 import com.team4.testingsystem.services.ModuleService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class ModuleServiceImpl implements ModuleService {
     private final ModuleRepository moduleRepository;
-
-    @Autowired
-    public ModuleServiceImpl(ModuleRepository moduleRepository) {
-        this.moduleRepository = moduleRepository;
-    }
 
     @Override
     public Module getModuleById(Long id) {

@@ -10,23 +10,15 @@ import com.team4.testingsystem.exceptions.AnswerNotFoundException;
 import com.team4.testingsystem.services.AnswerService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.TestsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class ChosenOptionConverter {
     private final TestsService testsService;
     private final QuestionService questionService;
     private final AnswerService answerService;
-
-    @Autowired
-    public ChosenOptionConverter(TestsService testsService,
-                                 QuestionService questionService,
-                                 AnswerService answerService) {
-        this.testsService = testsService;
-        this.questionService = questionService;
-        this.answerService = answerService;
-    }
 
     public ChosenOption convertToEntity(ChosenOptionDTO chosenOptionDTO) {
         Test test = testsService.getById(chosenOptionDTO.getTestId());

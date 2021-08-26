@@ -30,7 +30,6 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-
     @ExceptionHandler(value = {IncorrectCredentialsException.class})
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     public ErrorResponse handleNotFoundException(IncorrectCredentialsException e) {
@@ -43,9 +42,8 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-
     @ExceptionHandler(value = {TestsLimitExceededException.class})
-    @ResponseStatus(value = HttpStatus.CONFLICT)
+    @ResponseStatus(value = HttpStatus.METHOD_NOT_ALLOWED)
     public TestsLimitExceededResponse handleTestsLimitExceededException(TestsLimitExceededException e) {
         return new TestsLimitExceededResponse(e.getMessage());
     }
@@ -79,5 +77,9 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-
+    @ExceptionHandler(value = {IllegalDeadlineException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIllegalDeadlineException(IllegalDeadlineException e) {
+        return new ErrorResponse(e.getMessage());
+    }
 }

@@ -12,12 +12,13 @@ import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 @Service
+@AllArgsConstructor
 public class ErrorReportsServiceImpl implements ErrorReportsService {
 
     private final ErrorReportsRepository errorReportsRepository;
@@ -27,17 +28,6 @@ public class ErrorReportsServiceImpl implements ErrorReportsService {
     private final TestsService testsService;
 
     private final RestrictionsService restrictionsService;
-
-    @Autowired
-    public ErrorReportsServiceImpl(ErrorReportsRepository errorReportsRepository,
-                                   QuestionService questionService,
-                                   TestsService testsService,
-                                   RestrictionsService restrictionsService) {
-        this.errorReportsRepository = errorReportsRepository;
-        this.questionService = questionService;
-        this.testsService = testsService;
-        this.restrictionsService = restrictionsService;
-    }
 
     @Override
     public Collection<ErrorReport> getReportsByTest(Long testId) {
