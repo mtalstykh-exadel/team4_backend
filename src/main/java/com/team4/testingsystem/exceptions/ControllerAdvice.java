@@ -79,5 +79,11 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
         return new ErrorResponse(e.getMessage());
     }
 
+    @ExceptionHandler(value = {IllegalDeadlineException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIllegalDeadlineException(IllegalDeadlineException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
 
 }

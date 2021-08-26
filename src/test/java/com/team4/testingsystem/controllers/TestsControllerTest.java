@@ -377,4 +377,12 @@ class TestsControllerTest {
         Mockito.when(testConverter.convertToInfo(test)).thenReturn(testInfo);
         Assertions.assertEquals(List.of(testInfo), testsController.getUnverifiedTests(PAGE, COUNT));
     }
+
+    @org.junit.jupiter.api.Test
+    void spendAttempt(){
+        testsController.spendAttempt(GOOD_TEST_ID);
+
+        verify(testsService).spendAttempt(GOOD_TEST_ID);
+    }
+
 }

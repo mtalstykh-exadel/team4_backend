@@ -12,6 +12,7 @@ import com.team4.testingsystem.exceptions.AnswersAreBadException;
 import com.team4.testingsystem.exceptions.AssignmentFailException;
 import com.team4.testingsystem.exceptions.CoachAssignmentFailException;
 import com.team4.testingsystem.exceptions.FileNotFoundException;
+import com.team4.testingsystem.exceptions.IllegalDeadlineException;
 import com.team4.testingsystem.exceptions.IllegalGradeException;
 import com.team4.testingsystem.exceptions.NoAudioException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
@@ -31,9 +32,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.security.AccessControlException;
+import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import static java.time.temporal.ChronoUnit.HOURS;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
@@ -255,7 +259,7 @@ public class RestrictionsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void checkAnswersAreCorrectNotOneCorrect(){
+    void checkAnswersAreCorrectNotOneCorrect() {
 
         Mockito.when(answers.size()).thenReturn(4);
 
@@ -270,7 +274,7 @@ public class RestrictionsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void checkNotArchivedQuestion(){
+    void checkNotArchivedQuestion() {
         Mockito.when(question.isAvailable()).thenReturn(false);
 
         Assertions.assertThrows(QuestionOrTopicEditingException.class,
@@ -279,7 +283,7 @@ public class RestrictionsServiceImplTest {
 
 
     @org.junit.jupiter.api.Test
-    void checkNotArchivedContentFile(){
+    void checkNotArchivedContentFile() {
         Mockito.when(contentFile.isAvailable()).thenReturn(false);
 
         Assertions.assertThrows(QuestionOrTopicEditingException.class,
@@ -287,7 +291,7 @@ public class RestrictionsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
-    void checkListeningHasAudio(){
+    void checkListeningHasAudio() {
         Mockito.when(contentFile.getUrl()).thenReturn(null);
         Assertions.assertThrows(NoAudioException.class,
                 () -> restrictionsService.checkListeningHasAudio(contentFile));
@@ -295,8 +299,15 @@ public class RestrictionsServiceImplTest {
 
     @org.junit.jupiter.api.Test
     void checkFileExists() {
-       Mockito.when(filesService.doesFileExist("Pirates of the Caribbean.mp3")).thenReturn(false);
-            Assertions.assertThrows(FileNotFoundException.class,
-                    () -> restrictionsService.checkFileExists("Pirates of the Caribbean.mp3"));
-        }
+        Mockito.when(filesService.doesFileExist("Pirates of the Caribbean.mp3")).thenReturn(false);
+        Assertions.assertThrows(FileNotFoundException.class,
+                () -> restrictionsService.checkFileExists("Pirates of the Caribbean.mp3"));
+    }
+
+    @org.junit.jupiter.api.Test
+    void checkValidDeadline(){
+        Assertions.assertThrows(IllegalDeadlineException.class,
+                () -> restrictionsService.checkValidDeadline(Instant.now().minus(2, HOURS)));
+    }
+
 }

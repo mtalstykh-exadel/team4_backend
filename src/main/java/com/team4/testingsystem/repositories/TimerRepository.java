@@ -1,6 +1,7 @@
 package com.team4.testingsystem.repositories;
 
 import com.team4.testingsystem.entities.Timer;
+import com.team4.testingsystem.enums.Status;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -12,6 +13,6 @@ public interface TimerRepository extends CrudRepository<Timer, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "DELETE FROM Timer t where t.test.id = ?1")
-    void deleteByTestId(Long testId);
+    @Query(value = "DELETE FROM Timer t where t.test.id = ?1 and t.status = ?2")
+    void deleteByTestIdAndStatus(Long testId, Status status);
 }
