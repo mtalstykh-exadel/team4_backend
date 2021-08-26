@@ -144,6 +144,15 @@ class TestsServiceImplTest {
     }
 
     @org.junit.jupiter.api.Test
+    void getByUserIdWithLevelSuccess() {
+        Mockito.when(testsRepository.getAllByUserAndLevel(GOOD_USER_ID, Levels.A1.name(), pageable))
+                .thenReturn(tests);
+
+        Assertions.assertEquals(tests, testsService.getByUserId(GOOD_USER_ID, Levels.A1, pageable));
+    }
+
+
+    @org.junit.jupiter.api.Test
     void getAllUsersAndAssignedTestsNameLike() {
         User user = EntityCreatorUtil.createUser();
         Test test = EntityCreatorUtil.createTest(user, EntityCreatorUtil.createLevel());
