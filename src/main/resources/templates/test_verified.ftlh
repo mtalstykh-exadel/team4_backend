@@ -574,6 +574,97 @@
                                                                         </a>
                                                                     </#if>
                                                                 </p>
+
+                                                                <#list reportAnswers>
+                                                                    <br>
+                                                                    <br>
+                                                                    <p style="
+                                        margin: 0;
+                                        -webkit-text-size-adjust: none;
+                                        -ms-text-size-adjust: none;
+                                        mso-line-height-rule: exactly;
+                                        font-family: arial, 'helvetica neue',
+                                          helvetica, sans-serif;
+                                        line-height: 27px;
+                                        color: #333333;
+                                        font-size: 18px;
+                                      ">
+                                                                        <b>
+                                                                            <#if language == "rus">
+                                                                                Ответы на ваши сообщения об ошибках:
+                                                                            <#else>
+                                                                                Answers for your error reports:
+                                                                            </#if>
+                                                                        </b>
+                                                                    </p>
+                                                                    <hr>
+                                                                    <#items as reportAnswer>
+                                                                        <p style="
+                                        margin: 0;
+                                        -webkit-text-size-adjust: none;
+                                        -ms-text-size-adjust: none;
+                                        mso-line-height-rule: exactly;
+                                        font-family: arial, 'helvetica neue',
+                                          helvetica, sans-serif;
+                                        line-height: 27px;
+                                        color: #333333;
+                                        font-size: 16px;
+                                      ">
+                                                                            <b>
+                                                                                <#if language == "rus">
+                                                                                    Текст вопроса:
+                                                                                <#else>
+                                                                                    Reported question:
+                                                                                </#if>
+                                                                            </b>
+                                                                            <br>
+                                                                            ${reportAnswer.question}
+                                                                        </p>
+                                                                        <p style="
+                                        margin: 0;
+                                        -webkit-text-size-adjust: none;
+                                        -ms-text-size-adjust: none;
+                                        mso-line-height-rule: exactly;
+                                        font-family: arial, 'helvetica neue',
+                                          helvetica, sans-serif;
+                                        line-height: 27px;
+                                        color: #333333;
+                                        font-size: 16px;
+                                      ">
+                                                                            <b>
+                                                                                <#if language == "rus">
+                                                                                    Ваше сообщение об ошибке:
+                                                                                <#else>
+                                                                                    Your report:
+                                                                                </#if>
+                                                                            </b>
+                                                                            <br>
+                                                                            ${reportAnswer.report}
+                                                                        </p>
+                                                                        <p style="
+                                        margin: 0;
+                                        -webkit-text-size-adjust: none;
+                                        -ms-text-size-adjust: none;
+                                        mso-line-height-rule: exactly;
+                                        font-family: arial, 'helvetica neue',
+                                          helvetica, sans-serif;
+                                        line-height: 27px;
+                                        color: #333333;
+                                        font-size: 16px;
+                                      ">
+                                                                            <b>
+                                                                                <#if language == "rus">
+                                                                                    Ответ тренера:
+                                                                                <#else>
+                                                                                    Coach's answer:
+                                                                                </#if>
+                                                                            </b>
+                                                                            <br>
+                                                                            ${reportAnswer.answer}
+                                                                    </p>
+                                                                    <hr>
+                                                                    </#items>
+                                                                </#list>
                                                                 <p
                                                                         style="
                                         margin: 0;

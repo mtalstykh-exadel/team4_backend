@@ -3,7 +3,7 @@ package com.team4.testingsystem.handlers;
 import com.team4.testingsystem.dto.NotificationDTO;
 import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.services.EmailNotificationTemplateResolver;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.event.EventListener;
@@ -17,7 +17,6 @@ import javax.mail.internet.MimeMessage;
 
 @Component
 @ConditionalOnProperty(prefix = "email-notifications", name = "enabled", havingValue = "true")
-@AllArgsConstructor
 public class EmailNotificationEventHandler {
 
     private final EmailNotificationTemplateResolver templateResolver;
@@ -34,6 +33,13 @@ public class EmailNotificationEventHandler {
             NotificationType.COACH_DEASSIGNED, "You were deassigned from the test verification",
             NotificationType.TEST_EXPIRED, "Test, assigned for you, has expired"
     );
+
+    @Autowired
+    public EmailNotificationEventHandler(EmailNotificationTemplateResolver templateResolver,
+                                         JavaMailSender mailSender) {
+        this.templateResolver = templateResolver;
+        this.mailSender = mailSender;
+    }
 
     @EventListener
     public void onApplicationEvent(NotificationDTO notificationDTO) throws MessagingException {
