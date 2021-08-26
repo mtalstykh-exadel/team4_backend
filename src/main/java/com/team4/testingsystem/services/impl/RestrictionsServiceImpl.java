@@ -21,7 +21,7 @@ import com.team4.testingsystem.repositories.TestsRepository;
 import com.team4.testingsystem.services.FilesService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.security.AccessControlException;
@@ -29,17 +29,11 @@ import java.time.Instant;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class RestrictionsServiceImpl implements RestrictionsService {
 
     private final TestsRepository testsRepository;
     private final FilesService filesService;
-
-    @Autowired
-    public RestrictionsServiceImpl(TestsRepository testsRepository,
-                                   FilesService filesService) {
-        this.testsRepository = testsRepository;
-        this.filesService = filesService;
-    }
 
     @Override
     public void checkOwnerIsCurrentUser(Test test, Long currentUserId) {

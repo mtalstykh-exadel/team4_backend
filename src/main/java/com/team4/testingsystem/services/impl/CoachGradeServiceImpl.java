@@ -10,29 +10,19 @@ import com.team4.testingsystem.services.CoachGradeService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 @Service
+@AllArgsConstructor
 public class CoachGradeServiceImpl implements CoachGradeService {
     private final CoachGradeRepository gradeRepository;
 
     private final TestsService testsService;
     private final QuestionService questionService;
     private final RestrictionsService restrictionsService;
-
-    @Autowired
-    public CoachGradeServiceImpl(CoachGradeRepository gradeRepository,
-                                 TestsService testsService,
-                                 QuestionService questionService,
-                                 RestrictionsService restrictionsService) {
-        this.gradeRepository = gradeRepository;
-        this.testsService = testsService;
-        this.questionService = questionService;
-        this.restrictionsService = restrictionsService;
-    }
 
     @Override
     public Collection<CoachGrade> getGradesByTest(Test test) {

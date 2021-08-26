@@ -10,24 +10,18 @@ import com.team4.testingsystem.repositories.ChosenOptionRepository;
 import com.team4.testingsystem.services.ChosenOptionService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
 
 @Service
+@AllArgsConstructor
 public class ChosenOptionServiceImpl implements ChosenOptionService {
 
     private final ChosenOptionRepository chosenOptionRepository;
     private final RestrictionsService restrictionsService;
-
-    @Autowired
-    public ChosenOptionServiceImpl(ChosenOptionRepository chosenOptionRepository,
-                                   RestrictionsService restrictionsService) {
-        this.chosenOptionRepository = chosenOptionRepository;
-        this.restrictionsService = restrictionsService;
-    }
 
     @Override
     public ChosenOption getByTestAndQuestionId(Long testId, Long questionId) {

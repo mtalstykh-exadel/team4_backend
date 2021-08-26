@@ -9,7 +9,7 @@ import com.team4.testingsystem.exceptions.ModuleGradeNotFoundException;
 import com.team4.testingsystem.repositories.ModuleGradesRepository;
 import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.ModuleService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,17 +18,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class ModuleGradesServiceImpl implements ModuleGradesService {
 
     private final ModuleGradesRepository moduleGradesRepository;
     private final ModuleService moduleService;
-
-    @Autowired
-    public ModuleGradesServiceImpl(ModuleGradesRepository moduleGradesRepository,
-                                   ModuleService moduleService) {
-        this.moduleGradesRepository = moduleGradesRepository;
-        this.moduleService = moduleService;
-    }
 
     @Override
     public Integer getGradeByModule(Map<String, ModuleGrade> gradeMap, Modules module) {

@@ -9,7 +9,7 @@ import com.team4.testingsystem.exceptions.NotificationNotFoundException;
 import com.team4.testingsystem.repositories.NotificationRepository;
 import com.team4.testingsystem.services.NotificationService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -18,19 +18,11 @@ import java.time.Instant;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final NotificationConverter notificationConverter;
     private final ApplicationEventPublisher eventPublisher;
-
-    @Autowired
-    public NotificationServiceImpl(NotificationRepository notificationRepository,
-                                   NotificationConverter notificationConverter,
-                                   ApplicationEventPublisher eventPublisher) {
-        this.notificationRepository = notificationRepository;
-        this.notificationConverter = notificationConverter;
-        this.eventPublisher = eventPublisher;
-    }
 
     @Override
     public void create(NotificationType type, User user, Test test) {

@@ -11,29 +11,19 @@ import com.team4.testingsystem.services.CoachAnswerService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class CoachAnswerServiceImpl implements CoachAnswerService {
     private final CoachAnswerRepository coachAnswerRepository;
     private final TestsService testsService;
     private final QuestionService questionService;
     private final RestrictionsService restrictionsService;
-
-    @Autowired
-    public CoachAnswerServiceImpl(CoachAnswerRepository coachAnswerRepository,
-                                  TestsService testsService,
-                                  QuestionService questionService,
-                                  RestrictionsService restrictionsService) {
-        this.coachAnswerRepository = coachAnswerRepository;
-        this.testsService = testsService;
-        this.questionService = questionService;
-        this.restrictionsService = restrictionsService;
-    }
 
     @Override
     public void addAll(List<CoachAnswerDTO> coachAnswers) {

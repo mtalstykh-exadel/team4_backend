@@ -13,7 +13,7 @@ import com.team4.testingsystem.repositories.ContentFilesRepository;
 import com.team4.testingsystem.repositories.QuestionRepository;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.RestrictionsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,20 +22,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
     private final ContentFilesRepository contentFilesRepository;
     private final RestrictionsService restrictionsService;
-
-    @Autowired
-    QuestionServiceImpl(QuestionRepository questionRepository,
-                        ContentFilesRepository contentFilesRepository,
-                        RestrictionsService restrictionsService) {
-        this.questionRepository = questionRepository;
-        this.contentFilesRepository = contentFilesRepository;
-        this.restrictionsService = restrictionsService;
-    }
 
     @Override
     public Question getById(Long id) {
