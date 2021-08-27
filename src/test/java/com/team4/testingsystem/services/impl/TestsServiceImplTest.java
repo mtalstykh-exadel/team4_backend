@@ -180,11 +180,8 @@ class TestsServiceImplTest {
         Mockito.when(userDetails.getId()).thenReturn(1L);
         try (MockedStatic<JwtTokenUtil> mockJwtTokenUtil = Mockito.mockStatic(JwtTokenUtil.class)) {
             mockJwtTokenUtil.when(JwtTokenUtil::extractUserDetails).thenReturn(userDetails);
-            Mockito.when(testsRepository.getByStatuses(statuses, pageable))
+            Mockito.when(testsRepository.getByStatusesExcludingUser(statuses, 1L, pageable))
                     .thenReturn(tests);
-            Mockito.when(tests.stream()).thenReturn(stream);
-            Mockito.when(stream.filter(any())).thenReturn(stream);
-            Mockito.when(stream.collect(any())).thenReturn(tests);
 
             Assertions.assertEquals(tests, testsService.getAllUnverifiedTests(pageable));
         }

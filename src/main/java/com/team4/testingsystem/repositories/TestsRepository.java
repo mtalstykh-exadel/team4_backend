@@ -59,6 +59,18 @@ public interface TestsRepository extends CrudRepository<Test, Long> {
     List<Test> getByStatuses(Status[] statuses, Pageable pageable);
 
     @Query(value = "select t from Test t "
+            + "where t.status in ?1 and t.isAvailable = true and t.user.id <> ?2 "
+            + "order by case "
+            + "when t.priority = 'High' then 'A' "
+            + "when t.priority = 'Medium' then 'B' "
+            + "when t.priority = 'Low' then 'C' ELSE 'D' end, "
+            + "t.deadline asc nulls last, "
+            + "t.assignedAt desc nulls last, "
+            + "t.completedAt asc nulls last, "
+            + "t.id desc nulls last")
+    List<Test> getByStatusesExcludingUser(Status[] statuses, Long userId, Pageable pageable);
+
+    @Query(value = "select t from Test t "
             + "where t.user = ?1 "
             + "and t.isAvailable = true "
             + "and t.assignedAt is null "
