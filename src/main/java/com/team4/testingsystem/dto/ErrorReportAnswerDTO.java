@@ -16,6 +16,8 @@ public class ErrorReportAnswerDTO implements Serializable {
     public ErrorReportAnswerDTO(ErrorReportAnswer errorReportAnswer) {
         this.question = errorReportAnswer.getReport().getId().getQuestion().getBody();
         this.report = errorReportAnswer.getReport().getReportBody();
-        this.answer = errorReportAnswer.getAnswer().getComment();
+        if (errorReportAnswer.getAnswer() != null) {
+            this.answer = errorReportAnswer.getAnswer().getComment();
+        }
     }
 }
