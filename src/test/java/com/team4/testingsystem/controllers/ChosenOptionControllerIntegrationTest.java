@@ -101,6 +101,8 @@ public class ChosenOptionControllerIntegrationTest {
 
         answerRepository.save(answer);
 
+        answer = answerRepository.findAll().iterator().next();
+
         testsRepository.save(test);
 
         answer.setQuestion(question);
@@ -150,6 +152,8 @@ public class ChosenOptionControllerIntegrationTest {
 
         answerRepository.save(answer);
 
+        answer = answerRepository.findAll().iterator().next();
+
         testsRepository.save(test);
 
         answer.setQuestion(question);
@@ -194,6 +198,8 @@ public class ChosenOptionControllerIntegrationTest {
 
         answerRepository.save(answer);
 
+        answer = answerRepository.findAll().iterator().next();
+
         testsRepository.save(test);
 
         answer.setQuestion(question);
@@ -233,6 +239,8 @@ public class ChosenOptionControllerIntegrationTest {
 
         Answer answer = EntityCreatorUtil.createAnswer(question);
         answerRepository.save(answer);
+
+        answer = answerRepository.findAll().iterator().next();
 
         testsRepository.save(test);
 
