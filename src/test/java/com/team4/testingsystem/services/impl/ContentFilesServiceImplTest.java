@@ -64,6 +64,37 @@ class ContentFilesServiceImplTest {
     }
 
     @Test
+    void updateWithUrl() {
+        ContentFile oldContentFile = Mockito.mock(ContentFile.class);
+        Mockito.when(contentFilesRepository.findById(ID)).thenReturn(Optional.of(oldContentFile));
+        Mockito.when(oldContentFile.getUrl()).thenReturn(OLD_URL);
+        Mockito.when(contentFile.getUrl()).thenReturn(URL);
+        Mockito.when(contentFilesRepository.save(contentFile)).thenReturn(contentFile);
+        contentFilesService.update(ID, contentFile);
+        verify(restrictionsService).checkNotArchivedContentFile(contentFile);
+        verify(restrictionsService, Mockito.times(2)).checkFileExists(URL);
+
+        Mockito.verify(contentFile).setId(null);
+        Assertions.assertEquals(contentFile, contentFilesService.update(ID, contentFile));
+    }
+
+    @Test
+    void updateWithoutUrl() {
+        ContentFile oldContentFile = Mockito.mock(ContentFile.class);
+        Mockito.when(contentFilesRepository.findById(ID)).thenReturn(Optional.of(oldContentFile));
+        Mockito.when(oldContentFile.getUrl()).thenReturn(OLD_URL);
+        Mockito.when(contentFile.getUrl()).thenReturn(null,null, OLD_URL);
+        Mockito.when(contentFilesRepository.save(contentFile)).thenReturn(contentFile);
+        ContentFile result = contentFilesService.update(ID, contentFile);
+
+        Mockito.verify(contentFile).setUrl(oldContentFile.getUrl());
+        Mockito.verify(contentFile).setId(ID);
+        Mockito.verify(questionService).archiveQuestionsByContentFileId(ID);
+        Assertions.assertEquals(OLD_URL, result.getUrl());
+    }
+
+
+    @Test
     void getAllSuccess() {
         List<ContentFile> contentFiles = new ArrayList<>();
         Mockito.when(contentFilesRepository.findAll()).thenReturn(contentFiles);
@@ -106,21 +137,6 @@ class ContentFilesServiceImplTest {
     }
 
     @Test
-    void update() {
-        Mockito.when(contentFilesRepository.findById(ID)).thenReturn(Optional.of(contentFile));
-        Mockito.when(contentFile.getUrl()).thenReturn(URL);
-
-        Mockito.when(contentFilesRepository.save(contentFile)).thenReturn(contentFile);
-        contentFilesService.update(ID, contentFile);
-
-        verify(restrictionsService).checkNotArchivedContentFile(contentFile);
-        verify(restrictionsService).checkFileExists(URL);
-
-        Mockito.verify(questionService).archiveQuestionsByContentFileId(ID);
-        Assertions.assertEquals(contentFile, contentFilesService.update(ID, contentFile));
-    }
-
-    @Test
     void updateUrlFail() {
         Mockito.when(contentFilesRepository.changeUrl(URL, BAD_ID)).thenReturn(0);
 
@@ -133,7 +149,8 @@ class ContentFilesServiceImplTest {
         Mockito.when(contentFilesRepository.updateAvailable(ID, UNAVAILABLE)).thenReturn(1);
         contentFilesService.updateAvailability(ID, UNAVAILABLE);
 
-        verify(contentFilesRepository).updateAvailable(ID, UNAVAILABLE);
+        Mockito.verify(contentFilesRepository).updateAvailable(ID, UNAVAILABLE);
+        Mockito.verify(questionService).archiveQuestionsByContentFileId(ID);
         Assertions.assertDoesNotThrow(() -> contentFilesService.updateAvailability(ID, UNAVAILABLE));
     }
 

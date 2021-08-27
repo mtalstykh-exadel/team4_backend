@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +41,17 @@ class CustomUserDetailsTest {
     @Test
     void isCredentialsNonExpired() {
         assertTrue(customUserDetails.isCredentialsNonExpired());
+    }
+
+    @Test
+    void getLogin(){
+        Assertions.assertEquals(user.getLogin(), customUserDetails.getLogin());
+    }
+
+    @Test
+    void getRoles(){
+        Assertions.assertEquals(List.of(new SimpleGrantedAuthority(user.getRole().getRoleName())),
+                customUserDetails.getRoles());
     }
 
     @Test

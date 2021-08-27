@@ -25,6 +25,7 @@ import com.team4.testingsystem.utils.EntityCreatorUtil;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -125,6 +126,7 @@ class TestsServiceImplTest {
             verify(restrictionsService).checkStatus(test, Status.STARTED);
             Assertions.assertEquals(test, result);
         }
+
     }
 
     @org.junit.jupiter.api.Test
@@ -140,6 +142,15 @@ class TestsServiceImplTest {
 
         Assertions.assertEquals(tests, testsService.getByUserId(GOOD_USER_ID, null, pageable));
     }
+
+    @org.junit.jupiter.api.Test
+    void getByUserIdWithLevelSuccess() {
+        Mockito.when(testsRepository.getAllByUserAndLevel(GOOD_USER_ID, Levels.A1.name(), pageable))
+                .thenReturn(tests);
+
+        Assertions.assertEquals(tests, testsService.getByUserId(GOOD_USER_ID, Levels.A1, pageable));
+    }
+
 
     @org.junit.jupiter.api.Test
     void getAllUsersAndAssignedTestsNameLike() {
