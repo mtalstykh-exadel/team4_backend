@@ -100,9 +100,7 @@ public class TestsServiceImpl implements TestsService {
     public List<Test> getAllUnverifiedTests(Pageable pageable) {
         Status[] statuses = {Status.COMPLETED, Status.IN_VERIFICATION};
         Long currentUserId = JwtTokenUtil.extractUserDetails().getId();
-        return getByStatuses(statuses, pageable).stream()
-                .filter(test -> !test.getUser().getId().equals(currentUserId))
-                .collect(Collectors.toList());
+        return testsRepository.getByStatusesExcludingUser(statuses, currentUserId, pageable);
     }
 
     @Override

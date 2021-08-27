@@ -1,6 +1,8 @@
 package com.team4.testingsystem.services.impl;
 
+import com.team4.testingsystem.entities.CoachAnswer;
 import com.team4.testingsystem.entities.ErrorReport;
+import com.team4.testingsystem.entities.ErrorReportAnswer;
 import com.team4.testingsystem.entities.Question;
 import com.team4.testingsystem.entities.TestQuestionID;
 import com.team4.testingsystem.enums.Status;
@@ -9,6 +11,7 @@ import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.repositories.ErrorReportsRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
+import com.team4.testingsystem.services.CoachAnswerService;
 import com.team4.testingsystem.services.QuestionService;
 import com.team4.testingsystem.services.RestrictionsService;
 import com.team4.testingsystem.services.TestsService;
@@ -31,7 +34,6 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 public class ErrorReportsServiceImplTest {
 
-
     final Long GOOD_TEST_ID = 1L;
     final Long BAD_TEST_ID = 42L;
     final Long GOOD_QUESTION_ID = 111L;
@@ -39,19 +41,22 @@ public class ErrorReportsServiceImplTest {
     final Long GOOD_USER_ID = 111111L;
 
     @Mock
-    ErrorReportsRepository errorReportsRepository;
+    private ErrorReportsRepository errorReportsRepository;
 
     @Mock
-    QuestionService questionService;
+    private CoachAnswerService coachAnswerService;
 
     @Mock
-    RestrictionsService restrictionsService;
+    private QuestionService questionService;
 
     @Mock
-    TestsService testsService;
+    private RestrictionsService restrictionsService;
 
     @Mock
-    CustomUserDetails userDetails;
+    private TestsService testsService;
+
+    @Mock
+    private CustomUserDetails userDetails;
 
     @Mock
     private Question question;
@@ -62,13 +67,20 @@ public class ErrorReportsServiceImplTest {
     @InjectMocks
     private ErrorReportsServiceImpl errorReportsService;
 
+    @Mock
+    private CoachAnswer coachAnswer;
+
+    @Mock
+    private ErrorReport errorReport;
+
+    @Mock
+    private TestQuestionID testQuestionID;
+
     @Test
     void getReportsByTest() {
-        ErrorReport report = new ErrorReport();
-        Mockito.when(errorReportsRepository.findAllById_Test(testsService.getById(GOOD_TEST_ID)))
-                .thenReturn(List.of(report));
+        Mockito.when(errorReportsRepository.findAllByTestId(GOOD_TEST_ID)).thenReturn(List.of(errorReport));
 
-        Assertions.assertEquals(List.of(report), errorReportsService.getReportsByTest(GOOD_TEST_ID));
+        Assertions.assertEquals(List.of(errorReport), errorReportsService.getReportsByTest(GOOD_TEST_ID));
     }
 
     @Test

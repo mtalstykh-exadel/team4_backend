@@ -35,7 +35,7 @@ public class CoachAnswerServiceImpl implements CoachAnswerService {
 
     @Override
     public List<CoachAnswer> getAnswersByTest(Long testId) {
-        return coachAnswerRepository.findAllById_Test(testsService.getById(testId));
+        return coachAnswerRepository.findAllByTestId(testId);
     }
 
     private CoachAnswer convertToEntity(CoachAnswerDTO coachAnswerDTO) {

@@ -75,6 +75,7 @@ class CoachAssignedNotificationConverterTest {
 
         Assertions.assertNull(dto.getFinishTime());
         Assertions.assertNull(dto.getDeadline());
+        Assertions.assertNull(dto.getReportAnswers());
     }
 
     @Test
