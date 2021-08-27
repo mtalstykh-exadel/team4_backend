@@ -58,15 +58,9 @@ class CoachAnswerServiceImplTest {
 
     @Test
     void getAnswersByTest() {
-        Mockito.when(test.getId()).thenReturn(TEST_ID);
+        Mockito.when(coachAnswerRepository.findAllByTestId(TEST_ID)).thenReturn(coachAnswers);
 
-        Mockito.when(testsService.getById(TEST_ID)).thenReturn(test);
-
-        Mockito.when(coachAnswerRepository.findAllById_Test(test))
-                .thenReturn(coachAnswers);
-
-        Assertions.assertEquals(coachAnswers,
-                coachAnswerService.getAnswersByTest(test.getId()));
+        Assertions.assertEquals(coachAnswers, coachAnswerService.getAnswersByTest(TEST_ID));
     }
 
     @Test

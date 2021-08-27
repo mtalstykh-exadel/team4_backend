@@ -31,7 +31,7 @@ public class ErrorReportsServiceImpl implements ErrorReportsService {
 
     @Override
     public Collection<ErrorReport> getReportsByTest(Long testId) {
-        return errorReportsRepository.findAllById_Test(testsService.getById(testId));
+        return errorReportsRepository.findAllByTestId(testId);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.team4.testingsystem.repositories;
 
 import com.team4.testingsystem.entities.ErrorReport;
-import com.team4.testingsystem.entities.Test;
 import com.team4.testingsystem.entities.TestQuestionID;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +13,8 @@ import java.util.Collection;
 @Repository
 public interface ErrorReportsRepository extends CrudRepository<ErrorReport, TestQuestionID> {
 
-    Collection<ErrorReport> findAllById_Test(Test test);
+    @Query(value = "select er from ErrorReport er where er.id.test.id = ?1")
+    Collection<ErrorReport> findAllByTestId(Long testId);
 
     @Transactional
     @Modifying
