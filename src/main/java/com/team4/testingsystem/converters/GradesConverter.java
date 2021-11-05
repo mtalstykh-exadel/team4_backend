@@ -1,8 +1,8 @@
 package com.team4.testingsystem.converters;
 
-import com.team4.testingsystem.dto.ModuleGradesDTO;
-import com.team4.testingsystem.entities.ModuleGrade;
-import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.model.dto.ModuleGradesDTO;
+import com.team4.testingsystem.model.entity.ModuleGrade;
+import com.team4.testingsystem.model.entity.Test;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.services.ModuleGradesService;
 import com.team4.testingsystem.services.RestrictionsService;

@@ -1,7 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.entities.Timer;
+import com.team4.testingsystem.model.entity.Test;
+import com.team4.testingsystem.model.entity.Timer;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.repositories.TimerRepository;
 import com.team4.testingsystem.services.TimerService;

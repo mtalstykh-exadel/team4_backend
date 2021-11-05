@@ -1,9 +1,9 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.converters.NotificationConverter;
-import com.team4.testingsystem.dto.NotificationDTO;
-import com.team4.testingsystem.entities.Notification;
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.dto.NotificationDTO;
+import com.team4.testingsystem.model.entity.Notification;
+import com.team4.testingsystem.model.entity.User;
 import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.exceptions.NotificationNotFoundException;
 import com.team4.testingsystem.repositories.NotificationRepository;
@@ -44,7 +44,7 @@ public class NotificationServiceImplTest {
     private User user;
 
     @Mock
-    private com.team4.testingsystem.entities.Test test;
+    private com.team4.testingsystem.model.entity.Test test;
 
     @Mock
     private CustomUserDetails userDetails;

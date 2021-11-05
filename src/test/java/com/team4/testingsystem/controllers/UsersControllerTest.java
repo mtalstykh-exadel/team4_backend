@@ -1,9 +1,9 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.dto.TestInfo;
-import com.team4.testingsystem.dto.UserDTO;
-import com.team4.testingsystem.entities.User;
-import com.team4.testingsystem.entities.UserTest;
+import com.team4.testingsystem.model.dto.TestInfo;
+import com.team4.testingsystem.model.dto.UserDTO;
+import com.team4.testingsystem.model.entity.User;
+import com.team4.testingsystem.model.entity.UserTest;
 import com.team4.testingsystem.enums.Role;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.TestsService;
@@ -37,7 +37,7 @@ class UsersControllerTest {
     private UsersController usersController;
 
     private User user;
-    private com.team4.testingsystem.entities.Test test;
+    private com.team4.testingsystem.model.entity.Test test;
     private final Pageable pageable = PageRequest.of(1, 10);
     @BeforeEach
     void init() {

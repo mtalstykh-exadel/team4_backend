@@ -1,16 +1,16 @@
 package com.team4.testingsystem.converters;
 
-import com.team4.testingsystem.dto.CoachAnswerDTO;
-import com.team4.testingsystem.dto.CoachGradeDTO;
-import com.team4.testingsystem.dto.QuestionDTO;
-import com.team4.testingsystem.dto.ReportedQuestionDTO;
-import com.team4.testingsystem.dto.TestVerificationDTO;
-import com.team4.testingsystem.entities.CoachAnswer;
-import com.team4.testingsystem.entities.ErrorReport;
-import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.model.dto.CoachAnswerDTO;
+import com.team4.testingsystem.model.dto.CoachGradeDTO;
+import com.team4.testingsystem.model.dto.QuestionDTO;
+import com.team4.testingsystem.model.dto.ReportedQuestionDTO;
+import com.team4.testingsystem.model.dto.TestVerificationDTO;
+import com.team4.testingsystem.model.entity.CoachAnswer;
+import com.team4.testingsystem.model.entity.ErrorReport;
+import com.team4.testingsystem.model.entity.Level;
+import com.team4.testingsystem.model.entity.Question;
+import com.team4.testingsystem.model.entity.Test;
+import com.team4.testingsystem.model.entity.TestQuestionID;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.services.AnswerService;
 import com.team4.testingsystem.services.CoachAnswerService;

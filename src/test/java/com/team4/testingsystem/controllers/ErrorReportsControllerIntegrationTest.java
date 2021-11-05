@@ -1,13 +1,12 @@
 package com.team4.testingsystem.controllers;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team4.testingsystem.dto.ErrorReportDTO;
-import com.team4.testingsystem.entities.ErrorReport;
-import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.TestQuestionID;
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.dto.ErrorReportDTO;
+import com.team4.testingsystem.model.entity.ErrorReport;
+import com.team4.testingsystem.model.entity.Level;
+import com.team4.testingsystem.model.entity.Question;
+import com.team4.testingsystem.model.entity.TestQuestionID;
+import com.team4.testingsystem.model.entity.User;
 import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.repositories.ContentFilesRepository;
@@ -28,7 +27,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
 import java.util.Optional;
@@ -107,7 +105,7 @@ class ErrorReportsControllerIntegrationTest {
 
     @Test
     void addSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
 
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);
@@ -154,7 +152,7 @@ class ErrorReportsControllerIntegrationTest {
 
     @Test
     void updateReportBodySuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
 
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);
@@ -190,7 +188,7 @@ class ErrorReportsControllerIntegrationTest {
 
     @Test
     void removeSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
 
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);

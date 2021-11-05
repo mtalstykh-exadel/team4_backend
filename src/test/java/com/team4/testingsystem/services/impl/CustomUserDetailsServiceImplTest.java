@@ -1,7 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.User;
-import com.team4.testingsystem.entities.UserRole;
+import com.team4.testingsystem.model.entity.User;
+import com.team4.testingsystem.model.entity.UserRole;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
 import org.junit.jupiter.api.Test;

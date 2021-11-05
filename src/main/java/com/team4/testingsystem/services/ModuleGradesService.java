@@ -1,7 +1,7 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.entities.ModuleGrade;
-import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.model.entity.ModuleGrade;
+import com.team4.testingsystem.model.entity.Test;
 import com.team4.testingsystem.enums.Modules;
 
 import java.util.Map;

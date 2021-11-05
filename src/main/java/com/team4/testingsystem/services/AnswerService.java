@@ -1,6 +1,6 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.entities.Answer;
+import com.team4.testingsystem.model.entity.Answer;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;

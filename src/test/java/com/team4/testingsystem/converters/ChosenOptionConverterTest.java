@@ -1,9 +1,9 @@
 package com.team4.testingsystem.converters;
 
-import com.team4.testingsystem.dto.ChosenOptionDTO;
-import com.team4.testingsystem.entities.Answer;
-import com.team4.testingsystem.entities.ChosenOption;
-import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.model.dto.ChosenOptionDTO;
+import com.team4.testingsystem.model.entity.Answer;
+import com.team4.testingsystem.model.entity.ChosenOption;
+import com.team4.testingsystem.model.entity.Question;
 import com.team4.testingsystem.exceptions.AnswerNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
@@ -41,7 +41,7 @@ class ChosenOptionConverterTest {
     private ChosenOptionConverter converter;
 
     @Mock
-    private com.team4.testingsystem.entities.Test test;
+    private com.team4.testingsystem.model.entity.Test test;
 
     @Mock
     private Question question;

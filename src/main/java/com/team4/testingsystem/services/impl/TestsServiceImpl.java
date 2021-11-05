@@ -1,10 +1,10 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.entities.Timer;
-import com.team4.testingsystem.entities.User;
-import com.team4.testingsystem.entities.UserTest;
+import com.team4.testingsystem.model.entity.Level;
+import com.team4.testingsystem.model.entity.Test;
+import com.team4.testingsystem.model.entity.Timer;
+import com.team4.testingsystem.model.entity.User;
+import com.team4.testingsystem.model.entity.UserTest;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.enums.Priority;

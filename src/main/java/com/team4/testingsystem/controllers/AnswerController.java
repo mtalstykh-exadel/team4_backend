@@ -2,6 +2,7 @@ package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.services.AnswerService;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,15 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/answer")
 public class AnswerController {
 
     private final AnswerService answerService;
-
-    @Autowired
-    public AnswerController(AnswerService answerService) {
-        this.answerService = answerService;
-    }
 
     @ApiOperation(value = "Upload essay text")
     @PostMapping("/essay/{testId}")

@@ -1,7 +1,7 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.model.entity.Question;
+import com.team4.testingsystem.model.entity.TestQuestionID;
 import com.team4.testingsystem.exceptions.ErrorReportNotFoundException;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
@@ -36,7 +36,7 @@ public class ErrorReportsControllerTest {
     ErrorReportsService errorReportsService;
 
     @Mock
-    com.team4.testingsystem.entities.Test test;
+    com.team4.testingsystem.model.entity.Test test;
 
     @Mock
     Question question;

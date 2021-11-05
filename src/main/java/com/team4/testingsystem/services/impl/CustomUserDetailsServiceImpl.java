@@ -1,6 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.entity.User;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.CustomUserDetailsService;

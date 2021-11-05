@@ -1,6 +1,6 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.entities.ErrorReportAnswer;
+import com.team4.testingsystem.model.entity.ErrorReportAnswer;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.entity.User;
 import com.team4.testingsystem.enums.Role;
 import org.springframework.data.domain.Pageable;
 

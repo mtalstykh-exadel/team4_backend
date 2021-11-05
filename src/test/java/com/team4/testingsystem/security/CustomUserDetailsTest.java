@@ -1,17 +1,14 @@
 package com.team4.testingsystem.security;
 
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.entity.User;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
-import liquibase.ui.UIService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

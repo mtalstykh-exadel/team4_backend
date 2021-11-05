@@ -3,7 +3,7 @@ package com.team4.testingsystem.services.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team4.testingsystem.config.EmailConfigurationProperties;
-import com.team4.testingsystem.dto.NotificationDTO;
+import com.team4.testingsystem.model.dto.NotificationDTO;
 import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.exceptions.EmailTemplateNotFoundException;
 import com.team4.testingsystem.exceptions.EmailTemplateResolvingFailed;

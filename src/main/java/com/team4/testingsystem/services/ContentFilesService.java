@@ -1,6 +1,6 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.entities.ContentFile;
+import com.team4.testingsystem.model.entity.ContentFile;
 
 public interface ContentFilesService {
 

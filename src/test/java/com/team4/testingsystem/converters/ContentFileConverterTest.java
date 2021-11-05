@@ -1,7 +1,7 @@
 package com.team4.testingsystem.converters;
 
-import com.team4.testingsystem.dto.ContentFileDTO;
-import com.team4.testingsystem.entities.ContentFile;
+import com.team4.testingsystem.model.dto.ContentFileDTO;
+import com.team4.testingsystem.model.entity.ContentFile;
 import com.team4.testingsystem.utils.EntityCreatorUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,8 +12,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ContentFileConverterTest {

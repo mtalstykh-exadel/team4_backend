@@ -1,18 +1,18 @@
 package com.team4.testingsystem.converters;
 
-import com.team4.testingsystem.dto.AnswerDTO;
-import com.team4.testingsystem.dto.ListeningTopicDTO;
-import com.team4.testingsystem.dto.QuestionDTO;
-import com.team4.testingsystem.dto.TestDTO;
-import com.team4.testingsystem.dto.UserDTO;
-import com.team4.testingsystem.entities.Answer;
-import com.team4.testingsystem.entities.ChosenOption;
-import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.entities.Module;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.TestQuestionID;
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.dto.AnswerDTO;
+import com.team4.testingsystem.model.dto.ListeningTopicDTO;
+import com.team4.testingsystem.model.dto.QuestionDTO;
+import com.team4.testingsystem.model.dto.TestDTO;
+import com.team4.testingsystem.model.dto.UserDTO;
+import com.team4.testingsystem.model.entity.Answer;
+import com.team4.testingsystem.model.entity.ChosenOption;
+import com.team4.testingsystem.model.entity.ContentFile;
+import com.team4.testingsystem.model.entity.Level;
+import com.team4.testingsystem.model.entity.Module;
+import com.team4.testingsystem.model.entity.Question;
+import com.team4.testingsystem.model.entity.TestQuestionID;
+import com.team4.testingsystem.model.entity.User;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.enums.Priority;
 import com.team4.testingsystem.enums.Status;
@@ -68,7 +68,7 @@ class TestConverterTest {
         User user = EntityCreatorUtil.createUser();
         User coach = EntityCreatorUtil.createUser();
         Level level = EntityCreatorUtil.createLevel();
-        com.team4.testingsystem.entities.Test test = com.team4.testingsystem.entities.Test.builder()
+        com.team4.testingsystem.model.entity.Test test = com.team4.testingsystem.model.entity.Test.builder()
                 .user(user)
                 .status(Status.STARTED)
                 .priority(Priority.LOW)

@@ -2,10 +2,10 @@ package com.team4.testingsystem.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team4.testingsystem.dto.UserDTO;
-import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.entities.User;
-import com.team4.testingsystem.entities.UserRole;
+import com.team4.testingsystem.model.dto.UserDTO;
+import com.team4.testingsystem.model.entity.Level;
+import com.team4.testingsystem.model.entity.User;
+import com.team4.testingsystem.model.entity.UserRole;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Role;
 import com.team4.testingsystem.enums.Status;

@@ -1,14 +1,14 @@
 package com.team4.testingsystem.converters.notifications;
 
-import com.team4.testingsystem.dto.NotificationDTO;
-import com.team4.testingsystem.entities.CoachAnswer;
-import com.team4.testingsystem.entities.ErrorReport;
-import com.team4.testingsystem.entities.ErrorReportAnswer;
-import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.entities.Notification;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.TestQuestionID;
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.dto.NotificationDTO;
+import com.team4.testingsystem.model.entity.CoachAnswer;
+import com.team4.testingsystem.model.entity.ErrorReport;
+import com.team4.testingsystem.model.entity.ErrorReportAnswer;
+import com.team4.testingsystem.model.entity.Level;
+import com.team4.testingsystem.model.entity.Notification;
+import com.team4.testingsystem.model.entity.Question;
+import com.team4.testingsystem.model.entity.TestQuestionID;
+import com.team4.testingsystem.model.entity.User;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.services.ErrorReportAnswerService;
@@ -29,7 +29,7 @@ public class TestVerifiedNotificationConverterTest {
     private Notification notification;
 
     @Mock
-    private com.team4.testingsystem.entities.Test test;
+    private com.team4.testingsystem.model.entity.Test test;
 
     @Mock
     private Level level;

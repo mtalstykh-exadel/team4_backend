@@ -2,12 +2,12 @@ package com.team4.testingsystem.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team4.testingsystem.dto.TestInfo;
-import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.entities.Module;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.dto.TestInfo;
+import com.team4.testingsystem.model.entity.ContentFile;
+import com.team4.testingsystem.model.entity.Level;
+import com.team4.testingsystem.model.entity.Module;
+import com.team4.testingsystem.model.entity.Question;
+import com.team4.testingsystem.model.entity.User;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.enums.Status;
@@ -117,7 +117,7 @@ class TestsControllerIntegrationTest {
     void getUsersTestsSuccess() throws Exception {
         Module listeningModule = moduleRepository.findByName(Modules.LISTENING.getName()).orElseThrow();
 
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         Question question = EntityCreatorUtil.createQuestion();
@@ -181,7 +181,7 @@ class TestsControllerIntegrationTest {
     void getUnverifiedTestsForCurrentCoachSuccess() throws Exception {
         Module listeningModule = moduleRepository.findByName(Modules.LISTENING.getName()).orElseThrow();
 
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
         test.setCoach(coach);
         test.setStatus(Status.COMPLETED);
         testsRepository.save(test);
@@ -243,7 +243,7 @@ class TestsControllerIntegrationTest {
 
     @Test
     void assignCoachSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
         test.setStatus(Status.COMPLETED);
         testsRepository.save(test);
 
@@ -257,7 +257,7 @@ class TestsControllerIntegrationTest {
                 .with(user(adminDetails)))
                 .andExpect(status().isOk());
 
-        Optional<com.team4.testingsystem.entities.Test> updatedTest = testsRepository.findById(testId);
+        Optional<com.team4.testingsystem.model.entity.Test> updatedTest = testsRepository.findById(testId);
 
         Assertions.assertTrue(updatedTest.isPresent());
         Assertions.assertEquals(coachId, updatedTest.get().getCoach().getId());
@@ -265,7 +265,7 @@ class TestsControllerIntegrationTest {
 
     @Test
     void assignCoachFailUserNotFound() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
 
         test.setStatus(Status.COMPLETED);
         testsRepository.save(test);
@@ -292,7 +292,7 @@ class TestsControllerIntegrationTest {
 
     @Test
     void assignCoachFailSelfAssignment() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
 
         test.setStatus(Status.COMPLETED);
 
@@ -333,7 +333,7 @@ class TestsControllerIntegrationTest {
 
     @Test
     void deassignCoachSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
 
         test.setCoach(user);
 
@@ -345,7 +345,7 @@ class TestsControllerIntegrationTest {
                 .with(user(adminDetails)))
                 .andExpect(status().isOk());
 
-        Optional<com.team4.testingsystem.entities.Test> updatedTest = testsRepository.findById(testId);
+        Optional<com.team4.testingsystem.model.entity.Test> updatedTest = testsRepository.findById(testId);
         Assertions.assertTrue(updatedTest.isPresent());
         Assertions.assertNull(updatedTest.get().getCoach());
         Assertions.assertEquals(Status.COMPLETED.name(), updatedTest.get().getStatus().name());

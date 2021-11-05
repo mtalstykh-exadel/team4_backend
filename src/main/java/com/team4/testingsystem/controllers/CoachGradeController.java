@@ -1,7 +1,7 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.dto.CoachGradeDTO;
-import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.model.dto.CoachGradeDTO;
+import com.team4.testingsystem.model.entity.Test;
 import com.team4.testingsystem.services.CoachGradeService;
 import com.team4.testingsystem.services.TestsService;
 import io.swagger.annotations.ApiOperation;

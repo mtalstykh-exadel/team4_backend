@@ -1,6 +1,6 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.entities.FileAnswer;
+import com.team4.testingsystem.model.entity.FileAnswer;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileAnswerService {

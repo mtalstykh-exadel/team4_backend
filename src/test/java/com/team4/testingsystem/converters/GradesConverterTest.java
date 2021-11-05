@@ -1,8 +1,8 @@
 package com.team4.testingsystem.converters;
 
-import com.team4.testingsystem.dto.ModuleGradesDTO;
-import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.entities.ModuleGrade;
+import com.team4.testingsystem.model.dto.ModuleGradesDTO;
+import com.team4.testingsystem.model.entity.Level;
+import com.team4.testingsystem.model.entity.ModuleGrade;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.ModuleGradesService;
@@ -46,7 +46,7 @@ public class GradesConverterTest {
     private Map<String, ModuleGrade> gradesMap;
 
     @Mock
-    private com.team4.testingsystem.entities.Test test;
+    private com.team4.testingsystem.model.entity.Test test;
 
     @Mock
     private CustomUserDetails customUserDetails;

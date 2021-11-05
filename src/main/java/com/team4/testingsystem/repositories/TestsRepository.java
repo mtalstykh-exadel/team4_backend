@@ -1,7 +1,7 @@
 package com.team4.testingsystem.repositories;
 
-import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.entity.Test;
+import com.team4.testingsystem.model.entity.User;
 import com.team4.testingsystem.enums.Status;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;

@@ -1,7 +1,7 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.dto.AuthenticationRequest;
-import com.team4.testingsystem.dto.AuthenticationResponse;
+import com.team4.testingsystem.model.dto.AuthenticationRequest;
+import com.team4.testingsystem.model.dto.AuthenticationResponse;
 import com.team4.testingsystem.exceptions.IncorrectCredentialsException;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.AuthenticationService;

@@ -1,8 +1,8 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.model.entity.ContentFile;
+import com.team4.testingsystem.model.entity.Level;
+import com.team4.testingsystem.model.entity.Question;
 import com.team4.testingsystem.exceptions.NotEnoughQuestionsException;
 import com.team4.testingsystem.exceptions.NotFoundException;
 import com.team4.testingsystem.repositories.QuestionRepository;
@@ -21,7 +21,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -43,7 +42,7 @@ public class TestGeneratingServiceImplTest {
     private List<Question> questions;
 
     @Mock
-    private com.team4.testingsystem.entities.Test test;
+    private com.team4.testingsystem.model.entity.Test test;
 
     @Mock
     private Level level;

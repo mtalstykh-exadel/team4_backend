@@ -2,12 +2,12 @@ package com.team4.testingsystem.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team4.testingsystem.dto.CoachGradeDTO;
-import com.team4.testingsystem.entities.CoachGrade;
-import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.TestQuestionID;
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.dto.CoachGradeDTO;
+import com.team4.testingsystem.model.entity.CoachGrade;
+import com.team4.testingsystem.model.entity.Level;
+import com.team4.testingsystem.model.entity.Question;
+import com.team4.testingsystem.model.entity.TestQuestionID;
+import com.team4.testingsystem.model.entity.User;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.enums.Levels;
@@ -120,7 +120,7 @@ class CoachGradeControllerIntegrationTest {
 
     @Test
     void getGradesEmptyList() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         testsRepository.assignCoach(user, test.getId());
@@ -140,7 +140,7 @@ class CoachGradeControllerIntegrationTest {
 
     @Test
     void getGradesOneGrade() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         testsRepository.assignCoach(user, test.getId());
@@ -168,7 +168,7 @@ class CoachGradeControllerIntegrationTest {
 
     @Test
     void getGradesTwoGrades() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         testsRepository.assignCoach(user, test.getId());
@@ -244,7 +244,7 @@ class CoachGradeControllerIntegrationTest {
 
     @Test
     void addGradeQuestionNotFound() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
         testsRepository.save(test);
 
         CoachGradeDTO gradeDTO = CoachGradeDTO.builder()
@@ -262,7 +262,7 @@ class CoachGradeControllerIntegrationTest {
 
     @Test
     void addGradeSuccess() throws Exception {
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
 
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);
@@ -334,7 +334,7 @@ class CoachGradeControllerIntegrationTest {
     @Test
     void updateGradeSuccess() throws Exception {
 
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
 
         Question question = EntityCreatorUtil.createQuestion(user);
         questionRepository.save(question);

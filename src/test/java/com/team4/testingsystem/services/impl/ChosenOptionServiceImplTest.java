@@ -1,7 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.ChosenOption;
-import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.model.entity.ChosenOption;
+import com.team4.testingsystem.model.entity.Question;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.ChosenOptionBadRequestException;
 import com.team4.testingsystem.exceptions.ChosenOptionNotFoundException;
@@ -30,7 +30,7 @@ public class ChosenOptionServiceImplTest {
     private ChosenOption chosenOption;
 
     @Mock
-    private com.team4.testingsystem.entities.Test test;
+    private com.team4.testingsystem.model.entity.Test test;
 
     @Mock
     private CustomUserDetails userDetails;

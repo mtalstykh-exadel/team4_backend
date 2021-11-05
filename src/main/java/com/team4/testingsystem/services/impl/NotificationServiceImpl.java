@@ -1,9 +1,9 @@
 package com.team4.testingsystem.services.impl;
 
 import com.team4.testingsystem.converters.NotificationConverter;
-import com.team4.testingsystem.entities.Notification;
-import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.entity.Notification;
+import com.team4.testingsystem.model.entity.Test;
+import com.team4.testingsystem.model.entity.User;
 import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.exceptions.NotificationNotFoundException;
 import com.team4.testingsystem.repositories.NotificationRepository;

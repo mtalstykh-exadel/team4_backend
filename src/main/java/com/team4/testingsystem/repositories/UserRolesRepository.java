@@ -1,6 +1,6 @@
 package com.team4.testingsystem.repositories;
 
-import com.team4.testingsystem.entities.UserRole;
+import com.team4.testingsystem.model.entity.UserRole;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

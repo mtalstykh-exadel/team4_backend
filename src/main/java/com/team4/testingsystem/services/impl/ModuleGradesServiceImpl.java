@@ -1,9 +1,9 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.Module;
-import com.team4.testingsystem.entities.ModuleGrade;
-import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.entities.TestModuleID;
+import com.team4.testingsystem.model.entity.Module;
+import com.team4.testingsystem.model.entity.ModuleGrade;
+import com.team4.testingsystem.model.entity.Test;
+import com.team4.testingsystem.model.entity.TestModuleID;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.ModuleGradeNotFoundException;
 import com.team4.testingsystem.repositories.ModuleGradesRepository;

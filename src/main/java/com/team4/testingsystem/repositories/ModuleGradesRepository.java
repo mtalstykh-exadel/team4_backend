@@ -1,8 +1,8 @@
 package com.team4.testingsystem.repositories;
 
-import com.team4.testingsystem.entities.ModuleGrade;
-import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.entities.TestModuleID;
+import com.team4.testingsystem.model.entity.ModuleGrade;
+import com.team4.testingsystem.model.entity.Test;
+import com.team4.testingsystem.model.entity.TestModuleID;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

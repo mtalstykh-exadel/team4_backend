@@ -1,7 +1,7 @@
 package com.team4.testingsystem.exceptions;
 
-import com.team4.testingsystem.dto.ErrorResponse;
-import com.team4.testingsystem.dto.TestsLimitExceededResponse;
+import com.team4.testingsystem.model.dto.ErrorResponse;
+import com.team4.testingsystem.model.dto.TestsLimitExceededResponse;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.ServerErrorMessage;
 import org.springframework.http.HttpHeaders;

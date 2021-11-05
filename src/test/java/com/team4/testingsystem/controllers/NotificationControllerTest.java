@@ -1,8 +1,8 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.NotificationConverter;
-import com.team4.testingsystem.dto.NotificationDTO;
-import com.team4.testingsystem.entities.Notification;
+import com.team4.testingsystem.model.dto.NotificationDTO;
+import com.team4.testingsystem.model.entity.Notification;
 import com.team4.testingsystem.security.CustomUserDetails;
 import com.team4.testingsystem.services.NotificationService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;

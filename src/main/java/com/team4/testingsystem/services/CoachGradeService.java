@@ -1,7 +1,7 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.entities.CoachGrade;
-import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.model.entity.CoachGrade;
+import com.team4.testingsystem.model.entity.Test;
 
 import java.util.Collection;
 

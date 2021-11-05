@@ -1,9 +1,9 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.CoachAnswer;
-import com.team4.testingsystem.entities.ErrorReport;
-import com.team4.testingsystem.entities.ErrorReportAnswer;
-import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.model.entity.CoachAnswer;
+import com.team4.testingsystem.model.entity.ErrorReport;
+import com.team4.testingsystem.model.entity.ErrorReportAnswer;
+import com.team4.testingsystem.model.entity.TestQuestionID;
 import com.team4.testingsystem.repositories.CoachAnswerRepository;
 import com.team4.testingsystem.repositories.ErrorReportsRepository;
 import org.junit.jupiter.api.Assertions;

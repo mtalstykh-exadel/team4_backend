@@ -1,6 +1,6 @@
 package com.team4.testingsystem.security;
 
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.entity.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

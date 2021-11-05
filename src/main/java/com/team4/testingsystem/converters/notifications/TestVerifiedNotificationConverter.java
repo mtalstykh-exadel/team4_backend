@@ -1,8 +1,8 @@
 package com.team4.testingsystem.converters.notifications;
 
-import com.team4.testingsystem.dto.ErrorReportAnswerDTO;
-import com.team4.testingsystem.dto.NotificationDTO;
-import com.team4.testingsystem.entities.Notification;
+import com.team4.testingsystem.model.dto.ErrorReportAnswerDTO;
+import com.team4.testingsystem.model.dto.NotificationDTO;
+import com.team4.testingsystem.model.entity.Notification;
 import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.services.ErrorReportAnswerService;
 import lombok.AllArgsConstructor;

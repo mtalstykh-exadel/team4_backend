@@ -1,6 +1,6 @@
 package com.team4.testingsystem.repositories;
 
-import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.model.entity.Question;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

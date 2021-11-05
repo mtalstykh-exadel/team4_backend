@@ -1,8 +1,8 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.dto.UserDTO;
-import com.team4.testingsystem.entities.User;
-import com.team4.testingsystem.entities.UserTest;
+import com.team4.testingsystem.model.dto.UserDTO;
+import com.team4.testingsystem.model.entity.User;
+import com.team4.testingsystem.model.entity.UserTest;
 import com.team4.testingsystem.enums.Role;
 import com.team4.testingsystem.services.TestsService;
 import com.team4.testingsystem.services.UsersService;

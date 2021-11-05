@@ -1,6 +1,6 @@
 package com.team4.testingsystem.handlers;
 
-import com.team4.testingsystem.dto.NotificationDTO;
+import com.team4.testingsystem.model.dto.NotificationDTO;
 import com.team4.testingsystem.enums.NotificationType;
 import com.team4.testingsystem.services.EmailNotificationTemplateResolver;
 import org.springframework.beans.factory.annotation.Autowired;

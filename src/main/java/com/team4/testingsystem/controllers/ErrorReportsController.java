@@ -1,6 +1,6 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.dto.ErrorReportDTO;
+import com.team4.testingsystem.model.dto.ErrorReportDTO;
 import com.team4.testingsystem.services.ErrorReportsService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.team4.testingsystem.repositories;
 
-import com.team4.testingsystem.entities.Notification;
+import com.team4.testingsystem.model.entity.Notification;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

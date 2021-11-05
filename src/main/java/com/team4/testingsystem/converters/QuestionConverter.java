@@ -1,9 +1,9 @@
 package com.team4.testingsystem.converters;
 
-import com.team4.testingsystem.dto.QuestionDTO;
-import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.entities.Module;
-import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.model.dto.QuestionDTO;
+import com.team4.testingsystem.model.entity.Level;
+import com.team4.testingsystem.model.entity.Module;
+import com.team4.testingsystem.model.entity.Question;
 import com.team4.testingsystem.services.LevelService;
 import com.team4.testingsystem.services.ModuleService;
 import com.team4.testingsystem.services.QuestionService;

@@ -1,13 +1,13 @@
 package com.team4.testingsystem.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team4.testingsystem.dto.ChosenOptionDTO;
-import com.team4.testingsystem.entities.Answer;
-import com.team4.testingsystem.entities.ChosenOption;
-import com.team4.testingsystem.entities.Level;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.TestQuestionID;
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.dto.ChosenOptionDTO;
+import com.team4.testingsystem.model.entity.Answer;
+import com.team4.testingsystem.model.entity.ChosenOption;
+import com.team4.testingsystem.model.entity.Level;
+import com.team4.testingsystem.model.entity.Question;
+import com.team4.testingsystem.model.entity.TestQuestionID;
+import com.team4.testingsystem.model.entity.User;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.repositories.AnswerRepository;
 import com.team4.testingsystem.repositories.ChosenOptionRepository;
@@ -90,7 +90,7 @@ public class ChosenOptionControllerIntegrationTest {
     @Test
     void saveAllSuccess() throws Exception {
         Level level = EntityCreatorUtil.createLevel();
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
         Question question = EntityCreatorUtil.createQuestion();
 
         questionRepository.save(question);
@@ -141,7 +141,7 @@ public class ChosenOptionControllerIntegrationTest {
     @Test
     void saveAllTestNotStarted() throws Exception {
         Level level = EntityCreatorUtil.createLevel();
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
         Question question = EntityCreatorUtil.createQuestion();
 
         questionRepository.save(question);
@@ -187,7 +187,7 @@ public class ChosenOptionControllerIntegrationTest {
     @Test
     void saveAllIncorrectUser() throws Exception {
         Level level = EntityCreatorUtil.createLevel();
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
         Question question = EntityCreatorUtil.createQuestion();
 
         questionRepository.save(question);
@@ -230,7 +230,7 @@ public class ChosenOptionControllerIntegrationTest {
     @Test
     void saveAllNoQuestionInTest() throws Exception {
         Level level = EntityCreatorUtil.createLevel();
-        com.team4.testingsystem.entities.Test test = EntityCreatorUtil.createTest(user, level);
+        com.team4.testingsystem.model.entity.Test test = EntityCreatorUtil.createTest(user, level);
         Question question = EntityCreatorUtil.createQuestion();
 
         questionRepository.save(question);

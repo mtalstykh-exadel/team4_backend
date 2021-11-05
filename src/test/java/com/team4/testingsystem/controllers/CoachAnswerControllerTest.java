@@ -1,6 +1,6 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.dto.CoachAnswerDTO;
+import com.team4.testingsystem.model.dto.CoachAnswerDTO;
 import com.team4.testingsystem.services.CoachAnswerService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

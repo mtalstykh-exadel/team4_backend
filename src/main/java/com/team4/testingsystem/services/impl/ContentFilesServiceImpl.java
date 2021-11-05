@@ -1,6 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.ContentFile;
+import com.team4.testingsystem.model.entity.ContentFile;
 import com.team4.testingsystem.exceptions.ContentFileNotFoundException;
 import com.team4.testingsystem.exceptions.NotFoundException;
 import com.team4.testingsystem.repositories.ContentFilesRepository;

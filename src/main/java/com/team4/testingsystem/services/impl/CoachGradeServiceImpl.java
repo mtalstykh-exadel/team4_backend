@@ -1,9 +1,9 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.CoachGrade;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.model.entity.CoachGrade;
+import com.team4.testingsystem.model.entity.Question;
+import com.team4.testingsystem.model.entity.Test;
+import com.team4.testingsystem.model.entity.TestQuestionID;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.repositories.CoachGradeRepository;
 import com.team4.testingsystem.services.CoachGradeService;

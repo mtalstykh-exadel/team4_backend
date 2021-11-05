@@ -1,7 +1,7 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.dto.CoachAnswerDTO;
-import com.team4.testingsystem.entities.CoachAnswer;
+import com.team4.testingsystem.model.dto.CoachAnswerDTO;
+import com.team4.testingsystem.model.entity.CoachAnswer;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.team4.testingsystem.repositories;
 
-import com.team4.testingsystem.entities.ErrorReport;
-import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.model.entity.ErrorReport;
+import com.team4.testingsystem.model.entity.TestQuestionID;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

@@ -1,7 +1,7 @@
 package com.team4.testingsystem.controllers;
 
 import com.team4.testingsystem.converters.NotificationConverter;
-import com.team4.testingsystem.dto.NotificationDTO;
+import com.team4.testingsystem.model.dto.NotificationDTO;
 import com.team4.testingsystem.services.NotificationService;
 import com.team4.testingsystem.utils.jwt.JwtTokenUtil;
 import io.swagger.annotations.ApiOperation;

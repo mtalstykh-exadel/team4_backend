@@ -1,10 +1,10 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.dto.CoachAnswerDTO;
-import com.team4.testingsystem.entities.CoachAnswer;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.model.dto.CoachAnswerDTO;
+import com.team4.testingsystem.model.entity.CoachAnswer;
+import com.team4.testingsystem.model.entity.Question;
+import com.team4.testingsystem.model.entity.Test;
+import com.team4.testingsystem.model.entity.TestQuestionID;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.repositories.CoachAnswerRepository;
 import com.team4.testingsystem.services.CoachAnswerService;

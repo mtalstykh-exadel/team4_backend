@@ -1,6 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.Answer;
+import com.team4.testingsystem.model.entity.Answer;
 import com.team4.testingsystem.exceptions.AnswerNotFoundException;
 import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;
 import com.team4.testingsystem.repositories.AnswerRepository;

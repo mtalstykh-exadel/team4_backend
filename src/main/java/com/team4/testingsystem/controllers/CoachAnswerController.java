@@ -1,6 +1,6 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.dto.CoachAnswerDTO;
+import com.team4.testingsystem.model.dto.CoachAnswerDTO;
 import com.team4.testingsystem.services.CoachAnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;

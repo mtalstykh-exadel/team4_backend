@@ -1,8 +1,8 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.entities.Notification;
-import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.entity.Notification;
+import com.team4.testingsystem.model.entity.Test;
+import com.team4.testingsystem.model.entity.User;
 import com.team4.testingsystem.enums.NotificationType;
 
 import java.util.List;

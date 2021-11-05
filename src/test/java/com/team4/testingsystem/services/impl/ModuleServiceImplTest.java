@@ -1,6 +1,6 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.Module;
+import com.team4.testingsystem.model.entity.Module;
 import com.team4.testingsystem.exceptions.ModuleNotFoundException;
 import com.team4.testingsystem.repositories.ModuleRepository;
 import com.team4.testingsystem.utils.EntityCreatorUtil;

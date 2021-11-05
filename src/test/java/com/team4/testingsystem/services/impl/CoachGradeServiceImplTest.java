@@ -1,7 +1,7 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.CoachGrade;
-import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.model.entity.CoachGrade;
+import com.team4.testingsystem.model.entity.Question;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
@@ -43,7 +43,7 @@ class CoachGradeServiceImplTest {
     private Question question;
 
     @Mock
-    private com.team4.testingsystem.entities.Test test;
+    private com.team4.testingsystem.model.entity.Test test;
 
     private final Long testId = 1L;
     private final Long questionId = 2L;

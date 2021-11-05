@@ -1,9 +1,9 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.FileAnswer;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.model.entity.FileAnswer;
+import com.team4.testingsystem.model.entity.Question;
+import com.team4.testingsystem.model.entity.Test;
+import com.team4.testingsystem.model.entity.TestQuestionID;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.enums.Status;
 import com.team4.testingsystem.exceptions.FileAnswerNotFoundException;

@@ -1,10 +1,10 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.entities.Answer;
-import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.Test;
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.entity.Answer;
+import com.team4.testingsystem.model.entity.ContentFile;
+import com.team4.testingsystem.model.entity.Question;
+import com.team4.testingsystem.model.entity.Test;
+import com.team4.testingsystem.model.entity.User;
 import com.team4.testingsystem.enums.Status;
 
 import java.time.Instant;

@@ -1,8 +1,8 @@
 package com.team4.testingsystem.converters;
 
 import com.team4.testingsystem.converters.notifications.SingleNotificationConverter;
-import com.team4.testingsystem.dto.NotificationDTO;
-import com.team4.testingsystem.entities.Notification;
+import com.team4.testingsystem.model.dto.NotificationDTO;
+import com.team4.testingsystem.model.entity.Notification;
 import com.team4.testingsystem.enums.NotificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

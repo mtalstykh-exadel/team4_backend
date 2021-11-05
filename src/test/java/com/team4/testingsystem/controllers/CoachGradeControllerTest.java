@@ -1,9 +1,9 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.dto.CoachGradeDTO;
-import com.team4.testingsystem.entities.CoachGrade;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.TestQuestionID;
+import com.team4.testingsystem.model.dto.CoachGradeDTO;
+import com.team4.testingsystem.model.entity.CoachGrade;
+import com.team4.testingsystem.model.entity.Question;
+import com.team4.testingsystem.model.entity.TestQuestionID;
 import com.team4.testingsystem.exceptions.QuestionNotFoundException;
 import com.team4.testingsystem.exceptions.TestNotFoundException;
 import com.team4.testingsystem.services.CoachGradeService;
@@ -39,7 +39,7 @@ class CoachGradeControllerTest {
     private TestQuestionID testQuestionID;
 
     @Mock
-    private com.team4.testingsystem.entities.Test test;
+    private com.team4.testingsystem.model.entity.Test test;
 
     @Mock
     private Question question;

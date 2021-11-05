@@ -1,6 +1,6 @@
 package com.team4.testingsystem.repositories;
 
-import com.team4.testingsystem.entities.Timer;
+import com.team4.testingsystem.model.entity.Timer;
 import com.team4.testingsystem.enums.Status;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

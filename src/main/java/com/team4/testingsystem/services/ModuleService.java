@@ -1,6 +1,6 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.entities.Module;
+import com.team4.testingsystem.model.entity.Module;
 
 public interface ModuleService {
     Module getModuleById(Long id);

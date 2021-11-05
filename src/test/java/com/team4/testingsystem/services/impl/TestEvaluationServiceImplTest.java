@@ -1,9 +1,9 @@
 package com.team4.testingsystem.services.impl;
 
 
-import com.team4.testingsystem.entities.Answer;
-import com.team4.testingsystem.entities.ChosenOption;
-import com.team4.testingsystem.entities.CoachGrade;
+import com.team4.testingsystem.model.entity.Answer;
+import com.team4.testingsystem.model.entity.ChosenOption;
+import com.team4.testingsystem.model.entity.CoachGrade;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.CoachGradeNotFoundException;
 import com.team4.testingsystem.repositories.CoachAnswerRepository;
@@ -78,7 +78,7 @@ class TestEvaluationServiceImplTest {
     private Map<String, CoachGrade> gradeMap;
 
     @Mock
-    private com.team4.testingsystem.entities.Test test;
+    private com.team4.testingsystem.model.entity.Test test;
 
     private static final Long TEST_ID = 1L;
     private final String COACH_COMMENT = "comment";

@@ -1,8 +1,8 @@
 package com.team4.testingsystem.services.impl;
 
-import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.Question;
-import com.team4.testingsystem.entities.Test;
+import com.team4.testingsystem.model.entity.ContentFile;
+import com.team4.testingsystem.model.entity.Question;
+import com.team4.testingsystem.model.entity.Test;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.exceptions.NotEnoughQuestionsException;
 import com.team4.testingsystem.exceptions.NotFoundException;

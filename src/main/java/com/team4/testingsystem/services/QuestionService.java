@@ -1,8 +1,8 @@
 package com.team4.testingsystem.services;
 
-import com.team4.testingsystem.dto.AnswerDTO;
-import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.model.dto.AnswerDTO;
+import com.team4.testingsystem.model.entity.ContentFile;
+import com.team4.testingsystem.model.entity.Question;
 import com.team4.testingsystem.enums.Levels;
 import com.team4.testingsystem.enums.Modules;
 import com.team4.testingsystem.enums.QuestionStatus;

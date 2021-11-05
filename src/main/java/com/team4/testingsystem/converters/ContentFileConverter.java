@@ -1,9 +1,9 @@
 package com.team4.testingsystem.converters;
 
-import com.team4.testingsystem.dto.ContentFileDTO;
-import com.team4.testingsystem.dto.QuestionDTO;
-import com.team4.testingsystem.entities.ContentFile;
-import com.team4.testingsystem.entities.Question;
+import com.team4.testingsystem.model.dto.ContentFileDTO;
+import com.team4.testingsystem.model.dto.QuestionDTO;
+import com.team4.testingsystem.model.entity.ContentFile;
+import com.team4.testingsystem.model.entity.Question;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

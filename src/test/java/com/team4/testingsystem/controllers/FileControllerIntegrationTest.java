@@ -1,6 +1,6 @@
 package com.team4.testingsystem.controllers;
 
-import com.team4.testingsystem.entities.User;
+import com.team4.testingsystem.model.entity.User;
 import com.team4.testingsystem.exceptions.FileLoadingFailedException;
 import com.team4.testingsystem.repositories.UsersRepository;
 import com.team4.testingsystem.security.CustomUserDetails;
