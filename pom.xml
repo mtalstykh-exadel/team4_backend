@@ -29,7 +29,7 @@
         <spotbugs-plugin.version>4.2.0</spotbugs-plugin.version>
         <spotbugs.version>4.3.0</spotbugs.version>
         <swagger.version>3.0.0</swagger.version>
-        <swagger-ui.version>2.9.2</swagger-ui.version>
+        <swagger-ui.version>2.10.0</swagger-ui.version>
         <awspring-cloud-ses.version>2.3.1</awspring-cloud-ses.version>
     </properties>
 
