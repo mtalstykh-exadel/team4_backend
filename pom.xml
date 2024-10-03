@@ -21,7 +21,7 @@
         <jjwt.version>0.11.2</jjwt.version>
         <puppycrawl.version>8.29</puppycrawl.version>
         <aws-sdk.version>1.11.728</aws-sdk.version>
-        <commons-io.version>2.11.0</commons-io.version>
+        <commons-io.version>2.14.0</commons-io.version>
         <mockito.version>3.8.0</mockito.version>
         <pmd.version>3.14.0</pmd.version>
         <pitest.version>1.6.7</pitest.version>
